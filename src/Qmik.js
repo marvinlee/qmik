@@ -912,7 +912,7 @@
 		N = Q.isNull,
 		E = Q.each,
 		D = Q.isElement,
-		TU = Q.toUpper,
+		toU = Q.toUpper,
 		sets = Q.settings,
 		TKV = sets.resoTKV,
 		TC = sets.resoTC,
@@ -1154,6 +1154,7 @@
 })(Qmik);
 (function(Q) { /*event*/
 	var win = window,
+		doc=win.document,
 		ek = "$QmikEvents",
 		N = Q.isNull,
 		F = Q.isFun,
