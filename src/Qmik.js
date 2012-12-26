@@ -1015,7 +1015,7 @@
 				r = SE() ?
 				function() {
 					var a = AS(c.getElementsByClassName(cn) || []),
-						g = TU(t);
+						g = toU(t);
 					if(t == "") return a;
 					return function(a) {
 						for(var i = a.length - 1; i >= 0; i--) {
