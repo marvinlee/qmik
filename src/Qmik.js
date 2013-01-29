@@ -52,7 +52,7 @@
 				hasClass: HC
 			},
 			list = [win.NodeList, win.HTMLCollection];
-		sr.trim = T;
+		sr.trim = sr.trim||function(){T(this)};
 
 		function initList(a) {
 			for(var m in list) {
@@ -798,7 +798,7 @@
 				})
 			},
 			val: function(v) {
-				if(N(v)) return this.attr("value");
+				if(N(v)) return this.attr("value")||"";
 				E(this, function(i, u) {
 					Q(u).attr("value", v)
 				})
