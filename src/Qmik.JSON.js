@@ -1,7 +1,7 @@
 /**
  * @author:leochen
  * @email:cwq0312@163.com
- * @version:1.31
+ * @version:1.32
  */
 (function() {
 	function stringify(v) {
