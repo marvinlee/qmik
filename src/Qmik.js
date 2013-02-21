@@ -1321,7 +1321,7 @@
 			var o = this[0];
 			return N(o) ? (v || 0) : D(o) ? o.offsetHeight : o == win ? win.screenY : win.screen.availHeight
 		},
-		offset:function(){
+		offset:function(){//获取匹配元素在当前视口的相对偏移
 			if(!this[0])return null;
 			var obj = this[0].getBoundingClientRect();
 			return {
@@ -1331,7 +1331,7 @@
 				height: obj.height
 			};				
 		},
-		position:function(){
+		position:function(){//获取匹配元素相对父元素的偏移。
 			var o=this[0];
 			if(!o) return null;
 			return{
