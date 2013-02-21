@@ -1346,21 +1346,7 @@
 			var m=this;
 			Q.delay(function(){
 				m.css(styles)
-			},getSpeed(speed,easing))
+			},speed||500)
 		}
 	});
-	function getSpeed(speed,easing){
-		if(easing)return easing();
-		if(Q.isString(speed))
-			switch(speed){
-			case "slow":return 2000;
-			case "fast":return 500;
-			default:return 1000;
-			}
-		try{
-			return parseInt(speed);
-		}catch(e){
-			return 1000;
-		}
-	}
 })(Qmik);
