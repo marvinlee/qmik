@@ -44,7 +44,6 @@
 			},
 			settings = {
 				compile: compile,
-				adapRule: adapRule,
 				regular: regular,
 				initList: initList,
 				resoTKV: TKV,
@@ -536,7 +535,7 @@
 			return o[n] || o.getAttribute(n)
 		}
 
-		function compile(s, qa) { //解析查询条件，返回[{type,query,isChild}...]
+		function compile(s, qa) { //编译查询条件，返回[{type,query,isChild}...]
 			var st, n, isChild = /^\s*>\s*/.test(s);
 			s = s.replace(/^\s*>?\s*/, "");
 			qa = qa || [];
@@ -554,32 +553,36 @@
 			});
 			return compile(s, qa)
 		}
-
-		function adapRule(o, qa, c) { //找compile()解析出的对象,判断当前的查找条件是否满足其对应的父查询条件
+		//找compile()解析出的对象,判断当前的查找条件是否满足其对应的父查询条件 isCycle:是否遍历父节点,默认true
+		function adapRule(o, qa,isCycle, c) { 
 			if(!D(o)) return !1;
 			c = c || doc;
+			isCycle=N(isCycle)?!0:isCycle;
 			var s = qa.query,
-				isGP = !qa.isChild,
+				isGP = !qa.isChild&&(isCycle!=!1),
 				p = o.parentNode;
 			if(!D(p)) return !1;
 			if(!NGP(c, o)) return !1;
 			switch(qa.type) {
 			case 'ID':
-				return(at(p, "id") == T(s.replace(/^#/, ""))) ? !0 : isGP ? adapRule(p, qa, c) : !1;
+				return(at(p, "id") == T(s.replace(/^#/, ""))) ? !0 : isGP ? adapRule(p, qa,isCycle, c) : !1;
 			case 'ATTR':
 				var ds = TKV(s),
 					tag = ds[0],
 					k = ds[1],
 					v = ds[2];
-				return(toL(p.tagName) == tag && at(p, k) == v) ? !0 : isGP ? adapRule(p, qa, c) : !1;
+				return(toL(p.tagName) == tag && at(p, k) == v) ? !0 : isGP ? adapRule(p, qa,isCycle, c) : !1;
 			case 'CT':
 				var ds = TC(s),
 					tag = ds[0],
 					className = ds[1];
-				if(tag) return(toL(p.tagName) == tag && HC(p, className)) ? !0 : isGP ? adapRule(p, qa, c) : !1
-				else return HC(p, className) ? !0 : isGP ? adapRule(p, qa, c) : !1;
+				if(tag){
+					return(toL(p.tagName) == tag && HC(p, className)) ? !0 : isGP ? adapRule(p, qa,isCycle, c) : !1
+				}else{
+					return HC(p, className) ? !0 : isGP ? adapRule(p, qa,isCycle, c) : !1
+				}
 			case 'TAG':
-				return(toL(p.tagName) == s) ? !0 : isGP ? adapRule(p, qa, c) : !1;
+				return(toL(p.tagName) == s) ? !0 : isGP ? adapRule(p, qa,isCycle, c) : !1;
 			}
 			return !1
 		}
@@ -850,18 +853,24 @@
 			hasClass: function(c) {
 				return HC(this[0], c)
 			},
-			closest: function(s) {
-				var r = Q(""),
-					i = 0,
+			closest: function(s) {//查找最近的匹配的父节点
+				var i = 0,
 					m = this,
-					p, qa = compile(s);
-				if(N(qa) || qa.length < 1) return r;
-				for(; i < m.length; i++) {
-					p = m[i].parentNode;
-					if(N(p)) continue;
-					if(adapRule(m[i], qa[0])) return Q(p);
+					array=[],
+					p, qa =S(s)?compile(s):null;
+				for(;i < m.length; i++) {
+					p = m[i];
+					if(N(qa)){
+						array.push(p.parentNode);continue
+					}
+					while(p){
+						if(adapRule(p, qa[0],false)){
+							array.push(p.parentNode);break
+						}
+						p=p.parentNode;
+					}
 				}
-				return r;
+				return Q(array);
 			}
 		});
 		Q.fn.extend({
@@ -955,9 +964,7 @@
 			y = s.indexOf('!=') == -1;
 		return fa(AS(o.getElementsByTagName(t || "*")), k, v, y);
 	}
-	var compile = sets.compile,
-		//解析查询条件，返回[{type,query,isChild}...]
-		adapRule = sets.adapRule;
+	var compile = sets.compile;//编译查询条件，返回[{type,query,isChild}...]
 
 	function AS(a) {
 		return SE() ? a.slice(0, a.length) : a
@@ -1254,6 +1261,14 @@
 				Etrig(v, n)
 			});
 			return this
+		},
+		live: function(name,fun){
+			var selector=this.selector;
+			Q("body").bind(name,function(e){
+				if($(event.target).closest(selector).length>0){
+					fun(e)
+				}
+			})
 		}
 	});
 	Q.fn.extend({
