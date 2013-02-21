@@ -833,14 +833,6 @@
 				queue(this, k, []);
 				return this
 			},
-			width: function(v) {
-				var o = this[0];
-				return N(o) ? (v || 0) : D(o) ? o.offsetWidth : o == win ? win.screenX : win.screen.availWidth
-			},
-			height: function(v) {
-				var o = this[0];
-				return N(o) ? (v || 0) : D(o) ? o.offsetHeight : o == win ? win.screenY : win.screen.availHeight
-			},
 			clone: function(t) {
 				return clone(this, t)
 			},
@@ -853,24 +845,14 @@
 			hasClass: function(c) {
 				return HC(this[0], c)
 			},
-			closest: function(s) {//查找最近的匹配的父节点
-				var i = 0,
-					m = this,
-					array=[],
-					p, qa =S(s)?compile(s):null;
-				for(;i < m.length; i++) {
-					p = m[i];
-					if(N(qa)){
-						array.push(p.parentNode);continue
-					}
-					while(p){
-						if(adapRule(p, qa[0],false)){
-							array.push(p.parentNode);break
-						}
-						p=p.parentNode;
-					}
-				}
-				return Q(array);
+			closest: function(s) {//查找最近的匹配的父(祖父)节点
+				return parents(s,this,false)
+			},
+			parents:function(s){//查找所有的匹配的父(祖父)节点
+				return parents(s,this,true)		
+			},
+			parent:function(s){//查找匹配的父节点
+				return parents(s,this,true,true)
 			}
 		});
 		Q.fn.extend({
@@ -879,7 +861,33 @@
 			removeAttr: fn.rmAttr,
 			toArray: fn.array
 		});
-
+		/**
+		 * selector:选择器
+		 * qmik:qmik查询对象
+		 * isAllP:是否包含所有父及祖父节点 默认true
+		 * isOnlyParent:是否只包含父节点 默认false
+		 */
+		function parents(selector,qmik,isAllP,isOnlyParent){
+			var i = 0,
+				m = qmik,
+				array=[],
+				p, qa =S(selector)?compile(selector):null;
+				isAllP=N(isAllP)?!0:(isAllP!=!1);
+				isOnlyParent=N(isOnlyParent)?!1:(isOnlyParent==!0);
+			for(;i < m.length; i++) {
+				p = m[i];
+				while(p){
+					if(p.parentNode==doc.body )break;
+					if(N(qa)||adapRule(p, qa[0],false)){
+						array.push(p.parentNode);
+						if(!isAllP)break
+					}
+					if(isOnlyParent)break;
+					p=p.parentNode;
+				}
+			}
+			return Q(array);				
+		}
 		function cls(c) {
 			try {
 				for(var k, i = c.length - 1; i >= 0; i--) {
@@ -1265,8 +1273,8 @@
 		live: function(name,fun){
 			var selector=this.selector;
 			Q("body").bind(name,function(e){
-				if($(event.target).closest(selector).length>0){
-					fun(e)
+				if($(e.target).closest(selector).length>0){
+					fun.apply(event.target,[e]);
 				}
 			})
 		}
@@ -1274,4 +1282,84 @@
 	Q.fn.extend({
 		on: Q.bind
 	});
+})(Qmik);
+(function(Q){//location位置+效果
+	var win = window,
+	doc=win.document,
+	N = Q.isNull,
+	D = Q.isElement;
+	
+	//计算元素的X(水平，左)位置
+	function pageX(elem) {
+		return elem.offsetParent?
+			elem.offsetLeft+pageX(elem.offsetParent):elem.offsetLeft
+	}
+
+	//计算元素的Y(垂直，顶)位置
+	function pageY(elem) {
+		return elem.offsetParent?
+			elem.offsetTop + pageY( elem.offsetParent ):elem.offsetTop
+	}
+	//查找元素在其父元素中的水平位置
+	function parentX(elem) {
+		return elem.parentNode==elem.offsetParent?
+		   elem.offsetLeft : pageX(elem)-pageX(elem.parentNode)
+	}
+
+	//查找元素在其父元素中的垂直位置
+	function parentY(elem) {
+		return elem.parentNode==elem.offsetParent?
+				elem.offsetTop:pageY(elem)-pageY(elem.parentNode)
+	}
+	
+	Q.fn.extend({
+		width: function(v) {
+			var o = this[0];
+			return N(o) ? (v || 0) : D(o) ? o.offsetWidth : o == win ? win.screenX : win.screen.availWidth
+		},
+		height: function(v) {
+			var o = this[0];
+			return N(o) ? (v || 0) : D(o) ? o.offsetHeight : o == win ? win.screenY : win.screen.availHeight
+		},
+		offset:function(){
+			if(!this[0])return null;
+			var obj = this[0].getBoundingClientRect();
+			return {
+				left: obj.left + win.pageXOffset,
+				top: obj.top + win.pageYOffset,
+				width: obj.width,
+				height: obj.height
+			};				
+		},
+		position:function(){
+			var o=this[0];
+			if(!o) return null;
+			return{
+				left:parentX(o),
+				top:parentY(o),
+				width: obj.width,
+				height: obj.height				
+			}
+		},
+		animate:function(styles,speed,easing,callback){
+			var m=this;
+			Q.delay(function(){
+				m.css(styles)
+			},getSpeed(speed,easing))
+		}
+	});
+	function getSpeed(speed,easing){
+		if(easing)return easing();
+		if(Q.isString(speed))
+			switch(speed){
+			case "slow":return 2000;
+			case "fast":return 500;
+			default:return 1000;
+			}
+		try{
+			return parseInt(speed);
+		}catch(e){
+			return 1000;
+		}
+	}
 })(Qmik);
