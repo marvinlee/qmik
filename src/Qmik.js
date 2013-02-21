@@ -37,7 +37,7 @@
 				CT: /^([\w-_]+)?\.[\w-_]+/,
 				TAG: /^[\w-_]+/
 			},
-			rNode = /^\s*<.+>.*<\/.+>\s*$/,
+			rNode = /^\s*(<.+>.*<\/.+>)+|(<.+\/\s*>)+\s*$/;
 			regular = {
 				querys: match,
 				node: rNode
@@ -380,19 +380,20 @@
 
 		function append(o, c) {
 			c = VC(c);
-			if(LA(o)) E(o, function(k, v) {
-				append(v, c)
-			});
-			else if(D(o)) {
-				if(LA(c)) E(c, function(k, v) {
-					append(o, v)
+			if(LA(o)){
+				E(o, function(k, v) {
+					append(v, c)
 				});
-				else {
+			}else if(D(o)) {
+				if(LA(c)){ 
+					E(c, function(k, v) {
+						append(o, v)
+					});
+				}else {
 					o.appendChild(D(c) ? c : doc.createTextNode(c))
 				}
 			}
 		}
-
 		function before(o, c) {
 			c = VC(c);
 			if(LA(o)) E(o, function(k, v) {
