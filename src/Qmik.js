@@ -29,8 +29,6 @@
 			},
 			rtrim = /^(\s|\u00A0)+|(\s|\u00A0)+$/g,
 			readyRE = /complete|loaded|interactive/,
-			ls = win.localStorage,
-			ss = win.sessionStorage,
 			match = {
 				ID: /^#[\w-_\u00c0-\uFFFF]+/,
 				ATTR: /^([\w-_]+)\[\s*[\w-_]+\s*!?=\s*('|")?(.*)('|")?\s*\]/,
@@ -170,32 +168,6 @@
 			},
 			stringify: toS,
 			parseJSON: toO,
-			store: function(k, type, v, ttl, s) {
-				s = s || ls;
-				try {
-					if(s) {
-						var p = type == "json",
-							k1 = "ttl:" + k;
-						o = s.getItem(k), t = Q.time(ttl || dttl), L = s === ls, t;
-						if(N(v)) {
-							if(L && (s.getItem(k1) || 0) < Q.time()) {
-								s.removeItem(k);
-								s.removeItem(k1)
-							}
-							return p ? toO(o) : o
-						}
-						s.setItem(k, p ? toS(v) : v);
-						if(L || (!L && ttl)) s.setItem(k1, t)
-					}
-				} catch(e) {}
-			},
-			storeSession: function(k, type, v, ttl) {
-				return Q.store(k, type, v, ttl, ss)
-			},
-			clearStore: function() {
-				ss.clear();
-				ls.clear()
-			},
 			time: function(d) {
 				return(d || 0) + parseInt((new Date()).getTime() / 1000)
 			},
@@ -889,18 +861,6 @@
 			}
 			return Q(array);				
 		}
-		function cls(c) {
-			try {
-				for(var k, i = c.length - 1; i >= 0; i--) {
-					k = c.key(i);
-					k.match(/^ttl:/) && c.getItem(k) < Q.time() && c.removeItem(R.call(k, /^ttl:/, ""))
-				}
-			} catch(e) {}
-		}
-		if(ls) {
-			Q.interval(cls, dttl, ls);
-			Q.interval(cls, dttl, ss);
-		}
 
 		var qwc = "touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error".split(" ");
 		E(qwc, function(i, v) {
@@ -1110,20 +1070,12 @@
 			ca = s.cache,
 			v;
 		s.beforeSend && s.beforeSend();
-		if(ca) {
-			v = ct ? Q.store(k, t) : Q.storeSession(k, t);
-			if(v) {
-				su && su(v);
-				return
-			}
-		}
 		h.onreadystatechange = function() {
 			if(4 == h.readyState) {
 				if(200 == h.status) {
 					clearTimeout(i);
 					var v = t == 'xml' ? h.responseXML : (t == 'json' ? toO(h.responseText) : h.responseText);
 					su && su(v);
-					if(ca) ct ? Q.store(k, t, v, s.ttl) : Q.storeSession(k, t, v)
 				} else {
 					se && se(h.xhr, h.type)
 				}
