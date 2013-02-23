@@ -37,14 +37,13 @@
 				CT: /^([\w-_]+)?\.[\w-_]+/,
 				TAG: /^[\w-_]+/
 			},
-			rNode = /^\s*<.+>.*<\/.+>\s*$/,
+			rNode = /^\s*(<.+>.*<\/.+>)+|(<.+\/\s*>)+\s*$/;
 			regular = {
 				querys: match,
 				node: rNode
 			},
 			settings = {
 				compile: compile,
-				adapRule: adapRule,
 				regular: regular,
 				initList: initList,
 				resoTKV: TKV,
@@ -381,19 +380,20 @@
 
 		function append(o, c) {
 			c = VC(c);
-			if(LA(o)) E(o, function(k, v) {
-				append(v, c)
-			});
-			else if(D(o)) {
-				if(LA(c)) E(c, function(k, v) {
-					append(o, v)
+			if(LA(o)){
+				E(o, function(k, v) {
+					append(v, c)
 				});
-				else {
+			}else if(D(o)) {
+				if(LA(c)){ 
+					E(c, function(k, v) {
+						append(o, v)
+					});
+				}else {
 					o.appendChild(D(c) ? c : doc.createTextNode(c))
 				}
 			}
 		}
-
 		function before(o, c) {
 			c = VC(c);
 			if(LA(o)) E(o, function(k, v) {
@@ -536,7 +536,7 @@
 			return o[n] || o.getAttribute(n)
 		}
 
-		function compile(s, qa) { //解析查询条件，返回[{type,query,isChild}...]
+		function compile(s, qa) { //编译查询条件，返回[{type,query,isChild}...]
 			var st, n, isChild = /^\s*>\s*/.test(s);
 			s = s.replace(/^\s*>?\s*/, "");
 			qa = qa || [];
@@ -554,32 +554,36 @@
 			});
 			return compile(s, qa)
 		}
-
-		function adapRule(o, qa, c) { //找compile()解析出的对象,判断当前的查找条件是否满足其对应的父查询条件
+		//找compile()解析出的对象,判断当前的查找条件是否满足其对应的父查询条件 isCycle:是否遍历父节点,默认true
+		function adapRule(o, qa,isCycle, c) { 
 			if(!D(o)) return !1;
 			c = c || doc;
+			isCycle=N(isCycle)?!0:isCycle;
 			var s = qa.query,
-				isGP = !qa.isChild,
+				isGP = !qa.isChild&&(isCycle!=!1),
 				p = o.parentNode;
 			if(!D(p)) return !1;
 			if(!NGP(c, o)) return !1;
 			switch(qa.type) {
 			case 'ID':
-				return(at(p, "id") == T(s.replace(/^#/, ""))) ? !0 : isGP ? adapRule(p, qa, c) : !1;
+				return(at(p, "id") == T(s.replace(/^#/, ""))) ? !0 : isGP ? adapRule(p, qa,isCycle, c) : !1;
 			case 'ATTR':
 				var ds = TKV(s),
 					tag = ds[0],
 					k = ds[1],
 					v = ds[2];
-				return(toL(p.tagName) == tag && at(p, k) == v) ? !0 : isGP ? adapRule(p, qa, c) : !1;
+				return(toL(p.tagName) == tag && at(p, k) == v) ? !0 : isGP ? adapRule(p, qa,isCycle, c) : !1;
 			case 'CT':
 				var ds = TC(s),
 					tag = ds[0],
 					className = ds[1];
-				if(tag) return(toL(p.tagName) == tag && HC(p, className)) ? !0 : isGP ? adapRule(p, qa, c) : !1
-				else return HC(p, className) ? !0 : isGP ? adapRule(p, qa, c) : !1;
+				if(tag){
+					return(toL(p.tagName) == tag && HC(p, className)) ? !0 : isGP ? adapRule(p, qa,isCycle, c) : !1
+				}else{
+					return HC(p, className) ? !0 : isGP ? adapRule(p, qa,isCycle, c) : !1
+				}
 			case 'TAG':
-				return(toL(p.tagName) == s) ? !0 : isGP ? adapRule(p, qa, c) : !1;
+				return(toL(p.tagName) == s) ? !0 : isGP ? adapRule(p, qa,isCycle, c) : !1;
 			}
 			return !1
 		}
@@ -830,14 +834,6 @@
 				queue(this, k, []);
 				return this
 			},
-			width: function(v) {
-				var o = this[0];
-				return N(o) ? (v || 0) : D(o) ? o.offsetWidth : o == win ? win.screenX : win.screen.availWidth
-			},
-			height: function(v) {
-				var o = this[0];
-				return N(o) ? (v || 0) : D(o) ? o.offsetHeight : o == win ? win.screenY : win.screen.availHeight
-			},
 			clone: function(t) {
 				return clone(this, t)
 			},
@@ -850,18 +846,14 @@
 			hasClass: function(c) {
 				return HC(this[0], c)
 			},
-			closest: function(s) {
-				var r = Q(""),
-					i = 0,
-					m = this,
-					p, qa = compile(s);
-				if(N(qa) || qa.length < 1) return r;
-				for(; i < m.length; i++) {
-					p = m[i].parentNode;
-					if(N(p)) continue;
-					if(adapRule(m[i], qa[0])) return Q(p);
-				}
-				return r;
+			closest: function(s) {//查找最近的匹配的父(祖父)节点
+				return parents(s,this,false)
+			},
+			parents:function(s){//查找所有的匹配的父(祖父)节点
+				return parents(s,this,true)		
+			},
+			parent:function(s){//查找匹配的父节点
+				return parents(s,this,true,true)
 			}
 		});
 		Q.fn.extend({
@@ -870,7 +862,33 @@
 			removeAttr: fn.rmAttr,
 			toArray: fn.array
 		});
-
+		/**
+		 * selector:选择器
+		 * qmik:qmik查询对象
+		 * isAllP:是否包含所有父及祖父节点 默认true
+		 * isOnlyParent:是否只包含父节点 默认false
+		 */
+		function parents(selector,qmik,isAllP,isOnlyParent){
+			var i = 0,
+				m = qmik,
+				array=[],
+				p, qa =S(selector)?compile(selector):null;
+				isAllP=N(isAllP)?!0:(isAllP!=!1);
+				isOnlyParent=N(isOnlyParent)?!1:(isOnlyParent==!0);
+			for(;i < m.length; i++) {
+				p = m[i];
+				while(p){
+					if(p.parentNode==doc.body )break;
+					if(N(qa)||adapRule(p, qa[0],false)){
+						array.push(p.parentNode);
+						if(!isAllP)break
+					}
+					if(isOnlyParent)break;
+					p=p.parentNode;
+				}
+			}
+			return Q(array);				
+		}
 		function cls(c) {
 			try {
 				for(var k, i = c.length - 1; i >= 0; i--) {
@@ -955,9 +973,7 @@
 			y = s.indexOf('!=') == -1;
 		return fa(AS(o.getElementsByTagName(t || "*")), k, v, y);
 	}
-	var compile = sets.compile,
-		//解析查询条件，返回[{type,query,isChild}...]
-		adapRule = sets.adapRule;
+	var compile = sets.compile;//编译查询条件，返回[{type,query,isChild}...]
 
 	function AS(a) {
 		return SE() ? a.slice(0, a.length) : a
@@ -1254,9 +1270,83 @@
 				Etrig(v, n)
 			});
 			return this
+		},
+		live: function(name,fun){
+			var selector=this.selector;
+			Q("body").bind(name,function(e){
+				if($(e.target).closest(selector).length>0){
+					fun.apply(event.target,[e]);
+				}
+			})
 		}
 	});
 	Q.fn.extend({
 		on: Q.bind
+	});
+})(Qmik);
+(function(Q){//location位置+效果
+	var win = window,
+	doc=win.document,
+	N = Q.isNull,
+	D = Q.isElement;
+	
+	//计算元素的X(水平，左)位置
+	function pageX(elem) {
+		return elem.offsetParent?
+			elem.offsetLeft+pageX(elem.offsetParent):elem.offsetLeft
+	}
+
+	//计算元素的Y(垂直，顶)位置
+	function pageY(elem) {
+		return elem.offsetParent?
+			elem.offsetTop + pageY( elem.offsetParent ):elem.offsetTop
+	}
+	//查找元素在其父元素中的水平位置
+	function parentX(elem) {
+		return elem.parentNode==elem.offsetParent?
+		   elem.offsetLeft : pageX(elem)-pageX(elem.parentNode)
+	}
+
+	//查找元素在其父元素中的垂直位置
+	function parentY(elem) {
+		return elem.parentNode==elem.offsetParent?
+				elem.offsetTop:pageY(elem)-pageY(elem.parentNode)
+	}
+	
+	Q.fn.extend({
+		width: function(v) {
+			var o = this[0];
+			return N(o) ? (v || 0) : D(o) ? o.offsetWidth : o == win ? win.screenX : win.screen.availWidth
+		},
+		height: function(v) {
+			var o = this[0];
+			return N(o) ? (v || 0) : D(o) ? o.offsetHeight : o == win ? win.screenY : win.screen.availHeight
+		},
+		offset:function(){//获取匹配元素在当前视口的相对偏移
+			if(!this[0])return null;
+			var obj = this[0].getBoundingClientRect();
+			return {
+				left: obj.left + win.pageXOffset,
+				top: obj.top + win.pageYOffset,
+				width: obj.width,
+				height: obj.height
+			};				
+		},
+		position:function(){//获取匹配元素相对父元素的偏移。
+			var o=this[0];
+			if(!o) return null;
+			return{
+				left:parentX(o),
+				top:parentY(o),
+				width: obj.width,
+				height: obj.height				
+			}
+		},
+		animate:function(styles,speed,easing,callback){
+			var m=this;
+			Q.delay(function(){
+				m.css(styles)
+			},speed||500)
+		}
 	});
 })(Qmik);
