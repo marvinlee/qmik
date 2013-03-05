@@ -1236,10 +1236,16 @@
         live: function (name, fun) {
             var selector = this.selector;
             Q("body").on(name, function (e) {
-                if ($(e.target).closest(selector).length > 0) {
+                if ($(e.target.childNodes[0]).closest(selector).length > 0) {
                     fun.apply(event.target, [e]);
                 }
             })
+        },
+        die:function(name,fun){
+            E(Q(document.body), function (k, v) {
+                Erm(v, name, fun)
+            });
+            return this       	
         }
     });
     Q.fn.extend({
