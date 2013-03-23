@@ -172,13 +172,15 @@
                 return (d || 0) + parseInt((new Date()).getTime() / 1000)
             },
             clone: clone,
+            //延迟执行,==setTimeout
             delay: function (f, t) {
                 var p = slice.call(arguments, 2);
                 return setTimeout(function () {
                     f.apply(f, p)
                 }, t)
             },
-            interval: function (f, t) {
+            //周期执行,==setInterval
+            cycle: function (f, t) {
                 var p = slice.call(arguments, 2);
                 return setInterval(function () {
                     f.apply(f, p)
