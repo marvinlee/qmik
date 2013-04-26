@@ -32,6 +32,7 @@
 		});
 		return r
 	}
+	
 	Q.extend(protoString, {
 		trim : function() {
 			this.replace(REG_TRIM, "")
