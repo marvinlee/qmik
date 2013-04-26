@@ -1,0 +1,305 @@
+/**
+ * @author:leochen
+ * @email:cwq0312@163.com
+ * @version:0.91.008
+ */
+(function() {
+	var global = this, doc = global.document || {};
+	var protoString = String.prototype, protoArray = Array.prototype, slice = protoArray.slice;
+	var REG_TRIM = /^(\s|\u00A0)+|(\s|\u00A0)+$/g;
+	// define qmik object
+	var Q = function() {
+		Q.use( [
+			"QmikQuery"
+		], function(Q) {
+			Q.init();
+		});
+	}
+	Q.extend = function() {
+		var r = arguments[0] || {}, i = 1, L = arguments.length;
+		switch (L) {
+		case 0:
+			return;
+		case 1:
+			r = this;
+			i = 0;
+			break;
+		}
+		each(slice.call(arguments, i), function(j, v) {
+			each(v, function(m, n) {
+				if (!isNull(n)) r[m] = n
+			})
+		});
+		return r
+	}
+	Q.extend(protoString, {
+		trim : function() {
+			this.replace(REG_TRIM, "")
+		},
+		toLower : function() {
+			return this.toLowerCase()
+		},
+		toLower : function() {
+			return this.toLowerCase()
+		}
+	});
+	function filter(callback, ret) {
+		var ret = ret || [];
+		each(this, function(i, v) {
+			callback(v) && ret.push(v)
+		});
+		return ret
+	}
+	// public function
+	// ///////////////////////////////////////////////////////////////////
+	// isNull
+	function isNull(v) {
+		return v === undefined || v == null
+	}
+	// isString
+	function isString(v) {
+		return typeof v == 'string'
+	}
+	// isDom
+	function isDom(v) {
+		return v && v.nodeType == 1
+	}
+	// isArray
+	function isArray(v) {
+		return v instanceof Array
+	}
+	// isFunction
+	function isFun(v) {
+		return v instanceof Function
+	}
+	function each(obj, callback) { // each fun(k,v)
+		var i;
+		if (isArray(obj)) for (i = 0; i < obj.length; i++) {
+			if (callback.call(obj[i], i, obj[i]) === !1) break
+		}
+		else if (isBS(obj) || isNum(obj) || isFun(obj)) callback.call(obj, i, obj);
+		else for (i in obj) {
+			if (callback.call(obj[i], i, obj[i]) === !1) break
+		}
+	}
+	// isNumber
+	function isNum(v) {
+		return typeof v == 'number'
+	}
+	function isBool(v) {
+		return typeof v == 'boolean'
+	}
+	function isBS(v) {
+		return isBool(v) || isString(v)
+	}
+	function toString(v) {
+		return isBS(v) || isNum(v) ? v : JSON.stringify(v)
+	}
+	// to json
+	function toJSON(v) {
+		try {
+			if (isString(v) && v.match(/^\s*[\[{].*[\]}]\s*$/)) return Q.exec('(' + v + ')')
+		} catch (e) {
+			console.log(e.stack)
+		}
+		return v
+	}
+	function isEvent(e) {
+		returnglobal.Event && e instanceof global.Event || e == event
+	}
+	function execObject(v, target) {
+		return isFun(v) ? (target ? v.call(target, v) : v()) : v
+	}
+	function merge() { // merge array or object
+		var array = arguments[0], isA = isArray(array), i = 1;
+		for (; i < arguments.length; i++) {
+			E(arguments[i], function(k, v) {
+				isA ? array.push(v) : array[k] = v
+			})
+		}
+		return array
+	}
+	Q.extend( {
+		encode : encodeURIComponent,
+		decode : decodeURIComponent,
+		isDom : isDom,
+		isBool : isBool,
+		isString : isString,
+		isFun : isFun,
+		isFunction : isFun,
+		isNum : isNum,
+		isNumber : isNum,
+		isArray : isArray,
+		isNull : isNull,
+		each : each,
+		stringify : toString,
+		parseJSON : toJSON,
+		// 合并数组或对象
+		merge : merge,
+		likeArray : function(v) { // like Array
+			return isArray(v) || (v && !isDom(v) && !isString(v) && isNum(v.length) && v != global)
+		},
+		isDate : function(v) {
+			return v instanceof Date
+		},
+		isObject : function(v) {
+			return v instanceof Object
+		},
+		isPlainObject : function(v) { // isPlainObject
+			if (isNull(v) || v + '' != '[object Object]' || v.nodeType || v == global) return !1;
+			var k;
+			for (k in v) {
+			}
+			return isNull(k) || Object.prototype.hasOwnProperty.call(v, k)
+		},
+		isStandard : function() {
+			return isNull(doc.addEventListener)
+		},
+		likeNull : function() {
+			return isNull(v) || (isString(v) && (v == "undefined" || v == "null" || v.trim() == ""))
+		},
+		isEvent : function(e) {
+			return isE(e)
+		},
+		/**
+		 * 继承类 子类subClass继承父类superClass的属性方法, 注:子类有父类的属性及方法时,不会被父类替换
+		 */
+		inherit : function(subClass, superClass) {
+			var F = function() {
+			};
+			var subPrototype = subClass.prototype;
+			F.prototype = superClass.prototype;
+			subClass.prototype = new F();
+			subClass.prototype.constructor = subClass;
+			subClass._super = superClass.prototype;
+			if (superClass.prototype.constructor == Object.prototype.constructor) {
+				superClass.prototype.constructor = superClass;
+			}
+			for ( var name in subPrototype) {
+				if (subClass.prototype[name] == null) subClass.prototype[name] = subPrototype[name];
+			}
+		},
+		trim : function(v) {
+			return Q.isString(v) ? v.trim() : v
+		},
+		array : function(array) {
+			return merge( [], array)
+		},
+		inArray : function(value, array) {
+			if (LA(array)) for ( var i = 0; i < array.length; i++)
+				if (array[i] === value) i;
+			return -1
+		},
+		unique : function(array) {
+			for ( var i = array.length - 1, j; i >= 0; i--)
+				for (j = i - 1; j >= 0; j--)
+					if (array[i] === array[j]) array.splice(i, 1)
+		},
+		contains : function(p, c) {
+			if (D(p) && D(c)) return p === c || NGP(p, c);
+			for ( var k in p)
+				if (p[k] === c) return !0;
+			return !1
+		},
+		map : function(array, callback) {
+			var r = [];
+			E(array, function(i, v) {
+				r.push(callback(i, v))
+			});
+			return r
+		},
+		getScript : function(url, callback) {
+			var s = doc.createElement("script");
+			s.type = "text/javascript";
+			s.src = url;
+			Q(doc.head).append(s);
+			s.onload = callback;
+		},
+		serialize : function(a) {
+			return Q.param(Q.serializeArray(a))
+		},
+		serializeArray : function(a) {
+			return toV(a, function(v) {
+				return v && v.name ? {
+					name : v.name,
+					value : execObject(v.value)
+				} : !1;
+			})
+		},
+		grep : function(array, callback) {
+			return filter.call(array, function(v) {
+				return callback ? callback(v) : !isNull(v)
+			})
+		},
+		// buid a new array,filter by fun
+		param : function(o) {
+			var h = [];
+			E(o, function(i, v) {
+				h.push(e(v.name) + '=' + e(execObject(v.value)))
+			});
+			return h.join('&')
+		},
+		time : function(d) {
+			return (d || 0) + parseInt((new Date()).getTime() / 1000)
+		},
+		// 延迟执行,==setTimeout
+		delay : function(fun, time) {
+			var params = slice.call(arguments, 2);
+			return setTimeout(function() {
+				fun.apply(fun, params)
+			}, time)
+		},
+		// 周期执行,==setInterval
+		cycle : function(fun, time) {
+			var params = slice.call(arguments, 2);
+			return setInterval(function() {
+				fun.apply(fun, params)
+			}, time)
+		},
+		log : function(msg, e) {
+			if (Q.config().debug) {
+				var m;
+				if (msg instanceof Error) {
+					e = msg;
+					m = e.stack;
+					msg = null;
+				} else {
+					m = msg || "";
+				}
+				console.log(m);
+			}
+		},
+		isIphone : function() {
+			return /i(Phone|P(o|a)d)/.test(UA)
+		},
+		isAndroid : function() {
+			return /Android/.test(UA)
+		},
+		isWP : function() {
+			return /Windows Phone/.test(UA)
+		},
+		config : function(opts) {
+			var conf = Q._config;
+			if (!Q.isNull(opts)) {
+				Q.extend(conf, opts);
+			}
+			return conf
+		}
+	});
+	Q.version = "1.00.001";
+	Q._config = {};
+	global.Qmik = Q;
+	global.$ = global.$ || Q;
+	return Q;
+})();
+(function(Q) {
+	Q.exec = function(v) {
+		return eval(v)
+	}
+})(Qmik);
+(function(Q) {
+	// define Demand load module //
+	// /////////////////////////////////
+	Q.cmd = {};
+	// ////////////////////////////////////////////
+})(Qmik);
