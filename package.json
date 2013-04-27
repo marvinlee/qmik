@@ -1,0 +1,39 @@
+{
+  "family": "Qmik",
+  "name": "Qmik",
+  "version": "0.90.001",
+  "description": "a js frame",
+  "homepage": "http://www.qmik.org/",
+  "keywords": [
+    "js",
+    "frame",
+    "module",
+    "loader"
+  ],
+  "author": "leo chen<cwq0312@163.com>",
+  "engines": {
+    "node": ">= 0.6.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.4.0",
+    "node-static": "~0.6.9",
+    "grunt-contrib-clean": "~0.4.1",
+    "grunt-contrib-concat": "~0.2.0",
+    "grunt-cmd-concat": "~0.2.0",
+    "grunt-contrib-uglify": "~0.2.0",
+    "gcc": "~0.2.0",
+    "grunt-contrib-qunit": "~0.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leochen36/qmik.git"
+  },
+  "main": "./src/Qmik.js",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.qmik.org/LICENSE.md"
+    }
+  ]
+}
