@@ -2,11 +2,15 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     clean: {
-      build: ["assets"],
-      release: ["src"]
+      build: ["assets1"],
+      release: ["dist1"]
     },
     qunit: {
-      all: ['test/**/*.html', 'test/**/*.js']
+      options: {
+        timeout: 10000,
+        '--cookies-file': '**'
+      },
+      all: ['test/**/*.html']
     },
     concat: {
       dist: {
@@ -57,6 +61,8 @@ module.exports = function(grunt) {
   //grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-concat');
   // Default task(s).
-  grunt.registerTask('default', ['clean', 'qunit', 'uglify', 'concat', 'qunit']);
+  grunt.registerTask('default', ['uglify', 'concat', 'qunit']);
+
+
 
 };
