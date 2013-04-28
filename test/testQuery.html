@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http - equiv="Content-Type" content="text/html; charset=utf-8"/ >
+<link rel="stylesheet" href="unit/qunit.css" type="text/css"
+	media="screen" />
+<script type="text/javascript" src="unit/qunit.js"></script>
+
+	<script type="text/javascript" src="../src/QmikN.js"> </script>
+	<script type="text/javascript" src="../src/Qmik.Query.js"> </script>
+ <!-- 
+<script type="text/javascript" src="zepto.js"> </script>
+<script type="text/javascript" src="../src/Qmik.js"> </script>-->
+<script type="text/javascript " src="testQuery.js "></script>
+<title></title>
+</head>
+
+<body>
+<input value="">
+<input type="button" id="query" value="query" onclick="queryb()"/>
+<div id="top1" class="mn" style="background-color: green;">
+<div id="top21">
+<ol id="a" name="aa">
+	<li>1</li>
+	<li>2</li>
+	<li class="k1 k2 k3">3</li>
+	<li>4</li>
+	<li>5</li>
+	<li>6</li>
+</ol>
+</div>
+<div id="top22">
+<ol id="b" name="bb">
+	<li vv="mb">1</li>
+	<li>2<span>dd</span></li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+	<li>6</li>
+</ol>
+</div>
+</div>
+<h1 id="qunit-header">Qmik Query example</h1>
+<h2 id="qunit-banner"></h2>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+</body>
+<script type="text/javascript">
+$.config({debug:true});
+	function queryb(){
+		
+		var v=$("div li.k2  ");
+
+		console.log(v);
+ 
+		
+ 		var start=new Date().getTime();
+		//for(var i=0;i<50000;i++){
+			//$("#top1 #top22 li");
+		//}
+ 		var end=new Date().getTime();
+
+	}
+</script>
+</html>
