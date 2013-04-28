@@ -5,15 +5,27 @@
  */
 (function() {
 	var global = this, doc = global.document || {};
-	var protoString = String.prototype, protoArray = Array.prototype, slice = protoArray.slice;
+	var protoString = String.prototype, protoArray = Array.prototype;
+	var slice = protoArray.slice;
 	var REG_TRIM = /^(\s|\u00A0)+|(\s|\u00A0)+$/g;
+	(function initList(list) {
+		var ind, val;
+		for (ind in list) {
+			val = list[ind];
+			if (val) {
+				val.prototype.slice = protoArray.slice;
+				val.prototype.splice = protoArray.splice;
+				// for ( var k in protoArray) {
+				// val.prototype[k] = a[k]
+				// }
+			}
+		}
+	})( [
+		global.NodeList, global.HTMLCollection
+	]);
 	// define qmik object
-	var Q = function() {
-		Q.use( [
-			"QmikQuery"
-		], function(Q) {
-			Q.init();
-		});
+	var Q = function(selector, context) {
+		return Q.init(selector, context);
 	}
 	Q.extend = function() {
 		var r = arguments[0] || {}, i = 1, L = arguments.length;
@@ -32,16 +44,15 @@
 		});
 		return r
 	}
-	
 	Q.extend(protoString, {
 		trim : function() {
-			this.replace(REG_TRIM, "")
+			return this.replace(REG_TRIM, "")
 		},
 		toLower : function() {
 			return this.toLowerCase()
 		},
-		toLower : function() {
-			return this.toLowerCase()
+		toUpper : function() {
+			return this.toUpperCase
 		}
 	});
 	function filter(callback, ret) {
@@ -69,13 +80,16 @@
 	function isArray(v) {
 		return v instanceof Array
 	}
+	function likeArray(v) { // like Array
+		return isArray(v) || (v && !isDom(v) && !isString(v) && isNum(v.length) && v != global)
+	}
 	// isFunction
 	function isFun(v) {
 		return v instanceof Function
 	}
 	function each(obj, callback) { // each fun(k,v)
 		var i;
-		if (isArray(obj)) for (i = 0; i < obj.length; i++) {
+		if (likeArray(obj)) for (i = 0; i < obj.length; i++) {
 			if (callback.call(obj[i], i, obj[i]) === !1) break
 		}
 		else if (isBS(obj) || isNum(obj) || isFun(obj)) callback.call(obj, i, obj);
@@ -106,7 +120,7 @@
 		return v
 	}
 	function isEvent(e) {
-		returnglobal.Event && e instanceof global.Event || e == event
+		return global.Event && e instanceof global.Event || e == global.event
 	}
 	function execObject(v, target) {
 		return isFun(v) ? (target ? v.call(target, v) : v()) : v
@@ -120,6 +134,7 @@
 		}
 		return array
 	}
+	var _cache = {};
 	Q.extend( {
 		encode : encodeURIComponent,
 		decode : decodeURIComponent,
@@ -132,11 +147,13 @@
 		isNumber : isNum,
 		isArray : isArray,
 		isNull : isNull,
+		likeArray : likeArray,
 		each : each,
 		stringify : toString,
 		parseJSON : toJSON,
 		// 合并数组或对象
 		merge : merge,
+		isEvent : isEvent,
 		likeArray : function(v) { // like Array
 			return isArray(v) || (v && !isDom(v) && !isString(v) && isNum(v.length) && v != global)
 		},
@@ -153,14 +170,8 @@
 			}
 			return isNull(k) || Object.prototype.hasOwnProperty.call(v, k)
 		},
-		isStandard : function() {
-			return isNull(doc.addEventListener)
-		},
 		likeNull : function() {
 			return isNull(v) || (isString(v) && (v == "undefined" || v == "null" || v.trim() == ""))
-		},
-		isEvent : function(e) {
-			return isE(e)
 		},
 		/**
 		 * 继承类 子类subClass继承父类superClass的属性方法, 注:子类有父类的属性及方法时,不会被父类替换
@@ -181,13 +192,19 @@
 			}
 		},
 		trim : function(v) {
-			return Q.isString(v) ? v.trim() : v
+			return isString(v) ? v.trim() : v
+		},
+		toLower : function(v) {
+			return isString(v) ? v.toLower() : v
+		},
+		toUpper : function(v) {
+			return isString(v) ? v.toUpper() : v
 		},
 		array : function(array) {
 			return merge( [], array)
 		},
 		inArray : function(value, array) {
-			if (LA(array)) for ( var i = 0; i < array.length; i++)
+			if (Q.likeArray(array)) for ( var i = 0; i < array.length; i++)
 				if (array[i] === value) i;
 			return -1
 		},
@@ -243,6 +260,24 @@
 		time : function(d) {
 			return (d || 0) + parseInt((new Date()).getTime() / 1000)
 		},
+		cache : function(key, value, timeout) {
+			var data, ttl, v;
+			if (isNull(value)) {
+				data = _cache[key].value;
+				if (data) {
+					ttl = data.ttl;
+					v = (ttl < 0 || Q.time() / 1000 < ttl) ? data.value : null;
+					if (isNull(v)) delete _cache[key]
+				}
+				return v
+			}
+			data = {
+				value : value
+			};
+			data.ttl = ttl >= 0 ? (Q.time() / 1000 + timeout) : -1;
+			_cache[key] = data;
+			return Q;
+		},
 		// 延迟执行,==setTimeout
 		delay : function(fun, time) {
 			var params = slice.call(arguments, 2);
@@ -267,7 +302,8 @@
 				} else {
 					m = msg || "";
 				}
-				console.log(m);
+				//console.log(m);
+				alert(e.message)
 			}
 		},
 		isIphone : function() {
@@ -289,6 +325,7 @@
 	});
 	Q.version = "1.00.001";
 	Q._config = {};
+	Q.global = global;
 	global.Qmik = Q;
 	global.$ = global.$ || Q;
 	return Q;
