@@ -1,27 +1,49 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script type="text/javascript" src="../src/Qmik.js"></script>
-    <script type="text/javascript" src="../src/Qmik.Hash.js"></script>
-    <script type="text/javascript" src="testHash.js"></script>
-    <title></title>
+<meta http - equiv="Content-Type" content="text/html; charset=utf-8"/ >
+  <link rel="stylesheet" href="unit/qunit.css" type="text/css" media="screen" />
+  <script type="text/javascript" src="unit/qunit.js"></script>
+
+<script type="text/javascript" src="../src/Qmik.js"> </script>
+<script type="text/javascript" src="../src/Qmik.Hash.js "></script>
+<script type="text/javascript " src="testHash.js "></script>
+<title></title>
 </head>
+"test/test1QUnit.html"
 <body>
-    <div style="left:300px;margin-left:100px;">
-        <a href="#name=me1&age=161;">1</a><br />
-        <a href="#name=me2&age=162;">2</a><br />
-        <a href="#name=me3&age=163;">3</a><br />
-        <a href="#name=me4&age=164;">4</a><br />
-        <a href="#name=me5&age=165;">5</a><br />
-        <a href="#name=me6&age=166;">6</a><br />
-        <a href="#name=me7&age=167;">7</a><br />
-        <a href="#name=m天下&age=167;">天下</a><br />
-        <a id="href1" href="javascript:">事件1:</a><br />
-        <a id="href2" href="javascript:">事件2:</a><br />
-        <a id="href3" href="javascript:">事件3:</a><br />
-    </div>
+"test/test1QUnit.html"
+<div style="left: 300px;"><a href="#name=me1&age=161;">1</a><br />
+<a href="#name=me2&age=162;">2</a><br />
+<a href="#name=me3&age=163;">3</a><br />
+<a href="#name=me4&age=164;">4</a><br />
+<a href="#name=me5&age=165;">5</a><br />
+<a href="#name=me6&age=166;">6</a><br />
+<a href="#name=me7&age=167;">7</a><br />
+<a href="#name=m天下&age=167;">天下</a><br />
+<a id="href1" href="javascript:">事件1:</a><br />
+<a id="href2" href="javascript:">事件2:</a><br />
+<a id="href3" href="javascript:">事件3:</a><br />
+</div>
 
 </body>
-
+<script type="text/javascript">
+	//定义测试模块
+	module( "测试示例" );
+	//定义一个简单的函数，判断参数是不是数字
+	function simpleTest(para) {
+	  if(typeof para == "number") {
+	    return true;
+	  }
+	  else{
+	    return false;
+	  }
+	}
+	//开始单元测试
+	test('simpleTest()', function() {
+	  //列举各种可能的情况，注意使用 ! 保证表达式符合应该的逻辑
+	  ok(simpleTest(2), '2是一个数字');
+	  ok(!simpleTest("2"), '"2"不是一个数字');
+	});
+</script>
 </html>
