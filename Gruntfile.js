@@ -21,16 +21,18 @@ module.exports = function(grunt) {
     },
     uglify: {
       options: {
-        mangle: false
+        //减小名称压缩
+        mangle: true
       },
       build: {
         files: {
           'assets/Qmik.min.js': ['src/Qmik.js'],
-          'assets/Qmik.JSON.min.js': ['src/Qmik.JSON.js']
+          'assets/Qmik.JSON.min.js': ['src/Qmik.JSON.js'],
+           'assets/Qmik.Query.min.js': ['src/Qmik.Query.js'],
+          'assets/QmikN.min.js': ['src/QmikN.js']
         }
       }
     },
-
     cssmin: {
       compress: {
         files: {

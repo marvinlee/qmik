@@ -14,10 +14,7 @@
 			val = list[ind];
 			if (val) {
 				val.prototype.slice = protoArray.slice;
-				val.prototype.splice = protoArray.splice;
-				// for ( var k in protoArray) {
-				// val.prototype[k] = a[k]
-				// }
+				val.prototype.splice = protoArray.splice
 			}
 		}
 	})( [
@@ -31,14 +28,14 @@
 		var r = arguments[0] || {}, i = 1, L = arguments.length;
 		switch (L) {
 		case 0:
-			return;
+			return
 		case 1:
 			r = this;
 			i = 0;
 			break;
 		}
 		each(slice.call(arguments, i), function(j, v) {
-			each(v, function(m, n) {
+			v&&each(v, function(m, n) {
 				if (!isNull(n)) r[m] = n
 			})
 		});
@@ -112,12 +109,8 @@
 	}
 	// to json
 	function toJSON(v) {
-		try {
-			if (isString(v) && v.match(/^\s*[\[{].*[\]}]\s*$/)) return Q.exec('(' + v + ')')
-		} catch (e) {
-			console.log(e.stack)
-		}
-		return v
+		//if (isString(v) && v.match(/^\s*[\[{].*[\]}]\s*$/)) return Q.exec('(' + v + ')')
+		return JSON.parse(v)
 	}
 	function isEvent(e) {
 		return global.Event && e instanceof global.Event || e == global.event
@@ -134,7 +127,6 @@
 		}
 		return array
 	}
-	var _cache = {};
 	Q.extend( {
 		encode : encodeURIComponent,
 		decode : decodeURIComponent,
@@ -260,24 +252,6 @@
 		time : function(d) {
 			return (d || 0) + parseInt((new Date()).getTime() / 1000)
 		},
-		cache : function(key, value, timeout) {
-			var data, ttl, v;
-			if (isNull(value)) {
-				data = _cache[key].value;
-				if (data) {
-					ttl = data.ttl;
-					v = (ttl < 0 || Q.time() / 1000 < ttl) ? data.value : null;
-					if (isNull(v)) delete _cache[key]
-				}
-				return v
-			}
-			data = {
-				value : value
-			};
-			data.ttl = ttl >= 0 ? (Q.time() / 1000 + timeout) : -1;
-			_cache[key] = data;
-			return Q;
-		},
 		// 延迟执行,==setTimeout
 		delay : function(fun, time) {
 			var params = slice.call(arguments, 2);
@@ -298,12 +272,11 @@
 				if (msg instanceof Error) {
 					e = msg;
 					m = e.stack;
-					msg = null;
+					msg = undefined
 				} else {
-					m = msg || "";
+					m = msg || ""
 				}
-				//console.log(m);
-				alert(e.message)
+				try{console.log(m)}catch(e){}
 			}
 		},
 		isIphone : function() {
@@ -316,11 +289,7 @@
 			return /Windows Phone/.test(UA)
 		},
 		config : function(opts) {
-			var conf = Q._config;
-			if (!Q.isNull(opts)) {
-				Q.extend(conf, opts);
-			}
-			return conf
+			return Q.extend(Q._config, opts)
 		}
 	});
 	Q.version = "1.00.001";
