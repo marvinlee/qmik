@@ -1,0 +1,33 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="unit/qunit.css" type="text/css" media="screen" />
+  <script type="text/javascript" src="unit/qunit.js"></script>
+</head>
+<body>
+  <h1 id="qunit-header">QUnit example</h1>
+  <h2 id="qunit-banner"></h2>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests"></ol>
+</body>
+<script type="text/javascript">
+	//定义测试模块
+	module( "测试示例" );
+	//定义一个简单的函数，判断参数是不是数字
+	function simpleTest(para) {
+	  if(typeof para == "number") {
+	    return true;
+	  }
+	  else{
+	    return false;
+	  }
+	}
+	//开始单元测试
+	test('simpleTest()', function() {
+	  //列举各种可能的情况，注意使用 ! 保证表达式符合应该的逻辑
+	  ok(simpleTest(2), '2是一个数字');
+	  ok(!simpleTest("2"), '"2"不是一个数字');
+	});
+</script>
+</html>
