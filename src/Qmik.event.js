@@ -20,7 +20,7 @@
 			Q(doc).bind("readystatechange", f)
 		}
 	}
-	Q.fn.ready = function(fun) {
+	Q.ready=Q.fn.ready = function(fun) {
 		ready(fun);
 		return this
 	}
