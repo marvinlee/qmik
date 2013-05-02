@@ -4,7 +4,7 @@
  * @version:0.91.008
  */
 (function() {
-	var global = this, doc = global.document || {};
+	var global = this, doc = global.document || {}, config = {};
 	var slice = Array.prototype.slice;
 	// define qmik object
 	function Q(selector, context) {
@@ -95,7 +95,8 @@
 	}
 	// to json
 	function toJSON(v) {
-		//if (isString(v) && v.match(/^\s*[\[{].*[\]}]\s*$/)) return Q.exec('(' + v + ')')
+		// if (isString(v) && v.match(/^\s*[\[{].*[\]}]\s*$/)) return Q.exec('(' +
+		// v + ')')
 		return JSON.parse(v)
 	}
 	function isEvent(e) {
@@ -277,12 +278,13 @@
 		isWP : function() {
 			return /Windows Phone/.test(UA)
 		},
-		config : function(opts) {
-			return Q.extend(Q._config, opts)
+		config : function(key, value) {
+			if (isPlainObject(k)) Q.extend(config, k);
+			else if (arguments.length > 1) config[key] = value;
+			return isString(key) ? config[key] : Q
 		}
 	});
 	Q.version = "1.00.001";
-	Q._config = {};
 	Q.global = global;
 	global.Qmik = Q;
 	global.$ = global.$ || Q;

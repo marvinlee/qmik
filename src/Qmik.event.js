@@ -3,11 +3,26 @@
  * @email:cwq0312@163.com
  * @version:0.91.008
  */
-(function(Q) { /*event*/
-	var win = Q.global, doc = win.document, ek = "$QmikEvents", isNull = Q.isNull, 
-	isFun = Q.isFun,isDom = Q.isDom, each = Q.each;
+(function(Q) { /* event */
+	var win = Q.global, doc = win.document;
+	var readyRE = /complete|loaded|interactive/, ek = "$QmikEvents";
+	var isNull = Q.isNull, isFun = Q.isFun, isDom = Q.isDom, each = Q.each;
 	function SE() {
 		return !isNull(doc.addEventListener)
+	}
+	function ready(fun) {
+		function f() {
+			fun(Q)
+		}
+		if (readyRE.test(doc.readyState)) f();
+		else if (SE()) Q(doc).bind('DOMContentLoaded', f);
+		else {
+			Q(doc).bind("readystatechange", f)
+		}
+	}
+	Q.fn.ready = function(fun) {
+		ready(fun);
+		return this
 	}
 	function Eadd(dom, name, fun, paramArray) {
 		var t = Q(dom), d = t.data(ek), h;
@@ -90,7 +105,7 @@
 			});
 			return this
 		},
-		once : function(name, fun) {//只执行一次触发事件,执行后删除
+		once : function(name, fun) {// 只执行一次触发事件,执行后删除
 			var me = this, oneexec = function() {
 				fun.apply(fun);
 				me.un(name, oneexec)

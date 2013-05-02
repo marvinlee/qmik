@@ -1,5 +1,5 @@
 ﻿//websocket客户端通信框架
-; (function ($) {
+; (function (Q) {
     var win = window ;
 
     function alert(content) {
@@ -83,5 +83,5 @@
         me.OPEN = ws.OPEN;
     }
 
-    $.Socket = Socket;
+    Q.Socket = Socket;
 })(Qmik);

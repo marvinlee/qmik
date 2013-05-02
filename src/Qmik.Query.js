@@ -22,8 +22,7 @@
 		toJSON = Q.toJSON,
 		toLower = Q.toLower,
 		toUpper = Q.toUpper;
-	var readyRE = /complete|loaded|interactive/,
-		rNode = /^\s*(<.+>.*<\/.+>)+|(<.+\/\s*>)+\s*$/,
+	var rNode = /^\s*(<.+>.*<\/.+>)+|(<.+\/\s*>)+\s*$/,
 		match = {
 			ID: /^#[\w-_\u00c0-\uFFFF]+/,
 			ATTR: /^([\w-_]+)\[\s*[\w-_]+\s*!?=\s*('|")?(.*)('|")?\s*\]/,
@@ -279,16 +278,6 @@
 			isDom(v)&&r.push(clone(v,isDeep))       
 		})
 		return new Query(r)
-	}
-	function ready(fun) {
-		function f() {
-			fun(Q)
-		}
-		if (readyRE.test(doc.readyState)) f();
-		else if (SE()) Q(doc).bind('DOMContentLoaded', f);
-		else {
-			Q(doc).bind("readystatechange", f)
-		}
 	}
 	var dn = "$Qmikdata:";
 	function data(o, k, v) {
@@ -555,10 +544,6 @@
 		},
 		map : function(callback) {
 			return Q.map(this, callback)
-		},
-		ready : function(fun) {
-			ready(fun);
-			return this
 		},
 		css : function(k, v) {
 			var r = css(this, k, v);
