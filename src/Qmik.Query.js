@@ -5,7 +5,8 @@
  */
 (function(Q) {
 	var win = Q.global,
-		doc = win.document;
+		doc = win.document,
+		protoArray = Array.prototype;
 	var isNull = Q.isNull,
 		isDom = Q.isDom,
 		E = Q.each,
@@ -26,6 +27,19 @@
 			CT: /^([\w-_]+)?\.[\w-_]+/,
 			TAG: /^[\w-_]+/
 		};
+	//init node list
+	(function initList(list) {
+		var ind, val;
+		for (ind in list) {
+			val = list[ind];
+			if (val) {
+				val.prototype.slice = protoArray.slice;
+				val.prototype.splice = protoArray.splice
+			}
+		}
+	})( [
+		win.NodeList, win.HTMLCollection
+	]);
 	function Query(selector, context) {
 		var m = this, r;
 		context = context || doc;
