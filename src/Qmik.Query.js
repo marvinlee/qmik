@@ -402,9 +402,9 @@
 			return isDom(dom) ? dom : GN(dom, type)
 		}
 	}
-	function upon(me, selector, type) {
+	function upon(qmik, selector, type) {
 		var r = [], f;
-		each(me, function(i, v) {
+		each(qmik, function(i, v) {
 			isNull(selector) ? r.push(GN(v, type)) : each(Q(">" + selector, v.parentNode), function(j, h) {
 				if (!f) {
 					for ( var z = v; z = GN(z);) {
@@ -417,28 +417,27 @@
 				}
 			})
 		})
-		return new Query(r, me)
+		return new Query(r, qmik)
 	}
 	/**
 	 * selector:选择器 qmik:qmik查询对象 isAllP:是否包含所有父及祖父节点 默认true
 	 * isOnlyParent:是否只包含父节点 默认false
 	 */
 	function parents(selector, qmik, isAllP, isOnlyParent) {
-		var i = 0, m = qmik, array = [], p, qa = isString(selector) ? compile(selector) : null;
-		isAllP = isNull(isAllP) ? !0 : (isAllP != !1);
-		isOnlyParent = isNull(isOnlyParent) ? !1 : (isOnlyParent == !0);
-		for (; i < m.length; i++) {
-			p = m[i];
-			while (p) {
-				if (p.parentNode == doc.body) break;
-				if (isNull(qa) || adapRule(p, qa[0], false)) {
-					array.push(p.parentNode);
+		var array = [],qa = isString(selector) ? compile(selector) : null;
+		isAllP = isAllP != !1;
+		isOnlyParent = isOnlyParent == !0;
+		each(qmik,function(i,v){
+			while (v) {
+				if (v.parentNode == doc.body) break;
+				if (isNull(qa) || adapRule(v, qa[0], false)) {
+					array.push(v.parentNode);
 					if (!isAllP) break
 				}
 				if (isOnlyParent) break;
-				p = p.parentNode;
+				v = v.parentNode;
 			}
-		}
+		});
 		return Q(array)
 	}
 	Q.init = init;
@@ -640,8 +639,7 @@
 	Q.fn.extend( {
 		removeClass : Q.fn.rmClass,
 		removeData : Q.fn.rmData,
-		removeAttr : Q.fn.rmAttr,
-		toArray : Q.fn.array
+		removeAttr : Q.fn.rmAttr
 	});
 	//event
 	var qwc = "touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"

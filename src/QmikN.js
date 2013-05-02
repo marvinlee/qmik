@@ -113,38 +113,6 @@
 		}
 		return array
 	}
-	/////////////////////cache module
-	function Cache() {
-		this._cache = {};
-	}
-	Q.extend(Cache.prototype, {
-		set : function(key, value, ttl) {
-			ttl = isNum(ttl) ? ttl : -1;
-			this._cache[key] = {
-				value : value,
-				ttl : (ttl < 0 ? -1 : ttl * 1000 + Q.time())
-			}
-		},
-		get : function(key) {
-			var ret = this._cache[key];
-			if (ret && ret.ttl <= Q.time()) {
-				delete this._cahce[key];
-				ret = null
-			}
-			return ret ? ret.value : ret
-		},
-		rm : function(key) {
-			delete this._cahce[key];
-		},
-		iterator : function(callback) {
-			var me = this;
-			for ( var key in me._cache) {
-				callback(key, me._cache)
-			}
-		}
-	});
-	var _cache = new Cache();
-	///////////////////////////////////////
 	Q.extend( {
 		encode : encodeURIComponent,
 		decode : decodeURIComponent,
@@ -189,7 +157,6 @@
 		inherit : function(subClass, superClass) {
 			function F() {
 			}
-			;
 			var subPrototype = subClass.prototype;
 			F.prototype = superClass.prototype;
 			subClass.prototype = new F();
@@ -312,38 +279,12 @@
 		},
 		config : function(opts) {
 			return Q.extend(Q._config, opts)
-		},
-		cache : function(key, value, ttl) {
-			return isNull(value) ? _cache.get(key) : _cache.set(key, value, ttl)
 		}
 	});
-	/////cache clear
-	var checkTime = 30;//unit second
-	function clear() {
-		Q.delay(function() {
-			_cache.iterator(function(key, value) {
-				_cache.get(key)
-			});
-			clear()
-		}, checkTime)
-	}
-	//
 	Q.version = "1.00.001";
 	Q._config = {};
 	Q.global = global;
-	Q.Cache = Cache;
 	global.Qmik = Q;
 	global.$ = global.$ || Q;
 	return Q;
 })();
-(function(Q) {
-	Q.exec = function(v) {
-		return eval(v)
-	}
-})(Qmik);
-(function(Q) {
-	// define Demand load module //
-	// /////////////////////////////////
-	Q.cmd = {};
-	// ////////////////////////////////////////////
-})(Qmik);
