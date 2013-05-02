@@ -9,14 +9,17 @@
 		protoArray = Array.prototype;
 	var isNull = Q.isNull,
 		isDom = Q.isDom,
-		E = Q.each,
-		D = Q.isElement,
+		each = Q.each,
 		likeArray = Q.likeArray,
 		isArray = Q.isArray,
 		isString = Q.isString,
 		isFun = Q.isFun,
 		isPlainObject = Q.isPlainObject,
 		trim = Q.trim,
+		replace=function(value,str1,str2){
+			return value.replace(str1,str2)
+		},
+		toJSON = Q.toJSON,
 		toLower = Q.toLower,
 		toUpper = Q.toUpper;
 	var readyRE = /complete|loaded|interactive/,
@@ -27,6 +30,7 @@
 			CT: /^([\w-_]+)?\.[\w-_]+/,
 			TAG: /^[\w-_]+/
 		};
+	
 	//init node list
 	(function initList(list) {
 		var ind, val;
@@ -41,10 +45,9 @@
 		win.NodeList, win.HTMLCollection
 	]);
 	function Query(selector, context) {
-		var m = this, r;
-		context = context || doc;
-		m.selector = selector;
-		m.context = context;
+		var me = this, r;
+		me.context=context = context || doc;
+		me.selector = selector;
 		if (isString(selector)) {
 			if (rNode.test(selector)) {
 				var t = doc.createElement('div');
@@ -59,14 +62,12 @@
 			]
 		}
 		r = r || [];
-		for ( var i = 0; i < r.length; i++)
-			m.push(r[i]);
-		return m
+		each(r,function(k,v){me.push(v)})
+		return me
 	}
 	Q.inherit(Query, Array);
 	function init(selector, context) {
 		context = context || doc;
-		selector = isString(selector) ? trim(selector) : selector;
 		if (isFun(selector)) { return Q(doc).ready(selector) }
 		return isQmik(selector) ? selector : new Query(selector, context)
 	}
@@ -74,27 +75,29 @@
 		return v instanceof Query
 	}
 	function find(selector, context, childs) {
-		var nselector = trim(selector), r = [], context = context || doc;
+		var nselector = trim(selector), r = [],length;
 		if (isQmik(context)) {
-			E(context, function(i, v) {
-				if (isDom(v)) r = r.concat(find(selector, v))
+			each(context, function(i, v) {
+				isDom(v) && (r = r.concat(find(selector, v)))
 			});
-			return r
-		}
-		childs = childs || compile(nselector);// 编译查询条件，返回[{type,query,isChild}...]
-		if (!childs || childs.length < 1) return;
-		r = findHandle(context, childs[0]);
-		if (r == null || childs.length < 2) return r;
-		nselector = childs[1].query;
-		if (nselector != '') {
-			var rs = [];
-			childs.shift();
-			E(r, function(k, x) {
-				E(find(nselector, x, childs), function(o, p) {
-					Q.inArray(p, rs) < 0 && rs.push(p)
-				})
-			});
-			r = rs
+		}else{
+			childs = childs || compile(nselector);// 编译查询条件，返回[{type,query,isChild}...]
+			length=childs.length;
+			if ( length>= 1 ){
+				r = findHandle(context, childs[0]);
+				if (isNull(r) || length < 2) return r;
+				nselector = childs[1].query;
+				if (nselector != '') {
+					var rs = [];
+					childs.shift();
+					each(r, function(k, x) {
+						each(find(nselector, x, childs), function(o, p) {
+							Q.inArray(p, rs) < 0 && rs.push(p)
+						})
+					});
+					r = rs
+				}
+			}
 		}
 		return r
 	}
@@ -104,63 +107,58 @@
 	// As much as possible to Array
 	function muchToArray(a) {
 		// return !SE() ? a.slice(0, a.length) : a
-		return a;
+		return a
 	}
 	// 具体的实现查找
 	function findHandle(context, qa) {
-		var q = qa.query, r;
+		var q = qa.query, r=[];
 		if (qa.isChild) {
 			var cs = muchToArray(context.childNodes);
-			r = [];
-			for ( var i = 0, t; i < cs.length; i++) {
-				t = cs[i];
-				if (isDom(t)) {
+			each(cs,function(i,dom){
+				if (isDom(dom)) {
 					switch (qa.type) {
 					case 'ID':
-						if (at(t, "id") == q) r.push(t);
-						break;
+						at(dom, "id") == q && r.push(dom);
+						break
 					case 'ATTR':
-						var ds = TKV(q), tn = ds[0], k = ds[1], v = ds[2], type = ds[3], bi;
-						if (type == 1) bi = at(t, k) == v;
-						else bi = at(t, k) != v;
-						if (t.tagName == toUpper(tn) && bi) r.push(t);
-						break;
+						var ds = getTagAttr(q), k = ds[1], v = ds[2], bi;
+						if (ds[3] == 1) bi = at(dom, k) == v;
+						else bi = at(dom, k) != v;
+						dom.tagName == toUpper(ds[0]) && bi && r.push(dom);
+						break
 					case 'CT':
-						var ds = TC(q), tn = ds[0], cn = ds[1];
-						if (tn) (t.tagName == toUpper(tn) && HC(t, cn)) && r.push(t);
-						else HC(t, cn) && r.push(t);
-						break;
+						var ds = getTagClass(q), tn = ds[0], cn = ds[1];
+						//if (tn) (dom.tagName == toUpper(tn) && hasClass(dom, cn)) && r.push(dom);
+						//else hasClass(dom, cn) && r.push(dom);						
+						tn ? dom.tagName == toUpper(tn) && hasClass(dom, cn) && r.push(dom) : hasClass(dom, cn) && r.push(dom)
+						break
 					case 'TAG':
-						t.tagName == toUpper(q) && r.push(t);
-						break;
+						dom.tagName == toUpper(q) && r.push(dom);
+						break
 					}
 				}
-			}
+			})
 		} else {
 			switch (qa.type) {
 			case 'ID':
 				r = byId(context, q);
-				break;
+				break
 			case 'ATTR':
 				r = byAttr(context, q);
-				break;
+				break
 			case 'CT':
-				var sq = TC(q), t = sq[0] || "", cn = sq[1];
+				var sq = getTagClass(q), tag = sq[0] || "", className = sq[1];
 				r = SE() ? function() {
-					var a = muchToArray(context.getElementsByClassName(cn) || []), g = toUpper(t);
-					if (t == "") return a;
-					return function(a) {
-						for ( var i = a.length - 1; i >= 0; i--) {
-							if (a[i].tagName != g) a.splice(i, 1)
-						}
-						;
-						return a
-					}(a);
-				}() : byAttr(context, t + "[class=" + cn + "]");
-				break;
+					var a = muchToArray(context.getElementsByClassName(className) || []), g = toUpper(tag);
+					tag != "" && each(a,function(i,dom){
+										if (dom.tagName != g) a.splice(i, 1)
+									});
+					return a
+				}() : byAttr(context, tag + "[class=" + className + "]");
+				break
 			case 'TAG':
 				r = muchToArray(context.getElementsByTagName(q));
-				break;
+				break
 			}
 		}
 		return r
@@ -168,128 +166,119 @@
 	function at(target, name) {
 		return target[name] || target.getAttribute(name)
 	}
-	function fa(array, name, value, notEqual) {
+	function findMath(array, name, value, isEqual) {
 		var exist, attribute, ret = [], isClass = name == "class";
-		E(array, function(i, n) {
+		each(array, function(i, n) {
 			if (isDom(n)) {
 				attribute = at(n, name);
-				attribute = attribute ? attribute : (isClass ? n.className : attribute);
-				exist = isClass ? new RegExp(value.replace(/[ ]/g, "|")).test(attribute) : attribute == value;
-				notEqual ? exist && ret.push(n) : !exist && ret.push(n);
+				//attribute = attribute ? attribute : (isClass ? n.className : attribute);
+				attribute = isClass ? n.className : attribute;
+				exist = isClass ? new RegExp(replace(value,/[ ]/g, "|")).test(attribute) : attribute == value;
+				isEqual ? exist && ret.push(n) : !exist && ret.push(n);
 			}
 		});
 		return ret
 	}
-	function byId(o, s) {
-		s = s.replace(/^#/, "");
-		var t, r = doc.getElementById(s);
-		t = [
-			r
-		];
-		return isNull(r) ? [] : o == doc ? t : byAttr(o, "[id=\"" + s + "\"]")
+	function byId(dom, selector) {
+		selector = replace(selector,/^#/, "");
+		var ret = doc.getElementById(selector);
+		return isNull(ret) ? [] : dom == doc ? [ret] : byAttr(dom, "[id=\"" + selector + "\"]")
 	}
-	function byAttr(o, s) {
-		o = o || doc;
-		var st = TKV(s), t = st[0], k = st[1], v = st[2], y = s.indexOf('!=') == -1;
-		return fa(muchToArray(o.getElementsByTagName(t || "*")), k, v, y);
+	function byAttr(dom, selector) {
+		//var st = getTagAttr(selector), tag = st[0], attrName = st[1], attrValue = st[2], isEqual = selector.indexOf('!=') == -1;
+		//return findMath(muchToArray(dom.getElementsByTagName(tag || "*")), attrName, attrValue, isEqual)
+		return findMath(muchToArray(dom.getElementsByTagName(st[0] || "*")), st[1], st[2], selector.indexOf('!=') == -1)
 	}
 	// /////////////////////////////////////////////////
-	function HC(o, cn) {
-		if (!D(o)) return !1;
-		var cs = o.className.split(" ") || [], cn = trim(cn);
-		for ( var i = 0; i < cs.length; i++)
+	function hasClass(o, cn) {
+		if (!isDom(o)) return !1;
+		var cs = o.className.split(" "), cn = trim(cn),i=0;
+		for (; i < cs.length; i++)
 			if (cs[i] == cn) return !0;
 		return !1
 	}
-	function FM(v) {
-		return v.replace(/[A-Z]/g, function(v) {
-			return "-" + v.toLowerCase()
+	function formateClassName(v) {
+		return replace(v,/[A-Z]/g, function(v) {
+			return "-" + toLower(v)
 		})
 	}
 	function SE() {
 		return !isNull(doc.addEventListener)
 	}
-	function VC(c) {
+	function muchValue2Qmik(c) {
 		c = execObject(c);
 		return isString(c) && rNode.test(c) ? Q(c) : c
 	}
-	function append(o, c) {
-		c = VC(c);
-		if (likeArray(o)) {
-			E(o, function(k, v) {
-				append(v, c)
-			});
-		} else if (D(o)) {
-			if (likeArray(c)) {
-				E(c, function(k, v) {
-					append(o, v)
-				});
-			} else {
-				o.appendChild(D(c) ? c : doc.createTextNode(c))
-			}
+	function append(o, child) {
+		child = muchValue2Qmik(child);
+		if (isArray(o)) {
+			each(o, function(k, v) {
+				append(v, child)
+			})
+		} else if (isDom(o)) {
+			isArray(child) ? each(child, function(k, v) {append(o, v)}) : o.appendChild(isDom(child) ? child : doc.createTextNode(child))
 		}
 	}
-	function before(o, c) {
-		c = VC(c);
-		if (likeArray(o)) E(o, function(k, v) {
-			before(v, c)
-		});
-		else if (D(o)) {
-			if (likeArray(c)) E(c, function(k, v) {
-				before(o, v)
-			});
-			else {
-				o.parentNode.insertBefore(D(c) ? c : doc.createTextNode(c), o)
-			}
+	function before(o, child) {
+		child = muchValue2Qmik(child);
+		if (isArray(o)){ 
+			each(o, function(k, v) {
+				before(v, child)
+			})
+		}else if (isDom(o)) {
+			isArray(child) ? each(child, function(k, v) {before(o, v)}) : o.parentNode.insertBefore(isDom(child) ? child : doc.createTextNode(child), o)
 		}
 	}
-	function after(o, c) {
-		if (D(o)) {
+	function after(o, child) {
+		if (isDom(o)) {
 			var n = GN(o);
-			n ? before(n, c) : append(o.parentNode, c)
-		} else if (likeArray(o)) E(o, function(i, v) {
-			after(v, c)
-		})
+			n ? before(n, child) : append(o.parentNode, child)
+		} else if (likeArray(o)){ 
+			each(o, function(i, v) {
+				after(v, child)
+			})
+		}
 	}
 	function css(o, k, v) {
-		k = isString(k) && !isNull(v) ? toO('{"' + k + '":"' + execObject(v) + '"}') : k;
-		if (likeArray(o)) {
+		k = isString(k) && !isNull(v) ? toJSON('{"' + k + '":"' + execObject(v) + '"}') : k;
+		if (isArray(o)) {
 			if (isString(k)) return css(o[0], k);
-			E(o, function(i, j) {
+			each(o, function(i, j) {
 				css(j, k)
 			})
-		} else if (D(o)) {
-			if (isString(k)) return o.style[FM(k)];
+		} else if (isDom(o)) {
+			if (isString(k)) return o.style[formateClassName(k)];
 			v = "";
-			E(k, function(i, j) {
-				v += FM(i) + ':' + j + ';'
+			each(k, function(i, j) {
+				v += formateClassName(i) + ':' + j + ';'
 			});
 			o.style.cssText += ';' + v
 		}
 	}
 	function attr(target, name, val, isSetValue) {
-		if (likeArray(target)) {
+		if (isArray(target)) {
 			if (isString(name) && isNull(val)) return attr(target[0], name, val, isSetValue);
-			E(target, function(i, j) {
+			each(target, function(i, j) {
 				attr(j, name, val, isSetValue)
 			})
 		} else if (!isNull(target)) {
 			if (isString(name) && isNull(val)) return target[name] ? target[name] : target.getAttribute(name);
-			if (isPlainObject(name)) E(name, function(i, j) {
-				attr(target, i, j, isSetValue)
-			});
-			else {
+			if (isPlainObject(name)){ 
+				each(name, function(i, j) {
+					attr(target, i, j, isSetValue)
+				})
+			}else {
 				(isSetValue || !SE()) ? target[name] = execObject(val) : target.setAttribute(name, execObject(val))
 			}
 		}
 	}
-	function clone(o, t) {
-		if (D(o)) { return o.cloneNode(t == !0) }
-		var r = new o.constructor(o.valueOf());
-		E(o, function(k, v) {
-			r[k] = r[k] != v && Q.isObject(v) ? clone(v, t) : v
+	function clone(o, isDeep) {
+		if (isDom(o)) { return o.cloneNode(isDeep == !0) }
+		var r = [];
+		each(o, function(k, v) {
+			isDom(v)&&r.push(clone(v,isDeep))       
 		})
-		return r
+		return new Query(r)
 	}
 	function ready(fun) {
 		function f() {
@@ -305,13 +294,13 @@
 	function data(o, k, v) {
 		if (likeArray(o)) {
 			if (isString(k) && isNull(v)) return data(o[0], k, v);
-			E(o, function(i, j) {
+			each(o, function(i, j) {
 				data(j, k, v)
 			})
 		} else if (!isNull(o)) {
 			if (isNull(o[dn])) o[dn] = {};
 			if (isNull(v) && isString(k)) return o[dn][k];
-			isString(k) ? o[dn][k] = v : E(k, function(i, j) {
+			isString(k) ? o[dn][k] = v : each(k, function(i, j) {
 				o[dn][i] = j
 			});
 		}
@@ -331,25 +320,25 @@
 		return isNull(f) ? isArray(f) ? f : s : o
 	}
 	var rK = /[\S-_]+=/, rC = /[.][\S-_]+/;
-	function TKV(select) { // div[name=aa] get div name aa
+	function getTagAttr(select) { // div[name=aa] get div name aa
 		var s = select, tags = match.TAG.exec(s), tag = "", k, v, type = 1;
 		if (tags) tag = tags[0];
-		s = s.replace(tag, "").replace(/^\s*\[/, "").replace(/\]\s*$/, "");
+		s = replace(replace(replace(s,tag, ""),/^\s*\[/, ""),/\]\s*$/, "");
 		k = trim(rK.exec(s)[0]);
 		if (k.match(/!\s*=$/)) type = 2;
-		k = k.replace(/!?=$/, "");
-		v = trim(s.replace(rK, "")).replace(/"$/, "").replace(/^"/, "");
+		k = replace(k,/!?=$/, "");
+		v = replace(replace(trim(replace(s,rK, "")),/"$/, ""),/^"/, "");
 		v = v || "true";
 		return [
 			tag, k, v, type
 		]
 	}
-	function TC(select) { // div.cc get div cc
+	function getTagClass(select) { // div.cc get div cc
 		var s = select, tags = match.TAG.exec(s), tag = "", cn;
 		if (tags) tag = tags[0];
-		s = s.replace(tag, "");
+		s = replace(s,tag, "");
 		cn = rC.exec(s);
-		cn = cn ? trim(cn[0]).replace(/^\s*[.]/, "") : "";
+		cn = cn ? replace(trim(cn[0]),/^\s*[.]/, "") : "";
 		return [
 			tag, cn
 		]
@@ -357,47 +346,49 @@
 	function at(o, n) {
 		return o[n] || o.getAttribute(n)
 	}
-	function compile(s, qa) { // 编译查询条件，返回[{type,query,isChild}...]
-		var st, n, isChild = /^\s*>\s*/.test(s);
-		s = s.replace(/^\s*>?\s*/, "");
-		qa = qa || [];
+	//selector 选择语句,parentList 父结果列表("div a.aa p" p的父结果列表就是 div a.aa)
+	function compile(selector, parentList) { // 编译查询条件，返回[{type,query,isChild}...]
+		var st, n, isChild = /^\s*>\s*/.test(selector);
+		selector = replace(selector,/^\s*>?\s*/, "");
+		parentList = parentList || [];
 		for (st in match) {
-			n = match[st].exec(s);
+			n = match[st].exec(selector);
 			if (n) break
 		}
-		if (!n) return qa;
+		if (!n) return parentList;
 		n = trim(n[0]);
-		s = s.replace(n, "");
-		qa.push( {
+		selector = replace(selector,n, "");
+		parentList.push( {
 			type : st,
 			query : n,
 			isChild : isChild
 		});
-		return compile(s, qa)
+		return compile(selector, parentList)
 	}
 	// 找compile()解析出的对象,判断当前的查找条件是否满足其对应的父查询条件 isCycle:是否遍历父节点,默认true
-	function adapRule(o, qa, isCycle, c) {
-		if (!D(o)) return !1;
-		c = c || doc;
-		isCycle = isNull(isCycle) ? !0 : isCycle;
-		var s = qa.query, isGP = !qa.isChild && (isCycle != !1), p = o.parentNode;
-		if (!D(p)) return !1;
-		if (!NGP(c, o)) return !1;
-		switch (qa.type) {
+	function adapRule(dom, parentQuery, isCycle, context) {
+		if (!isDom(dom)) return !1;
+		context = context || doc;
+		//isCycle = isNull(isCycle) ? !0 : isCycle;
+		isCycle = isCycle != !1;
+		var query = parentQuery.query, isGP = !parentQuery.isChild && (isCycle != !1), p = dom.parentNode;
+		if (!isDom(p)) return !1;
+		if (!NGP(context, dom)) return !1;
+		switch (parentQuery.type) {
 		case 'ID':
-			return (at(p, "id") == trim(s.replace(/^#/, ""))) ? !0 : isGP ? adapRule(p, qa, isCycle, c) : !1;
+			return (at(p, "id") == trim(replace(query,/^#/, ""))) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context) : !1;
 		case 'ATTR':
-			var ds = TKV(s), tag = ds[0], k = ds[1], v = ds[2];
-			return (toLower(p.tagName) == tag && at(p, k) == v) ? !0 : isGP ? adapRule(p, qa, isCycle, c) : !1;
+			var ds = getTagAttr(query), tag = ds[0], k = ds[1], v = ds[2];
+			return (toLower(p.tagName) == tag && at(p, k) == v) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context) : !1;
 		case 'CT':
-			var ds = TC(s), tag = ds[0], className = ds[1];
+			var ds = getTagClass(query), tag = ds[0], className = ds[1];
 			if (tag) {
-				return (toLower(p.tagName) == tag && HC(p, className)) ? !0 : isGP ? adapRule(p, qa, isCycle, c) : !1
+				return (toLower(p.tagName) == tag && hasClass(p, className)) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context) : !1
 			} else {
-				return HC(p, className) ? !0 : isGP ? adapRule(p, qa, isCycle, c) : !1
+				return hasClass(p, className) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context) : !1
 			}
 		case 'TAG':
-			return (toLower(p.tagName) == s) ? !0 : isGP ? adapRule(p, qa, isCycle, c) : !1;
+			return (toLower(p.tagName) == query) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context) : !1;
 		}
 		return !1
 	}
@@ -405,16 +396,16 @@
 	// if (s == "") return [];
 	// return muchToArray(c.querySelectorAll(s))
 	// }
-	function GN(v, t) {
-		if (v) {
-			v = t == "prev" ? v.previousSibling : v.nextSibling;
-			return D(v) ? v : GN(v, t)
+	function GN(dom, type) {
+		if (dom) {
+			dom = type == "prev" ? dom.previousSibling : dom.nextSibling;
+			return isDom(dom) ? dom : GN(dom, type)
 		}
 	}
-	function upon(m, s, t) {
+	function upon(me, selector, type) {
 		var r = [], f;
-		E(m, function(i, v) {
-			isNull(s) ? r.push(GN(v, t)) : E(Q(">" + s, v.parentNode), function(j, h) {
+		each(me, function(i, v) {
+			isNull(selector) ? r.push(GN(v, type)) : each(Q(">" + selector, v.parentNode), function(j, h) {
 				if (!f) {
 					for ( var z = v; z = GN(z);) {
 						if (z == h) {
@@ -426,7 +417,7 @@
 				}
 			})
 		})
-		return new Query(r, m)
+		return new Query(r, me)
 	}
 	/**
 	 * selector:选择器 qmik:qmik查询对象 isAllP:是否包含所有父及祖父节点 默认true
@@ -453,9 +444,9 @@
 	Q.init = init;
 	Q.fn = Query.prototype;
 	Q.fn.extend = function(o) {
-		E(o, function(k, v) {
+		each(o, function(k, v) {
 			Query.prototype[k] = v
-		});
+		})
 	}
 	Q.fn.extend( {
 		last : function() {
@@ -468,11 +459,10 @@
 			return Q(this[0])
 		},
 		filter : function(f) {
-			var r = new Query(), c = 0;
-			E(this, function(i, v) {
-				if (f(i, v)) r[c++] = v
+			var r = new Query();
+			each(this, function(i, v) {
+				if (f(i, v)) r.push(v)
 			});
-			r.length = c;
 			return r
 		},
 		even : function() {
@@ -486,37 +476,33 @@
 			})
 		},
 		gt : function(i) {
-			var r = new Query(), c = 0;
-			for (; i < this.length; i++) {
-				r[c++] = this[i]
-			}
-			;
-			r.length = c;
+			var r = new Query();
+			each(this,function(i,v){
+				r.push(v)
+			})
 			return r
 		},
 		lt : function(i) {
-			var r = new Query(), c = 0;
+			var r = new Query() ;
 			for (; i >= 0; i--) {
-				r[c++] = this[i]
+				r.push(this[i])
 			}
-			;
-			r.length = c;
 			return r
 		},
 		find : function(s) {
 			return new Query(s, this)
 		},
 		each : function(f) {
-			E(this, f)
+			each(this, f);return this
 		},
 		append : function(c) {
 			append(this, c);
 			return this
 		},
 		remove : function() {
-			E(this, function(i, v) {
+			each(this, function(i, v) {
 				var p = v.parentNode;
-				D(p) && p.removeChild(v)
+				isDom(p) && p.removeChild(v)
 			});
 			return this
 		},
@@ -542,15 +528,15 @@
 			return isNull(v) ? r : this
 		},
 		addClass : function(n) {
-			E(this, function(i, v) {
-				if (D(v) && !HC(v, n)) v.className += ' ' + trim(execObject(n))
+			each(this, function(i, v) {
+				if (isDom(v) && !hasClass(v, n)) v.className += ' ' + trim(execObject(n))
 			});
 			return this
 		},
 		rmClass : function(n) {
-			var r = new RegExp(execObject(n).replace(/\s+/g, "|"), 'g');
-			E(this, function(i, v) {
-				v.className = trim(v.className.replace(r, '')).replace(/[\s]+/g, ' ')
+			var r = new RegExp(replace(execObject(n),/\s+/g, "|"), 'g');
+			each(this, function(i, v) {
+				v.className = replace(trim(replace(v.className,r, '')),/[\s]+/g, ' ')
 			});
 			return this
 		},
@@ -563,7 +549,7 @@
 			return this
 		},
 		toggle : function() {
-			E(this, function(i, v) {
+			each(this, function(i, v) {
 				css(v, 'display') == 'none' ? $(v).show() : $(v).hide()
 			});
 			return this
@@ -584,29 +570,29 @@
 			return (arguments.length > 1 || isPlainObject(k)) ? this : r
 		},
 		rmAttr : function(k) {
-			E(this, function(i, v) {
-				D(v) && v.removeAttribute(k)
+			each(this, function(i, v) {
+				isDom(v) && v.removeAttribute(k)
 			})
 		},
 		data : function(k, v) {
 			return data(this, k, v)
 		},
 		rmData : function(k) {
-			E(this, function(i, v) {
+			each(this, function(i, v) {
 				if (v.$Qmikdata) delete v.$Qmikdata[k]
 			})
 		},
 		val : function(v) {
 			if (isNull(v)) return this.attr("value") || "";
-			E(this, function(i, u) {
+			each(this, function(i, u) {
 				Q(u).attr("value", v)
 			})
 		},
 		serialize : function() {
 			var r = [];
 			if (this) r = Q('input', this);
-			else E(this, function(i, v) {
-				if (D(v)) Q.merge(r, Q.serializeArray(Q('input', v)))
+			else each(this, function(i, v) {
+				if (isDom(v)) Q.merge(r, Q.serializeArray(Q('input', v)))
 			});
 			return Q.serialize(r)
 		},
@@ -639,7 +625,7 @@
 			}).bind("touchmove", fo)
 		},
 		hasClass : function(c) {
-			return HC(this[0], c)
+			return hasClass(this[0], c)
 		},
 		closest : function(s) {// 查找最近的匹配的父(祖父)节点
 			return parents(s, this, false)
@@ -660,7 +646,7 @@
 	//event
 	var qwc = "touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"
 		.split(" ");
-	E(qwc, function(i, v) {
+	each(qwc, function(i, v) {
 		Q.fn[v] = function(f) {
 			return this.bind(v, f)
 		}

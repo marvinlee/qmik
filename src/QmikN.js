@@ -35,7 +35,7 @@
 			return this.toLowerCase()
 		},
 		toUpper : function() {
-			return this.toUpperCase
+			return this.toUpperCase()
 		}
 	});
 	function filter(callback) {
@@ -203,13 +203,13 @@
 			}
 		},
 		trim : function(v) {
-			return isString(v) ? v.trim() : v
+			return v ? v.trim() : v
 		},
 		toLower : function(v) {
-			return v.toLower()
+			return v ? v.toLower() : v
 		},
 		toUpper : function(v) {
-			return v.toUpper()
+			return v ? v.toUpper() : v
 		},
 		array : function(array) {
 			return merge( [], array)
@@ -331,6 +331,7 @@
 	Q.version = "1.00.001";
 	Q._config = {};
 	Q.global = global;
+	Q.Cache = Cache;
 	global.Qmik = Q;
 	global.$ = global.$ || Q;
 	return Q;
