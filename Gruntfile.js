@@ -26,10 +26,14 @@ module.exports = function(grunt) {
       },
       build: {
         files: {
-          'assets/Qmik.min.js': ['src/Qmik.js'],
+          'assets/Qmik.min.old.js': ['src/Qmik.old.js'],
+          'assets/Qmik.min.js': ['src/Qmik.js','src/Qmik.Query.js','src/Qmik.Cache.js','src/Qmik.Cache.js','src/Qmik.event.js','src/Qmik.view.js'],
           'assets/Qmik.JSON.min.js': ['src/Qmik.JSON.js'],
            'assets/Qmik.Query.min.js': ['src/Qmik.Query.js'],
-          'assets/QmikN.min.js': ['src/QmikN.js']
+          'assets/Qmik.one.min.js': ['src/Qmik.js'],
+          'assets/Qmik.Cache.min.js': ['src/Qmik.Cache.js'],
+          'assets/Qmik.event.min.js': ['src/Qmik.event.js'],
+          'assets/Qmik.view.min.js': ['src/Qmik.view.js']
         }
       }
     },
