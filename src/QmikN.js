@@ -5,45 +5,31 @@
  */
 (function() {
 	var global = this, doc = global.document || {};
-	var protoString = String.prototype, protoArray = Array.prototype;
-	var slice = protoArray.slice;
-	var REG_TRIM = /^(\s|\u00A0)+|(\s|\u00A0)+$/g;
-	(function initList(list) {
-		var ind, val;
-		for (ind in list) {
-			val = list[ind];
-			if (val) {
-				val.prototype.slice = protoArray.slice;
-				val.prototype.splice = protoArray.splice
-			}
-		}
-	})( [
-		global.NodeList, global.HTMLCollection
-	]);
+	var slice = Array.prototype.slice;
 	// define qmik object
-	var Q = function(selector, context) {
-		return Q.init(selector, context);
+	function Q(selector, context) {
+		return Q.init(selector, context)
 	}
 	Q.extend = function() {
-		var r = arguments[0] || {}, i = 1, L = arguments.length;
-		switch (L) {
+		var ret = arguments[0] || {}, i = 1;
+		switch (arguments.length) {
 		case 0:
-			return
+			return;
 		case 1:
-			r = this;
+			ret = this;
 			i = 0;
-			break;
+			break
 		}
 		each(slice.call(arguments, i), function(j, v) {
-			v&&each(v, function(m, n) {
-				if (!isNull(n)) r[m] = n
+			v && each(v, function(key, val) {
+				isNull(val) || (ret[key] = val)
 			})
 		});
-		return r
+		return ret
 	}
-	Q.extend(protoString, {
+	Q.extend(String.prototype, {
 		trim : function() {
-			return this.replace(REG_TRIM, "")
+			return this.replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "")
 		},
 		toLower : function() {
 			return this.toLowerCase()
@@ -52,8 +38,8 @@
 			return this.toUpperCase
 		}
 	});
-	function filter(callback, ret) {
-		var ret = ret || [];
+	function filter(callback) {
+		var ret = [];
 		each(this, function(i, v) {
 			callback(v) && ret.push(v)
 		});
@@ -127,6 +113,38 @@
 		}
 		return array
 	}
+	/////////////////////cache module
+	function Cache() {
+		this._cache = {};
+	}
+	Q.extend(Cache.prototype, {
+		set : function(key, value, ttl) {
+			ttl = isNum(ttl) ? ttl : -1;
+			this._cache[key] = {
+				value : value,
+				ttl : (ttl < 0 ? -1 : ttl * 1000 + Q.time())
+			}
+		},
+		get : function(key) {
+			var ret = this._cache[key];
+			if (ret && ret.ttl <= Q.time()) {
+				delete this._cahce[key];
+				ret = null
+			}
+			return ret ? ret.value : ret
+		},
+		rm : function(key) {
+			delete this._cahce[key];
+		},
+		iterator : function(callback) {
+			var me = this;
+			for ( var key in me._cache) {
+				callback(key, me._cache)
+			}
+		}
+	});
+	var _cache = new Cache();
+	///////////////////////////////////////
 	Q.extend( {
 		encode : encodeURIComponent,
 		decode : decodeURIComponent,
@@ -169,8 +187,9 @@
 		 * 继承类 子类subClass继承父类superClass的属性方法, 注:子类有父类的属性及方法时,不会被父类替换
 		 */
 		inherit : function(subClass, superClass) {
-			var F = function() {
-			};
+			function F() {
+			}
+			;
 			var subPrototype = subClass.prototype;
 			F.prototype = superClass.prototype;
 			subClass.prototype = new F();
@@ -187,10 +206,10 @@
 			return isString(v) ? v.trim() : v
 		},
 		toLower : function(v) {
-			return isString(v) ? v.toLower() : v
+			return v.toLower()
 		},
 		toUpper : function(v) {
-			return isString(v) ? v.toUpper() : v
+			return v.toUpper()
 		},
 		array : function(array) {
 			return merge( [], array)
@@ -250,7 +269,7 @@
 			return h.join('&')
 		},
 		time : function(d) {
-			return (d || 0) + parseInt((new Date()).getTime() / 1000)
+			return (d || 0) + new Date().getTime()
 		},
 		// 延迟执行,==setTimeout
 		delay : function(fun, time) {
@@ -276,7 +295,10 @@
 				} else {
 					m = msg || ""
 				}
-				try{console.log(m)}catch(e){}
+				try {
+					console.log(m)
+				} catch (e) {
+				}
 			}
 		},
 		isIphone : function() {
@@ -290,8 +312,22 @@
 		},
 		config : function(opts) {
 			return Q.extend(Q._config, opts)
+		},
+		cache : function(key, value, ttl) {
+			return isNull(value) ? _cache.get(key) : _cache.set(key, value, ttl)
 		}
 	});
+	/////cache clear
+	var checkTime = 30;//unit second
+	function clear() {
+		Q.delay(function() {
+			_cache.iterator(function(key, value) {
+				_cache.get(key)
+			});
+			clear()
+		}, checkTime)
+	}
+	//
 	Q.version = "1.00.001";
 	Q._config = {};
 	Q.global = global;
