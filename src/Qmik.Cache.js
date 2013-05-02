@@ -4,10 +4,10 @@
  * @version:0.91.008
  */
 (function(Q) {
-	var checkTime = 30;//unit second
-	/////////////////////cache module
+	var checkTime = 30;// unit second
+	// ///////////////////cache module
 	function Cache() {
-		var me=this;
+		var me = this;
 		me._cache = {};
 		function clear() {
 			Q.delay(function() {
@@ -39,7 +39,7 @@
 			delete this._cahce[key];
 		},
 		iterator : function(callback) {
-			each(this._cache,function(key,value){
+			each(this._cache, function(key, value) {
 				callback(key, value)
 			})
 		}
