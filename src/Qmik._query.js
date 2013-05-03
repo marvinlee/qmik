@@ -105,8 +105,8 @@
 	}
 	// As much as possible to Array
 	function muchToArray(a) {
-		// return !SE() ? a.slice(0, a.length) : a
-		return a
+		return !SE() ? a.slice(0, a.length) : a
+		//return a
 	}
 	// 具体的实现查找
 	function findHandle(context, qa) {
@@ -633,5 +633,5 @@
 		Q.fn[v] = function(f) {
 			return this.bind(v, f)
 		}
-	});
+	})
 })(Qmik);
