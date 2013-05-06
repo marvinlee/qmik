@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     },
     concat: {
       dist: {
-        src: ['src/Qmik.js','src/Qmik._query.js','src/Qmik.Cache.js','src/Qmik._event.js','src/Qmik._view.js'],
+        src: ['src/Qmik.js','src/Qmik._query.js','src/Qmik.Cache.js','src/Qmik._event.js','src/Qmik._view.js','src/Qmik.Sun.js'],
         dest: "dist/Qmik-debug.js"
       }
     },
@@ -26,8 +26,9 @@ module.exports = function(grunt) {
       build: {
         files: {
           'assets/Qmik.min.old.js': ['src/Qmik.old.js'],
-          'assets/Qmik.min.js': ['src/Qmik.js','src/Qmik._query.js','src/Qmik.Cache.js','src/Qmik._event.js','src/Qmik._view.js'],
+          'assets/Qmik.min.js': ['src/Qmik.js','src/Qmik._query.js','src/Qmik.Cache.js','src/Qmik._event.js','src/Qmik._view.js','src/Qmik.Sun.js'],
            'assets/Qmik._query.min.js': ['src/Qmik._query.js'],
+           'assets/Qmik.Sun.min.js': ['src/Qmik.Sun.js'],
           'assets/Qmik.one.min.js': ['src/Qmik.js'],
           'assets/Qmik.Cache.min.js': ['src/Qmik.Cache.js'],
           'assets/Qmik._event.min.js': ['src/Qmik._event.js'],

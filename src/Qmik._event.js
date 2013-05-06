@@ -11,73 +11,59 @@
 		return !isNull(doc.addEventListener)
 	}
 	function ready(fun) {
-		function f() {
-			fun(Q)
-		}
-		if (readyRE.test(doc.readyState)) f();
-		else if (SE()) Q(doc).bind('DOMContentLoaded', f);
-		else {
-			Q(doc).bind("readystatechange", f)
-		}
+		if (readyRE.test(doc.readyState)) fun(Q);
+		else if (SE()) Q(doc).bind('DOMContentLoaded', fun, Q);
+		else Q(doc).bind("readystatechange", fun, Q)
 	}
-	Q.ready=Q.fn.ready = function(fun) {
+	Q.ready = Q.fn.ready = function(fun) {
 		ready(fun);
 		return this
 	}
 	function Eadd(dom, name, fun, paramArray) {
-		var t = Q(dom), d = t.data(ek), h;
-		if (isNull(d)) {
-			d = {};
-			t.data(ek, d)
-		}
-		h = d[name];
+		var t = Q(dom), d = t.data(ek) || {}, h = d[name];
+		t.data(ek, d);
 		if (!h) {
 			d[name] = h = [];
-			if (isFun(dom['on' + name])) h[0] = dom['on' + name];
-			if (SE()) dom.addEventListener(name, handle, !1);
-			else dom["on" + name] = handle;
+			isFun(dom['on' + name]) ? (h[0] = dom['on' + name]) : SE() ? dom.addEventListener(name, handle, !1) : dom["on" + name] = handle
 		}
-		if (isFun(fun)) h.push( {
+		isFun(fun) && h.push( {
 			fun : fun,
 			param : paramArray || []
 		})
 	}
-	function Erm(o, n, f) {
-		var s = Q(o).data(ek) || {}, h = s[n] || [], i = h.length - 1;
-		if (f) for (; i >= 0; i--)
-			h[i].fun == f && h.splice(i, 1);
-		else if (isDom(o)) {
-			if (SE()) o.removeEventListener(n, handle, !1);
-			else o["on" + n] = null;
-			delete s[n]
+	function Erm(dom, name, fun) {
+		var s = Q(dom).data(ek) || {}, h = s[name] || [], i = h.length - 1;
+		if (fun) {
+			for (; i >= 0; i--)
+				h[i].fun == fun && h.splice(i, 1)
+		} else {
+			SE() ? dom.removeEventListener(name, handle, !1) : delete dom["on" + name];
+			delete s[name]
 		}
 	}
-	function Etrig(o, n) {
+	function Etrig(dom, name) {
 		var e;
-		if (SE() && isDom(o)) {
-			switch (n) {
+		if (SE()) {
+			switch (name) {
 			case "hashchange":
 				e = doc.createEvent("HashChangeEvent");
-				break;
+				break
 			default:
 				e = doc.createEvent("MouseEvents");
 			}
-			e.initEvent(n, !0, !0);
-			o.dispatchEvent(e)
-		} else o.fireEvent('on' + n);
+			e.initEvent(name, !0, !0);
+			dom.dispatchEvent(e)
+		} else dom.fireEvent('on' + name)
 	}
 	function handle(e) {
 		e = e || fixEvent(win.event);
-		var m = SE() ? this : e.target, f, p, h = Q(m).data(ek) || [];
-		each(h[e.type], function(i, v) {
-			f = v.fun;
-			p = v.param || [];
-			each(p, function(j, a) {
-				if (Q.isEvent(a)) p[j] = e
-			})
-			isFun(f) && f.apply(m, p.length < 1 ? [
+		var m = SE() ? this : e.target, fun, param, events = Q(m).data(ek) || {};
+		each(events[e.type], function(i, v) {
+			fun = v.fun;
+			param = v.param || [];
+			isFun(fun) && fun.apply(m, param.length < 1 ? [
 				e
-			] : p)
+			] : param)
 		})
 	}
 	function fixEvent(e) {
@@ -90,47 +76,48 @@
 		return e
 	}
 	Q.fn.extend( {
-		on : function(n, f) {
+		on : function(name, callback) {
 			var p = Array.prototype.slice.call(arguments, 2);
 			each(this, function(k, v) {
-				Q.isPlainObject(n) ? each(n, function(k, j) {
-					Eadd(v, k, j, f)
-				}) : Eadd(v, n, f, p)
+				Q.isPlainObject(name) ? each(name, function(k, j) {
+					Eadd(v, k, j, callback)
+				}) : Eadd(v, name, callback, p)
 			});
 			return this
 		},
-		un : function(n, f) {
+		un : function(name, callback) {
 			each(this, function(k, v) {
-				Erm(v, n, f)
+				Erm(v, name, callback)
 			});
 			return this
 		},
-		once : function(name, fun) {// 只执行一次触发事件,执行后删除
-			var me = this, oneexec = function() {
-				fun.apply(fun);
+		once : function(name, callback) {// 只执行一次触发事件,执行后删除
+			var me = this;
+			function oneexec() {
+				callback();
 				me.un(name, oneexec)
 			}
 			me.on(name, oneexec)
 		},
-		trigger : function(n) {
+		trigger : function(name) {
 			each(this, function(k, v) {
-				Etrig(v, n)
+				Etrig(v, name)
 			});
 			return this
 		},
-		live : function(name, fun) {
-			var selector = this.selector;
+		live : function(name, callback) {
 			Q("body").on(name, function(e) {
-				if ($(e.target.childNodes[0]).closest(selector).length > 0) {
-					fun.apply(event.target, [
+				if (Q(e.target.childNodes[0]).closest(this.selector).length > 0) {
+					callback.apply(event.target, [
 						e
 					]);
 				}
 			})
+			return this
 		},
-		die : function(name, fun) {
+		die : function(name, callback) {
 			each(Q(document.body), function(k, v) {
-				Erm(v, name, fun)
+				Erm(v, name, callback)
 			});
 			return this
 		}

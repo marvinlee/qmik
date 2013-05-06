@@ -205,10 +205,12 @@
 			});
 			return r
 		},
-		getScript : function(url, callback) {
+		getScript : function(url, callback,async) {
 			var s = doc.createElement("script");
 			s.type = "text/javascript";
 			s.src = url;
+			s.defer="defer";
+			s.async=async==!0;
 			Q(doc.head).append(s);
 			s.onload = callback;
 		},
