@@ -14,28 +14,19 @@
 		preload : []
 	};
 	var cacheModule = {};
-	base = loc.protocol + "//" + loc.pathname.replace(/\/[^\/]*$/, "/").replace(/\/\s*[0-9.]*\s*\/$/, "/")
-	function sun() {
-	}
+	var base = loc.protocol + "//" + loc.pathname.replace(/\/[^\/]*$/, "/").replace(/\/\s*[0-9.]*\s*\/$/, "/");
+	var sun = {};
 	function Module(id, dependencies, factory) {
-		var me = this;
-		me.url = id2url(id);
-		me.id = id;
-		me.dependencies = dependencies;
-		me.factory = factory;
-		me.isReady = !1;//module is ready ,if no, request src from service
-		me.exports = {}
+		Q.extend(this, {
+			url : id2url(id),
+			id : id,
+			dependencies : dependencies,
+			factory : factory,
+			//module is ready ,if no, request src from service
+			isReady : !1,
+			exports : {}
+		})
 	}
-	Q.extend(sun, {
-		use : use,
-		// factory:function(require, exports, module)
-		define : define,
-		resolve : id2url,
-		config : function(opts) {
-			Q.extend(config, opts);
-			return isString(opts) ? config[opts] : this
-		}
-	});
 	// factory:function(require, exports, module)
 	function define(id, dependencies, factory) {
 		if (isFun(id)) {
@@ -48,6 +39,7 @@
 			dependencies = []
 		}
 		dependencies = dependencies.concat(parseDepents(factory));
+		console.log(id + "--" + dependencies)
 		cacheModule[url] = new Module(id, dependencies, factory)
 	}
 	//get depends from function.toString()
@@ -66,6 +58,7 @@
 		match = Q.map(match, function(i, v) {
 			return id2url(v)
 		});
+		//return Q.unique(match)
 		return match
 	}
 	function use(ids, callback) {
@@ -93,7 +86,7 @@
 			})
 		}
 	}
-	function require(id) {
+	function require(url) {
 		return cacheModule[url]
 	}
 	Q.extend(require, {
@@ -113,14 +106,14 @@
 					depModule = cacheModule[url];
 					depModule.factory(require, depModule.exports, depModule);
 					if (++idx == length) {
-						delete idx, depModule;
 						callback()
+						delete idx, depModule, dependencies;
 					}
 				})
 			})
 		}
 	}
-	function load(id, callback, async) {
+	function load(id, callback) {
 		var url = id2url(id), module = cacheModule[url];
 		if (module) {
 			if (module.isReady) {
@@ -132,7 +125,9 @@
 						depModule = cacheModule[v];
 						depModule.factory(require, depModule.exports, depModule);
 						if (++idx == dependencies.length) {
-							callback && callback(depModule.exports);
+							module.factory(require, module.exports, module);
+							module.isReady = !0;
+							callback && callback(module.exports);
 							delete idx, depModule
 						}
 					})
@@ -148,16 +143,20 @@
 	}
 	function request(url, callback) {
 		Q.log("request:" + url)
-		if (/\/\s*[^\/]*.css[?]?/.test(url)) {
+		if (/\/\s*[^\/]*.css([?])?\s*$/.test(url)) {
 			var s = doc.createElement("link");
 			s.type = "text/css";
+			s.rel = 'stylesheet';
 			s.href = url;
 			Q(doc.head).append(s);
-			s.onload = callback;
 		} else {
-			Q.getScript(url, callback)
+			Q.getScript(url, function() {
+				callback();
+				win.define = sun.define
+			})
 		}
 	}
+	////////////////// id to url start ///////////////////////////////
 	function id2url(id) {
 		id = alias2url(id);
 		id = paths2url(id);
@@ -193,7 +192,17 @@
 		});
 		return id
 	}
+	//////////////////id to url end ///////////////////////////////
+	Q.extend(sun, {
+		use : use,
+		// factory:function(require, exports, module)
+		define : define,
+		resolve : id2url,
+		config : function(opts) {
+			Q.isObject(opts) && Q.extend(config, opts);
+			return isString(opts) ? config[opts] : null
+		}
+	});
 	Q.sun = sun;
 	win.define = sun.define;
-	return sun
 })(Qmik);

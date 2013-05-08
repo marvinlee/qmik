@@ -4,7 +4,8 @@
  * @version:0.91.008
  */
 (function() {
-	var win = this, doc = win.document || {}, config = {};
+	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent;
+	var encode = encodeURIComponent, decode = decodeURIComponent, config = {};
 	var slice = Array.prototype.slice;
 	// define qmik object
 	function Q(selector, context) {
@@ -41,7 +42,7 @@
 	function filter(array, callback) {
 		var ret = [];
 		each(array, function(i, v) {
-			callback(v) && ret.push(v)
+			(callback ? callback(v) : !isNull(v)) && ret.push(v)
 		});
 		return ret
 	}
@@ -125,8 +126,8 @@
 		return isDom(child) && (grandfather === child.parentNode ? !0 : isGrandfather(grandfather, child.parentNode))
 	}
 	Q.extend( {
-		encode : encodeURIComponent,
-		decode : decodeURIComponent,
+		encode : encode,
+		decode : encode,
 		isDom : isDom,
 		isBool : isBool,
 		isString : isString,
@@ -228,16 +229,12 @@
 				} : !1
 			})
 		},
-		grep : function(array, callback) {
-			return filter(array, function(v) {
-				return callback ? callback(v) : !isNull(v)
-			})
-		},
+		grep : filter,
 		// buid a new array,filter by fun
 		param : function(o) {
 			var h = [];
 			each(o, function(i, v) {
-				h.push(e(v.name) + '=' + e(execObject(v.value)))
+				h.push(encode(v.name) + '=' + encode(execObject(v.value)))
 			});
 			return h.join('&')
 		},
@@ -280,8 +277,7 @@
 			return /Windows Phone/.test(UA)
 		},
 		config : function(key, value) {
-			if (isObject(key)) Q.extend(config, key);
-			else if (arguments.length > 1) config[key] = value;
+			isObject(key) ? Q.extend(config, key) : isString(key) && (config[key] = value);
 			return isString(key) ? config[key] : config
 		}
 	});
