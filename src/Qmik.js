@@ -41,7 +41,7 @@
 	function filter(array, callback) {
 		var ret = [];
 		each(array, function(i, v) {
-			callback(v) && ret.push(v)
+			(callback ? callback(v) : !isNull(v)) && ret.push(v)
 		});
 		return ret
 	}
@@ -228,11 +228,7 @@
 				} : !1
 			})
 		},
-		grep : function(array, callback) {
-			return filter(array, function(v) {
-				return callback ? callback(v) : !isNull(v)
-			})
-		},
+		grep : filter,
 		// buid a new array,filter by fun
 		param : function(o) {
 			var h = [];
