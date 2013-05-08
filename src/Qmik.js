@@ -211,7 +211,7 @@
 			s.src = url;
 			s.defer="defer";
 			Q(doc.head).append(s);
-			s.onload = callback;
+			s.onload=s.onreadystatechange = callback
 		},
 		serialize : function(a) {
 			return Q.param(Q.serializeArray(a))
