@@ -250,9 +250,11 @@
 		// 周期执行,==setInterval
 		cycle : function(fun, time) {
 			var params = slice.call(arguments, 2);
-			return setInterval(function() {
+			function _exec(){
 				fun.apply(fun, params)
-			}, time)
+				Q.delay(_exec,time);
+			}
+			Q.delay(_exec,time)
 		},
 		log : function(msg, e) {
 			if (Q.config().debug) {
