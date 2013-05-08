@@ -108,7 +108,7 @@
 	function merge() { // merge array or object
 		var array = arguments[0], isA = isArray(array), i = 1;
 		for (; i < arguments.length; i++) {
-			E(arguments[i], function(k, v) {
+			each(arguments[i], function(k, v) {
 				isA ? array.push(v) : array[k] = v
 			})
 		}
@@ -193,14 +193,14 @@
 					if (array[i] === array[j]) array.splice(i, 1)
 		},
 		contains : function(p, c) {
-			if (D(p) && D(c)) return p === c || NGP(p, c);
+			if (isDom(p) && isDom(c)) return p === c || NGP(p, c);
 			for ( var k in p)
 				if (p[k] === c) return !0;
 			return !1
 		},
 		map : function(array, callback) {
 			var r = [];
-			E(array, function(i, v) {
+			each(array, function(i, v) {
 				r.push(callback(i, v))
 			});
 			return r
@@ -210,7 +210,6 @@
 			s.type = "text/javascript";
 			s.src = url;
 			s.defer="defer";
-			s.async=async==!0;
 			Q(doc.head).append(s);
 			s.onload = callback;
 		},
@@ -233,7 +232,7 @@
 		// buid a new array,filter by fun
 		param : function(o) {
 			var h = [];
-			E(o, function(i, v) {
+			each(o, function(i, v) {
 				h.push(e(v.name) + '=' + e(execObject(v.value)))
 			});
 			return h.join('&')
