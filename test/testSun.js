@@ -23,7 +23,7 @@
 Qmik.config("debug",true)
 Qmik.sun.config( {
 	alias : {
-		'mo' : 'http://127.0.0.1/js/mo.js'
+		'mo' : 'http://127.0.0.1/js/mo'
 	}
 });
 Qmik.sun.define("ak", function(require, exports, module) {

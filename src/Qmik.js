@@ -213,11 +213,12 @@
 			return r
 		},
 		getScript : function(url, callback) {
-			var s = doc.createElement("script");
-			s.type = "text/javascript";
-			s.src = url;
-			Q(doc.head).append(s);
-			s.onload = s.onreadystatechange = callback
+			var node = doc.createElement("script");
+			node.type = "text/javascript";
+			node.src = url;
+			Q(doc.head).append(node);
+			node.onload = node.onreadystatechange = callback;
+			return node
 		},
 		serialize : function(array) {
 			return Q.param(Q.serializeArray(array))
