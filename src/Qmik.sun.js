@@ -5,7 +5,7 @@
  */
 (function(Q) {
 	var win = Q.global, loc = win.location, each = Q.each;
-	var isArray = Q.isArray, isString = Q.isString, isFun = Q.isFun;
+	var isArray = Q.isArray, isString = Q.isString, isFun = Q.isFun, isNull = Q.isNull;
 	var config = {
 		alias : {},
 		paths : {},
@@ -19,12 +19,15 @@
 	function Module(id, dependencies, factory) {
 		Q.extend(this, {
 			url : id2url(id),
-			id : id,
+			id : id || id2url(id),
 			dependencies : dependencies,
 			factory : factory,
 			//module is ready ,if no, request src from service
 			isReady : !1,
-			exports : {}
+			exports : {},
+			destroy : function() {
+				delete cacheModule[id]
+			}
 		})
 	}
 	// factory:function(require, exports, module)
@@ -39,8 +42,8 @@
 			dependencies = []
 		}
 		dependencies = dependencies.concat(parseDepents(factory));
-		console.log(id + "--" + dependencies)
-		cacheModule[url] = new Module(id, dependencies, factory)
+		Q.log("define:" + Q.unique(dependencies))
+		cacheModule[id] = new Module(id, Q.unique(dependencies), factory)
 	}
 	//get depends from function.toString()
 	function parseDepents(code) {
@@ -55,10 +58,6 @@
 		match = Q.map(match, function(i, v) {
 			return v.replace(new RegExp("^" + require + "\s*[(]\s*[\"']"), "").replace(/\s*[\"']\s*[)]$/, "")
 		});
-		match = Q.map(match, function(i, v) {
-			return id2url(v)
-		});
-		//return Q.unique(match)
 		return match
 	}
 	function use(ids, callback) {
@@ -86,8 +85,10 @@
 			})
 		}
 	}
-	function require(url) {
-		return cacheModule[url]
+	//require module
+	function require(id) {
+		var module = cacheModule[id];
+		return module ? module.exports : module
 	}
 	Q.extend(require, {
 		resolve : id2url,
@@ -95,15 +96,16 @@
 			use(ids, callback)
 		}
 	});
+	//pre load module
 	function preload(callback) {
 		var url, idx = 0, dependencies = config.preload, length = dependencies.length, depModule;
 		if (length == 0) {
 			callback()
 		} else {
-			each(dependencies, function(i, v) {
-				url = id2url(v);
+			each(dependencies, function(i, id) {
+				url = id2url(id);
 				request(url, function() {
-					depModule = cacheModule[url];
+					depModule = cacheModule[id];
 					depModule.factory(require, depModule.exports, depModule);
 					if (++idx == length) {
 						callback()
@@ -114,15 +116,16 @@
 		}
 	}
 	function load(id, callback) {
-		var url = id2url(id), module = cacheModule[url];
+		var module = cacheModule[id];
 		if (module) {
 			if (module.isReady) {
 				callback && callback(module.exports);
 			} else {
 				var idx = 0, depModule, dependencies = module.dependencies;
-				each(dependencies, function(i, v) {
-					request(v, function() {
-						depModule = cacheModule[v];
+				console.log("dependencies:" + dependencies)
+				each(dependencies, function(i, _id) {
+					request(id2url(_id), function() {
+						depModule = cacheModule[_id];
 						depModule.factory(require, depModule.exports, depModule);
 						if (++idx == dependencies.length) {
 							module.factory(require, module.exports, module);
@@ -134,21 +137,23 @@
 				})
 			}
 		} else {
-			request(url, function() {
-				module = cacheModule[url];
+			request(id2url(id), function() {
+				module = cacheModule[id];
 				module.factory(require, module.exports, module);
 				callback && callback(module.exports)
 			})
 		}
 	}
 	function request(url, callback) {
-		Q.log("request:" + url)
-		if (/\/\s*[^\/]*.css([?])?\s*$/.test(url)) {
+		var nurl, idx = url.indexOf("?");
+		nurl = idx >= 0 ? url.substring(0, url.indexOf("?")).trim() : url;
+		console.log("request url:" + url)
+		if (/\/.+\.css$/i.test(nurl)) {
 			var s = doc.createElement("link");
 			s.type = "text/css";
 			s.rel = 'stylesheet';
 			s.href = url;
-			Q(doc.head).append(s);
+			Q(win.document.head).append(s);
 		} else {
 			Q.getScript(url, function() {
 				callback();
@@ -158,9 +163,10 @@
 	}
 	////////////////// id to url start ///////////////////////////////
 	function id2url(id) {
+		isNull(id) && (id = loc.href);
 		id = alias2url(id);
 		id = paths2url(id);
-		id = vars2url(id);
+		id = vars2url(url);
 		id = normalize(id);
 		return map2url(id)
 	}

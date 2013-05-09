@@ -12,8 +12,8 @@
 		return Q.init(selector, context)
 	}
 	Q.extend = function() {
-		var ret = arguments[0] || {}, i = 1;
-		switch (arguments.length) {
+		var args = arguments, ret = args[0] || {}, i = 1;
+		switch (args.length) {
 		case 0:
 			return;
 		case 1:
@@ -21,7 +21,7 @@
 			i = 0;
 			break
 		}
-		each(slice.call(arguments, i), function(j, v) {
+		each(slice.call(args, i), function(j, v) {
 			v && each(v, function(key, val) {
 				isNull(val) || (ret[key] = val)
 			})
@@ -114,9 +114,9 @@
 		return isFun(v) ? (target ? v.call(target, v) : v()) : v
 	}
 	function merge() { // merge array or object
-		var array = arguments[0], isA = isArray(array), i = 1;
-		for (; i < arguments.length; i++) {
-			each(arguments[i], function(k, v) {
+		var args = arguments, array = args[0], isA = isArray(array), i = 1;
+		for (; i < args.length; i++) {
+			each(args[i], function(k, v) {
 				isA ? array.push(v) : array[k] = v
 			})
 		}
@@ -198,9 +198,11 @@
 			return -1
 		},
 		unique : function(array) {
-			for ( var i = array.length - 1, j; i >= 0; i--)
-				for (j = i - 1; j >= 0; j--)
-					array[i] === array[j] && array.splice(i, 1)
+			var ret = [];
+			each(array, function(i, value) {
+				Q.inArray(value, ret) < 0 && ret.push(value)
+			});
+			return ret
 		},
 		contains : isGrandfather,
 		map : function(array, callback) {
@@ -214,7 +216,6 @@
 			var s = doc.createElement("script");
 			s.type = "text/javascript";
 			s.src = url;
-			s.defer = "defer";
 			Q(doc.head).append(s);
 			s.onload = s.onreadystatechange = callback
 		},
