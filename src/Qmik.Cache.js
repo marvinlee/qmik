@@ -9,15 +9,11 @@
 	function Cache() {
 		var me = this;
 		me._cache = {};
-		function clear() {
-			Q.delay(function() {
-				me.iterator(function(key, value) {
-					me.get(key)
-				});
-				clear()
-			}, checkTime)
-		}
-		clear()
+		Q.cycle(function() {
+			me.iterator(function(key, value) {
+				me.get(key)
+			})
+		}, checkTime)
 	}
 	Q.extend(Cache.prototype, {
 		set : function(key, value, ttl) {
