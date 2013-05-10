@@ -23,21 +23,21 @@
 	}
 	Q.fn.extend( {
 		width : function(v) {
-			var o = this[0];
-			return isNull(o) ? (v || 0) : isDom(o) ? o.offsetWidth : o == win ? win.screenX : win.screen.availWidth
+			//var o = this[0];
+			//return isNull(o) ? (v || 0) : isDom(o) ? o.offsetWidth : o == win ? win.screenX : win.screen.availWidth
+			return this[0] ? this[0].offsetWidth : 0
 		},
 		height : function(v) {
-			var o = this[0];
-			return isNull(o) ? (v || 0) : isDom(o) ? o.offsetHeight : o == win ? win.screenY : win.screen.availHeight
+			//var o = this[0];
+			//return isNull(o) ? (v || 0) : isDom(o) ? o.offsetHeight : o == win ? win.screenY : win.screen.availHeight
+			return this[0] ? this[0].o.offsetHeight : 0
 		},
 		offset : function() {// 获取匹配元素在当前视口的相对偏移
 			if (!this[0]) return null;
 			var obj = this[0].getBoundingClientRect();
 			return {
 				left : obj.left + win.pageXOffset,
-				top : obj.top + win.pageYOffset,
-				width : obj.width,
-				height : obj.height
+				top : obj.top + win.pageYOffset
 			};
 		},
 		position : function() {// 获取匹配元素相对父元素的偏移。
@@ -45,9 +45,7 @@
 			if (!o) return null;
 			return {
 				left : parentX(o),
-				top : parentY(o),
-				width : obj.width,
-				height : obj.height
+				top : parentY(o)
 			}
 		},
 		animate : function(styles, speed, easing, callback) {

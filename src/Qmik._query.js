@@ -4,32 +4,16 @@
  * @version:1.37
  */
 (function(Q) {
-	var win = Q.global,
-		doc = win.document,
-		protoArray = Array.prototype;
-	var isNull = Q.isNull,
-		isDom = Q.isDom,
-		each = Q.each,
-		likeArray = Q.likeArray,
-		isArray = Q.isArray,
-		isString = Q.isString,
-		isFun = Q.isFun,
-		isPlainObject = Q.isPlainObject,
-		trim = Q.trim,
-		replace=function(value,str1,str2){
-			return value.replace(str1,str2)
-		},
-		toJSON = Q.toJSON,
-		toLower = Q.toLower,
-		toUpper = Q.toUpper;
-	var rNode = /^\s*(<.+>.*<\/.+>)+|(<.+\/\s*>)+\s*$/,
-		match = {
-			ID: /^#[\w-_\u00c0-\uFFFF]+/,
-			ATTR: /^([\w-_]+)\[\s*[\w-_]+\s*!?=\s*('|")?(.*)('|")?\s*\]/,
-			CT: /^([\w-_]+)?\.[\w-_]+/,
-			TAG: /^[\w-_]+/
-		};
-	
+	var win = Q.global, doc = win.document, protoArray = Array.prototype;
+	var isNull = Q.isNull, isDom = Q.isDom, each = Q.each, likeArray = Q.likeArray, isArray = Q.isArray, isString = Q.isString, isFun = Q.isFun, isPlainObject = Q.isPlainObject, trim = Q.trim, replace = function(value, str1, str2) {
+		return value.replace(str1, str2)
+	}, toJSON = Q.toJSON, toLower = Q.toLower, toUpper = Q.toUpper;
+	var rNode = /^\s*(<.+>.*<\/.+>)+|(<.+\/\s*>)+\s*$/, match = {
+		ID : /^#[\w-_\u00c0-\uFFFF]+/,
+		ATTR : /^([\w-_]+)\[\s*[\w-_]+\s*!?=\s*('|")?(.*)('|")?\s*\]/,
+		CT : /^([\w-_]+)?\.[\w-_]+/,
+		TAG : /^[\w-_]+/
+	};
 	//init node list
 	(function initList(list) {
 		var ind, val;
@@ -45,7 +29,7 @@
 	]);
 	function Query(selector, context) {
 		var me = this, r;
-		me.context=context = context || doc;
+		me.context = context = context || doc;
 		me.selector = selector;
 		if (isString(selector)) {
 			if (rNode.test(selector)) {
@@ -53,7 +37,7 @@
 				t.innerHTML = selector;
 				r = t.childNodes
 			} else {
-				r = find(selector, context)
+				r = context.querySelectorAll ? context.querySelectorAll(selector) : find(selector, context)
 			}
 		} else {
 			r = likeArray(selector) ? selector : [
@@ -61,7 +45,9 @@
 			]
 		}
 		r = r || [];
-		each(r,function(k,v){me.push(v)})
+		each(r, function(k, v) {
+			me.push(v)
+		})
 		return me
 	}
 	Q.inherit(Query, Array);
@@ -74,15 +60,15 @@
 		return v instanceof Query
 	}
 	function find(selector, context, childs) {
-		var nselector = trim(selector), r = [],length;
+		var nselector = trim(selector), r = [], length;
 		if (isQmik(context)) {
 			each(context, function(i, v) {
 				isDom(v) && (r = r.concat(find(selector, v)))
 			});
-		}else{
+		} else {
 			childs = childs || compile(nselector);// 编译查询条件，返回[{type,query,isChild}...]
-			length=childs.length;
-			if ( length>= 1 ){
+			length = childs.length;
+			if (length >= 1) {
 				r = findHandle(context, childs[0]);
 				if (isNull(r) || length < 2) return r;
 				nselector = childs[1].query;
@@ -110,10 +96,10 @@
 	}
 	// 具体的实现查找
 	function findHandle(context, qa) {
-		var q = qa.query, r=[];
+		var q = qa.query, r = [];
 		if (qa.isChild) {
 			var cs = muchToArray(context.childNodes);
-			each(cs,function(i,dom){
+			each(cs, function(i, dom) {
 				if (isDom(dom)) {
 					switch (qa.type) {
 					case 'ID':
@@ -129,7 +115,8 @@
 						var ds = getTagClass(q), tn = ds[0], cn = ds[1];
 						//if (tn) (dom.tagName == toUpper(tn) && hasClass(dom, cn)) && r.push(dom);
 						//else hasClass(dom, cn) && r.push(dom);						
-						tn ? dom.tagName == toUpper(tn) && hasClass(dom, cn) && r.push(dom) : hasClass(dom, cn) && r.push(dom)
+						tn ? dom.tagName == toUpper(tn) && hasClass(dom, cn) && r.push(dom) : hasClass(dom, cn) && r
+																															.push(dom)
 						break
 					case 'TAG':
 						dom.tagName == toUpper(q) && r.push(dom);
@@ -149,9 +136,9 @@
 				var sq = getTagClass(q), tag = sq[0] || "", className = sq[1];
 				r = SE() ? function() {
 					var a = muchToArray(context.getElementsByClassName(className) || []), g = toUpper(tag);
-					tag != "" && each(a,function(i,dom){
-										if (dom.tagName != g) a.splice(i, 1)
-									});
+					tag != "" && each(a, function(i, dom) {
+						if (dom.tagName != g) a.splice(i, 1)
+					});
 					return a
 				}() : byAttr(context, tag + "[class=" + className + "]");
 				break
@@ -172,16 +159,18 @@
 				attribute = at(n, name);
 				//attribute = attribute ? attribute : (isClass ? n.className : attribute);
 				attribute = isClass ? n.className : attribute;
-				exist = isClass ? new RegExp(replace(value,/[ ]/g, "|")).test(attribute) : attribute == value;
+				exist = isClass ? new RegExp(replace(value, /[ ]/g, "|")).test(attribute) : attribute == value;
 				isEqual ? exist && ret.push(n) : !exist && ret.push(n);
 			}
 		});
 		return ret
 	}
 	function byId(dom, selector) {
-		selector = replace(selector,/^#/, "");
+		selector = replace(selector, /^#/, "");
 		var ret = doc.getElementById(selector);
-		return isNull(ret) ? [] : dom == doc ? [ret] : byAttr(dom, "[id=\"" + selector + "\"]")
+		return isNull(ret) ? [] : dom == doc ? [
+			ret
+		] : byAttr(dom, "[id=\"" + selector + "\"]")
 	}
 	function byAttr(dom, selector) {
 		//var st = getTagAttr(selector), tag = st[0], attrName = st[1], attrValue = st[2], isEqual = selector.indexOf('!=') == -1;
@@ -191,13 +180,13 @@
 	// /////////////////////////////////////////////////
 	function hasClass(o, cn) {
 		if (!isDom(o)) return !1;
-		var cs = o.className.split(" "), cn = trim(cn),i=0;
+		var cs = o.className.split(" "), cn = trim(cn), i = 0;
 		for (; i < cs.length; i++)
 			if (cs[i] == cn) return !0;
 		return !1
 	}
 	function formateClassName(v) {
-		return replace(v,/[A-Z]/g, function(v) {
+		return replace(v, /[A-Z]/g, function(v) {
 			return "-" + toLower(v)
 		})
 	}
@@ -215,24 +204,28 @@
 				append(v, child)
 			})
 		} else if (isDom(o)) {
-			isArray(child) ? each(child, function(k, v) {append(o, v)}) : o.appendChild(isDom(child) ? child : doc.createTextNode(child))
+			isArray(child) ? each(child, function(k, v) {
+				append(o, v)
+			}) : o.appendChild(isDom(child) ? child : doc.createTextNode(child))
 		}
 	}
 	function before(o, child) {
 		child = muchValue2Qmik(child);
-		if (isArray(o)){ 
+		if (isArray(o)) {
 			each(o, function(k, v) {
 				before(v, child)
 			})
-		}else if (isDom(o)) {
-			isArray(child) ? each(child, function(k, v) {before(o, v)}) : o.parentNode.insertBefore(isDom(child) ? child : doc.createTextNode(child), o)
+		} else if (isDom(o)) {
+			isArray(child) ? each(child, function(k, v) {
+				before(o, v)
+			}) : o.parentNode.insertBefore(isDom(child) ? child : doc.createTextNode(child), o)
 		}
 	}
 	function after(o, child) {
 		if (isDom(o)) {
 			var n = GN(o);
 			n ? before(n, child) : append(o.parentNode, child)
-		} else if (likeArray(o)){ 
+		} else if (likeArray(o)) {
 			each(o, function(i, v) {
 				after(v, child)
 			})
@@ -262,11 +255,11 @@
 			})
 		} else if (!isNull(target)) {
 			if (isString(name) && isNull(val)) return target[name] ? target[name] : target.getAttribute(name);
-			if (isPlainObject(name)){ 
+			if (isPlainObject(name)) {
 				each(name, function(i, j) {
 					attr(target, i, j, isSetValue)
 				})
-			}else {
+			} else {
 				(isSetValue || !SE()) ? target[name] = execObject(val) : target.setAttribute(name, execObject(val))
 			}
 		}
@@ -275,7 +268,7 @@
 		if (isDom(o)) { return o.cloneNode(isDeep == !0) }
 		var r = [];
 		each(o, function(k, v) {
-			isDom(v)&&r.push(clone(v,isDeep))       
+			isDom(v) && r.push(clone(v, isDeep))
 		})
 		return new Query(r)
 	}
@@ -312,11 +305,11 @@
 	function getTagAttr(select) { // div[name=aa] get div name aa
 		var s = select, tags = match.TAG.exec(s), tag = "", k, v, type = 1;
 		if (tags) tag = tags[0];
-		s = replace(replace(replace(s,tag, ""),/^\s*\[/, ""),/\]\s*$/, "");
+		s = replace(replace(replace(s, tag, ""), /^\s*\[/, ""), /\]\s*$/, "");
 		k = trim(rK.exec(s)[0]);
 		if (k.match(/!\s*=$/)) type = 2;
-		k = replace(k,/!?=$/, "");
-		v = replace(replace(trim(replace(s,rK, "")),/"$/, ""),/^"/, "");
+		k = replace(k, /!?=$/, "");
+		v = replace(replace(trim(replace(s, rK, "")), /"$/, ""), /^"/, "");
 		v = v || "true";
 		return [
 			tag, k, v, type
@@ -325,9 +318,9 @@
 	function getTagClass(select) { // div.cc get div cc
 		var s = select, tags = match.TAG.exec(s), tag = "", cn;
 		if (tags) tag = tags[0];
-		s = replace(s,tag, "");
+		s = replace(s, tag, "");
 		cn = rC.exec(s);
-		cn = cn ? replace(trim(cn[0]),/^\s*[.]/, "") : "";
+		cn = cn ? replace(trim(cn[0]), /^\s*[.]/, "") : "";
 		return [
 			tag, cn
 		]
@@ -338,7 +331,7 @@
 	//selector 选择语句,parentList 父结果列表("div a.aa p" p的父结果列表就是 div a.aa)
 	function compile(selector, parentList) { // 编译查询条件，返回[{type,query,isChild}...]
 		var st, n, isChild = /^\s*>\s*/.test(selector);
-		selector = replace(selector,/^\s*>?\s*/, "");
+		selector = replace(selector, /^\s*>?\s*/, "");
 		parentList = parentList || [];
 		for (st in match) {
 			n = match[st].exec(selector);
@@ -346,7 +339,7 @@
 		}
 		if (!n) return parentList;
 		n = trim(n[0]);
-		selector = replace(selector,n, "");
+		selector = replace(selector, n, "");
 		parentList.push( {
 			type : st,
 			query : n,
@@ -365,14 +358,18 @@
 		if (!NGP(context, dom)) return !1;
 		switch (parentQuery.type) {
 		case 'ID':
-			return (at(p, "id") == trim(replace(query,/^#/, ""))) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context) : !1;
+			return (at(p, "id") == trim(replace(query, /^#/, ""))) ? !0
+																					: isGP ? adapRule(p, parentQuery, isCycle, context) : !1;
 		case 'ATTR':
 			var ds = getTagAttr(query), tag = ds[0], k = ds[1], v = ds[2];
-			return (toLower(p.tagName) == tag && at(p, k) == v) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context) : !1;
+			return (toLower(p.tagName) == tag && at(p, k) == v) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context)
+																								: !1;
 		case 'CT':
 			var ds = getTagClass(query), tag = ds[0], className = ds[1];
 			if (tag) {
-				return (toLower(p.tagName) == tag && hasClass(p, className)) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context) : !1
+				return (toLower(p.tagName) == tag && hasClass(p, className)) ? !0
+																								: isGP ? adapRule(p, parentQuery, isCycle, context)
+																										: !1
 			} else {
 				return hasClass(p, className) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context) : !1
 			}
@@ -413,10 +410,10 @@
 	 * isOnlyParent:是否只包含父节点 默认false
 	 */
 	function parents(selector, qmik, isAllP, isOnlyParent) {
-		var array = [],qa = isString(selector) ? compile(selector) : null;
+		var array = [], qa = isString(selector) ? compile(selector) : null;
 		isAllP = isAllP != !1;
 		isOnlyParent = isOnlyParent == !0;
-		each(qmik,function(i,v){
+		each(qmik, function(i, v) {
 			while (v) {
 				if (v.parentNode == doc.body) break;
 				if (isNull(qa) || adapRule(v, qa[0], false)) {
@@ -465,13 +462,13 @@
 		},
 		gt : function(i) {
 			var r = new Query();
-			each(this,function(i,v){
+			each(this, function(i, v) {
 				r.push(v)
 			})
 			return r
 		},
 		lt : function(i) {
-			var r = new Query() ;
+			var r = new Query();
 			for (; i >= 0; i--) {
 				r.push(this[i])
 			}
@@ -481,7 +478,8 @@
 			return new Query(s, this)
 		},
 		each : function(f) {
-			each(this, f);return this
+			each(this, f);
+			return this
 		},
 		append : function(c) {
 			append(this, c);
@@ -522,9 +520,9 @@
 			return this
 		},
 		rmClass : function(n) {
-			var r = new RegExp(replace(execObject(n),/\s+/g, "|"), 'g');
+			var r = new RegExp(replace(execObject(n), /\s+/g, "|"), 'g');
 			each(this, function(i, v) {
-				v.className = replace(trim(replace(v.className,r, '')),/[\s]+/g, ' ')
+				v.className = replace(trim(replace(v.className, r, '')), /[\s]+/g, ' ')
 			});
 			return this
 		},
