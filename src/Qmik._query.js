@@ -46,7 +46,7 @@
 		}
 		r = r || [];
 		each(r, function(k, v) {
-			me.push(v)
+			isDom(v) && me.push(v)
 		})
 		return me
 	}
@@ -84,6 +84,7 @@
 				}
 			}
 		}
+		
 		return r
 	}
 	function execObject(v, target) {
@@ -91,8 +92,7 @@
 	}
 	// As much as possible to Array
 	function muchToArray(a) {
-		return !SE() ? a.slice(0, a.length) : a
-		//return a
+		return isArray(a) ? a : a.slice(0, a.length)
 	}
 	// 具体的实现查找
 	function findHandle(context, qa) {
@@ -355,7 +355,7 @@
 		isCycle = isCycle != !1;
 		var query = parentQuery.query, isGP = !parentQuery.isChild && (isCycle != !1), p = dom.parentNode;
 		if (!isDom(p)) return !1;
-		if (!NGP(context, dom)) return !1;
+		if (!Q.contains(context, dom)) return !1;
 		switch (parentQuery.type) {
 		case 'ID':
 			return (at(p, "id") == trim(replace(query, /^#/, ""))) ? !0
@@ -502,7 +502,12 @@
 		},
 		html : function(v) {
 			if (arguments.length < 1) return attr(this, "innerHTML");
-			else attr(this, "innerHTML", isQmik(v) ? v.html() : v, !0);
+			else {
+				each(Q(this),function(i,node){
+					Q(node).remove()
+				});
+				attr(this, "innerHTML", isQmik(v) ? v.html() : v, !0);
+			}
 			return this
 		},
 		empty : function() {
@@ -600,23 +605,27 @@
 		clone : function(t) {
 			return clone(this, t)
 		},
-		hover : function(fi, fo) {
-			this.bind("mouseover", fi).bind("mouseout", fo).bind("touchstart", function() {
-				fi();
-				Q.delay(fo, 500)
-			}).bind("touchmove", fo)
+		hover : function(fin, fout) {
+			this.bind("mouseover", fin).bind("mouseout", fout).bind("touchstart", function() {
+				fin();
+				Q.delay(fout, 500)
+			})
 		},
 		hasClass : function(c) {
 			return hasClass(this[0], c)
 		},
-		closest : function(s) {// 查找最近的匹配的父(祖父)节点
-			return parents(s, this, false)
+		closest : function(selector) {// 查找最近的匹配的父(祖父)节点
+			return parents(selector, this, false) 	
+			/**
+			 * selector:选择器 qmik:qmik查询对象 isAllP:是否包含所有父及祖父节点 默认true
+			 * isOnlyParent:是否只包含父节点 默认false
+			function parents(selector, qmik, isAllP, isOnlyParent) */
 		},
-		parents : function(s) {// 查找所有的匹配的父(祖父)节点
-			return parents(s, this, true)
+		parents : function(selector) {// 查找所有的匹配的父(祖父)节点
+			return parents(selector, this, true)
 		},
-		parent : function(s) {// 查找匹配的父节点
-			return parents(s, this, true, true)
+		parent : function(selector) {// 查找匹配的父节点
+			return parents(selector, this, true, true)
 		}
 	});
 	Q.fn.extend( {
