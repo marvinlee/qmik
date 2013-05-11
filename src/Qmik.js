@@ -125,6 +125,7 @@
 	function isGrandfather(grandfather, child) {
 		return isDom(child) && (grandfather === child.parentNode ? !0 : isGrandfather(grandfather, child.parentNode))
 	}
+	var errorStack={count:0};
 	Q.extend( {
 		encode : encode,
 		decode : encode,
@@ -281,8 +282,37 @@
 		config : function(key, value) {
 			isObject(key) ? Q.extend(config, key) : isString(key) && (config[key] = value);
 			return isString(key) ? config[key] : config
+		},
+		box : function(callback,opts){
+			return function(){
+				try{
+					callback.apply(this,arguments)
+				}catch(e){
+					//Q.config(error,{enable,url:""});
+					var log=errorStack[e.stack];
+					if(log){
+						log.num++;
+					}else {
+						log=errorStack[e.stack]={num:1};
+						errorStack.count++;
+						Q.extend(log,opts)
+					}
+					throw e
+				}
+			}
 		}
 	});
+	Q.cycle(function(){
+		var econfig=config.error||{};
+		if(errorStack.count>0){
+			if(econfig && econfig.enable){
+				var img=new Image();
+				img.src=(config.error.url||"/error")+"?errorlog="+toString(errorStack);
+				delete img;
+			}
+			errorStack={count:0}
+		}
+	},econfig.ttl || 60000)
 	Q.version = "1.00.001";
 	Q.global = win;
 	win.Qmik = Q;

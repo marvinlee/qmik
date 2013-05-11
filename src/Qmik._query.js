@@ -46,7 +46,7 @@
 		}
 		r = r || [];
 		each(r, function(k, v) {
-			isDom(v) && me.push(v)
+			v && me.push(v)
 		})
 		return me
 	}

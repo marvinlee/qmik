@@ -36,5 +36,5 @@
 	testSelect("#part2>li[flag=p2]");
 	testSelect("#part2 li:hover");
 	
-	capability();
+	//capability();
 })(Qmik);
