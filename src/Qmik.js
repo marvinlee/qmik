@@ -289,11 +289,11 @@
 					callback.apply(this,arguments)
 				}catch(e){
 					//Q.config(error,{enable,url:""});
-					var log=errorStack[e.stack];
+					var stack=e.stack, log=errorStack[stack];
 					if(log){
-						log.num++;
+						log.num++
 					}else {
-						log=errorStack[e.stack]={num:1};
+						log=errorStack[stack]={num:1};
 						errorStack.count++;
 						Q.extend(log,opts)
 					}
@@ -302,17 +302,19 @@
 			}
 		}
 	});
-	Q.cycle(function(){
+	function errorlog(){
 		var econfig=config.error||{};
 		if(errorStack.count>0){
-			if(econfig && econfig.enable){
+			if(econfig.enable){
 				var img=new Image();
 				img.src=(config.error.url||"/error")+"?errorlog="+toString(errorStack);
-				delete img;
+				delete img
 			}
 			errorStack={count:0}
 		}
-	},econfig.ttl || 60000)
+		Q.delay(errorlog,econfig.ttl||60000)
+	}
+	errorlog();
 	Q.version = "1.00.001";
 	Q.global = win;
 	win.Qmik = Q;

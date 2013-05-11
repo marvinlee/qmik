@@ -46,11 +46,7 @@
 		}
 		r = r || [];
 		each(r, function(k, v) {
-<<<<<<< HEAD
 			v && me.push(v)
-=======
-			isDom(v) && me.push(v)
->>>>>>> 61143bb58f7999ebe9a0e15d3d9adc3d3c28870b
 		})
 		return me
 	}
