@@ -46,7 +46,7 @@
 		}
 		r = r || [];
 		each(r, function(k, v) {
-			me.push(v)
+			isDom(v) && me.push(v)
 		})
 		return me
 	}
@@ -84,6 +84,7 @@
 				}
 			}
 		}
+		
 		return r
 	}
 	function execObject(v, target) {
@@ -91,8 +92,7 @@
 	}
 	// As much as possible to Array
 	function muchToArray(a) {
-		return !SE() ? a.slice(0, a.length) : a
-		//return a
+		return isArray(a) ? a : a.slice(0, a.length)
 	}
 	// 具体的实现查找
 	function findHandle(context, qa) {
