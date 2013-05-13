@@ -7,12 +7,12 @@
  */
 (function($) {
 	var doc = document, win = window, loc = location, moduleFlag = "module", //处理方法标记
-	encode = $.encode, sun = $.sun; //方法map
+	encode = $.encode; //方法map
 	function set(hash) {
 		loc.hash = hash;
 	}
 	function get() {
-		return loc.hash.replace(/^#/g, "").trim()
+		return loc.hash.replace(/^#/g, "")
 	}
 	function getKey(h) {
 		var key = h.match(/[^=]+=/);
@@ -22,23 +22,18 @@
 		return h ? h.replace(key, "").replace(/^=/g, "") : null
 	}
 	function getModuleInfo(url) {
-		var query = url || (get() == "" ? loc.search.replace(/^\?/, "") : get()), //
-		hs = query.split("&"), info = {};
+		var query = url || get(), hs=query.split("&"), info = {};
 		$.each(hs, function(i, val) {
 			var kv = val.split("="), key = kv[0], value = kv[1];
 			info[key] = value
 		});
 		return info
 	}
-	function useModule(_event, url) {
-		var info = getModuleInfo(url), moduleName = info[moduleFlag];
-		moduleName && sun.use(moduleName, function(module) {
+	function hashchange(e, param) {
+		var info = getModuleInfo(get() || loc.href), module = info[moduleFlag];
+		$.sun.use(module,function(module){
 			module(info)
-		});
-		return moduleName
-	}
-	function hashchange(_event) {
-		useModule(_event) || useModule(_event, loc.search.replace(/^\?/, ""))
+		})
 	}
 	function bind() {
 		$(win).on("hashchange", hashchange)
@@ -48,20 +43,22 @@
 	}
 	$(doc).ready(function() {
 		bind();
-		hashchange(doc.createEvent ? doc.createEvent("MouseEvents") : null)
+		var ev = doc.createEvent ? doc.createEvent("MouseEvents") : null;
+		hashchange(ev, null)
 	})
 	$.extend( {
 		nav : {
-			use : function(moduleName, info, callback) {
-				sun.use(moduleName, function(module) {
+			use : function(module, param, callback) {
+				$.sun.use(module, function(module) {
+					console.log("use module:" + module);
 					var hv = [];
-					hv.push(encode(moduleFlag) + "=" + encode(moduleName))
-					$.each(info, function(name, value) {
-						hv.push(encode(name) + "=" + encode(value))
-					})
+					hu.push(encode(moduleFlag) + "=" + encode(module))
+					for ( var name in param) {
+						hv.push(encode(name) + "=" + encode(param[name]))
+					}
 					unBind();
 					set(hv.join("&"));
-					module(info);
+					module(param);
 					callback && callback(param);
 					setTimeout(bind, 500);
 				});
