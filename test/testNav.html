@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http - equiv="Content-Type" content="text/html; charset=utf-8"/ >
+  <link rel="stylesheet" href="unit/qunit.css" type="text/css" media="screen" />
+  <script type="text/javascript" src="unit/qunit.js"></script>
+
+<script type="text/javascript" src="../assets/Qmik-debug.js"> </script>
+<script type="text/javascript" src="../src/plugins/Qmik.nav.js "></script>
+<script type="text/javascript " src="testNav.js "></script>
+<title></title>
+</head>
+"test/test1QUnit.html"
+<body>
+"test/test1QUnit.html"
+<div style="left: 300px;">
+ 
+<a id="click1" href="javascript:">click1:</a><br />
+<a id="click2" href="javascript:">click2:</a><br />
+<a id="click3" href="javascript:">click3:</a><br />
+</div>
+<div>
+    <!-- <iframe src="testQuery.html" id="content"></iframe>-->
+</div>
+</body>
+<script type="text/javascript">
+	//定义测试模块
+	module( "测试示例" );
+	//定义一个简单的函数，判断参数是不是数字
+	function simpleTest(para) {
+	  if(typeof para == "number") {
+	    return true;
+	  }
+	  else{
+	    return false;
+	  }
+	}
+	//开始单元测试
+	test('simpleTest()', function() {
+	  //列举各种可能的情况，注意使用 ! 保证表达式符合应该的逻辑
+	  ok(simpleTest(2), '2是一个数字');
+	  ok(!simpleTest("2"), '"2"不是一个数字');
+	});
+</script>
+</html>

@@ -15,7 +15,7 @@ module.exports = function(grunt) {
     concat: {
       dist: {
         src: ['src/Qmik.js','src/Qmik._query.js','src/Qmik.Cache.js','src/Qmik._event.js','src/Qmik._view.js','src/Qmik.sun.js'],
-        dest: "dist/Qmik-debug.js"
+        dest: "assets/Qmik-debug.js"
       }
     },
     uglify: {

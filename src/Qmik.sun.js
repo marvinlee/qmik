@@ -4,7 +4,7 @@
  * @version:0.91.008
  */
 (function(Q) {
-	var win = Q.global, loc = win.location, each = Q.each;
+	var win = Q.global, doc = win.document, loc = win.location, hostname = loc.hostname, each = Q.each;
 	var isArray = Q.isArray, isString = Q.isString, isFun = Q.isFun, isNull = Q.isNull;
 	var config = {
 		alias : {},
@@ -13,8 +13,8 @@
 		map : [],
 		preload : []
 	};
-	var cacheModule = {};
-	var base = loc.protocol + "//" + loc.pathname.replace(/\/[^\/]*$/, "/").replace(/\/\s*[0-9.]*\s*\/$/, "/");
+	var cacheModule = {}, //
+	base = loc.protocol + "//" + hostname;
 	var sun = {};
 	function Module(id, dependencies, factory) {
 		Q.extend(this, {
@@ -110,25 +110,27 @@
 				callback && callback(module.exports)
 			} else {
 				var idx = 0, depModule, dependencies = module.dependencies;
-				each(dependencies, function(i, _id) {
-					request(_id, function() {
-						depModule = cacheModule[_id];
-						depModule.factory(require, depModule.exports, depModule);
-						if (++idx == dependencies.length) {
-							module.factory(require, module.exports, module);
-							module.isReady = !0;
-							callback && callback(module.exports)
-						}
+				if (dependencies.length < 1) {
+					initModule(module, require, callback)
+				} else {
+					each(dependencies, function(i, _id) {
+						request(_id, function() {
+							initModule(cacheModule[_id], require, callback);
+							++idx == dependencies.length && initModule(module, require, callback)
+						})
 					})
-				})
+				}
 			}
 		} else {
 			request(id, function() {
-				module = cacheModule[id];
-				module.factory(require, module.exports, module);
-				callback && callback(module.exports)
+				initModule(cacheModule[id], require, callback)
 			})
 		}
+	}
+	function initModule(module, require, callback) {
+		module.factory(require, module.exports, module);
+		module.isReady = !0;
+		callback && callback(module.exports)
 	}
 	function request(id, callback) {
 		var url = id2url(id), idx = url.indexOf("?"), node;

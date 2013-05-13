@@ -3,7 +3,7 @@ Qmik.config("debug",true);
 Qmik.config("error",{enable:true})
 Qmik.sun.config( {
 	alias : {
-		'mo' : 'http://127.0.0.1/js/mo'
+		'mo' : '/test/module/mo'
 	}
 });
 Qmik.sun.define("ak", function(require, exports, module) {
