@@ -20,11 +20,14 @@
 		Q.extend(this, {
 			url : id2url(id),
 			id : id || id2url(id),
-			dependencies : dependencies,
+			dependencies : dependencies,// 依赖模块
 			factory : factory,
-			//module is ready ,if no, request src from service
-			isReady : !1,
-			exports : {},
+			// module is ready ,if no, request src from service
+			isReady : !1,// is ready ,default false,
+			exports : {},// export object
+			createTime : Q.now(),// create time
+			lastTime : Q.now(),
+			useCount : 0,// use count,使用次数
 			destroy : function() {
 				delete cacheModule[id]
 			}
@@ -44,11 +47,10 @@
 		dependencies = dependencies.concat(parseDepents(factory));
 		cacheModule[id] = new Module(id, Q.unique(dependencies), factory)
 	}
-	//get depends from function.toString()
+	// get depends from function.toString()
 	function parseDepents(code) {
 		code = code.toString();
-		var params = code.replace(/^\s*function\s*\w*\s*/, "").match(/^\([\w ,]*\)/)[0].replace("\(", "")
-			.replace("\)", "");
+		var params = code.replace(/^\s*function\s*\w*\s*/, "").match(/^\([\w ,]*\)/)[0].replace("\(", "").replace("\)", "");
 		var match = [], idx = params.indexOf(",");
 		if (idx >= 0) {
 			var require = params.substring(0, idx), pattern = new RegExp(require + "\s*[(]\s*[\"']([^\"'\)]+)[\"']\s*[)]", "g");
@@ -83,7 +85,7 @@
 			})
 		}
 	}
-	//require module
+	// require module
 	function require(id) {
 		var module = cacheModule[id];
 		return module ? module.exports : module
@@ -92,14 +94,14 @@
 		resolve : id2url,
 		async : use
 	});
-	//pre load module
+	// pre load module
 	function preload(callback) {
-		var idx = 0, dependencies = config.preload, length = dependencies.length, depModule;
+		var idx = 0, dependencies = config.preload, length = dependencies.length;
 		length == 0 ? callback() : each(dependencies, function(i, id) {
+			idx++;
 			cacheModule[id] || request(id2url(id), function() {
-				depModule = cacheModule[id];
-				depModule.factory(require, depModule.exports, depModule);
-				++idx == length && callback()
+				useModule(cacheModule[id], require);
+				idx == length && callback()
 			})
 		})
 	}
@@ -107,36 +109,38 @@
 		var module = cacheModule[id];
 		if (module) {
 			if (module.isReady) {
-				callback && callback(module.exports)
+				useModule(module, require, callback)
 			} else {
 				var idx = 0, depModule, dependencies = module.dependencies;
 				if (dependencies.length < 1) {
-					initModule(module, require, callback)
+					useModule(module, require, callback)
 				} else {
 					each(dependencies, function(i, _id) {
 						request(_id, function() {
-							initModule(cacheModule[_id], require, callback);
-							++idx == dependencies.length && initModule(module, require, callback)
+							useModule(cacheModule[_id], require, callback);
+							++idx == dependencies.length && useModule(module, require, callback)
 						})
 					})
 				}
 			}
 		} else {
 			request(id, function() {
-				initModule(cacheModule[id], require, callback)
+				useModule(cacheModule[id], require, callback)
 			})
 		}
 	}
-	function initModule(module, require, callback) {
-		module.factory(require, module.exports, module);
+	function useModule(module, require, callback) {
+		module.isReady != !0 && module.factory(require, module.exports, module);
 		module.isReady = !0;
+		module.useCount++;
+		module.lastTime = Q.now();
 		callback && callback(module.exports)
 	}
 	function request(id, callback) {
 		var url = id2url(id), idx = url.indexOf("?"), node;
 		if (/\/.+\.css\s*$/i.test(idx >= 0 ? url.substring(0, idx) : url)) {
 			node = doc.createElement("link");
-			//node.type = "text/css";
+			// node.type = "text/css";
 			node.rel = 'stylesheet';
 			node.href = url;
 			Q(win.document.head).append(node)
@@ -147,7 +151,7 @@
 			})
 		}
 	}
-	////////////////// id to url start ///////////////////////////////
+	// //////////////// id to url start ///////////////////////////////
 	function id2url(id) {
 		isNull(id) && (id = loc.href);
 		id = alias2url(id);
@@ -179,7 +183,7 @@
 		});
 		return id
 	}
-	//////////////////id to url end ///////////////////////////////
+	// ////////////////id to url end ///////////////////////////////
 	Q.extend(sun, {
 		use : use,
 		// factory:function(require, exports, module)
@@ -189,6 +193,20 @@
 			return isString(opts) ? config[opts] : null
 		}
 	});
+	Q.cycle(function() {
+		var count = 0;
+		each(cacheModule, function(key, module) {
+			count++
+		});
+		function clear(module) {
+			module.destroy();
+			count--;
+		}
+		count > 12 && each(cacheModule, function(key, module) {
+			module.useCount < 5 && clear();
+			module.useCount = 0;
+		})
+	}, 300000);
 	Q.sun = sun;
 	win.define = sun.define
 })(Qmik);

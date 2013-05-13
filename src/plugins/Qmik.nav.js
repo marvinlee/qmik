@@ -17,8 +17,8 @@
 		var query = url || (get() == "" ? loc.search.replace(/^\?/, "") : get()), //
 		hs = query.split("&"), info = {};
 		$.each(hs, function(i, val) {
-			var kv = val.split("="), key = kv[0], value = kv[1];
-			info[key] = value
+			var kv = val.split("=");
+			info[kv[0]] = kv[1]
 		});
 		return info
 	}
@@ -55,9 +55,9 @@
 					set(hv.join("&"));
 					module(info);
 					callback && callback(param);
-					setTimeout(bind, 500);
-				});
+					setTimeout(bind, 500)
+				})
 			}
 		}
-	});
+	})
 })(Qmik);
