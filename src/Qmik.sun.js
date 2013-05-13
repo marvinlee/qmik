@@ -4,7 +4,7 @@
  * @version:0.91.008
  */
 (function(Q) {
-	var win = Q.global, loc = win.location, each = Q.each;
+	var win = Q.global, doc = win.document, loc = win.location, hostname = loc.hostname, each = Q.each;
 	var isArray = Q.isArray, isString = Q.isString, isFun = Q.isFun, isNull = Q.isNull;
 	var config = {
 		alias : {},
@@ -13,8 +13,8 @@
 		map : [],
 		preload : []
 	};
-	var cacheModule = {};
-	var base = loc.protocol + "//" + loc.pathname.replace(/\/[^\/]*$/, "/").replace(/\/\s*[0-9.]*\s*\/$/, "/");
+	var cacheModule = {}, //
+	base = loc.protocol + "//" + hostname;
 	var sun = {};
 	function Module(id, dependencies, factory) {
 		Q.extend(this, {
