@@ -1,32 +1,24 @@
 /**
  * @author:leochen
  * @email:cwq0312@163.com
- * @version:1.0 hash导航(利用hash的前进后退,支持刷新后的前进后退) hash规则: hash=encode(name + "=" +
- *              value)+"&"+encode(name + "=" + value); url:
- *              __hashSearch=encode(hash)#hash,
+ * @deprecated nav导航(利用hashchang事件实现前进后退民航,支持刷新后的前进后退)
+ * @version:1.0
  */
 (function($) {
-	var doc = document, win = window, loc = location, moduleFlag = "module", //处理方法标记
-	encode = $.encode, sun = $.sun; //方法map
+	var win = $.global, doc = win.document, loc = location, moduleFlag = "module", // 处理方法标记
+	encode = $.encode, sun = $.sun; // 方法map
 	function set(hash) {
 		loc.hash = hash;
 	}
 	function get() {
 		return loc.hash.replace(/^#/g, "").trim()
 	}
-	function getKey(h) {
-		var key = h.match(/[^=]+=/);
-		if (key) { return key[0].replace(/=$/g, "") }
-	}
-	function getVal(h, key) {
-		return h ? h.replace(key, "").replace(/^=/g, "") : null
-	}
 	function getModuleInfo(url) {
 		var query = url || (get() == "" ? loc.search.replace(/^\?/, "") : get()), //
 		hs = query.split("&"), info = {};
 		$.each(hs, function(i, val) {
-			var kv = val.split("="), key = kv[0], value = kv[1];
-			info[key] = value
+			var kv = val.split("=");
+			info[kv[0]] = kv[1]
 		});
 		return info
 	}
@@ -63,9 +55,9 @@
 					set(hv.join("&"));
 					module(info);
 					callback && callback(param);
-					setTimeout(bind, 500);
-				});
+					setTimeout(bind, 500)
+				})
 			}
 		}
-	});
+	})
 })(Qmik);
