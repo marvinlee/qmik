@@ -307,8 +307,7 @@
 		if(errorStack.count>0){
 			if(econfig.enable){
 				var img=new Image();
-				img.src=(config.error.url||"/error")+"?errorlog="+toString(errorStack);
-				delete img
+				img.src=(config.error.url||"/error")+"?errorlog="+toString(errorStack)
 			}
 			errorStack={count:0}
 		}
