@@ -14,19 +14,6 @@
 		CT : /^([\w-_]+)?\.[\w-_]+/,
 		TAG : /^[\w-_]+/
 	};
-	//init node list
-	(function initList(list) {
-		var ind, val;
-		for (ind in list) {
-			val = list[ind];
-			if (val) {
-				val.prototype.slice = protoArray.slice;
-				val.prototype.splice = protoArray.splice
-			}
-		}
-	})( [
-		win.NodeList, win.HTMLCollection
-	]);
 	function Query(selector, context) {
 		var me = this, r;
 		me.context = context = context || doc;
@@ -84,7 +71,6 @@
 				}
 			}
 		}
-		
 		return r
 	}
 	function execObject(v, target) {
@@ -113,10 +99,10 @@
 						break
 					case 'CT':
 						var ds = getTagClass(q), tn = ds[0], cn = ds[1];
-						//if (tn) (dom.tagName == toUpper(tn) && hasClass(dom, cn)) && r.push(dom);
-						//else hasClass(dom, cn) && r.push(dom);						
-						tn ? dom.tagName == toUpper(tn) && hasClass(dom, cn) && r.push(dom) : hasClass(dom, cn) && r
-																															.push(dom)
+						// if (tn) (dom.tagName == toUpper(tn) && hasClass(dom, cn))
+						// && r.push(dom);
+						// else hasClass(dom, cn) && r.push(dom);
+						tn ? dom.tagName == toUpper(tn) && hasClass(dom, cn) && r.push(dom) : hasClass(dom, cn) && r.push(dom)
 						break
 					case 'TAG':
 						dom.tagName == toUpper(q) && r.push(dom);
@@ -157,7 +143,8 @@
 		each(array, function(i, n) {
 			if (isDom(n)) {
 				attribute = at(n, name);
-				//attribute = attribute ? attribute : (isClass ? n.className : attribute);
+				// attribute = attribute ? attribute : (isClass ? n.className :
+				// attribute);
 				attribute = isClass ? n.className : attribute;
 				exist = isClass ? new RegExp(replace(value, /[ ]/g, "|")).test(attribute) : attribute == value;
 				isEqual ? exist && ret.push(n) : !exist && ret.push(n);
@@ -173,8 +160,10 @@
 		] : byAttr(dom, "[id=\"" + selector + "\"]")
 	}
 	function byAttr(dom, selector) {
-		//var st = getTagAttr(selector), tag = st[0], attrName = st[1], attrValue = st[2], isEqual = selector.indexOf('!=') == -1;
-		//return findMath(muchToArray(dom.getElementsByTagName(tag || "*")), attrName, attrValue, isEqual)
+		// var st = getTagAttr(selector), tag = st[0], attrName = st[1], attrValue
+		// = st[2], isEqual = selector.indexOf('!=') == -1;
+		// return findMath(muchToArray(dom.getElementsByTagName(tag || "*")),
+		// attrName, attrValue, isEqual)
 		return findMath(muchToArray(dom.getElementsByTagName(st[0] || "*")), st[1], st[2], selector.indexOf('!=') == -1)
 	}
 	// /////////////////////////////////////////////////
@@ -328,7 +317,7 @@
 	function at(o, n) {
 		return o[n] || o.getAttribute(n)
 	}
-	//selector 选择语句,parentList 父结果列表("div a.aa p" p的父结果列表就是 div a.aa)
+	// selector 选择语句,parentList 父结果列表("div a.aa p" p的父结果列表就是 div a.aa)
 	function compile(selector, parentList) { // 编译查询条件，返回[{type,query,isChild}...]
 		var st, n, isChild = /^\s*>\s*/.test(selector);
 		selector = replace(selector, /^\s*>?\s*/, "");
@@ -351,25 +340,21 @@
 	function adapRule(dom, parentQuery, isCycle, context) {
 		if (!isDom(dom)) return !1;
 		context = context || doc;
-		//isCycle = isNull(isCycle) ? !0 : isCycle;
+		// isCycle = isNull(isCycle) ? !0 : isCycle;
 		isCycle = isCycle != !1;
 		var query = parentQuery.query, isGP = !parentQuery.isChild && (isCycle != !1), p = dom.parentNode;
 		if (!isDom(p)) return !1;
 		if (!Q.contains(context, dom)) return !1;
 		switch (parentQuery.type) {
 		case 'ID':
-			return (at(p, "id") == trim(replace(query, /^#/, ""))) ? !0
-																					: isGP ? adapRule(p, parentQuery, isCycle, context) : !1;
+			return (at(p, "id") == trim(replace(query, /^#/, ""))) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context) : !1;
 		case 'ATTR':
 			var ds = getTagAttr(query), tag = ds[0], k = ds[1], v = ds[2];
-			return (toLower(p.tagName) == tag && at(p, k) == v) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context)
-																								: !1;
+			return (toLower(p.tagName) == tag && at(p, k) == v) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context) : !1;
 		case 'CT':
 			var ds = getTagClass(query), tag = ds[0], className = ds[1];
 			if (tag) {
-				return (toLower(p.tagName) == tag && hasClass(p, className)) ? !0
-																								: isGP ? adapRule(p, parentQuery, isCycle, context)
-																										: !1
+				return (toLower(p.tagName) == tag && hasClass(p, className)) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context) : !1
 			} else {
 				return hasClass(p, className) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context) : !1
 			}
@@ -503,7 +488,7 @@
 		html : function(v) {
 			if (arguments.length < 1) return attr(this, "innerHTML");
 			else {
-				each(Q(this),function(i,node){
+				each(Q(this), function(i, node) {
 					Q(node).remove()
 				});
 				attr(this, "innerHTML", isQmik(v) ? v.html() : v, !0);
@@ -615,11 +600,12 @@
 			return hasClass(this[0], c)
 		},
 		closest : function(selector) {// 查找最近的匹配的父(祖父)节点
-			return parents(selector, this, false) 	
+			return parents(selector, this, false)
 			/**
 			 * selector:选择器 qmik:qmik查询对象 isAllP:是否包含所有父及祖父节点 默认true
-			 * isOnlyParent:是否只包含父节点 默认false
-			function parents(selector, qmik, isAllP, isOnlyParent) */
+			 * isOnlyParent:是否只包含父节点 默认false function parents(selector, qmik,
+			 * isAllP, isOnlyParent)
+			 */
 		},
 		parents : function(selector) {// 查找所有的匹配的父(祖父)节点
 			return parents(selector, this, true)
@@ -633,7 +619,7 @@
 		removeData : Q.fn.rmData,
 		removeAttr : Q.fn.rmAttr
 	});
-	//event
+	// event
 	var qwc = "touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"
 		.split(" ");
 	each(qwc, function(i, v) {

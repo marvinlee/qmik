@@ -6,7 +6,14 @@
 (function() {
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent;
 	var encode = encodeURIComponent, decode = decodeURIComponent, config = {};
-	var slice = Array.prototype.slice;
+	var slice = Array.prototype.slice, nodeList = [
+		win.NodeList, win.HTMLCollection
+	];
+	// init node list
+	(function initList(list) {
+		for ( var ind in list)
+			list[ind] && (list[ind].prototype.slice = slice)
+	})(nodeList);
 	// define qmik object
 	function Q(selector, context) {
 		return Q.init(selector, context)
@@ -65,7 +72,10 @@
 		return v instanceof Array
 	}
 	function likeArray(v) { // like Array
-		return isArray(v) || (v && !isDom(v) && !isString(v) && isNum(v.length) && v != win)
+		var like = isArray(v);
+		if (!like) for ( var i in nodeList)
+			nodeList[i] && v instanceof nodeList[i] && (like = !0);
+		return like
 	}
 	// isFunction
 	function isFun(v) {
@@ -125,7 +135,9 @@
 	function isGrandfather(grandfather, child) {
 		return isDom(child) && (grandfather === child.parentNode ? !0 : isGrandfather(grandfather, child.parentNode))
 	}
-	var errorStack={count:0};
+	var errorStack = {
+		count : 0
+	};
 	Q.extend( {
 		encode : encode,
 		decode : encode,
@@ -283,35 +295,39 @@
 			isObject(key) ? Q.extend(config, key) : isString(key) && (config[key] = value);
 			return isString(key) ? config[key] : config
 		},
-		box : function(callback,opts){
-			return function(){
-				try{
-					callback.apply(this,arguments)
-				}catch(e){
-					//Q.config(error,{enable,url:""});
-					var stack=e.stack, log=errorStack[stack];
-					if(log){
+		box : function(callback, opts) {
+			return function() {
+				try {
+					callback.apply(this, arguments)
+				} catch (e) {
+					// Q.config(error,{enable,url:""});
+					var stack = e.stack, log = errorStack[stack];
+					if (log) {
 						log.num++
-					}else {
-						log=errorStack[stack]={num:1};
+					} else {
+						log = errorStack[stack] = {
+							num : 1
+						};
 						errorStack.count++;
-						Q.extend(log,opts)
+						Q.extend(log, opts)
 					}
 					throw e
 				}
 			}
 		}
 	});
-	function errorlog(){
-		var econfig=config.error||{};
-		if(errorStack.count>0){
-			if(econfig.enable){
-				var img=new Image();
-				img.src=(config.error.url||"/error")+"?errorlog="+toString(errorStack)
+	function errorlog() {
+		var econfig = config.error || {};
+		if (errorStack.count > 0) {
+			if (econfig.enable) {
+				var img = new Image();
+				img.src = (config.error.url || "/error") + "?errorlog=" + toString(errorStack)
 			}
-			errorStack={count:0}
+			errorStack = {
+				count : 0
+			}
 		}
-		Q.delay(errorlog,econfig.ttl||60000)
+		Q.delay(errorlog, econfig.ttl || 60000)
 	}
 	errorlog();
 	Q.version = "1.00.001";
