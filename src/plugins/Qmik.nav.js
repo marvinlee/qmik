@@ -4,9 +4,12 @@
  * @deprecated nav导航(利用hashchang事件实现前进后退民航,支持刷新后的前进后退)
  * @version:1.0
  */
-(function($) {
-	var win = $.global, doc = win.document, loc = location, moduleFlag = "module", // 处理方法标记
-	encode = $.encode, sun = $.sun; // 方法map
+(function(Q) {
+	var win = Q.global, doc = win.document, loc = location, moduleFlag = "module", // 处理方法标记
+	encode = Q.encode, sun = Q.sun, isFun = Q.isFun, // 方法map
+	config = {}, //
+	isSupportHash = ("onhashchange" in win) && (doc.documentMode === undefined || doc.documentMode > 7);
+	;
 	function set(hash) {
 		loc.hash = hash;
 	}
@@ -16,7 +19,7 @@
 	function getModuleInfo(url) {
 		var query = url || (get() == "" ? loc.search.replace(/^\?/, "") : get()), //
 		hs = query.split("&"), info = {};
-		$.each(hs, function(i, val) {
+		Q.each(hs, function(i, val) {
 			var kv = val.split("=");
 			info[kv[0]] = kv[1]
 		});
@@ -33,30 +36,48 @@
 		useModule(_event) || useModule(_event, loc.search.replace(/^\?/, ""))
 	}
 	function bind() {
-		$(win).on("hashchange", hashchange)
+		Q(win).on("hashchange", hashchange)
 	}
 	function unBind() {
-		$(win).un("hashchange", hashchange, bind);
+		Q(win).un("hashchange", hashchange, bind);
 	}
-	$(doc).ready(function() {
+	Q(doc).ready(function() {
 		bind();
 		hashchange(doc.createEvent ? doc.createEvent("MouseEvents") : null)
 	})
-	$.extend( {
+	Q.extend( {
 		nav : {
-			use : function(moduleName, info, callback) {
+			use : function(moduleName, viewUrl, info, callback) {
 				sun.use(moduleName, function(module) {
+					if (Q.isString(viewUrl)) {
+						if (isFun(info)) {
+							callback = info;
+							info = {}
+						}
+					} else if (Q.isObject(viewUrl)) {
+						info = viewUrl;
+						viewUrl = null;
+					} else if (isFun(viewUrl)) {
+						callback = viewUrl;
+						info = {};
+						viewUrl = null
+					}
 					var hv = [];
 					hv.push(encode(moduleFlag) + "=" + encode(moduleName))
-					$.each(info, function(name, value) {
+					Q.each(info, function(name, value) {
 						hv.push(encode(name) + "=" + encode(value))
-					})
-					unBind();
-					set(hv.join("&"));
-					module(info);
-					callback && callback(param);
-					setTimeout(bind, 500)
+					});
+					if (isSupportHash) {
+						unBind();
+						set(hv.join("&"));
+						module(info);
+						callback && callback(param);
+						setTimeout(bind, 500)
+					}
 				})
+			},
+			config : function(opt) {
+				return Q.config(opt, config)
 			}
 		}
 	})

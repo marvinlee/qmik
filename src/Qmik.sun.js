@@ -189,8 +189,9 @@
 		// factory:function(require, exports, module)
 		define : define,
 		config : function(opts) {
-			Q.isObject(opts) && Q.extend(config, opts);
-			return isString(opts) ? config[opts] : null
+			// Q.isObject(opts) && Q.extend(config, opts);
+			// return isString(opts) ? config[opts] : null
+			return Q.config(opts, config)
 		}
 	});
 	Q.cycle(function() {

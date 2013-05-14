@@ -291,9 +291,9 @@
 		isWP : function() {
 			return /Windows Phone/.test(UA)
 		},
-		config : function(key, value) {
-			isObject(key) ? Q.extend(config, key) : isString(key) && (config[key] = value);
-			return isString(key) ? config[key] : config
+		config : function(opts, _config) {
+			_config = arguments.length == 1 ? config : (_config || {});
+			return isObject(opts) ? Q.extend(_config, opts) : _config[opts]
 		},
 		box : function(callback, opts) {
 			return function() {

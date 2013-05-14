@@ -10,6 +10,8 @@
 			$.nav.use("mo", {
 				key : "sawr[]{a:'asdf',list:[1,2,3]}",
 				age : 14
+			},function(v){
+				console.log("cccccbakk back:"+v)
 			});
 		});
 		$("#click2").on("click", function() {
@@ -25,3 +27,7 @@
 		});
 	})
 })(Qmik);
+function abc(a,b,c){
+	console.log(arguments.length)
+}
+abc(1);
