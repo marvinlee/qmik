@@ -83,14 +83,15 @@
 	function execObject(v, target) {
 		return isFun(v) ? (target ? v.call(target, v) : v()) : v
 	}
+	function aslice(start, length) {
+		var r = [], size = start + length, me = this;
+		for ( var i = start; i < size && i < me.length; i++)
+			r.push(me[i]);
+		return r
+	}
 	// As much as possible to Array
 	function muchToArray(a) {
-		a.slice = a.slice || function(start, length) {
-			var r = [], size = start + length;
-			for ( var i = start; i < size && i < a.length; i++)
-				r.push(a[i]);
-			return r
-		}
+		a.slice = isArray(a) ? a.slice : aslice;
 		return isArray(a) ? a : a.slice(0, a.length)
 	}
 	// 具体的实现查找
