@@ -29,7 +29,8 @@
 		} else {
 			r = likeArray(selector) ? selector : [
 				selector
-			]
+			];
+			r = (r + "" == "[object Text]") ? [] : r
 		}
 		r = r || [];
 		each(r, function(k, v) {
@@ -472,8 +473,7 @@
 		},
 		remove : function() {
 			each(this, function(i, v) {
-				var p = v.parentNode;
-				isDom(p) && p.removeChild(v)
+				isDom(v.parentNode) && v.parentNode.removeChild(v)
 			});
 			return this
 		},
@@ -486,12 +486,9 @@
 			return this
 		},
 		html : function(v) {
-			if (arguments.length < 1) return attr(this, "innerHTML");
+			if (arguments.length < 1) return attr(this, "innerHTML")
 			else {
-				each(Q(this), function(i, node) {
-					Q(node).remove()
-				});
-				attr(this, "innerHTML", isQmik(v) ? v.html() : v, !0);
+				attr(this, "innerHTML", isQmik(v) ? v.html() : v, !0)
 			}
 			return this
 		},
