@@ -18,6 +18,7 @@
 		var me = this, r;
 		me.context = context = context || doc;
 		me.selector = selector;
+		me.length = 0;
 		if (isString(selector)) {
 			if (rNode.test(selector)) {
 				var t = doc.createElement('div');
@@ -33,12 +34,17 @@
 			r = (r + "" == "[object Text]") ? [] : r
 		}
 		r = r || [];
-		each(r, function(k, v) {
-			v && me.push(v)
-		})
+		for ( var i = 0; i < r.length; i++) {
+			r[i] && me.push(r[i])
+		}
 		return me
 	}
-	Q.inherit(Query, Array);
+	Q.extend(Query.prototype, {
+		push : function(v) {
+			this[this.length++] = v
+		}
+	});
+	// Q.inherit(Query, Array);
 	function init(selector, context) {
 		context = context || doc;
 		if (isFun(selector)) { return Q(doc).ready(selector) }
@@ -79,6 +85,12 @@
 	}
 	// As much as possible to Array
 	function muchToArray(a) {
+		a.slice = a.slice || function(start, length) {
+			var r = [], size = start + length;
+			for ( var i = start; i < size && i < a.length; i++)
+				r.push(a[i]);
+			return r
+		}
 		return isArray(a) ? a : a.slice(0, a.length)
 	}
 	// 具体的实现查找
@@ -161,10 +173,7 @@
 		] : byAttr(dom, "[id=\"" + selector + "\"]")
 	}
 	function byAttr(dom, selector) {
-		// var st = getTagAttr(selector), tag = st[0], attrName = st[1], attrValue
-		// = st[2], isEqual = selector.indexOf('!=') == -1;
-		// return findMath(muchToArray(dom.getElementsByTagName(tag || "*")),
-		// attrName, attrValue, isEqual)
+		var st = getTagAttr(selector);
 		return findMath(muchToArray(dom.getElementsByTagName(st[0] || "*")), st[1], st[2], selector.indexOf('!=') == -1)
 	}
 	// /////////////////////////////////////////////////
@@ -189,24 +198,24 @@
 	}
 	function append(o, child) {
 		child = muchValue2Qmik(child);
-		if (isArray(o)) {
+		if (likeArray(o)) {
 			each(o, function(k, v) {
 				append(v, child)
 			})
 		} else if (isDom(o)) {
-			isArray(child) ? each(child, function(k, v) {
+			likeArray(child) ? each(child, function(k, v) {
 				append(o, v)
 			}) : o.appendChild(isDom(child) ? child : doc.createTextNode(child))
 		}
 	}
 	function before(o, child) {
 		child = muchValue2Qmik(child);
-		if (isArray(o)) {
+		if (likeArray(o)) {
 			each(o, function(k, v) {
 				before(v, child)
 			})
 		} else if (isDom(o)) {
-			isArray(child) ? each(child, function(k, v) {
+			likeArray(child) ? each(child, function(k, v) {
 				before(o, v)
 			}) : o.parentNode.insertBefore(isDom(child) ? child : doc.createTextNode(child), o)
 		}
@@ -223,7 +232,7 @@
 	}
 	function css(o, k, v) {
 		k = isString(k) && !isNull(v) ? toJSON('{"' + k + '":"' + execObject(v) + '"}') : k;
-		if (isArray(o)) {
+		if (likeArray(o)) {
 			if (isString(k)) return css(o[0], k);
 			each(o, function(i, j) {
 				css(j, k)
@@ -238,7 +247,7 @@
 		}
 	}
 	function attr(target, name, val, isSetValue) {
-		if (isArray(target)) {
+		if (likeArray(target)) {
 			if (isString(name) && isNull(val)) return attr(target[0], name, val, isSetValue);
 			each(target, function(i, j) {
 				attr(j, name, val, isSetValue)
@@ -284,12 +293,12 @@
 		}
 		k = "queue$" + (k || "fx");
 		var s = data(o, k) || [];
-		if (isArray(f)) data(o, k, toV(f, F));
+		if (likeArray(f)) data(o, k, toV(f, F));
 		else if (isF(f)) {
 			s.push(f);
 			data(o, k, s)
 		}
-		return isNull(f) ? isArray(f) ? f : s : o
+		return isNull(f) ? likeArray(f) ? f : s : o
 	}
 	var rK = /[\S-_]+=/, rC = /[.][\S-_]+/;
 	function getTagAttr(select) { // div[name=aa] get div name aa
@@ -616,6 +625,7 @@
 		removeData : Q.fn.rmData,
 		removeAttr : Q.fn.rmAttr
 	});
+	Q.isQmik = isQmik;
 	// event
 	var qwc = "touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"
 		.split(" ");
