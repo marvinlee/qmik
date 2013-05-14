@@ -6,14 +6,15 @@
 (function() {
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent;
 	var encode = encodeURIComponent, decode = decodeURIComponent, config = {};
-	var slice = Array.prototype.slice, nodeList = [
-		win.NodeList, win.HTMLCollection
-	];
+	var slice = Array.prototype.slice;
 	// init node list
-	(function initList(list) {
-		for ( var ind in list)
+	(function(list) {
+		for ( var ind in list) {
 			list[ind] && (list[ind].prototype.slice = slice)
-	})(nodeList);
+		}
+	})( [
+		win.NodeList, win.HTMLCollection
+	]);
 	// define qmik object
 	function Q(selector, context) {
 		return Q.init(selector, context)
@@ -72,10 +73,8 @@
 		return v instanceof Array
 	}
 	function likeArray(v) { // like Array
-		var like = isArray(v);
-		if (!like) for ( var i in nodeList)
-			nodeList[i] && v instanceof nodeList[i] && (like = !0);
-		return like
+		return isArray(v) || (!isString(v) && (v + "" == "[object NodeList]" || v + "" == "[object HTMLCollection]"))
+					|| (Q.isQmik && Q.isQmik(v))
 	}
 	// isFunction
 	function isFun(v) {
@@ -89,12 +88,13 @@
 	}
 	function each(obj, callback) { // each fun(k,v)
 		var i;
-		if (likeArray(obj)) for (i = 0; i < obj.length; i++) {
-			if (callback.call(obj[i], i, obj[i]) === !1) break
-		}
-		else if (isObject(obj)) {
+		if (likeArray(obj)) {
+			for (i = 0; i < obj.length; i++) {
+				callback.call(obj[i], i, obj[i])
+			}
+		} else if (isObject(obj)) {
 			for (i in obj) {
-				if (callback.call(obj[i], i, obj[i]) === !1) break
+				callback.call(obj[i], i, obj[i])
 			}
 		}
 	}
@@ -229,7 +229,7 @@
 			var node = doc.createElement("script");
 			node.type = "text/javascript";
 			node.src = url;
-			Q(doc.head).append(node);
+			Q("head").append(node);
 			node.onload = node.onreadystatechange = callback;
 			return node
 		},
@@ -292,6 +292,7 @@
 			return /Windows Phone/.test(UA)
 		},
 		config : function(opts, _config) {
+			if (isNull(opts)) return _config;
 			_config = arguments.length == 1 ? config : (_config || {});
 			return isObject(opts) ? Q.extend(_config, opts) : _config[opts]
 		},
