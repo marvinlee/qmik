@@ -5,9 +5,10 @@
  * @version:1.0
  */
 (function(Q) {
-	var win = Q.global, doc = win.document, loc = location, moduleFlag = "module", // 处理方法标记
-	encode = Q.encode, sun = Q.sun, isFun = Q.isFun, // 方法map
-	config = {}, //
+	var win = Q.global, doc = win.document, loc = location, encode = Q.encode, sun = Q.sun, isFun = Q.isFun, // 方法map
+	config = {
+		module : "module"// 处理方法标记名
+	}, //
 	isSupportHash = ("onhashchange" in win) && (doc.documentMode === undefined || doc.documentMode > 7);
 	;
 	function set(hash) {
@@ -26,7 +27,7 @@
 		return info
 	}
 	function useModule(_event, url) {
-		var info = getModuleInfo(url), moduleName = info[moduleFlag];
+		var info = getModuleInfo(url), moduleName = info[config.module];
 		moduleName && sun.use(moduleName, function(module) {
 			module(info)
 		});
@@ -63,16 +64,17 @@
 						viewUrl = null
 					}
 					var hv = [];
-					hv.push(encode(moduleFlag) + "=" + encode(moduleName))
+					hv.push(encode(config.module) + "=" + encode(moduleName))
 					Q.each(info, function(name, value) {
 						hv.push(encode(name) + "=" + encode(value))
 					});
-					if (isSupportHash) {
+					if (isSupportHash || viewUrl == "") {
 						unBind();
 						set(hv.join("&"));
-						module(info);
-						callback && callback(param);
+						callback && callback(module(info), info);
 						setTimeout(bind, 500)
+					} else {
+						loc.href = viewUrl + (/\?/.test(viewUrl) ? "&" : "?") + hv.join("&");
 					}
 				})
 			},
