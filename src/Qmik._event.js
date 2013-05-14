@@ -5,15 +5,16 @@
  */
 (function(Q) { /* event */
 	var win = Q.global, doc = win.document;
-	var readyRE = /complete|loaded|interactive/, ek = "$QmikEvents";
+	var readyRE = /complete/, // /complete|loaded|interactive/
+	ek = "$QmikEvents";
 	var isNull = Q.isNull, isFun = Q.isFun, isDom = Q.isDom, each = Q.each;
 	function SE() {
 		return !isNull(doc.addEventListener)
 	}
 	function ready(fun) {
-		if (readyRE.test(doc.readyState)) fun(Q);
-		else if (SE()) Q(doc).bind('DOMContentLoaded', fun, Q);
-		else Q(doc).bind("readystatechange", fun, Q)
+		SE() ? Q(doc).bind('DOMContentLoaded', fun) : doc.onreadystatechange = function(e) {
+			readyRE.test(doc.readyState) && fun(e)
+		}
 	}
 	Q.ready = Q.fn.ready = function(fun) {
 		ready(fun);
@@ -57,7 +58,7 @@
 	}
 	function handle(e) {
 		e = e || fixEvent(win.event);
-		var m = SE() ? this : e.target, fun, param, events = Q(m).data(ek) || {};
+		var m = SE() ? this : (e.target || e.srcElement), fun, param, events = Q(m).data(ek) || {};
 		each(events[e.type], function(i, v) {
 			fun = v.fun;
 			param = v.param || [];

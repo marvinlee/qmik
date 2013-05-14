@@ -17,7 +17,8 @@
 	base = loc.protocol + "//" + hostname;
 	var sun = {};
 	function Module(id, dependencies, factory) {
-		Q.extend(this, {
+		var me = this;
+		Q.extend(me, {
 			url : id2url(id),
 			id : id || id2url(id),
 			dependencies : dependencies,// 依赖模块
@@ -29,7 +30,8 @@
 			lastTime : Q.now(),
 			useCount : 0,// use count,使用次数
 			destroy : function() {
-				delete cacheModule[id]
+				me.isReady = !1;
+				me.exports = {}
 			}
 		})
 	}
@@ -189,8 +191,6 @@
 		// factory:function(require, exports, module)
 		define : define,
 		config : function(opts) {
-			// Q.isObject(opts) && Q.extend(config, opts);
-			// return isString(opts) ? config[opts] : null
 			return Q.config(opts, config)
 		}
 	});
