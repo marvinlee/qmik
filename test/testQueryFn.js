@@ -1,7 +1,9 @@
 ﻿//测试查询后对fn方法的使用
+
 (function($) {
 	$.config("debug", true);
 	$.log("");
+
 	//查询测试
 	function testSelect() {
 		var selector = arguments[0], fn = arguments[1], params = arguments[2] || [];
@@ -9,6 +11,7 @@
 		//开始单元测试
 		test('test fn:>>(' + fn + "),,", function() {
 			var ss = $(selector);
+			//alert(selector+"=="+ss.length)
 			var result = fn ? ss[fn].apply(ss, params) : ss;
 			ok(result, 'ok:' + selector + ".....length:." + result.length + ",,,,result::" + toString(result));
 		});
@@ -28,7 +31,7 @@
 	testSelect("#query li", "odd", [1]);
 	testSelect("#query li", "gt", [5]);
 	testSelect("#query li", "lt", [6]);
-	testSelect("#part1", "find", [" span"]);	
+	testSelect("#part1", "find", ["span"]);	
 	testSelect("#part1 span", "each", [function(i,v){$.log(">>each:"+v)}]);	
 	
 	//testSelect("#part1", "append", [$("#part2")]);	
