@@ -15,13 +15,11 @@
 		TAG : /^[\w-_]+/
 	};
 	// init node list
-	/*(function(list) {
-		for ( var ind in list) {
-			list[ind] && (list[ind].prototype.slice = Array.prototype.slice)
-		}
-	})( [
-		win.NodeList, win.HTMLCollection
-	]);*/
+	/*
+	 * (function(list) { for ( var ind in list) { list[ind] &&
+	 * (list[ind].prototype.slice = Array.prototype.slice) } })( [ win.NodeList,
+	 * win.HTMLCollection ]);
+	 */
 	function Query(selector, context) {
 		var me = this, r;
 		me.context = context = context || doc;
@@ -635,8 +633,11 @@
 		removeAttr : Q.fn.rmAttr
 	});
 	Q.isQmik = isQmik;
-	// event
-	var qwc = "touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"
+	/**
+	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
+	 * 90：逆时针转了 Android2.1尚未支持重力感应
+	 */
+	var qwc = "orientationchange touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"
 		.split(" ");
 	each(qwc, function(i, v) {
 		Q.fn[v] = function(f) {
