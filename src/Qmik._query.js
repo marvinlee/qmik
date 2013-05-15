@@ -14,6 +14,14 @@
 		CT : /^([\w-_]+)?\.[\w-_]+/,
 		TAG : /^[\w-_]+/
 	};
+	// init node list
+	/*(function(list) {
+		for ( var ind in list) {
+			list[ind] && (list[ind].prototype.slice = Array.prototype.slice)
+		}
+	})( [
+		win.NodeList, win.HTMLCollection
+	]);*/
 	function Query(selector, context) {
 		var me = this, r;
 		me.context = context = context || doc;

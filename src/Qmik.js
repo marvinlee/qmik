@@ -7,14 +7,6 @@
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent;
 	var encode = encodeURIComponent, decode = decodeURIComponent, config = {};
 	var slice = Array.prototype.slice;
-	// init node list
-	(function(list) {
-		for ( var ind in list) {
-			list[ind] && (list[ind].prototype.slice = slice)
-		}
-	})( [
-		win.NodeList, win.HTMLCollection
-	]);
 	// define qmik object
 	function Q(selector, context) {
 		return Q.init(selector, context)
