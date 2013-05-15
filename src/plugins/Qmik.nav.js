@@ -10,13 +10,15 @@
 		module : "module"// 处理方法标记名
 	}, //
 	isSupportHash = ("onhashchange" in win) && (doc.documentMode === undefined || doc.documentMode > 7);
-	;
+	// 设置hash
 	function set(hash) {
 		loc.hash = hash;
 	}
+	// 取得hash
 	function get() {
 		return loc.hash.replace(/^#/g, "").trim()
 	}
+	// 取得模块参数信息,及模块名
 	function getModuleInfo(url) {
 		var query = url || (get() == "" ? loc.search.replace(/^\?/, "") : get()), //
 		hs = query.split("&"), info = {};
@@ -26,6 +28,7 @@
 		});
 		return info
 	}
+	// 加载使用模块
 	function useModule(_event, url) {
 		var info = getModuleInfo(url), moduleName = info[config.module];
 		moduleName && sun.use(moduleName, function(module) {
@@ -68,6 +71,8 @@
 					Q.each(info, function(name, value) {
 						hv.push(encode(name) + "=" + encode(value))
 					});
+					// 如果支持hashchange,或
+					// viewUrl=="",只使用方式来显示新数据视图(如果isSupportHash为flase,在这种情况下,将不支持前进后退)
 					if (isSupportHash || viewUrl == "") {
 						unBind();
 						set(hv.join("&"));
