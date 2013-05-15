@@ -7,7 +7,7 @@
 	var win = Q.global, doc = win.document, protoArray = Array.prototype;
 	var isNull = Q.isNull, isDom = Q.isDom, each = Q.each, likeArray = Q.likeArray, isArray = Q.isArray, isString = Q.isString, isFun = Q.isFun, isPlainObject = Q.isPlainObject, trim = Q.trim, replace = function(value, str1, str2) {
 		return value.replace(str1, str2)
-	}, toJSON = Q.toJSON, toLower = Q.toLower, toUpper = Q.toUpper;
+	}, toJSON = Q.parseJSON, toLower = Q.toLower, toUpper = Q.toUpper;
 	var rNode = /^\s*(<.+>.*<\/.+>)+|(<.+\/\s*>)+\s*$/, match = {
 		ID : /^#[\w-_\u00c0-\uFFFF]+/,
 		ATTR : /^([\w-_]+)\[\s*[\w-_]+\s*!?=\s*('|")?(.*)('|")?\s*\]/,

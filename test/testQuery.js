@@ -1,5 +1,5 @@
 ﻿(function($) {
-	$.config("debug", true);
+	$.config({debug: true});
 	$.log("");
 	function capability() {
 		var old = $.now();
@@ -38,5 +38,5 @@
 	testSelect("#part2 li[flag=p2]");
 	testSelect("#part2>li[flag=p2]");
 	testSelect("#part2 li");
-	// capability();
+	capability();
 })(Qmik);

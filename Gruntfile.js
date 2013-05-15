@@ -59,6 +59,9 @@ module.exports = function(grunt) {
 					],
 					'assets/plugins/Qmik.nav.min.js' : [
 						'src/plugins/Qmik.nav.js'
+					],
+					'assets/plugins/Qmik.JSON.min.js' : [
+						'src/plugins/Qmik.JSON.js'
 					]
 				}
 			}
