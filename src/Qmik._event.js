@@ -62,9 +62,9 @@
 		each(events[e.type], function(i, v) {
 			fun = v.fun;
 			param = v.param || [];
-			isFun(fun) && fun.apply(m, param.length < 1 ? [
+			isFun(fun) && fun.apply(m, [
 				e
-			] : param)
+			].concat(param))
 		})
 	}
 	function fixEvent(e) {
