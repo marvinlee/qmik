@@ -2,7 +2,7 @@
 //存储框架
 包含localStorage,sessionStorage,cookie
 */
-; (function ($) {
+; (function (Q) {
     //声明
     var local = localStorage,
         session = sessionStorage,
@@ -39,7 +39,7 @@
     function ttlTime(ttl) {
         return ttl < 0 ? ttl : new Date().getTime() + ttl * 1000;
     }
-    var Store = {
+    var store = {
         setLocal: function (key, value, ttl) {//储存到localStorage,ttl:unit is second
             ttl = ttl || -1;
             var item = { __data: value, __ttl: ttlTime(ttl) };
@@ -98,5 +98,5 @@
             }
         }
     }
-    $.Store = Store;
+    Q.store = store;
 })(Qmik);
