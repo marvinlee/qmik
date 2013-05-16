@@ -5,9 +5,11 @@
  * @version:1.0
  */
 (function(Q) {
-	var win = Q.global, doc = win.document, loc = location, encode = Q.encode, sun = Q.sun, isFun = Q.isFun, // 方法map
+	var win = Q.global, doc = win.document, loc = location, encode = Q.encode, //
+	sun = Q.sun, isFun = Q.isFun, likeNull = Q.likeNull // 方法map
 	config = {
-		module : "module"// 处理方法标记名
+		module : "module",// 处理方法标记名
+		defaultModule : ""// 默认的hashchange处理模块
 	}, //
 	isSupportHash = ("onhashchange" in win) && (doc.documentMode === undefined || doc.documentMode > 7);
 	// 设置hash
@@ -20,7 +22,7 @@
 	}
 	// 取得模块参数信息,及模块名
 	function getModuleInfo(url) {
-		var query = url || (get() == "" ? loc.search.replace(/^\?/, "") : get()), //
+		var query = url || (likeNull(get()) ? loc.search.replace(/^\?/, "") : get()), //
 		hs = query.split("&"), info = {};
 		Q.each(hs, function(i, val) {
 			var kv = val.split("=");
@@ -30,14 +32,20 @@
 	}
 	// 加载使用模块
 	function useModule(_event, url) {
-		var info = getModuleInfo(url), moduleName = info[config.module];
-		moduleName && sun.use(moduleName, function(module) {
-			module(info)
-		});
-		return moduleName
+		if (isFun(url)) {
+			url()
+		} else {
+			var info = getModuleInfo(url), moduleName = info[config.module];
+			moduleName && sun.use(moduleName, function(module) {
+				module(info)
+			});
+			return moduleName
+		}
 	}
 	function hashchange(_event) {
-		useModule(_event) || useModule(_event, loc.search.replace(/^\?/, ""))
+		// 当触发hashchange事件时,先使用hash,不行再使用url,再不行就使用默认的defaultModule
+		useModule(_event) || useModule(_event, loc.search.replace(/^\?/, ""))//
+			|| (likeNull(config.defaultModule) || useModule(_event, config.defaultModule))
 	}
 	function bind() {
 		Q(win).on("hashchange", hashchange)
@@ -76,7 +84,8 @@
 					if (isSupportHash || viewUrl == "") {
 						unBind();
 						set(hv.join("&"));
-						callback && callback(module(info), info);
+						var result = module(info)
+						callback && callback(result, info);
 						setTimeout(bind, 500)
 					} else {
 						loc.href = viewUrl + (/\?/.test(viewUrl) ? "&" : "?") + hv.join("&");

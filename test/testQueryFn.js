@@ -11,7 +11,7 @@
 			var ss = Q(selector);
 			// alert(selector+"=="+ss.length)
 			var result = fn ? ss[fn].apply(ss, params) : ss;
-			ss.append(result)
+			
 			if (result) {
 				if (result.length) {
 					if (fn) {
@@ -26,6 +26,8 @@
 						ok(result, 'ok:' + selector + "-fn:" + fn);
 					}
 				}
+ 
+				ss.append(result+"")
 			} else {
 				if (fn) {
 					ok("yes", 'ok:' + selector + "--" + fn);

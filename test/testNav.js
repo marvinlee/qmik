@@ -3,14 +3,10 @@
 	Q.sun.config( {
 		alias : {
 			'mo' : '/test/module/mo'
-		},
-	
+		}
+		//,map:[['.js',".min.js"]]
 	});
 	var selector="div";
-	setTimeout(function(){
-		// console.log("-----1:"+document.getElementsByTagName(selector).length)
-		// console.log("-----2:"+Q(selector).length)
-	},1000);
 	Q(document).ready(function() {
 	 		
 		var heads = document.getElementsByTagName("head");

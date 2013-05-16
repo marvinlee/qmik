@@ -6,18 +6,15 @@
 (function(Q) { /* event */
 	var win = Q.global, doc = win.document;
 	var readyRE = /complete/, // /complete|loaded|interactive/
-	ek = "$QmikEvents";
+	ek = "$QmikEvents", liveFuns = {};
 	var isNull = Q.isNull, isFun = Q.isFun, isDom = Q.isDom, each = Q.each;
 	function SE() {
 		return !isNull(doc.addEventListener)
 	}
-	function ready(fun) {
+	Q.ready = Q.fn.ready = function(fun) {
 		SE() ? Q(doc).bind('DOMContentLoaded', fun) : doc.onreadystatechange = function(e) {
 			readyRE.test(doc.readyState) && fun(e)
 		}
-	}
-	Q.ready = Q.fn.ready = function(fun) {
-		ready(fun);
 		return this
 	}
 	function Eadd(dom, name, fun, paramArray) {
@@ -107,18 +104,19 @@
 			return this
 		},
 		live : function(name, callback) {
-			Q("body").on(name, function(e) {
+			var fun = liveFuns[this.selector + ":live:" + callback.toString()] = function(e) {
 				if (Q(e.target.childNodes[0]).closest(this.selector).length > 0) {
 					callback.apply(event.target, [
 						e
 					]);
 				}
-			})
+			}
+			Q("body").on(name, fun)
 			return this
 		},
 		die : function(name, callback) {
 			each(Q(document.body), function(k, v) {
-				Erm(v, name, callback)
+				Erm(v, name, liveFuns[this.selector + ":live:" + (callback || "").toString()])
 			});
 			return this
 		}

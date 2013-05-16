@@ -162,7 +162,7 @@
 			}
 			return isNull(k) || Object.prototype.hasOwnProperty.call(v, k)
 		},
-		likeNull : function() {
+		likeNull : function(v) {
 			return isNull(v) || (isString(v) && (v == "undefined" || v == "null" || v.trim() == ""))
 		},
 		/**
