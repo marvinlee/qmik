@@ -12,6 +12,8 @@
 		vars : {},
 		map : [],
 		preload : []
+	//
+	// context://工程目录
 	};
 	var cacheModule = {}, currentScript//
 	base = loc.protocol + "//" + hostname;
@@ -30,8 +32,7 @@
 			lastTime : Q.now(),
 			useCount : 0,// use count,使用次数
 			destroy : function() {
-				me.isReady = !1;
-				me.exports = {}
+				delete cacheModule[id]
 			}
 		})
 	}
@@ -173,7 +174,7 @@
 		return map2url(id)
 	}
 	function normalize(url) {
-		!/^[a-zA-Z0-9]+:\/\//.test(url) && (url = base + url);
+		!/^[a-zA-Z0-9]+:\/\//.test(url) && (url = base + (config.context || "") + url);
 		return !/\?/.test(url) && !/\.(css|js)$/.test(url) ? url + ".js" : url
 	}
 	function alias2url(id) {
