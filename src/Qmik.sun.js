@@ -13,7 +13,7 @@
 		map : [],
 		preload : []
 	};
-	var cacheModule = {}, //
+	var cacheModule = {}, currentScript//
 	base = loc.protocol + "//" + hostname;
 	var sun = {};
 	function Module(id, dependencies, factory) {
@@ -40,9 +40,8 @@
 		if (isFun(id)) {
 			factory = id;
 			dependencies = [];
-			id = null;
+			id = getCurrentScript().src;
 		} else if (isFun(dependencies)) {
-			var url = id2url(id);
 			factory = dependencies;
 			dependencies = []
 		}
@@ -68,7 +67,7 @@
 			var idx = 0;
 			each(ids, function(i, id) {
 				preload(function() {
-					load(ids, function(exports) {
+					load(id, function(exports) {
 						params.push(exports);
 						if (++idx == ids.length) {
 							callback && callback.apply(callback, params);
@@ -89,13 +88,14 @@
 	}
 	// require module
 	function require(id) {
-		var module = cacheModule[id];
-		return module ? module.exports : module
+		return getModule(id) ? getModule(id).exports : null
 	}
 	Q.extend(require, {
-		resolve : id2url,
-		async : use
+		resolve : id2url
 	});
+	function getModule(id) {
+		return cacheModule[id] || cacheModule[id2url(id)]
+	}
 	// pre load module
 	function preload(callback) {
 		var idx = 0, dependencies = config.preload, length = dependencies.length;
@@ -108,7 +108,7 @@
 		})
 	}
 	function load(id, callback) {
-		var module = cacheModule[id];
+		var module = getModule(id);
 		if (module) {
 			if (module.isReady) {
 				useModule(module, require, callback)
@@ -119,7 +119,7 @@
 				} else {
 					each(dependencies, function(i, _id) {
 						request(_id, function() {
-							useModule(cacheModule[_id], require, callback);
+							useModule(getModule(_id), require, callback);
 							++idx == dependencies.length && useModule(module, require, callback)
 						})
 					})
@@ -127,7 +127,7 @@
 			}
 		} else {
 			request(id, function() {
-				useModule(cacheModule[id], require, callback)
+				useModule(getModule(id), require, callback)
 			})
 		}
 	}
@@ -139,19 +139,29 @@
 		callback && callback(module.exports)
 	}
 	function request(id, callback) {
-		var url = id2url(id), idx = url.indexOf("?"), node;
+		var url = id2url(id), idx = url.indexOf("?");
 		if (/\/.+\.css\s*$/i.test(idx >= 0 ? url.substring(0, idx) : url)) {
-			node = doc.createElement("link");
+			var node = doc.createElement("link");
 			// node.type = "text/css";
 			node.rel = 'stylesheet';
 			node.href = url;
 			Q(win.document.head).append(node)
 		} else {
-			node = Q.getScript(url, function() {
-				cacheModule[id].script = node;
+			currentScript = Q.getScript(url, function() {
+				var module = getModule(id);
+				if (isNull(module)) {
+					module = cacheModule[id] = new Module(id, [], function() {
+					});
+					module.exports = win[id]
+				}
+				// cacheModule[id].script = node;
 				callback()
 			})
 		}
+	}
+	function getCurrentScript() {
+		currentScript = currentScript || Q("script")[0];
+		return currentScript
 	}
 	// //////////////// id to url start ///////////////////////////////
 	function id2url(id) {
