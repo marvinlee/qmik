@@ -11,12 +11,12 @@
 		paths : {},
 		vars : {},
 		map : [],
-		preload : []
+		preload : [],
+		base : loc.protocol + "//" + hostname
 	//
 	// context://工程目录
 	};
-	var cacheModule = {}, currentScript//
-	base = loc.protocol + "//" + hostname;
+	var cacheModule = {}, currentScript;
 	var sun = {};
 	function Module(id, dependencies, factory) {
 		var me = this;
@@ -174,7 +174,7 @@
 		return map2url(id)
 	}
 	function normalize(url) {
-		!/^[a-zA-Z0-9]+:\/\//.test(url) && (url = base + (config.context || "") + url);
+		!/^[a-zA-Z0-9]+:\/\//.test(url) && (url = concactUrl(config.base, url));
 		return !/\?/.test(url) && !/\.(css|js)$/.test(url) ? url + ".js" : url
 	}
 	function alias2url(id) {
@@ -195,6 +195,11 @@
 			id.indexOf(v[0]) > -1 && id.replace(v[0], v[1])
 		});
 		return id
+	}
+	function concactUrl() {
+		return Q.map(arguments, function(i, url) {
+			return isArray(url) ? url.join("") : (url + "").replace(/(^\/)|(\/$)/, "")
+		}).join("/")
 	}
 	// ////////////////id to url end ///////////////////////////////
 	Q.extend(sun, {
