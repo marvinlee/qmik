@@ -133,7 +133,10 @@
 		}
 	}
 	function useModule(module, require, callback) {
-		module.isReady != !0 && module.factory(require, module.exports, module);
+		if (module.isReady != !0) {
+			var nm = module.factory(require, module.exports, module);
+			module.exports = module.exports || nm
+		}
 		module.isReady = !0;
 		module.useCount++;
 		module.lastTime = Q.now();

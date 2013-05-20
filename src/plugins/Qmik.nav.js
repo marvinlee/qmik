@@ -23,7 +23,7 @@
 	// 取得模块参数信息,及模块名
 	function getModuleInfo(url) {
 		var query = url || (likeNull(get()) ? loc.search.replace(/^\?/, "") : get()), //
-		hs = query.split("&"), info = {};
+		hs = query.split("&"), info = [];
 		Q.each(hs, function(i, val) {
 			var kv = val.split("=");
 			info[kv[0]] = kv[1]
@@ -85,7 +85,9 @@
 						unBind();
 						set(hv.join("&"));
 						var result = module(info)
-						callback && callback(result, info);
+						callback && callback.apply(callback, [
+							result
+						]);
 						setTimeout(bind, 500)
 					} else {
 						loc.href = viewUrl + (/\?/.test(viewUrl) ? "&" : "?") + hv.join("&");

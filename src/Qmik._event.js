@@ -5,7 +5,7 @@
  */
 (function(Q) { /* event */
 	var win = Q.global, doc = win.document;
-	var readyRE = /complete/, // /complete|loaded|interactive/
+	var readyRE = /complete|loaded/, // /complete|loaded|interactive/
 	ek = "$QmikEvents", liveFuns = {};
 	var isNull = Q.isNull, isFun = Q.isFun, isDom = Q.isDom, each = Q.each;
 	function SE() {
