@@ -7,6 +7,7 @@
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent;
 	var encode = encodeURIComponent, decode = decodeURIComponent, config = {};
 	var slice = Array.prototype.slice;
+	var readyRE = /complete|loaded/;
 	// define qmik object
 	function Q(selector, context) {
 		return Q.init(selector, context)
@@ -218,11 +219,14 @@
 			return r
 		},
 		getScript : function(url, callback) {
-			var node = doc.createElement("script");
+			var node = doc.createElement("script"), state;
 			node.type = "text/javascript";
 			node.src = url;
 			Q("head").append(node);
-			node.onload = node.onreadystatechange = callback;
+			node.onload = node.onreadystatechange = function(e) {
+				state = node.readyState;
+				(Q.likeNull(state) || readyRE.test(state)) && callback(e)
+			};
 			return node
 		},
 		serialize : function(array) {
