@@ -46,8 +46,10 @@
 			factory = dependencies;
 			dependencies = []
 		}
-		dependencies = dependencies.concat(parseDepents(factory));
-		cacheModule[id] = new Module(id, Q.unique(dependencies), factory)
+		if (!getModule(id)) {
+			dependencies = dependencies.concat(parseDepents(factory));
+			cacheModule[id] = new Module(id, Q.unique(dependencies), factory)
+		}
 	}
 	// get depends from function.toString()
 	function parseDepents(code) {
