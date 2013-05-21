@@ -7,7 +7,7 @@
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent;
 	var encode = encodeURIComponent, decode = decodeURIComponent, config = {};
 	var slice = Array.prototype.slice;
-	var readyRE = /complete|loaded/;
+	var readyRE = /complete|loaded|interactive/i;
 	// define qmik object
 	function Q(selector, context) {
 		return Q.init(selector, context)
@@ -286,6 +286,9 @@
 		},
 		isWP : function() {
 			return /Windows Phone/.test(UA)
+		},
+		isIE:function(){
+			return /MSIE/.test(UA)
 		},
 		config : function(opts, _config) {
 			if (isNull(opts)) return _config;

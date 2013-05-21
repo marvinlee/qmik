@@ -46,7 +46,7 @@
 			factory = dependencies;
 			dependencies = []
 		}
-		if (!getModule(id)) {
+		if (!getModule(id) || !Q.isIE()) {
 			dependencies = dependencies.concat(parseDepents(factory));
 			cacheModule[id] = new Module(id, Q.unique(dependencies), factory)
 		}
