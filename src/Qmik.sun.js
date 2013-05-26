@@ -135,24 +135,24 @@
 		callback && callback(module.exports)
 	}
 	function request(id, callback) {
-		var url = id2url(id), idx = url.indexOf("?");
+		var url = id2url(id), idx = url.indexOf("?"), loadScript = Q("script[src='" + url + "']");
 		if (/\/.+\.css\s*$/i.test(idx >= 0 ? url.substring(0, idx) : url)) {
 			var node = doc.createElement("link");
-			// node.type = "text/css";
 			node.rel = 'stylesheet';
 			node.href = url;
-			Q(win.document.head).append(node)
+			Q("head").append(node)
 		} else {
-			currentScript = Q.getScript(url, function() {
-				var module = getModule(id);
-				if (isNull(module)) {
-					module = cacheModule[id] = new Module(id, [], function() {
-						module.exports = win[id]
-					});
-				}
-				// cacheModule[id].script = node;
+			function _load() {
+				cacheModule[id] = getModule(id) || new Module(id, [], function() {
+					cacheModule[id].exports = win[id]
+				});
 				callback()
-			})
+			}
+			if (loadScript.length < 1) {
+				currentScript = Q.getScript(url, _load)
+			} else {
+				loadScript.on("load", _load).on("readystatechange", _load);
+			}
 		}
 	}
 	function getCurrentScript() {
