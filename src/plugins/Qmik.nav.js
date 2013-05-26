@@ -4,7 +4,7 @@
  * @deprecated nav导航(利用hashchang事件实现前进后退民航,支持刷新后的前进后退)
  * @version:1.0
  */
-(function(Q) {
+(function(Q, define) {
 	var win = Q.global, doc = win.document, loc = location, encode = Q.encode, //
 	sun = Q.sun, isFun = Q.isFun, likeNull = Q.likeNull // 方法map
 	config = {
@@ -98,5 +98,8 @@
 				return Q.config(opt, config)
 			}
 		}
+	});
+	define(function(require, exports, module) {
+		module.exports = Q
 	})
-})(Qmik);
+})(Qmik, Qmik.define);

@@ -63,8 +63,8 @@
 			this.append(build(data));
 			bind(Q("#" + data.id + " ul li", this[0]));
 		}
-	});
-	define(function(require, exports, module) {
+	})
+	Q.sun.define(function(require, exports, module) {
 		module.exports = Q
 	})
 })(Qmik, Qmik.define);
