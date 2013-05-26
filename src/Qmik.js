@@ -222,10 +222,11 @@
 			node.type = "text/javascript";
 			node.src = url;
 			Q("head").append(node);
-			node.onload = node.onreadystatechange = function(e) {
+			function load(e) {
 				state = node.readyState;
 				(Q.likeNull(state) || readyRE.test(state)) && callback(e)
-			};
+			}
+			Q(node).on("load", load).on("readystatechange", load);
 			return node
 		},
 		serialize : function(array) {
