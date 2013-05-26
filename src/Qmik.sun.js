@@ -74,6 +74,8 @@
 						idx == ids.length - 1 ? callback && callback.apply(callback, params) : bload(idx + 1)
 					})
 				})(0);
+			} else if (isFun(ids)) {
+				ids.apply(ids, []);
 			} else {
 				load(ids, function(exports) {
 					callback && callback.apply(callback, [
@@ -94,14 +96,14 @@
 		return cacheModule[id] || cacheModule[id2url(id)]
 	}
 	// pre load module
-	function preload(callback) {
-		var dependencies = config.preload, length = dependencies.length, params = [];
+	function preload(callback, deps) {
+		var dependencies = deps || config.preload, length = dependencies.length, params = [];
 		length == 0 ? callback() : (function bload(idx) {
 			load(dependencies[idx], function(exports) {
 				params.push(exports);
 				idx == length - 1 ? callback && callback.apply(callback, params) : bload(idx + 1)
 			})
-		})(0);
+		})(0)
 	}
 	function load(id, callback) {
 		var module = getModule(id);
@@ -109,21 +111,16 @@
 			if (module.isReady) {
 				useModule(module, require, callback)
 			} else {
-				var idx = 0, depModule, dependencies = module.dependencies;
-				if (dependencies.length < 1) {
+				preload(function() {
 					useModule(module, require, callback)
-				} else {
-					each(dependencies, function(i, _id) {
-						request(_id, function() {
-							useModule(getModule(_id), require, callback);
-							++idx == dependencies.length && useModule(module, require, callback)
-						})
-					})
-				}
+				}, module.dependencies)
 			}
 		} else {
 			request(id, function() {
-				useModule(getModule(id), require, callback)
+				// useModule(getModule(id), require, callback)
+				preload(function() {
+					useModule(getModule(id), require, callback)
+				}, getModule(id).dependencies)
 			})
 		}
 	}
