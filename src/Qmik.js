@@ -106,8 +106,7 @@
 	}
 	// to json
 	function toJSON(v) {
-		// if (isString(v) && v.match(/^\s*[\[{].*[\]}]\s*$/)) return Q.exec('(' +
-		// v + ')')
+		// return Q.exec('(' + v + ')')
 		return JSON.parse(v)
 	}
 	function isEvent(e) {
@@ -287,11 +286,11 @@
 		isWP : function() {
 			return /Windows Phone/.test(UA)
 		},
-		isIE:function(){
+		isIE : function() {
 			return /MSIE/.test(UA)
 		},
 		config : function(opts, _config) {
-			if (isNull(opts)) return _config;
+			if (arguments.length < 1) return _config;
 			_config = arguments.length == 1 ? config : (_config || {});
 			return isObject(opts) ? Q.extend(_config, opts) : _config[opts]
 		},
@@ -334,5 +333,6 @@
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
+	Q.exec = eval;
 	return Q;
 })();
