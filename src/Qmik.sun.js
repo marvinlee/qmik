@@ -65,29 +65,23 @@
 		return match
 	}
 	function use(ids, callback) {
-		var params = [];
-		if (isArray(ids)) {
-			var idx = 0;
-			each(ids, function(i, id) {
-				preload(function() {
-					load(id, function(exports) {
+		preload(function() {
+			if (isArray(ids) && ids.length > 0) {
+				var params = [];
+				(function bload(idx) {
+					load(ids[idx], function(exports) {
 						params.push(exports);
-						if (++idx == ids.length) {
-							callback && callback.apply(callback, params);
-							delete idx, params
-						}
+						idx == ids.length - 1 ? callback && callback.apply(callback, params) : bload(idx + 1)
 					})
-				})
-			})
-		} else {
-			preload(function() {
+				})(0);
+			} else {
 				load(ids, function(exports) {
-					params.push(exports);
-					callback && callback.apply(callback, params);
-					delete params
+					callback && callback.apply(callback, [
+						exports
+					]);
 				})
-			})
-		}
+			}
+		})
 	}
 	// require module
 	function require(id) {
@@ -101,14 +95,13 @@
 	}
 	// pre load module
 	function preload(callback) {
-		var idx = 0, dependencies = config.preload, length = dependencies.length;
-		length == 0 ? callback() : each(dependencies, function(i, id) {
-			idx++;
-			cacheModule[id] || request(id2url(id), function() {
-				useModule(cacheModule[id], require);
-				idx == length && callback()
+		var dependencies = config.preload, length = dependencies.length, params = [];
+		length == 0 ? callback() : (function bload(idx) {
+			load(dependencies[idx], function(exports) {
+				params.push(exports);
+				idx == length - 1 ? callback && callback.apply(callback, params) : bload(idx + 1)
 			})
-		})
+		})(0);
 	}
 	function load(id, callback) {
 		var module = getModule(id);
@@ -157,8 +150,8 @@
 				var module = getModule(id);
 				if (isNull(module)) {
 					module = cacheModule[id] = new Module(id, [], function() {
+						module.exports = win[id]
 					});
-					module.exports = win[id]
 				}
 				// cacheModule[id].script = node;
 				callback()
