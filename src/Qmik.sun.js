@@ -223,5 +223,6 @@
 		})
 	}, 300000);
 	Q.sun = sun;
-	win.define = sun.define
+	win.define = Q.define = define;
+	Q.use = use
 })(Qmik);
