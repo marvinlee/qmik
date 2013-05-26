@@ -12,9 +12,13 @@
 		return !isNull(doc.addEventListener)
 	}
 	Q.ready = Q.fn.ready = function(fun) {
-		SE() ? Q(doc).bind('DOMContentLoaded', fun) : doc.onreadystatechange = function(e) {
+		// SE() ? Q(doc).bind('DOMContentLoaded', fun) : doc.onreadystatechange =
+		// function(e) {
+		// readyRE.test(doc.readyState) && fun(e)
+		// }
+		Q(doc).bind("readystatechange", function(e) {
 			readyRE.test(doc.readyState) && fun(e)
-		}
+		});
 		return this
 	}
 	function Eadd(dom, name, fun, paramArray) {
