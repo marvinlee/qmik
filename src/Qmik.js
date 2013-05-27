@@ -4,7 +4,7 @@
  * @version:0.91.008
  */
 (function() {
-	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent;
+	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent, loc = win.location;
 	var encode = encodeURIComponent, decode = decodeURIComponent, config = {};
 	var slice = Array.prototype.slice;
 	var readyRE = /complete|loaded|interactive/i;
@@ -294,6 +294,10 @@
 			if (arguments.length < 1) return _config;
 			_config = arguments.length == 1 ? config : (_config || {});
 			return isObject(opts) ? Q.extend(_config, opts) : _config[opts]
+		},
+		// 工程的基础url地址
+		baseURL : function() {
+			return config.baseURL || loc.protocol + "//" + loc.hostname
 		},
 		box : function(callback, opts) {
 			return function() {
