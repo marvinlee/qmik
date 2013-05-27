@@ -31,7 +31,7 @@
 				t.innerHTML = selector;
 				r = t.childNodes
 			} else {
-				r = context.querySelectorAll ? context.querySelectorAll(selector) : find(selector, context)
+				r = find(selector, context)
 			}
 		} else {
 			r = likeArray(selector) ? selector : [
@@ -60,31 +60,35 @@
 		return v instanceof Query
 	}
 	function find(selector, context, childs) {
-		var nselector = trim(selector), r = [], length;
-		if (isQmik(context)) {
-			each(context, function(i, v) {
-				isDom(v) && (r = r.concat(find(selector, v)))
-			});
-		} else {
-			childs = childs || compile(nselector);// 编译查询条件，返回[{type,query,isChild}...]
-			length = childs.length;
-			if (length >= 1) {
-				r = findHandle(context, childs[0]);
-				if (isNull(r) || length < 2) return r;
-				nselector = childs[1].query;
-				if (nselector != '') {
-					var rs = [];
-					childs.shift();
-					each(r, function(k, x) {
-						each(find(nselector, x, childs), function(o, p) {
-							Q.inArray(p, rs) < 0 && rs.push(p)
-						})
-					});
-					r = rs
+		try {
+			return context.querySelectorAll(selector)
+		} catch (e) {
+			var nselector = trim(selector), r = [], length;
+			if (isQmik(context)) {
+				each(context, function(i, v) {
+					isDom(v) && (r = r.concat(find(selector, v)))
+				});
+			} else {
+				childs = childs || compile(nselector);// 编译查询条件，返回[{type,query,isChild}...]
+				length = childs.length;
+				if (length >= 1) {
+					r = findHandle(context, childs[0]);
+					if (isNull(r) || length < 2) return r;
+					nselector = childs[1].query;
+					if (nselector != '') {
+						var rs = [];
+						childs.shift();
+						each(r, function(k, x) {
+							each(find(nselector, x, childs), function(o, p) {
+								Q.inArray(p, rs) < 0 && rs.push(p)
+							})
+						});
+						r = rs
+					}
 				}
 			}
+			return r
 		}
-		return r
 	}
 	function execObject(v, target) {
 		return isFun(v) ? (target ? v.call(target, v) : v()) : v
