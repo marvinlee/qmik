@@ -178,10 +178,9 @@
 	}
 	function byId(dom, selector) {
 		selector = replace(selector, /^#/, "");
-		var ret = doc.getElementById(selector);
-		return isNull(ret) ? [] : dom == doc ? [
-			ret
-		] : byAttr(dom, "[id=\"" + selector + "\"]")
+		return [
+			doc.getElementById(selector)
+		]
 	}
 	function byAttr(dom, selector) {
 		var st = getTagAttr(selector);
