@@ -5,7 +5,10 @@
  */
 (function() {
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent, loc = win.location;
-	var encode = encodeURIComponent, decode = decodeURIComponent, config = {};
+	var encode = encodeURIComponent, decode = decodeURIComponent, //
+	config = {
+		baseURL : loc.protocol + "//" + loc.hostname
+	};
 	var slice = Array.prototype.slice;
 	var readyRE = /complete|loaded|interactive/i;
 	// define qmik object
@@ -52,6 +55,9 @@
 	// isNull
 	function isNull(v) {
 		return v === undefined || v === null
+	}
+	function likeNull(v) {
+		return isNull(v) || (isString(v) && (v == "undefined" || v == "null" || v.trim() == ""))
 	}
 	// isString
 	function isString(v) {
@@ -127,6 +133,14 @@
 	function isGrandfather(grandfather, child) {
 		return isDom(child) && (grandfather === child.parentNode ? !0 : isGrandfather(grandfather, child.parentNode))
 	}
+	// 合并url,参数个数不限
+	function concactUrl() {
+		return Q.map(arguments, function(i, url) {
+			return isArray(url) ? url.join("") : url
+		}).join("/").replace(/(^\w+:\/\/)|([\/]{2,})/g, function(v) {
+			return !/^\w+:\/\//.test(v) ? "/" : v
+		})
+	}
 	var errorStack = {
 		count : 0
 	};
@@ -162,9 +176,7 @@
 			}
 			return isNull(k) || Object.prototype.hasOwnProperty.call(v, k)
 		},
-		likeNull : function(v) {
-			return isNull(v) || (isString(v) && (v == "undefined" || v == "null" || v.trim() == ""))
-		},
+		likeNull : likeNull,
 		/**
 		 * 继承类 子类subClass继承父类superClass的属性方法, 注:子类有父类的属性及方法时,不会被父类替换
 		 */
@@ -224,7 +236,7 @@
 			Q("head").append(node);
 			function load(e) {
 				state = node.readyState;
-				(Q.likeNull(state) || readyRE.test(state)) && callback(e)
+				(likeNull(state) || readyRE.test(state)) && callback(e)
 			}
 			Q(node).on("load", load).on("readystatechange", load);
 			return node
@@ -295,9 +307,12 @@
 			_config = arguments.length == 1 ? config : (_config || {});
 			return isObject(opts) ? Q.extend(_config, opts) : _config[opts]
 		},
-		// 工程的基础url地址
-		baseURL : function() {
-			return config.baseURL || loc.protocol + "//" + loc.hostname
+		/**
+		 * 合并url,if 参数 _url为空,则
+		 */
+		url : function(_url, baseURL) {
+			baseURL = baseURL || config.baseURL;
+			return isNull(_url) ? baseURL : !/^[a-zA-Z0-9]+:\/\//.test(_url) ? concactUrl(baseURL, _url) : _url
 		},
 		box : function(callback, opts) {
 			return function() {
@@ -320,6 +335,9 @@
 			}
 		}
 	});
+	Q.url.toString = function() {
+		return Q.url()
+	}
 	function errorlog() {
 		var econfig = config.error || {};
 		if (errorStack.count > 0) {
