@@ -12,7 +12,7 @@
 		vars : {},
 		map : [],
 		preload : [],
-		base : loc.protocol + "//" + hostname
+		base : Q.url()
 	//
 	// context://工程目录
 	};
@@ -169,7 +169,7 @@
 		return map2url(id)
 	}
 	function normalize(url) {
-		!/^[a-zA-Z0-9]+:\/\//.test(url) && (url = concactUrl(config.base, url));
+		url = Q.url(url, config.base);
 		return !/\?/.test(url) && !/\.(css|js)$/.test(url) ? url + ".js" : url
 	}
 	function alias2url(id) {
@@ -190,11 +190,6 @@
 			id.indexOf(v[0]) > -1 && id.replace(v[0], v[1])
 		});
 		return id
-	}
-	function concactUrl() {
-		return Q.map(arguments, function(i, url) {
-			return isArray(url) ? url.join("") : (url + "").replace(/(^\/)|(\/$)/, "")
-		}).join("/")
 	}
 	// ////////////////id to url end ///////////////////////////////
 	Q.extend(sun, {
