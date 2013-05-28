@@ -412,7 +412,7 @@
 	}
 	/**
 	 * selector:选择器 qmik:qmik查询对象 isAllP:是否包含所有父及祖父节点 默认true
-	 * isOnlyParent:是否只包含父节点 默认false
+	 * isOnlyParent:往上查找的层级是否只到直接父节点 默认false
 	 */
 	function parents(selector, qmik, isAllP, isOnlyParent) {
 		var array = [], qa = isString(selector) ? compile(selector) : null;
@@ -616,12 +616,11 @@
 			return hasClass(this[0], c)
 		},
 		closest : function(selector) {// 查找最近的匹配的父(祖父)节点
-			return parents(selector, this, false)
 			/**
 			 * selector:选择器 qmik:qmik查询对象 isAllP:是否包含所有父及祖父节点 默认true
-			 * isOnlyParent:是否只包含父节点 默认false function parents(selector, qmik,
-			 * isAllP, isOnlyParent)
-			 */
+			 * isOnlyParent:往上查找的层级是否只到直接父节点 默认false
+			 */			
+			return parents(selector, this, false)
 		},
 		parents : function(selector) {// 查找所有的匹配的父(祖父)节点
 			return parents(selector, this, true)
