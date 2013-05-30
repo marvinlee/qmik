@@ -108,8 +108,8 @@
 			return this
 		},
 		live : function(name, callback) {
-			var fun = liveFuns[this.selector + ":live:" + callback.toString()] = function(e) {
-				if (Q(e.target.childNodes[0]).closest(this.selector).length > 0) {
+			var select = this.selector, fun = liveFuns[select + ":live:" + callback.toString()] = function(e) {
+				if (Q((e.target || e.srcElement).childNodes[0]).closest(select).length > 0) {
 					callback.apply(event.target, [
 						e
 					]);
@@ -119,8 +119,8 @@
 			return this
 		},
 		die : function(name, callback) {
-			each(Q(document.body), function(k, v) {
-				Erm(v, name, liveFuns[this.selector + ":live:" + (callback || "").toString()])
+			each(Q(document.body), function(k, dom) {
+				Erm(dom, name, liveFuns[this.selector + ":live:" + (callback || "").toString()])
 			});
 			return this
 		}
