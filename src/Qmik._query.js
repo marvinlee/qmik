@@ -22,27 +22,29 @@
 	 */
 	function Query(selector, context) {
 		var me = this, r;
-		me.context = context = context || doc;
-		me.selector = selector;
-		me.length = 0;
-		if (isString(selector)) {
-			if (rNode.test(selector)) {
-				var t = doc.createElement('div');
-				t.innerHTML = selector;
-				r = t.childNodes
+		Q.box(function() {
+			me.context = context = context || doc;
+			me.selector = selector;
+			me.length = 0;
+			if (isString(selector)) {
+				if (rNode.test(selector)) {
+					var t = doc.createElement('div');
+					t.innerHTML = selector;
+					r = t.childNodes
+				} else {
+					r = find(selector, context)
+				}
 			} else {
-				r = find(selector, context)
+				r = likeArray(selector) ? selector : [
+					selector
+				];
+				r = (r + "" == "[object Text]") ? [] : r
 			}
-		} else {
-			r = likeArray(selector) ? selector : [
-				selector
-			];
-			r = (r + "" == "[object Text]") ? [] : r
-		}
-		r = r || [];
-		for ( var i = 0; i < r.length; i++) {
-			r[i] && me.push(r[i])
-		}
+			r = r || [];
+			for ( var i = 0; i < r.length; i++) {
+				r[i] && me.push(r[i])
+			}
+		})();
 		return me
 	}
 	Q.extend(Query.prototype, {
@@ -619,7 +621,7 @@
 			/**
 			 * selector:选择器 qmik:qmik查询对象 isAllP:是否包含所有父及祖父节点 默认true
 			 * isOnlyParent:往上查找的层级是否只到直接父节点 默认false
-			 */			
+			 */
 			return parents(selector, this, false)
 		},
 		parents : function(selector) {// 查找所有的匹配的父(祖父)节点
