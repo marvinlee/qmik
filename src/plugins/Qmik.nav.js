@@ -9,6 +9,7 @@
 	sun = Q.sun, isFun = Q.isFun, likeNull = Q.likeNull // 方法map
 	config = {
 		module : "module",// 处理方法标记名
+		method : "method",
 		defaultModule : ""// 默认的hashchange处理模块
 	}, //
 	isSupportHash = ("onhashchange" in win) && (doc.documentMode === undefined || doc.documentMode > 7);
@@ -21,23 +22,28 @@
 		return loc.hash.replace(/^#/g, "").trim()
 	}
 	// 取得模块参数信息,及模块名
-	function getModuleInfo(url) {
+	function getModuleParam(url) {
 		var query = url || (likeNull(get()) ? loc.search.replace(/^\?/, "") : get()), //
 		hs = query.split("&"), info = [];
 		Q.each(hs, function(i, val) {
 			var kv = val.split("=");
-			info[kv[0]] = kv[1]
+			info[Q.decode(kv[0])] = Q.decode(kv[1])
 		});
 		return info
+	}
+	function execModule(module, method, param) {
+		var fun = Q.likeNull(method) ? module : module[method];
+		return fun.apply(module, param)
 	}
 	// 加载使用模块
 	function useModule(_event, url) {
 		if (isFun(url)) {
 			url()
 		} else {
-			var info = getModuleInfo(url), moduleName = info[config.module];
+			var info = getModuleParam(url), moduleName = info[config.module];
 			moduleName && sun.use(moduleName, function(module) {
-				module(info)
+				// module(info)
+				execModule(module, info[config.method], info)
 			});
 			return moduleName
 		}
@@ -59,38 +65,46 @@
 	})
 	Q.extend( {
 		nav : {
-			use : function(moduleName, viewUrl, info, callback) {
-				sun.use(moduleName, function(module) {
-					if (Q.isString(viewUrl)) {
-						if (isFun(info)) {
-							callback = info;
-							info = {}
+			/**
+			 * opts:{ url:"url字符串,选填,用户支持页面不支持hashchange时,跳转到url页面",
+			 * param:[参数,选填,是个数组对象], callback:回调方法
+			 * module:调用模块的模块名(alise:也是模块名,只是它是对模块名定义了一个别名) method:调用模块的方法名 }
+			 */
+			use : function(opts) {
+				// {module:"",method:"",url:"",param:[],callback:fun}
+				var url = opts.url, param = opts.param, callback = param.callback, method = opts.method;
+				sun.use(opts.module, function(module) {
+					if (Q.isString(url)) {
+						if (isFun(param)) {
+							callback = param;
+							param = []
 						}
-					} else if (Q.isObject(viewUrl)) {
-						info = viewUrl;
-						viewUrl = null;
-					} else if (isFun(viewUrl)) {
-						callback = viewUrl;
-						info = {};
-						viewUrl = null
+					} else if (Q.isObject(url)) {
+						param = url;
+						url = null;
+					} else if (isFun(url)) {
+						callback = url;
+						param = [];
+						url = null
 					}
 					var hv = [];
-					hv.push(encode(config.module) + "=" + encode(moduleName))
-					Q.each(info, function(name, value) {
+					hv.push(encode(config.module) + "=" + encode(opts.module));
+					hv.push(encode(config.method) + "=" + encode(method))
+					Q.each(param, function(name, value) {
 						hv.push(encode(name) + "=" + encode(value))
 					});
 					// 如果支持hashchange,或
 					// viewUrl=="",只使用方式来显示新数据视图(如果isSupportHash为flase,在这种情况下,将不支持前进后退)
-					if (isSupportHash || viewUrl == "") {
+					if (isSupportHash || url == "") {
 						unBind();
 						set(hv.join("&"));
-						var result = module(info)
+						var result = execModule(module, method, param);// module(param)
 						callback && callback.apply(callback, [
 							result
 						]);
 						setTimeout(bind, 500)
 					} else {
-						loc.href = viewUrl + (/\?/.test(viewUrl) ? "&" : "?") + hv.join("&");
+						loc.href = url + (/\?/.test(url) ? "&" : "?") + hv.join("&");
 					}
 				})
 			},
