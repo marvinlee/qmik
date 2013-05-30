@@ -21,7 +21,6 @@
 	function Module(id, dependencies, factory) {
 		var me = this;
 		Q.extend(me, {
-			url : id2url(id),
 			id : id || id2url(id),
 			dependencies : dependencies,// 依赖模块
 			factory : factory,
@@ -46,14 +45,19 @@
 			factory = dependencies;
 			dependencies = []
 		}
+		id = id2url(id);
 		if (!getModule(id) || !Q.isIE()) {
 			dependencies = dependencies.concat(parseDepents(factory));
 			cacheModule[id] = new Module(id, Q.unique(dependencies), factory)
 		}
 	}
+	/** 清除注释 */
+	function clearNode(word) {
+		return word.replace(/(\/\/)\S*[^\/]{2}[^\n]*/g, "").replace(/\/\*[\S\s]*\*\//g, "")
+	}
 	// get depends from function.toString()
 	function parseDepents(code) {
-		code = code.toString();
+		code = clearNode(code.toString());
 		var params = code.replace(/^\s*function\s*\w*\s*/, "").match(/^\([\w ,]*\)/)[0].replace("\(", "").replace("\)", "");
 		var match = [], idx = params.indexOf(",");
 		if (idx >= 0) {
@@ -87,13 +91,14 @@
 	}
 	// require module
 	function require(id) {
+		id = id2url(id);
 		return getModule(id) ? getModule(id).exports : null
 	}
 	Q.extend(require, {
 		resolve : id2url
 	});
 	function getModule(id) {
-		return cacheModule[id] || cacheModule[id2url(id)]
+		return cacheModule[id]
 	}
 	// pre load module
 	function preload(callback, deps) {
@@ -106,6 +111,8 @@
 		})(0)
 	}
 	function load(id, callback) {
+		id = id2url(id);
+		if (id == ".js") return;
 		var module = getModule(id);
 		if (module) {
 			if (module.isReady) {
@@ -193,9 +200,9 @@
 	}
 	// ////////////////id to url end ///////////////////////////////
 	Q.extend(sun, {
-		use : use,
+		use : Q.box(use),
 		// factory:function(require, exports, module)
-		define : define,
+		define : Q.box(define),
 		config : function(opts) {
 			return Q.config(opts, config)
 		}
@@ -215,6 +222,6 @@
 		})
 	}, 300000);
 	Q.sun = sun;
-	win.define = Q.define = define;
-	Q.use = use
+	win.define = Q.define = Q.sun.define;
+	win.use = Q.use = Q.sun.use
 })(Qmik);
