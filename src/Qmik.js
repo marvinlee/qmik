@@ -303,9 +303,8 @@
 			return /MSIE/.test(UA)
 		},
 		config : function(opts, _config) {
-			if (arguments.length < 1) return _config;
-			_config = arguments.length == 1 ? config : (_config || {});
-			return isObject(opts) ? Q.extend(_config, opts) : _config[opts]
+			_config = arguments.length <= 1 ? config : (_config || {});
+			return (arguments.length < 1 || isNull(opts)) ? _config : isObject(opts) ? Q.extend(_config, opts) : _config[opts]
 		},
 		/**
 		 * 合并url,if 参数 _url为空,则
