@@ -146,7 +146,7 @@
 	};
 	Q.extend( {
 		encode : encode,
-		decode : encode,
+		decode : decode,
 		isDom : isDom,
 		isBool : isBool,
 		isString : isString,
