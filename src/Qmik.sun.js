@@ -18,10 +18,11 @@
 	};
 	var cacheModule = {}, currentScript;
 	var sun = {};
-	function Module(id, dependencies, factory) {
+	function Module(id, url, dependencies, factory) {
 		var me = this;
 		Q.extend(me, {
 			id : id || id2url(id),
+			url : url,
 			dependencies : dependencies,// 依赖模块
 			factory : factory,
 			// module is ready ,if no, request src from service
@@ -31,24 +32,25 @@
 			lastTime : Q.now(),
 			useCount : 0,// use count,使用次数
 			destroy : function() {
-				delete cacheModule[id]
+				delete cacheModule[id], cacheModule[url]
 			}
 		})
 	}
 	// factory:function(require, exports, module)
 	function define(id, dependencies, factory) {
+		var url = getCurrentScript().src;
 		if (isFun(id)) {
 			factory = id;
 			dependencies = [];
-			id = getCurrentScript().src;
+			id = url;
 		} else if (isFun(dependencies)) {
 			factory = dependencies;
 			dependencies = []
 		}
-		id = id2url(id);
+		id = id2url(id)
 		if (!getModule(id) || !Q.isIE()) {
 			dependencies = dependencies.concat(parseDepents(factory));
-			cacheModule[id] = new Module(id, Q.unique(dependencies), factory)
+			cacheModule[url] = cacheModule[id] = new Module(id, url, Q.unique(dependencies), factory)
 		}
 	}
 	/** 清除注释 */
@@ -91,14 +93,14 @@
 	}
 	// require module
 	function require(id) {
-		id = id2url(id);
-		return getModule(id) ? getModule(id).exports : null
+		var module = getModule(id2url(id), id);
+		return module ? module.exports : null
 	}
 	Q.extend(require, {
 		resolve : id2url
 	});
-	function getModule(id) {
-		return cacheModule[id]
+	function getModule(url, id) {
+		return cacheModule[url] || cacheModule[id]
 	}
 	// pre load module
 	function preload(callback, deps) {
@@ -111,9 +113,9 @@
 		})(0)
 	}
 	function load(id, callback) {
-		id = id2url(id);
+		var url = id2url(id);
 		if (id == ".js") return;
-		var module = getModule(id);
+		var module = getModule(url, id);
 		if (module) {
 			if (module.isReady) {
 				useModule(module, require, callback)
@@ -126,8 +128,8 @@
 			request(id, function() {
 				// useModule(getModule(id), require, callback)
 				preload(function() {
-					useModule(getModule(id), require, callback)
-				}, getModule(id).dependencies)
+					useModule(getModule(url, id), require, callback)
+				}, getModule(url, id).dependencies)
 			})
 		}
 	}
@@ -150,9 +152,6 @@
 			Q("head").append(node)
 		} else {
 			function _load() {
-				cacheModule[id] = getModule(id) || new Module(id, [], function() {
-					cacheModule[id].exports = win[id]
-				});
 				callback()
 			}
 			if (loadScript.length < 1) {
