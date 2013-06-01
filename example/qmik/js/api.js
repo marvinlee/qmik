@@ -4,64 +4,156 @@
 (function(Q, define) {
 	define(function(require, exports, module) {
 		var index = require("index");
+		var formate = require("doing").formate;
 		require("Qmik.tree");
-		function showGP(v) {// 显示目标,并显示其父节点
-			v = Q.isQmik(v) ? v[0] : v;
-			if (Q.likeNull(v) || v.tarName == "BODY") return;
-			Q(v).show();
-			showGP(v.parentNode);
+		function showParentULLI(tar) {
+			console.log("-------")
+			console.log(tar)
+			if (tar.length < 1 || tar.attr("node") == "root") return;
+			tar.show();
+			console.log(tar.closest("ul"));
+			tar.closest("ul").show();
+			showParentULLI(tar.closest("ul").prev("LI"));
 		}
-		function showHelpContent(id) {
-			showHelp();
-			var tar = Q.likeNull(id) ? Q(this) : Q("#" + id), url = tar.attr("url");
-			showGP(tar);
-			if (!Q.likeNull(url)) {
+		var tree, isLoadMenu = false;
+		Q.extend(exports, {
+			/**
+			 * 显示菜单 <br/> navId: 导航条的id; id:菜单里子菜单的id
+			 */
+			showMenu : function(navId, id) {
+				index.showNav(navId);
+				Q(".panel").hide();
+				Q("#api").show();
+				if (!isLoadMenu) {
+					Q.ajax( {
+						url : Q.url("data/api.json"),
+						dataType : "json",
+						success : function(data) {
+							isLoadMenu = true;
+							tree = $("#helpTree").tree(data, function(id, url) {
+								Q.nav.use( {
+									module : module.id,
+									method : "showAPI",
+									param : [
+										id, url
+									]
+								})
+							});
+							id && tree.showMenu(id);
+						}
+					})
+				}
+			},
+			// 显示api帮助说明内容
+			showAPI : function(id, url) {
+				// 此模块方法,依赖此模块的showMenu方法
+				exports.showMenu("link-api", id);
 				Q.ajax( {
 					url : url,
+					dataType : "xml",
 					success : function(data) {
-						Q("#helpContent").html(data || "整理中...")
-						Q("#codeDesc p").each(function(i, v) {
-							v = Q(v);
-							var h = v.html().replace(/^[\s]+|[\s]$/, "");
-							v.html(h.replace(/[\r\n]/g, "<br/>"))
-						});
-						Q("#codeDesc textarea").each(function(i, v) {
-							v = Q(v);
-							var h = v.html().replace(/\s/g, "");
-							v.html(h)
-						});
-					},
-					error : function() {
-						Q("#helpContent").html("整理中...");
+						data = xmlToJson(data);
+						if (data) {
+							console.log(data)
+							var h = [];
+							h.push('<div class="code_title"><h3>' + data.title + '</h3></div>');
+							if (data.desc) {
+								h.push('<div class="code_desc"><div>描述:</div><div>' + data.desc + '</div></div>');
+							}
+							h.push('<div class="code_examples">');
+							Q.each(data.examples, function(i, value) {
+								h.push('<pre class="code_exp">');
+								h.push('<div class="code_exp_title">' + value.title + '</div>');
+								if (value.code) {
+									h.push('<div class="code_exp_code"><div>代码:</div><div><textarea flag="code">' + value.code
+												+ '</textarea></div></div>');
+								}
+								if (value.desc) {
+									h.push('<div class="code_exp_desc"><div>描述:</div><div>' + value.desc + '</div></div>');
+								}
+								h.push('</pre>');
+							})
+							h.push('</div>');
+							Q("#helpContent").html(h.join(""));
+							formate(Q("div.code_exp_code textarea[flag='code']"));
+						}
 					}
-				});
+				})
 			}
-		}
-		function showHelp() {
-			show("link-help");
-			if ($("#help #helpRoot").length > 0) return;
-			$.ajax( {
-				url : "/demo/Qmik-view/help.data?abc",
-				dataType : "json",
-				success : function(data) {
-					$("#helpTree").tree(data);
-					$("#help #helpRoot a").bind("click", showHelpContent, "")
-				}
-			})
-		}
-		function exp(id) {
-			$.ajax( {
-				url : "/example/qmik/data/api.json",
-				dataType : "json",
-				success : function(data) {
-					index.showNav(id);
-					Q(".panel").hide();
-					Q("#api").show();
-					$("#helpTree").tree(data);
-					$("#help #helpRoot a").bind("click", showHelpContent, "");
-				}
-			})
-		}
-		module.exports = exp
+		});
 	});
+	// Changes XML to JSON
+	function xmlToJson(xml) {
+		var nodeName = xml.nodeName;
+		var json = {};
+		if (xml.hasChildNodes() && xml.childNodes.length == 1) {
+			var value = xml.nodeValue;
+			if (Q.isString(value)) return value.trim();
+		}
+		switch (nodeName) {
+		case "#document":
+			json = xmlToJson(xml.childNodes.item(0))
+			break;
+		case "root":
+			if (xml.hasChildNodes()) {
+				for ( var i = 0; i < xml.childNodes.length; i++) {
+					var item = xml.childNodes.item(i);
+					var name = item.nodeName;
+					switch (name) {
+					case "examples":
+						json[name] = [];
+						if (item.hasChildNodes()) {
+							for ( var j = 0; j < item.childNodes.length; j++) {
+								var iitem = item.childNodes.item(j);
+								var iname = iitem.nodeName;
+								if (iname != "#text") {
+									json[name].push(xmlToJson(iitem));
+								}
+							}
+						}
+						break;
+					case "#text":
+						json["text"] = item.nodeValue.trim();
+						break;
+					case "desc":
+					case "code":
+					case "title":
+						if (item.hasChildNodes()) {
+							console.log(name)
+							json[name] = item.childNodes.item(0).nodeValue.trim()
+						}
+						break;
+					default:
+						json[name] = xmlToJson(xml.childNodes.item(0));
+						break;
+					}
+				}
+			}
+			break;
+		case "#text":
+			json["text"] = xml.nodeValue.trim();
+			break;
+		case "desc":
+		case "code":
+		case "title":
+			if (xml.hasChildNodes()) { return xml.childNodes.item(0).nodeValue.trim() }
+			break;
+		default:
+			switch (xml.nodeType) {
+			case 3:// text
+				return xml.nodeValue.trim()
+			default:
+				if (xml.hasChildNodes()) {
+					console.log(nodeName + "--" + xml.childNodes.length)
+					for ( var i = 0; i < xml.childNodes.length; i++) {
+						var item = xml.childNodes.item(i);
+						var name = item.nodeName;
+						json[name] = xmlToJson(item);
+					}
+				}
+			}
+			break;
+		}
+		return json;
+	}
 })(Qmik, Qmik.define);

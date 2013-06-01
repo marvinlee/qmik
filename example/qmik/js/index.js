@@ -18,13 +18,17 @@
 			},
 			// 初始化首页
 			init : function() {
-				console.log("init:")
 				Q(document).ready(function() {
 					var m = document.getElementById("about");
 					Q("#head a[tag=nav]").click(function(a) {
-						Q.nav.use(Q(this).attr("module"), [
-							Q(this).attr("id")
-						])
+						//alert(Q(this).attr("module")+"--"+Q(this).attr("method"))
+						Q.nav.use( {
+							module : Q(this).attr("module"),//模块名
+							method : Q(this).attr("method"),//方法名
+							param : [//参数
+								Q(this).attr("id")
+							]
+						})
 					});
 				});
 			}

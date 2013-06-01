@@ -29,7 +29,7 @@
 		class="head_a" href="javascript:void(0)">下载</a></li>
 	<li><a id="link-plugin" tag="nav" module="plugin" class="head_a"
 		href="javascript:void(0)">插件</a></li>
-	<li><a id="link-api" tag="nav" module="api" class="head_a"
+	<li><a id="link-api" tag="nav" module="api" class="head_a" method="showMenu"
 		href="javascript:void(0)">API</a></li>
 	<li><a id="link-about" tag="nav" module="about" class="head_a"
 		href="javascript:void(0)">关于Qmik</a></li>
@@ -125,20 +125,10 @@ $.extend({swip:function(){...}}))</p>
 <div id="api" class="panel roundedTop" style="display: none;">
 <div class="content_bblock">
 <div id="helpTree"></div>
-<div id="helpContent" class="right_content_block">adfafadsf</div>
+<div id="helpContent" class="right_content_block"></div>
 </div>
 </div>
-<!-- /help --> <!-- help -->
-<div id="team" class="panel roundedTop" style="display: none;">
-<div class="content">
-<div class="content_bblock">
-<h2>团队(招募有兴趣有时间的同学来一起维护</h2>
-<p>要求(对js语法要精通了解,有实际经验,最好自己写过类似的js框架))</p>
-<div class="content_block">开发者 leochen 个人邮箱:cwq0312@163.com</div>
-
-</div>
-</div>
-</div>
+ 
 <div id="linkOut" class="bottom roundedBottom">
 <div class="link_ad">
 <h5>站外连接</h5>
@@ -155,10 +145,12 @@ $.extend({swip:function(){...}}))</p>
 <script type="text/javascript" src="js/config.js"></script>
 <script type="text/javascript">
 (function(Q,define){
-   Q.use(["index"],function(index){
+   Q.use(["index"],function(index){  
+      console.log(index)
        index.init();
-       //console.log("00000");
       });
+   var m={key:""};
+   console.log(">>"+Q.isPlainObject(m));
 })(Qmik,Qmik.define);
 </script>
 </body>
