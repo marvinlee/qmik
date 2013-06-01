@@ -1,0 +1,23 @@
+<root>
+	<title>
+		Qmik.isObject(obj);方法
+   </title>
+	<desc>
+		判断是否是对象类型
+   </desc>
+	<examples>
+		<example>
+			<title>
+				例子1
+         </title>
+			<code>
+				(function(Q,define){
+				var obj={};
+				console.log(Q.isObject(obj));//>>:true
+				var opt={};
+				console.log(Q.isBool(opt));//>>:false
+				})(Qmik,Qmik.define);
+         </code>
+		</example>
+	</examples>
+</root>

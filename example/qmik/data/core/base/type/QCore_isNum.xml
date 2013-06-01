@@ -1,0 +1,25 @@
+<root>
+	<title>
+		Qmik.isNum(obj);(Qmik.isNumber(obj))方法
+   </title>
+	<desc>
+		判断是否是数字类型
+   </desc>
+	<examples>
+		<example>
+			<title>
+				例子1
+         </title>
+			<code>
+
+				
+				                var n=1;
+                 Q.isNull(1);//>>:true
+                 
+                var opt={};
+                Q.isNull(opt);//>>:false
+				})(Qmik,Qmik.define);
+         </code>
+		</example>
+	</examples>
+</root>
