@@ -1,0 +1,22 @@
+<root>
+   <title>
+      Qmik.encode(str);方法
+   </title>
+   <desc>
+       对字符串做encode编码
+   </desc>
+   <examples>
+      <example>
+         <title>
+                例子1
+         </title>
+         <code>
+                var value=Q.decode('hello/abc');
+                console.log(value);//>>hello%2Fabc
+         </code>
+         <desc>
+                采用encodeURIComponent编码实现此功能.
+         </desc>
+      </example>   
+   </examples>
+</root>
