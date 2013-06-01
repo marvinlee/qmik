@@ -23,7 +23,6 @@ module.exports = function(grunt) {
 				src : [
 					'src/Qmik.js',
 					'src/Qmik._query.js',
-					'src/Qmik.Cache.js',
 					'src/Qmik._event.js',
 					'src/Qmik._view.js',
 					'src/Qmik._ajax.js',
@@ -45,7 +44,6 @@ module.exports = function(grunt) {
 					'assets/Qmik.js' : [
 						'src/Qmik.js',
 						'src/Qmik._query.js',
-						'src/Qmik.Cache.js',
 						'src/Qmik._event.js',
 						'src/Qmik._view.js',
 						'src/Qmik._ajax.js',
