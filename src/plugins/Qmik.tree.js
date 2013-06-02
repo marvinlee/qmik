@@ -12,6 +12,7 @@
  */
 (function(Q, define) {
 	var order = !0, m, dp = "QTreeId_";
+	var _click;
 	// build level tree
 	function build(data) {
 		var h = "<div id='" + (data.id || "") + "' node='root'" + (data["class"] ? (" class='" + data["class"] + "'") : "") + ">";
@@ -48,11 +49,15 @@
 		h.push("</ul>");
 		return h.join("");
 	}
-	function bind(target, callback) {
-		if (Q.isNull(target) || target.length == 0) return;
-		Q(target).click(function(e) {
+	function Tree(qmik, data, callback) {
+		var me = this;
+		data.id = data.id || "QmikTree";
+		order = Q.likeNull(data.order) ? !1 : data.order;
+		qmik.append(build(data));
+		me.click(callback);
+		me.target = Q("#" + data.id, qmik[0]);
+		me.target.click(function(e) {
 			var tar = Q(e.target || e.srcElement), par = tar.closest("li");
-			// tar = tar.attr("tagName") == "LI" ? Q(tar) : tar.closest("li");
 			var next = par.next();
 			if (next.attr("tagName") == "UL") {
 				var is = Q(next[0]).css("display") != "none";
@@ -60,15 +65,9 @@
 					is ? next.hide() : next.show()
 				})
 			} else if (par.attr("_url")) {
-				callback(par.attr("id"), par.attr("_url"))
+				me._click && me._click(par.attr("id"), par.attr("_url"))
 			}
-		})
-	}
-	function Tree(qmik, data, callback) {
-		data.id = data.id || "QmikTree";
-		order = Q.likeNull(data.order) ? !1 : data.order;
-		qmik.append(build(data));
-		bind(Q("#" + data.id, qmik[0]), callback);
+		});
 	}
 	Q.extend(Tree.prototype, {
 		// 显示菜单
@@ -77,16 +76,19 @@
 			return this;
 		},
 		click : function(callback) {
+			this._click = callback;
 			return this;
+		},
+		css : function() {
 		}
 	});
-	function _click() {
-	}
+	// 显示低级菜单
 	function showParentMenu(tar) {
 		if (tar.length < 1 || tar.attr("node") == "root") return;
+		var ul = tar.closest("ul");
 		tar.show();
-		tar.closest("ul").show();
-		showParentMenu(tar.closest("ul").prev("LI"));
+		ul.show();
+		showParentMenu(ul.parent("ul"));
 	}
 	Q.fn.extend( {
 		tree : function(data, callback) {
