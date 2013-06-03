@@ -1,0 +1,40 @@
+<root>
+	<title>
+		Qmik.likeNull(obj);方法
+   </title>
+	<desc>
+		判断是否像空值, Qmik.isNull(v) || (Qmik.isString(v) &amp;&amp; (v =="undefined"
+        || v
+        ==
+        "null" || v.trim() == ""))
+		</desc>
+	<examples>
+		<example>
+			<title>
+				例子1
+         </title>
+			<code>
+				(function(Q,define){
+				var b1="";
+				Q.isBool(b1);//>>:true
+				//
+				b1=" ";
+				Q.isBool(b1);//>>:true
+
+				//
+				b1=" -";
+				Q.isBool(b1);//>>:false
+				//
+				b1="null";
+				Q.isBool(b1);//>>:true
+				//
+				b1=null;
+				Q.isBool(b1);//>>:true
+
+				var opt={};
+				console.log(Q.isBool(opt));//>>:false
+				})(Qmik,Qmik.define);
+         </code>
+		</example>
+	</examples>
+</root>

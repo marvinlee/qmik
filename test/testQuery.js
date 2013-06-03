@@ -7,7 +7,7 @@
 			$("div ol>li[flag=p1]");
 		}
 		$.log("---" + ($.now() - old));
-		if (!window.console) alert("---" + ($.now() - old))
+		alert("---" + ($.now() - old))
 	}
 	// 查询测试
 	function testSelect(selector) {
@@ -38,5 +38,5 @@
 	testSelect("#part2 li[flag=p2]");
 	testSelect("#part2>li[flag=p2]");
 	testSelect("#part2 li");
-	capability();
+	//capability();
 })(Qmik);

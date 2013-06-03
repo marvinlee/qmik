@@ -1,4 +1,5 @@
-;(function(Q) { /* ajax */
+;
+(function(Q) { /* ajax */
 	var win = Q.global, toObject = Q.parseJSON, isFun = Q.isFun, ac = {
 		type : 'GET',
 		async : !0,
@@ -18,7 +19,7 @@
 		xhr = ac.xhr(), data = _config.data, pid, success = _config.success, error = _config.error //
 		;
 		_config.beforeSend && _config.beforeSend();
-		xhr.onreadystatechange = function() {
+		xhr.onreadystatechange = Q.box(function() {
 			if (4 == xhr.readyState) {
 				if (200 == xhr.status) {
 					clearTimeout(pid);
@@ -28,7 +29,7 @@
 					error && error(xhr.xhr, xhr.type)
 				}
 			}
-		};
+		});
 		xhr.open(_config.type, _config.url, _config.async);
 		xhr.setRequestHeader("Cache-Control", "no-cache");
 		xhr.send(_config.type == "GET" ? Q.param(data) : data);
@@ -47,7 +48,7 @@
 		})
 	}
 	Q.extend( {
-		ajax : ajax,
+		ajax : Q.box(ajax),
 		get : get,
 		getJSON : function(url, success) {
 			get(url, null, success, 'json')

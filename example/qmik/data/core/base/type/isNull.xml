@@ -1,6 +1,6 @@
 <root>
 	<title>
-		Qmik.isNum(obj);(Qmik.isNumber(obj))方法
+		Qmik.isNull(obj)方法
    </title>
 	<desc>
 		判断是否是空指,包含空指针和未定义的,obj==null||obj===undefined
@@ -12,11 +12,10 @@
          </title>
 			<code>
 				(function(Q,define){
-				(function(Q,define){
 				var n=null;
-				console.log(Q.isNull(n));//>>:true
+				Q.isNull(n) ;//>>:true
 				var opt={};
-				console.log(Q.isNull(opt));//>>:false
+				Q.isNull(opt) ;//>>:false
 				})(Qmik,Qmik.define);
          </code>
 		</example>

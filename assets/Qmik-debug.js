@@ -4,9 +4,13 @@
  * @version:0.91.008
  */
 (function() {
-	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent;
-	var encode = encodeURIComponent, decode = decodeURIComponent, config = {};
+	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent, loc = win.location;
+	var encode = encodeURIComponent, decode = decodeURIComponent, //
+	config = {
+		baseURL : loc.protocol + "//" + loc.hostname
+	};
 	var slice = Array.prototype.slice;
+	var readyRE = /complete|loaded|interactive/i;
 	// define qmik object
 	function Q(selector, context) {
 		return Q.init(selector, context)
@@ -51,6 +55,9 @@
 	// isNull
 	function isNull(v) {
 		return v === undefined || v === null
+	}
+	function likeNull(v) {
+		return isNull(v) || (isString(v) && (v == "undefined" || v == "null" || v.trim() == ""))
 	}
 	// isString
 	function isString(v) {
@@ -105,8 +112,7 @@
 	}
 	// to json
 	function toJSON(v) {
-		// if (isString(v) && v.match(/^\s*[\[{].*[\]}]\s*$/)) return Q.exec('(' +
-		// v + ')')
+		// return Q.exec('(' + v + ')')
 		return JSON.parse(v)
 	}
 	function isEvent(e) {
@@ -127,12 +133,20 @@
 	function isGrandfather(grandfather, child) {
 		return isDom(child) && (grandfather === child.parentNode ? !0 : isGrandfather(grandfather, child.parentNode))
 	}
+	// 合并url,参数个数不限
+	function concactUrl() {
+		return Q.map(arguments, function(i, url) {
+			return isArray(url) ? url.join("") : url
+		}).join("/").replace(/(^\w+:\/\/)|([\/]{2,})/g, function(v) {
+			return !/^\w+:\/\//.test(v) ? "/" : v
+		})
+	}
 	var errorStack = {
 		count : 0
 	};
 	Q.extend( {
 		encode : encode,
-		decode : encode,
+		decode : decode,
 		isDom : isDom,
 		isBool : isBool,
 		isString : isString,
@@ -162,9 +176,7 @@
 			}
 			return isNull(k) || Object.prototype.hasOwnProperty.call(v, k)
 		},
-		likeNull : function(v) {
-			return isNull(v) || (isString(v) && (v == "undefined" || v == "null" || v.trim() == ""))
-		},
+		likeNull : likeNull,
 		/**
 		 * 继承类 子类subClass继承父类superClass的属性方法, 注:子类有父类的属性及方法时,不会被父类替换
 		 */
@@ -218,11 +230,15 @@
 			return r
 		},
 		getScript : function(url, callback) {
-			var node = doc.createElement("script");
+			var node = doc.createElement("script"), state;
 			node.type = "text/javascript";
 			node.src = url;
 			Q("head").append(node);
-			node.onload = node.onreadystatechange = callback;
+			function load(e) {
+				state = node.readyState;
+				(likeNull(state) || readyRE.test(state)) && callback(e)
+			}
+			Q(node).on("load", load).on("readystatechange", load);
 			return node
 		},
 		serialize : function(array) {
@@ -283,10 +299,19 @@
 		isWP : function() {
 			return /Windows Phone/.test(UA)
 		},
+		isIE : function() {
+			return /MSIE/.test(UA)
+		},
 		config : function(opts, _config) {
-			if (isNull(opts)) return _config;
-			_config = arguments.length == 1 ? config : (_config || {});
-			return isObject(opts) ? Q.extend(_config, opts) : _config[opts]
+			_config = arguments.length <= 1 ? config : (_config || {});
+			return (arguments.length < 1 || isNull(opts)) ? _config : isObject(opts) ? Q.extend(_config, opts) : _config[opts]
+		},
+		/**
+		 * 合并url,if 参数 _url为空,则
+		 */
+		url : function(_url, baseURL) {
+			baseURL = baseURL || config.baseURL;
+			return isNull(_url) ? baseURL : !/^[a-zA-Z0-9]+:\/\//.test(_url) ? concactUrl(baseURL, _url) : _url
 		},
 		box : function(callback, opts) {
 			return function() {
@@ -309,6 +334,9 @@
 			}
 		}
 	});
+	Q.url.toString = function() {
+		return Q.url()
+	}
 	function errorlog() {
 		var econfig = config.error || {};
 		if (errorStack.count > 0) {
@@ -327,6 +355,7 @@
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
+	Q.exec = eval;
 	return Q;
 })();
 
@@ -354,27 +383,29 @@
 	 */
 	function Query(selector, context) {
 		var me = this, r;
-		me.context = context = context || doc;
-		me.selector = selector;
-		me.length = 0;
-		if (isString(selector)) {
-			if (rNode.test(selector)) {
-				var t = doc.createElement('div');
-				t.innerHTML = selector;
-				r = t.childNodes
+		Q.box(function() {
+			me.context = context = context || doc;
+			me.selector = selector;
+			me.length = 0;
+			if (isString(selector)) {
+				if (rNode.test(selector)) {
+					var t = doc.createElement('div');
+					t.innerHTML = selector;
+					r = t.childNodes
+				} else {
+					r = find(selector, context)
+				}
 			} else {
-				r = context.querySelectorAll ? context.querySelectorAll(selector) : find(selector, context)
+				r = likeArray(selector) ? selector : [
+					selector
+				];
+				r = (r + "" == "[object Text]") ? [] : r
 			}
-		} else {
-			r = likeArray(selector) ? selector : [
-				selector
-			];
-			r = (r + "" == "[object Text]") ? [] : r
-		}
-		r = r || [];
-		for ( var i = 0; i < r.length; i++) {
-			r[i] && me.push(r[i])
-		}
+			r = r || [];
+			for ( var i = 0; i < r.length; i++) {
+				r[i] && me.push(r[i])
+			}
+		})();
 		return me
 	}
 	Q.extend(Query.prototype, {
@@ -392,31 +423,35 @@
 		return v instanceof Query
 	}
 	function find(selector, context, childs) {
-		var nselector = trim(selector), r = [], length;
-		if (isQmik(context)) {
-			each(context, function(i, v) {
-				isDom(v) && (r = r.concat(find(selector, v)))
-			});
-		} else {
-			childs = childs || compile(nselector);// 编译查询条件，返回[{type,query,isChild}...]
-			length = childs.length;
-			if (length >= 1) {
-				r = findHandle(context, childs[0]);
-				if (isNull(r) || length < 2) return r;
-				nselector = childs[1].query;
-				if (nselector != '') {
-					var rs = [];
-					childs.shift();
-					each(r, function(k, x) {
-						each(find(nselector, x, childs), function(o, p) {
-							Q.inArray(p, rs) < 0 && rs.push(p)
-						})
-					});
-					r = rs
+		try {
+			return context.querySelectorAll(selector)
+		} catch (e) {
+			var nselector = trim(selector), r = [], length;
+			if (isQmik(context)) {
+				each(context, function(i, v) {
+					isDom(v) && (r = r.concat(find(selector, v)))
+				});
+			} else {
+				childs = childs || compile(nselector);// 编译查询条件，返回[{type,query,isChild}...]
+				length = childs.length;
+				if (length >= 1) {
+					r = findHandle(context, childs[0]);
+					if (isNull(r) || length < 2) return r;
+					nselector = childs[1].query;
+					if (nselector != '') {
+						var rs = [];
+						childs.shift();
+						each(r, function(k, x) {
+							each(find(nselector, x, childs), function(o, p) {
+								Q.inArray(p, rs) < 0 && rs.push(p)
+							})
+						});
+						r = rs
+					}
 				}
 			}
+			return r
 		}
-		return r
 	}
 	function execObject(v, target) {
 		return isFun(v) ? (target ? v.call(target, v) : v()) : v
@@ -506,10 +541,9 @@
 	}
 	function byId(dom, selector) {
 		selector = replace(selector, /^#/, "");
-		var ret = doc.getElementById(selector);
-		return isNull(ret) ? [] : dom == doc ? [
-			ret
-		] : byAttr(dom, "[id=\"" + selector + "\"]")
+		return [
+			doc.getElementById(selector)
+		]
 	}
 	function byAttr(dom, selector) {
 		var st = getTagAttr(selector);
@@ -741,7 +775,7 @@
 	}
 	/**
 	 * selector:选择器 qmik:qmik查询对象 isAllP:是否包含所有父及祖父节点 默认true
-	 * isOnlyParent:是否只包含父节点 默认false
+	 * isOnlyParent:往上查找的层级是否只到直接父节点 默认false
 	 */
 	function parents(selector, qmik, isAllP, isOnlyParent) {
 		var array = [], qa = isString(selector) ? compile(selector) : null;
@@ -945,12 +979,11 @@
 			return hasClass(this[0], c)
 		},
 		closest : function(selector) {// 查找最近的匹配的父(祖父)节点
-			return parents(selector, this, false)
 			/**
 			 * selector:选择器 qmik:qmik查询对象 isAllP:是否包含所有父及祖父节点 默认true
-			 * isOnlyParent:是否只包含父节点 默认false function parents(selector, qmik,
-			 * isAllP, isOnlyParent)
+			 * isOnlyParent:往上查找的层级是否只到直接父节点 默认false
 			 */
+			return parents(selector, this, false)
 		},
 		parents : function(selector) {// 查找所有的匹配的父(祖父)节点
 			return parents(selector, this, true)
@@ -983,63 +1016,22 @@
  * @email:cwq0312@163.com
  * @version:0.91.008
  */
-(function(Q) {
-	var checkTime = 30;// unit second
-	// ///////////////////cache module
-	function Cache() {
-		var me = this;
-		me._cache = {};
-		Q.cycle(function() {
-			me.iterator(function(key, value) {
-				me.get(key)
-			})
-		}, checkTime)
-	}
-	Q.extend(Cache.prototype, {
-		set : function(key, value, ttl) {
-			ttl = isNum(ttl) ? ttl : -1;
-			this._cache[key] = {
-				value : value,
-				ttl : (ttl < 0 ? -1 : ttl * 1000 + Q.time())
-			}
-		},
-		get : function(key) {
-			var ret = this._cache[key];
-			if (ret && ret.ttl <= Q.time()) {
-				delete this._cahce[key];
-				ret = null
-			}
-			return ret ? ret.value : ret
-		},
-		rm : function(key) {
-			delete this._cahce[key];
-		},
-		iterator : function(callback) {
-			each(this._cache, function(key, value) {
-				callback(key, value)
-			})
-		}
-	});
-	Q.Cache = Cache;
-})(Qmik);
-
-/**
- * @author:leochen
- * @email:cwq0312@163.com
- * @version:0.91.008
- */
 (function(Q) { /* event */
 	var win = Q.global, doc = win.document;
-	var readyRE = /complete/, // /complete|loaded|interactive/
+	var readyRE = /complete|loaded/, // /complete|loaded|interactive/
 	ek = "$QmikEvents", liveFuns = {};
 	var isNull = Q.isNull, isFun = Q.isFun, isDom = Q.isDom, each = Q.each;
 	function SE() {
 		return !isNull(doc.addEventListener)
 	}
 	Q.ready = Q.fn.ready = function(fun) {
-		SE() ? Q(doc).bind('DOMContentLoaded', fun) : doc.onreadystatechange = function(e) {
+		// SE() ? Q(doc).bind('DOMContentLoaded', fun) : doc.onreadystatechange =
+		// function(e) {
+		// readyRE.test(doc.readyState) && fun(e)
+		// }
+		Q(doc).bind("readystatechange", function(e) {
 			readyRE.test(doc.readyState) && fun(e)
-		}
+		});
 		return this
 	}
 	function Eadd(dom, name, fun, paramArray) {
@@ -1129,8 +1121,8 @@
 			return this
 		},
 		live : function(name, callback) {
-			var fun = liveFuns[this.selector + ":live:" + callback.toString()] = function(e) {
-				if (Q(e.target.childNodes[0]).closest(this.selector).length > 0) {
+			var select = this.selector, fun = liveFuns[select + ":live:" + callback.toString()] = function(e) {
+				if (Q((e.target || e.srcElement).childNodes[0]).closest(select).length > 0) {
 					callback.apply(event.target, [
 						e
 					]);
@@ -1140,8 +1132,8 @@
 			return this
 		},
 		die : function(name, callback) {
-			each(Q(document.body), function(k, v) {
-				Erm(v, name, liveFuns[this.selector + ":live:" + (callback || "").toString()])
+			each(Q(document.body), function(k, dom) {
+				Erm(dom, name, liveFuns[this.selector + ":live:" + (callback || "").toString()])
 			});
 			return this
 		}
@@ -1231,12 +1223,8 @@
 		var _config = Q.extend( {}, ac, conf), dataType = _config.dataType, ttl = _config.timeout, //
 		xhr = ac.xhr(), data = _config.data, pid, success = _config.success, error = _config.error //
 		;
-		if (dataType == "jsonp") {
-			ajax.callback = success
-			Q.getScript(url)
-		}
 		_config.beforeSend && _config.beforeSend();
-		xhr.onreadystatechange = function() {
+		xhr.onreadystatechange = Q.box(function() {
 			if (4 == xhr.readyState) {
 				if (200 == xhr.status) {
 					clearTimeout(pid);
@@ -1246,7 +1234,7 @@
 					error && error(xhr.xhr, xhr.type)
 				}
 			}
-		};
+		});
 		xhr.open(_config.type, _config.url, _config.async);
 		xhr.setRequestHeader("Cache-Control", "no-cache");
 		xhr.send(_config.type == "GET" ? Q.param(data) : data);
@@ -1265,7 +1253,7 @@
 		})
 	}
 	Q.extend( {
-		ajax : ajax,
+		ajax : Q.box(ajax),
 		get : get,
 		getJSON : function(url, success) {
 			get(url, null, success, 'json')
@@ -1300,17 +1288,17 @@
 		vars : {},
 		map : [],
 		preload : [],
-		base : loc.protocol + "//" + hostname
+		base : Q.url()
 	//
 	// context://工程目录
 	};
 	var cacheModule = {}, currentScript;
 	var sun = {};
-	function Module(id, dependencies, factory) {
+	function Module(id, url, dependencies, factory) {
 		var me = this;
 		Q.extend(me, {
-			url : id2url(id),
 			id : id || id2url(id),
+			url : url,
 			dependencies : dependencies,// 依赖模块
 			factory : factory,
 			// module is ready ,if no, request src from service
@@ -1320,26 +1308,34 @@
 			lastTime : Q.now(),
 			useCount : 0,// use count,使用次数
 			destroy : function() {
-				delete cacheModule[id]
+				delete cacheModule[id], cacheModule[url]
 			}
 		})
 	}
 	// factory:function(require, exports, module)
 	function define(id, dependencies, factory) {
+		var url = getCurrentScript().src;
 		if (isFun(id)) {
 			factory = id;
 			dependencies = [];
-			id = getCurrentScript().src;
+			id = url;
 		} else if (isFun(dependencies)) {
 			factory = dependencies;
 			dependencies = []
 		}
-		dependencies = dependencies.concat(parseDepents(factory));
-		cacheModule[id] = new Module(id, Q.unique(dependencies), factory)
+		id = id2url(id)
+		if (!getModule(id) || !Q.isIE()) {
+			dependencies = dependencies.concat(parseDepents(factory));
+			cacheModule[url] = cacheModule[id] = new Module(id, url, Q.unique(dependencies), factory)
+		}
+	}
+	/** 清除注释 */
+	function clearNode(word) {
+		return word.replace(/(\/\/)\S*[^\/]{2}[^\n]*/g, "").replace(/\/\*[\S\s]*\*\//g, "")
 	}
 	// get depends from function.toString()
 	function parseDepents(code) {
-		code = code.toString();
+		code = clearNode(code.toString());
 		var params = code.replace(/^\s*function\s*\w*\s*/, "").match(/^\([\w ,]*\)/)[0].replace("\(", "").replace("\)", "");
 		var match = [], idx = params.indexOf(",");
 		if (idx >= 0) {
@@ -1351,101 +1347,94 @@
 		return match
 	}
 	function use(ids, callback) {
-		var params = [];
-		if (isArray(ids)) {
-			var idx = 0;
-			each(ids, function(i, id) {
-				preload(function() {
-					load(id, function(exports) {
+		preload(function() {
+			if (isArray(ids) && ids.length > 0) {
+				var params = [];
+				(function bload(idx) {
+					load(ids[idx], function(exports) {
 						params.push(exports);
-						if (++idx == ids.length) {
-							callback && callback.apply(callback, params);
-							delete idx, params
-						}
+						idx == ids.length - 1 ? callback && callback.apply(callback, params) : bload(idx + 1)
 					})
-				})
-			})
-		} else {
-			preload(function() {
+				})(0);
+			} else if (isFun(ids)) {
+				ids.apply(ids, []);
+			} else {
 				load(ids, function(exports) {
-					params.push(exports);
-					callback && callback.apply(callback, params);
-					delete params
+					callback && callback.apply(callback, [
+						exports
+					]);
 				})
-			})
-		}
+			}
+		})
 	}
 	// require module
 	function require(id) {
-		return getModule(id) ? getModule(id).exports : null
+		var module = getModule(id2url(id), id);
+		return module ? module.exports : null
 	}
 	Q.extend(require, {
 		resolve : id2url
 	});
-	function getModule(id) {
-		return cacheModule[id] || cacheModule[id2url(id)]
+	function getModule(url, id) {
+		return cacheModule[url] || cacheModule[id]
 	}
 	// pre load module
-	function preload(callback) {
-		var idx = 0, dependencies = config.preload, length = dependencies.length;
-		length == 0 ? callback() : each(dependencies, function(i, id) {
-			idx++;
-			cacheModule[id] || request(id2url(id), function() {
-				useModule(cacheModule[id], require);
-				idx == length && callback()
+	function preload(callback, deps) {
+		var dependencies = deps || config.preload, length = dependencies.length, params = [];
+		length == 0 ? callback() : (function bload(idx) {
+			load(dependencies[idx], function(exports) {
+				params.push(exports);
+				idx == length - 1 ? callback && callback.apply(callback, params) : bload(idx + 1)
 			})
-		})
+		})(0)
 	}
 	function load(id, callback) {
-		var module = getModule(id);
+		var url = id2url(id);
+		if (id == ".js") return;
+		var module = getModule(url, id);
 		if (module) {
 			if (module.isReady) {
 				useModule(module, require, callback)
 			} else {
-				var idx = 0, depModule, dependencies = module.dependencies;
-				if (dependencies.length < 1) {
+				preload(function() {
 					useModule(module, require, callback)
-				} else {
-					each(dependencies, function(i, _id) {
-						request(_id, function() {
-							useModule(getModule(_id), require, callback);
-							++idx == dependencies.length && useModule(module, require, callback)
-						})
-					})
-				}
+				}, module.dependencies)
 			}
 		} else {
 			request(id, function() {
-				useModule(getModule(id), require, callback)
+				// useModule(getModule(id), require, callback)
+				preload(function() {
+					useModule(getModule(url, id), require, callback)
+				}, getModule(url, id).dependencies)
 			})
 		}
 	}
 	function useModule(module, require, callback) {
-		module.isReady != !0 && module.factory(require, module.exports, module);
+		if (module.isReady != !0) {
+			var nm = module.factory(require, module.exports, module);
+			module.exports = module.exports || nm
+		}
 		module.isReady = !0;
 		module.useCount++;
 		module.lastTime = Q.now();
 		callback && callback(module.exports)
 	}
 	function request(id, callback) {
-		var url = id2url(id), idx = url.indexOf("?");
+		var url = id2url(id), idx = url.indexOf("?"), loadScript = Q("script[src='" + url + "']");
 		if (/\/.+\.css\s*$/i.test(idx >= 0 ? url.substring(0, idx) : url)) {
 			var node = doc.createElement("link");
-			// node.type = "text/css";
 			node.rel = 'stylesheet';
 			node.href = url;
-			Q(win.document.head).append(node)
+			Q("head").append(node)
 		} else {
-			currentScript = Q.getScript(url, function() {
-				var module = getModule(id);
-				if (isNull(module)) {
-					module = cacheModule[id] = new Module(id, [], function() {
-					});
-					module.exports = win[id]
-				}
-				// cacheModule[id].script = node;
+			function _load() {
 				callback()
-			})
+			}
+			if (loadScript.length < 1) {
+				currentScript = Q.getScript(url, _load)
+			} else {
+				loadScript.on("load", _load).on("readystatechange", _load);
+			}
 		}
 	}
 	function getCurrentScript() {
@@ -1462,7 +1451,7 @@
 		return map2url(id)
 	}
 	function normalize(url) {
-		!/^[a-zA-Z0-9]+:\/\//.test(url) && (url = concactUrl(config.base, url));
+		url = Q.url(url, config.base);
 		return !/\?/.test(url) && !/\.(css|js)$/.test(url) ? url + ".js" : url
 	}
 	function alias2url(id) {
@@ -1484,16 +1473,11 @@
 		});
 		return id
 	}
-	function concactUrl() {
-		return Q.map(arguments, function(i, url) {
-			return isArray(url) ? url.join("") : (url + "").replace(/(^\/)|(\/$)/, "")
-		}).join("/")
-	}
 	// ////////////////id to url end ///////////////////////////////
 	Q.extend(sun, {
-		use : use,
+		use : Q.box(use),
 		// factory:function(require, exports, module)
-		define : define,
+		define : Q.box(define),
 		config : function(opts) {
 			return Q.config(opts, config)
 		}
@@ -1513,5 +1497,6 @@
 		})
 	}, 300000);
 	Q.sun = sun;
-	win.define = sun.define
+	win.define = Q.define = Q.sun.define;
+	win.use = Q.use = Q.sun.use
 })(Qmik);

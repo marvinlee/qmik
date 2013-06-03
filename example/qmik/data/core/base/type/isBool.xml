@@ -12,10 +12,11 @@
          </title>
 			<code>
 				(function(Q,define){
-                    var bool=true;
-                    console.log(Q.isBool(bool));//>>:true
-                    var opt={};
-                     console.log(Q.isBool(opt));//>>:false
+				var bool=true;
+				Q.isBool(bool) ;//>>:true
+
+				var opt={};
+				Q.isBool(opt) ;//>>:false
 				})(Qmik,Qmik.define);
          </code>
 		</example>

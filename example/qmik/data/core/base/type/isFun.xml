@@ -12,12 +12,12 @@
          </title>
 			<code>
 				(function(Q,define){
-                    var fun=function(){
-                        //doing
-                    };
-                    console.log(Q.isFun(fun));//>>:true
-                    var opt={};
-                     console.log(Q.isFun(opt));//>>:false
+				var fun=function(){
+				//doing
+				};
+				Q.isFun(fun) ;//>>:true
+				var opt={};
+				Q.isFun(opt) ;//>>:false
 				})(Qmik,Qmik.define);
          </code>
 		</example>

@@ -2,57 +2,61 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="css/default.css" rel="stylesheet" type="text/css">
 <title>Insert title here</title>
 </head>
 <body>
 <div id="header"></div>
 <div id="main">
 <div id="content">
+
 <div>
-<h1>link方式打开页面</h1>
-<ul>
-	<li>美女</li>
-	<li>屌丝</li>
-	<li>游戏</li>
-	<li><a href="news.html" target="_blank">新闻</a></li>
-</ul>
+<h3>ajax方式打开页面,利用hash实现前进后退</h3>
+<div class="nav" id="navHeader">
+<li flag="girl">美女</li>
+<li flag="diaosi">屌丝</li>
+<li flag="game">游戏</li>
+<li flag="news">新闻</li>
 </div>
-<br />
-<br />
-<h3>--------------------------------------------------------------------------------</h3>
-<div>
-<h1>ajax方式打开页面,利用hash实现前进后退</h1>
-<ul id="navHeader">
-	<li flag="girl">美女</li>
-	<li flag="diaosi">屌丝</li>
-	<li flag="game">游戏</li>
-	<li flag="news">新闻</li>
-</ul>
 </div>
 </div>
 <div id="show"></div>
 </div>
 <div id="footer"></div>
 </body>
-<script type="text/javascript" src="/assets/Qmik-debug.js"></script>
-<script type="text/javascript" src="/assets/plugins/Qmik.nav.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/Qmik.JSON.min.js"></script>
+<script type="text/javascript" src="../../assets/Qmik-debug.js"></script>
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="../../assets/plugins/Qmik.nav.min.js"></script>
+
 <script type="text/javascript">
-	$.sun.config({
-		alias:{
-	       "news":"/example/navdemo/js/news.js"
-		}
-	});
-	$.nav.config({
-		defaultModule:function(){
-	        $("#show").html("")
-		}
-	})
-     $("#navHeader").click(function(e){
-   	    var target=$(e.target);
-   	    if(target.attr("flag")=="news"){
-   	       $.nav.use("news");
-   	    }
-     })
+
+ ;(function(Q){
+
+    Q.sun.config({
+        alias:{
+           "news":"/example/navdemo/js/news.js",
+           "jQuery":"http://code.jquery.com/jquery-1.9.1.min.js"
+               
+        }
+    });
+   Q.nav.config({
+        defaultModule:function(){
+            Q("#show").html("")
+        }
+    })
+    Q("#navHeader").click(function(e){
+        var target=Qmik(e.target);
+        if(target.attr("flag")=="news"){
+         Q.nav.use("news");
+           
+        }
+        Q.sun.use("jQuery",function(jquery){
+           console.log(jquery)
+        });
+     })	 
+ 
+
+})(Qmik);
+ 
 </script>
 </html>

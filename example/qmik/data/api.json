@@ -6,164 +6,171 @@
 		"id" : "QCore",
 		"title" : "核心模块",
 		"list" : [{
-					"title" : "基础模块",
-					"list" : [{
-								"title" : "encode",
-								"url" : "data/core/base/QCore_encode.xml"
-							}, {
-								"title" : "decode",
-								"url" : "data/core/base/QCore_decode.xml"
-							}, {
-								"title" : "inherit",
-								"url" : "data/core/base/QCore_inherit.xml"
-							}, {
-								"id" : "QCore_type",
-								"title" : "类型判断",
-								"list" : [{
-											"title" : "isBool",
-											"url" : "data/core/base/type/QCore_isBool.xml"
-										}, {
-											"title" : "isString",
-											"url" : "data/core/base/type/QCore_isString.xml"
-										}, {
-											"title" : "isFun(isFunction)",
-											"url" : "data/core/base/type/QCore_isFun.xml"
-										}, {
-											"title" : "isNum(isNumber)",
-											"url" : "data/core/base/type/QCore_isNum.xml"
-										}, {
-											"title" : "isArray",
-											"url" : "data/core/base/type/QCore_isArray.xml"
-										}, {
-											"title" : "likeArray",
-											"url" : "data/core/base/type/QCore_likeArray.xml"
-										}, {
-											"title" : "isNull",
-											"url" : "data/core/base/type/QCore_isNull.xml"
-										}, {
-											"title" : "likeNull",
-											"url" : "data/core/base/type/QCore_likeNull.xml"
-										}, {
-											"title" : "isDate",
-											"url" : "data/core/base/type/QCore_isDate.xml"
-										}, {
-											"title" : "isObject",
-											"url" : "data/core/base/type/QCore_isObject.xml"
-										}, {
-											"title" : "isPlainObject",
-											"url" : "data/core/base/type/QCore_isPlainObject.xml"
-										}, {
-											"title" : "isError",
-											"url" : "data/core/base/type/QCore_isError.xml"
-										}]
-							}]
-				}, {
-					"title" : "查询模块",
-					"list" : [{
-								"title" : "each(callback)",
-								"url" : "data/QCore_QmikEach.xml"
-							}, {
-								"title" : "size()",
-								"url" : "data/QCore_QmikSize.xml"
-							}, {
-								"title" : "length",
-								"url" : "data/QCore_QmikLength.xml"
-							}, {
-								"title" : "selector",
-								"url" : "data/QCore_QmikSelector.xml"
-							}, {
-								"title" : "context",
-								"url" : "data/QCore_QmikContext.xml"
-							}, {
-								"title" : "get",
-								"url" : "data/QCore_QmikGet.xml"
-							}, {
-								"title" : "get(index)",
-								"url" : "data/QCore_QmikGet_Index.xml"
-							}, {
-								"title" : "index",
-								"url" : "data/QCore_QmikIndex.xml"
-							}]
-				}, {
-					"title" : "模块加载模块",
-					"list" : [{
-								"title" : "data(name)",
-								"url" : "data/QCore_Data_Name.xml"
-							}, {
-								"title" : "data(name, value)",
-								"url" : "data/QCore_Data_Name_Value.xml"
-							}, {
-								"title" : "data(obj)",
-								"url" : "data/QCore_QmikLength.xml"
-							}, {
-								"title" : "rmData(name)",
-								"url" : "data/QCore_rmData.xml"
-							}]
-				}, {
-					"title" : "ajax模块",
-					"list" : [{
-								"title" : "queue(name)",
-								"url" : "data/QCore_Queue_Name.xml"
-							}, {
-								"title" : "queue(name, callback)",
-								"url" : "data/QCore_Queue_Name_Call.xml"
-							}, {
-								"title" : "queue(name, queue)",
-								"url" : "data/QCore_Queue_Name_Queue.xml"
-							}, {
-								"title" : "rmQueue(name)",
-								"url" : "data/QCore_rmQueue.xml"
-							}]
-				}, {
-					"title" : "事件模块",
-					"list" : [{
-								"title" : "Qmik.fn.extend(object)",
-								"url" : "data/QCore_Qmik_Fn_Extend.xml"
-							}, {
-								"title" : "Qmik.extend(object)",
-								"url" : "data/QCore_Qmik_Extend.xml"
-							}]
-				}, {
-					"title" : "基础视图模块",
-					"list" : [{
-								"title" : "多库共存",
-								"url" : "data/QCore_NoConflict.xml"
-							}]
-				}]
-	}, {
-		"id" : "QSelect",
-		"title" : "选择器",
-		"list" : [{
+			"title" : "基础模块",
+			"list" : [{
+						"title" : "encode",
+						"url" : "data/core/base/encode.xml"
+					}, {
+						"title" : "decode",
+						"url" : "data/core/base/decode.xml"
+					}, {
+						"title" : "inherit",
+						"url" : "data/core/base/inherit.xml"
+					}, {
+						"title" : "类型判断",
+						"list" : [{
+									"title" : "isBool",
+									"url" : "data/core/base/type/isBool.xml"
+								}, {
+									"title" : "isString",
+									"url" : "data/core/base/type/isString.xml"
+								}, {
+									"title" : "isFun(isFunction)",
+									"url" : "data/core/base/type/isFun.xml"
+								}, {
+									"title" : "isNum(isNumber)",
+									"url" : "data/core/base/type/isNum.xml"
+								}, {
+									"title" : "isArray",
+									"url" : "data/core/base/type/isArray.xml"
+								}, {
+									"title" : "likeArray",
+									"url" : "data/core/base/type/likeArray.xml"
+								}, {
+									"title" : "isNull",
+									"url" : "data/core/base/type/isNull.xml"
+								}, {
+									"title" : "likeNull",
+									"url" : "data/core/base/type/likeNull.xml"
+								}, {
+									"title" : "isDate",
+									"url" : "data/core/base/type/isDate.xml"
+								}, {
+									"title" : "isObject",
+									"url" : "data/core/base/type/isObject.xml"
+								}, {
+									"title" : "isPlainObject",
+									"url" : "data/core/base/type/isPlainObject.xml"
+								}, {
+									"title" : "isError",
+									"url" : "data/core/base/type/isError.xml"
+								}]
+					}]
+		}, {
+			"title" : "查询模块",
+			"list" : [{
+				"title" : "查询",
+				"list" : [{
 					"title" : "基本",
 					"list" : [{
 								"title" : "#id",
-								"url" : "data/QSelect_Id.xml"
+								"url" : "data/core/query/query/base/id.xml"
 							}, {
-								"title" : "tarName",
-								"url" : "data/QSelect_TarName.xml"
+								"title" : "tagName",
+								"url" : "data/core/query/query/base/tagName.xml"
 							}, {
-								"title" : ".class",
-								"url" : "data/QSelect_Class.xml"
+								"title" : ".className",
+								"url" : "data/core/query/query/base/.className.xml"
 							}]
 				}, {
 					"title" : "层级",
 					"list" : [{
-								"title" : "ancestor descendant",
-								"url" : "data/QSelect_AD.xml"
+								"title" : "ul li",
+								"url" : "data/core/query/query/level/ul li.xml"
 							}, {
-								"title" : "ancestor > descendant",
-								"url" : "data/QSelect_A>D.xml"
+								"title" : "ul > li",
+								"url" : "data/core/query/query/level/ul)li.xml"
 							}]
 				}, {
 					"title" : "属性",
 					"list" : [{
 								"title" : "[attribute=value]",
-								"url" : "data/QSelect_Attr=.xml"
+								"url" : "data/core/query/query/attr/same.xml"
 							}, {
 								"title" : "[attribute!=value]",
-								"url" : "data/QSelect_Attr!=.xml"
+								"url" : "data/core/query/query/attr/nosame.xml"
 							}]
 				}]
+			}, {
+				"title" : "属性",
+				"list" : [{
+					"title" : "属性",
+					"list" : [{
+								"title" : "#id",
+								"url" : "data/core/query/query/base/id.xml"
+							}, {
+								"title" : "tagName",
+								"url" : "data/core/query/query/base/tagName.xml"
+							}, {
+								"title" : ".className",
+								"url" : "data/core/query/query/base/.className.xml"
+							}]
+				}, {
+					"title" : "css",
+					"list" : [{
+								"title" : "ul li",
+								"url" : "data/core/query/query/level/ul li.xml"
+							}, {
+								"title" : "ul > li",
+								"url" : "data/core/query/query/level/ul)li.xml"
+							}]
+				}, {
+					"title" : "html",
+					"url" : "data/core/query/query/attr/same.xml"
+				},{
+                    "title" : "文本",
+                    "url" : "data/core/query/query/attr/same.xml"
+                },{
+                    "title" : "值",
+                    "url" : "data/core/query/query/attr/same.xml"
+                }]
+			}]
+		}, {
+			"title" : "模块加载模块Qmik.sun",
+			"list" : [{
+						"title" : "define",
+						"url" : "data/Data_Name.xml"
+					}, {
+						"title" : "use",
+						"url" : "data/Data_Name_Value.xml"
+					}, {
+						"title" : "config",
+						"url" : "data/QmikLength.xml"
+					}, {
+						"title" : "base",
+						"url" : "data/rmData.xml"
+					}]
+		}, {
+			"title" : "ajax模块",
+			"list" : [{
+						"title" : "queue(name)",
+						"url" : "data/Queue_Name.xml"
+					}, {
+						"title" : "queue(name, callback)",
+						"url" : "data/Queue_Name_Call.xml"
+					}, {
+						"title" : "queue(name, queue)",
+						"url" : "data/Queue_Name_Queue.xml"
+					}, {
+						"title" : "rmQueue(name)",
+						"url" : "data/rmQueue.xml"
+					}]
+		}, {
+			"title" : "事件模块",
+			"list" : [{
+						"title" : "Qmik.fn.extend(object)",
+						"url" : "data/Qmik_Fn_Extend.xml"
+					}, {
+						"title" : "Qmik.extend(object)",
+						"url" : "data/Qmik_Extend.xml"
+					}]
+		}, {
+			"title" : "基础视图模块",
+			"list" : [{
+						"title" : "多库共存",
+						"url" : "data/NoConflict.xml"
+					}]
+		}]
 	}, {
 		"id" : "QAttr",
 		"title" : "属性",

@@ -1,6 +1,6 @@
 <root>
 	<title>
-		Qmik.isBool(obj);方法
+		Qmik.isDate(obj);方法
    </title>
 	<desc>
 		判断是否是时间类型类型
@@ -12,10 +12,10 @@
          </title>
 			<code>
 				(function(Q,define){
-                    var date=new Date();
-                    console.log(Q.isDate(date));//>>:true
-                    var opt={};
-                     console.log(Q.isDate(opt));//>>:false
+				var date=new Date();
+				Q.isDate(date) ;//>>:true
+				var opt={};
+				Q.isDate(opt) ;//>>:false
 				})(Qmik,Qmik.define);
          </code>
 		</example>

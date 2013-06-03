@@ -56,6 +56,7 @@
 		qmik.append(build(data));
 		me.click(callback);
 		me.target = Q("#" + data.id, qmik[0]);
+		me.vesting = qmik;
 		me.target.click(function(e) {
 			var tar = Q(e.target || e.srcElement), par = tar.closest("li");
 			var next = par.next();
@@ -72,7 +73,10 @@
 	Q.extend(Tree.prototype, {
 		// 显示菜单
 		showMenu : function(id) {
-			showParentMenu(Q("#" + id));
+			var target = Q("#" + id);
+			showParentMenu(target);
+			this.vesting[0].scrollTop = target.offset().top - 150
+			// target.attr("offsetTop","30px")
 			return this;
 		},
 		click : function(callback) {

@@ -54,7 +54,6 @@
 					success : function(data) {
 						data = xmlToJson(data);
 						if (data) {
-							console.log(data)
 							var h = [];
 							h.push('<div class="code_title"><h3>' + data.title + '</h3></div>');
 							if (data.desc) {
@@ -62,7 +61,7 @@
 							}
 							h.push('<div class="code_examples">');
 							Q.each(data.examples, function(i, value) {
-								h.push('<pre class="code_exp">');
+								h.push('<div class="code_exp">');
 								h.push('<div class="code_exp_title">' + value.title + '</div>');
 								if (value.code) {
 									h.push('<div class="code_exp_code"><div>代码:</div><div><textarea flag="code">' + value.code
@@ -71,7 +70,7 @@
 								if (value.desc) {
 									h.push('<div class="code_exp_desc"><div>描述:</div><div>' + value.desc + '</div></div>');
 								}
-								h.push('</pre>');
+								h.push('</div>');
 							})
 							h.push('</div>');
 							Q("#helpContent").html(h.join(""));
@@ -82,6 +81,7 @@
 			}
 		});
 	});
+	var xmlSerializer = new XMLSerializer();
 	// Changes XML to JSON
 	function xmlToJson(xml) {
 		var nodeName = xml.nodeName;
@@ -119,8 +119,8 @@
 					case "code":
 					case "title":
 						if (item.hasChildNodes()) {
-							console.log(name)
-							json[name] = item.childNodes.item(0).nodeValue.trim()
+							json[name] = xmlSerializer.serializeToString(item.childNodes.item(0));
+							json[name] = json[name].replace("<", "&lt;").replace(">", "&gt;");
 						}
 						break;
 					default:
@@ -136,7 +136,13 @@
 		case "desc":
 		case "code":
 		case "title":
-			if (xml.hasChildNodes()) { return xml.childNodes.item(0).nodeValue.trim() }
+			if (xml.hasChildNodes()) {
+				var h = [];
+				for ( var k = 0; k < xml.childNodes.length; k++) {
+					h.push(xmlSerializer.serializeToString(xml.childNodes.item(k)))
+				}
+				return h.join("").replace("<", "&lt;").replace(">", "&gt;");
+			}
 			break;
 		default:
 			switch (xml.nodeType) {
@@ -144,7 +150,6 @@
 				return xml.nodeValue.trim()
 			default:
 				if (xml.hasChildNodes()) {
-					console.log(nodeName + "--" + xml.childNodes.length)
 					for ( var i = 0; i < xml.childNodes.length; i++) {
 						var item = xml.childNodes.item(i);
 						var name = item.nodeName;

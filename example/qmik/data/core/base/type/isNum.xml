@@ -1,6 +1,6 @@
 <root>
 	<title>
-		Qmik.isNum(obj);(Qmik.isNumber(obj))方法
+		Qmik.isNum(obj);(Qmik.isNumber(obj))
    </title>
 	<desc>
 		判断是否是数字类型
@@ -11,13 +11,12 @@
 				例子1
          </title>
 			<code>
+				(function(Q,define){
+				var n=1;
+				Q.isNum(1);//>>:true
 
-				
-				                var n=1;
-                 Q.isNull(1);//>>:true
-                 
-                var opt={};
-                Q.isNull(opt);//>>:false
+				var opt={};
+				Q.isNum(opt);//>>:false
 				})(Qmik,Qmik.define);
          </code>
 		</example>
