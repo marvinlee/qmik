@@ -55,7 +55,7 @@
 		animate : function(styles, speed, easing, callback) {
 			var me = this, mul = 50, stardStyle = {}, source, target;
 			Q.each(styles, function(key, val) {
-				stardStyle[key] = Math.abs(Math.abs(parseInt(val)) - parseInt(me.css(key)));
+				stardStyle[key] = Math.abs(Math.abs(parseInt(val)) - parseInt(me.css(key)))
 			});
 			(function cs() {
 				var mstyle = {}, isDelay = !0;
