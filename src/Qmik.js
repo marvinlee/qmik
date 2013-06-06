@@ -7,7 +7,12 @@
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent, loc = win.location;
 	var encode = encodeURIComponent, decode = decodeURIComponent, //
 	config = {
-		baseURL : loc.protocol + "//" + loc.hostname
+		baseURL : loc.protocol + "//" + loc.hostname + (loc.port ? ":" + loc.port : ""),
+		box : {
+			enable : !1,//对box异常收集的支持
+			ttl : 60000,//收集时间间隔
+			url : "" //收集地址
+		}
 	};
 	var slice = Array.prototype.slice;
 	var readyRE = /complete|loaded|interactive/i;
@@ -230,13 +235,18 @@
 			return r
 		},
 		getScript : function(url, callback) {
-			var node = doc.createElement("script"), state;
+			var node = doc.createElement("script"), //
+			state, //
+			noExec = !0 // is execed;
 			node.type = "text/javascript";
 			node.src = url;
 			Q("head").append(node);
 			function load(e) {
 				state = node.readyState;
-				(likeNull(state) || readyRE.test(state)) && callback(e)
+				if (noExec && (likeNull(state) || readyRE.test(state))) {
+					noExec = !1;
+					callback(e)
+				}
 			}
 			Q(node).on("load", load).on("readystatechange", load);
 			return node
@@ -291,7 +301,7 @@
 			}
 		},
 		isIphone : function() {
-			return /i(Phone|P(o|a)d)/.test(UA)
+			return /iPhone OS/.test(UA)
 		},
 		isAndroid : function() {
 			return /Android/.test(UA)
@@ -304,7 +314,17 @@
 		},
 		config : function(opts, _config) {
 			_config = arguments.length <= 1 ? config : (_config || {});
-			return (arguments.length < 1 || isNull(opts)) ? _config : isObject(opts) ? Q.extend(_config, opts) : _config[opts]
+			var ret = _config;
+			if (arguments.length < 1 || isNull(opts)) {
+			} else if (!isObject(opts)) {
+				ret = _config[opts]
+			} else {
+				each(opts, function(key, val) {
+					isObject(val) && _config[key] ? Q.extend(_config[key], val) : (_config[key] = val)
+				})
+			}
+			return ret
+			//return (arguments.length < 1 || isNull(opts)) ? _config : isObject(opts) ? Q.extend(_config, opts) : _config[opts]
 		},
 		/**
 		 * 合并url,if 参数 _url为空,则
@@ -313,21 +333,24 @@
 			baseURL = baseURL || config.baseURL;
 			return isNull(_url) ? baseURL : !/^[a-zA-Z0-9]+:\/\//.test(_url) ? concactUrl(baseURL, _url) : _url
 		},
-		box : function(callback, opts) {
+		box : function(callback) {
+			//enable box error notify:Q.config(error,{enable,url:"send you service"});
 			return function() {
 				try {
 					callback.apply(this, arguments)
 				} catch (e) {
 					// Q.config(error,{enable,url:""});
-					var stack = e.stack, log = errorStack[stack];
-					if (log) {
-						log.num++
-					} else {
-						log = errorStack[stack] = {
-							num : 1
-						};
-						errorStack.count++;
-						Q.extend(log, opts)
+					//enable support box error send to service
+					if (config.box.enable) {
+						var stack = e.stack, log = errorStack[stack];
+						if (log) {
+							log.num++
+						} else {
+							log = errorStack[stack] = {
+								num : 1
+							};
+							errorStack.count++
+						}
 					}
 					throw e
 				}
@@ -336,21 +359,19 @@
 	});
 	Q.url.toString = function() {
 		return Q.url()
-	}
-	function errorlog() {
-		var econfig = config.error || {};
-		if (errorStack.count > 0) {
-			if (econfig.enable) {
-				var img = new Image();
-				img.src = (config.error.url || "/error") + "?errorlog=" + toString(errorStack)
-			}
+	};
+	(function sendBox() {
+		var box = config.box || {};
+		if (box.enable && errorStack.count > 0) {
+			var img = new Image();
+			img.src = (config.error.url || "/error") + "?errorlog=" + toString(errorStack);
+			delete errorStack;
 			errorStack = {
 				count : 0
 			}
+			Q.delay(sendBox, box.ttl < 10000 ? 10000 : box.ttl)
 		}
-		Q.delay(errorlog, econfig.ttl || 60000)
-	}
-	errorlog();
+	})();
 	Q.version = "1.00.001";
 	Q.global = win;
 	win.Qmik = Q;
