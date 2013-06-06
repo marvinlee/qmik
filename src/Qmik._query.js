@@ -32,7 +32,12 @@
 					t.innerHTML = selector;
 					r = t.childNodes
 				} else {
-					r = find(selector, context)
+					each(selector.split(","), function(i, val) {
+						each(find(val, context), function(j, dom) {
+							dom && me.push(dom)
+						})
+					});
+					return me
 				}
 			} else {
 				r = likeArray(selector) ? selector : [
@@ -40,10 +45,9 @@
 				];
 				r = (r + "" == "[object Text]") ? [] : r
 			}
-			r = r || [];
-			for ( var i = 0; i < r.length; i++) {
-				r[i] && me.push(r[i])
-			}
+			each(r || [], function(i, dom) {
+				dom && me.push(dom)
+			})
 		})();
 		return me
 	}
