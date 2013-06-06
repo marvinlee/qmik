@@ -23,14 +23,18 @@
 	}
 	Q.fn.extend( {
 		width : function(v) {
+			var dom = this[0];
 			//var o = this[0];
 			//return isNull(o) ? (v || 0) : isDom(o) ? o.offsetWidth : o == win ? win.screenX : win.screen.availWidth
-			return this[0] ? this[0].offsetWidth : 0
+			//return me[0] ? isDom(this[0])?.offsetWidth : 0
+			return isDom(dom) ? dom.offsetWidth : dom == win ? screen.availWidth : 0
 		},
 		height : function(v) {
+			var dom = this[0];
 			//var o = this[0];
 			//return isNull(o) ? (v || 0) : isDom(o) ? o.offsetHeight : o == win ? win.screenY : win.screen.availHeight
-			return this[0] ? this[0].o.offsetHeight : 0
+			//return this[0] ? this[0].o.offsetHeight : 0
+			return isDom(dom) ? dom.offsetHeight : dom == win ? screen.availHeight : 0
 		},
 		offset : function() {// 获取匹配元素在当前视口的相对偏移
 			if (!this[0]) return null;
@@ -49,10 +53,35 @@
 			}
 		},
 		animate : function(styles, speed, easing, callback) {
-			var m = this;
-			Q.delay(function() {
-				m.css(styles)
-			}, speed || 500)
+			var me = this, mul = 50, stardStyle = {}, source, target;
+			Q.each(styles, function(key, val) {
+				stardStyle[key] = Math.abs(Math.abs(parseInt(val)) - parseInt(me.css(key)));
+			});
+			(function cs() {
+				var mstyle = {}, isDelay = !0;
+				Q.each(styles, function(key, val) {
+					target = Math.abs(parseInt(val));
+					source = parseInt(me.css(key));
+					if (target >= source) {
+						mstyle[key] = source + stardStyle[key] / mul;
+						if (source >= parseInt(val)) {
+							isDelay = !1
+						}
+					} else {
+						mstyle[key] = source - stardStyle[key] / mul;
+						if (source <= parseInt(val)) {
+							isDelay = !1
+						}
+					}
+				});
+				if (isDelay) {
+					me.css(mstyle);
+					Q.delay(cs, speed / mul)
+				} else {
+					me.css(styles);
+					callback && callback()
+				}
+			})()
 		}
 	});
 })(Qmik);
