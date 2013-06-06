@@ -70,8 +70,47 @@
 		}
 		return match
 	}
+	var uses = [], notLoading = !0//is not loading,default=true;
+	function loadUses() {
+		if (notLoading && uses.length > 0) {
+			notLoading = !1;
+			preload(function() {
+				var us = uses[0], ids = us.ids, callback = us.callback;
+				if (isArray(ids) && ids.length > 0) {
+					var params = [];
+					(function bload(idx) {
+						load(ids[idx], function(exports) {
+							params.push(exports);
+							if (idx == ids.length - 1) {
+								uses.splice(0, 1);
+								notLoading = !0;
+								callback && callback.apply(callback, params);
+								loadUses()
+							} else {
+								bload(idx + 1)
+							}
+						})
+					})(0);
+				} else {
+					load(ids, function(exports) {
+						uses.splice(0, 1);
+						notLoading = !0;
+						callback && callback.apply(callback, [
+							exports
+						]);
+						loadUses()
+					})
+				}
+			})
+		}
+	}
 	function use(ids, callback) {
-		preload(function() {
+		uses.push( {
+			ids : ids,
+			callback : callback
+		});
+		loadUses()
+		/*preload(function() {
 			if (isArray(ids) && ids.length > 0) {
 				var params = [];
 				(function bload(idx) {
@@ -89,16 +128,13 @@
 					]);
 				})
 			}
-		})
+		})*/
 	}
 	// require module
 	function require(id) {
 		var module = getModule(id2url(id), id);
 		return module ? module.exports : null
 	}
-	Q.extend(require, {
-		resolve : id2url
-	});
 	function getModule(url, id) {
 		return cacheModule[url] || cacheModule[id]
 	}
@@ -151,13 +187,11 @@
 			node.href = url;
 			Q("head").append(node)
 		} else {
-			function _load() {
-				callback()
-			}
+			var _load = Q.box(callback);
 			if (loadScript.length < 1) {
 				currentScript = Q.getScript(url, _load)
 			} else {
-				loadScript.on("load", _load).on("readystatechange", _load);
+				loadScript.on("load", _load).on("readystatechange", _load)
 			}
 		}
 	}
