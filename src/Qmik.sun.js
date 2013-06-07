@@ -71,6 +71,12 @@
 		return match
 	}
 	var uses = [], notLoading = !0//is not loading,default=true;
+	function loadError() {
+		console.log("load error");
+		uses.splice(0, 1);
+		notLoading = !0;
+		loadUses()
+	}
 	function loadUses() {
 		if (notLoading && uses.length > 0) {
 			notLoading = !1;
@@ -166,7 +172,7 @@
 				preload(function() {
 					useModule(getModule(url, id), require, callback)
 				}, getModule(url, id).dependencies)
-			})
+			}, loadError)
 		}
 	}
 	function useModule(module, require, callback) {
@@ -179,7 +185,7 @@
 		module.lastTime = Q.now();
 		callback && callback(module.exports)
 	}
-	function request(id, callback) {
+	function request(id, success, error) {
 		var url = id2url(id), idx = url.indexOf("?"), loadScript = Q("script[src='" + url + "']");
 		if (/\/.+\.css\s*$/i.test(idx >= 0 ? url.substring(0, idx) : url)) {
 			var node = doc.createElement("link");
@@ -187,11 +193,11 @@
 			node.href = url;
 			Q("head").append(node)
 		} else {
-			var _load = Q.box(callback);
+			var _load = Q.box(success);
 			if (loadScript.length < 1) {
-				currentScript = Q.getScript(url, _load)
+				currentScript = Q.getScript(url, _load, error)
 			} else {
-				loadScript.on("load", _load).on("readystatechange", _load)
+				loadScript.on("load", _load).on("readystatechange", _load).on("error", error)
 			}
 		}
 	}
