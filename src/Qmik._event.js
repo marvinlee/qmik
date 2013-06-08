@@ -16,9 +16,10 @@
 		// function(e) {
 		// readyRE.test(doc.readyState) && fun(e)
 		// }
-		Q(doc).bind("readystatechange", function(e) {
+		function ready(e) {
 			readyRE.test(doc.readyState) && fun(e)
-		});
+		}
+		readyRE.test(doc.readyState) ? fun(doc.createEvent("MouseEvents")) : Q(doc).on("readystatechange", ready).on("load", ready);
 		return this
 	}
 	function Eadd(dom, name, fun, paramArray) {
