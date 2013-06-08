@@ -146,6 +146,7 @@
 			return !/^\w+:\/\//.test(v) ? "/" : v
 		})
 	}
+	//box bariable
 	var errorStack = {
 		count : 0
 	};
@@ -234,21 +235,31 @@
 			});
 			return r
 		},
-		getScript : function(url, callback) {
+		getScript : function(url, success, error) {
 			var node = doc.createElement("script"), //
 			state, //
 			noExec = !0 // is execed;
-			node.type = "text/javascript";
-			node.src = url;
-			Q("head").append(node);
+			Q(node).attr( {
+				type : "text/javascript",
+				_src : url
+			});
+			function _error(e) {
+				Q(node).remove();
+				error && error(e)
+			}
 			function load(e) {
 				state = node.readyState;
+				console.log("state:" + state);
 				if (noExec && (likeNull(state) || readyRE.test(state))) {
 					noExec = !1;
-					callback(e)
+					Q.box(success)(e)
 				}
 			}
-			Q(node).on("load", load).on("readystatechange", load);
+			Q(node).on("load", load).on("readystatechange", load).on("error", _error);
+			Q("head").append(node);
+			Q.delay(function() {
+				node.src = url;
+			}, 1);
 			return node
 		},
 		serialize : function(array) {
@@ -335,26 +346,24 @@
 		},
 		box : function(callback) {
 			//enable box error notify:Q.config(error,{enable,url:"send you service"});
-			return function() {
+			return config.box.enable ? function() {
 				try {
 					callback.apply(this, arguments)
 				} catch (e) {
 					// Q.config(error,{enable,url:""});
 					//enable support box error send to service
-					if (config.box.enable) {
-						var stack = e.stack, log = errorStack[stack];
-						if (log) {
-							log.num++
-						} else {
-							log = errorStack[stack] = {
-								num : 1
-							};
-							errorStack.count++
-						}
+					var stack = e.stack, log = errorStack[stack];
+					if (log) {
+						log.num++
+					} else {
+						log = errorStack[stack] = {
+							num : 1
+						};
+						errorStack.count++
 					}
 					throw e
 				}
-			}
+			} : callback
 		}
 	});
 	Q.url.toString = function() {
