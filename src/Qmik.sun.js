@@ -32,6 +32,7 @@
 			lastTime : Q.now(),
 			useCount : 0,// use count,使用次数
 			destroy : function() {
+				Q("script[_src='" + url + "']").remove();
 				delete cacheModule[id], cacheModule[url]
 			}
 		})
@@ -75,74 +76,61 @@
 		console.log("load error");
 		uses.splice(0, 1);
 		notLoading = !0;
-		loadUses()
+		loadSyncUses()
 	}
-	function loadUses() {
+	/** 同步加载使用的模块 */
+	function loadSyncUses() {
 		if (notLoading && uses.length > 0) {
 			notLoading = !1;
 			preload(function() {
 				var us = uses[0], ids = us.ids, callback = us.callback;
-				if (isArray(ids) && ids.length > 0) {
-					var params = [];
-					(function bload(idx) {
-						load(ids[idx], function(exports) {
-							params.push(exports);
-							if (idx == ids.length - 1) {
-								uses.splice(0, 1);
-								notLoading = !0;
-								callback && callback.apply(callback, params);
-								loadUses()
-							} else {
-								bload(idx + 1)
-							}
-						})
-					})(0);
-				} else {
-					load(ids, function(exports) {
-						uses.splice(0, 1);
-						notLoading = !0;
-						callback && callback.apply(callback, [
-							exports
-						]);
-						loadUses()
-					})
-				}
+				callbackUse(ids, function() {
+					uses.splice(0, 1);
+					notLoading = !0;
+					callback && callback.apply(callback, arguments);
+					loadSyncUses()
+				})
 			})
 		}
 	}
 	function use(ids, callback) {
-		uses.push( {
-			ids : ids,
-			callback : callback
+		ids = isArray(ids) ? ids : [
+			ids
+		];
+		//下面检测使用的模块是否已被全部加载过
+		var r = Q.grep(ids, function(val) {
+			return !isNull(getModule(id2url(val), val))
 		});
-		loadUses()
-		/*preload(function() {
-			if (isArray(ids) && ids.length > 0) {
-				var params = [];
-				(function bload(idx) {
-					load(ids[idx], function(exports) {
-						params.push(exports);
-						idx == ids.length - 1 ? callback && callback.apply(callback, params) : bload(idx + 1)
-					})
-				})(0);
-			} else if (isFun(ids)) {
-				ids.apply(ids, []);
-			} else {
-				load(ids, function(exports) {
-					callback && callback.apply(callback, [
-						exports
-					]);
+		if (r.length == ids.length) {
+			callbackUse(ids, callback)
+		} else {
+			uses.push( {
+				ids : ids,
+				callback : callback
+			});
+			loadSyncUses()
+		}
+	}
+	/** 回调使用的模块 */
+	function callbackUse(ids, callback) {
+		if (ids.length > 0) {
+			var params = [];
+			(function bload(idx) {
+				load(ids[idx], function(exports) {
+					params.push(exports);
+					if (idx == ids.length - 1) {
+						callback && callback.apply(callback, params);
+					} else {
+						bload(idx + 1)
+					}
 				})
-			}
-		})*/
+			})(0)
+		}
 	}
 	// require module
 	function require(id) {
 		var module = getModule(id2url(id), id);
 		return module ? module.exports : null
-	}
-	function getModule(url, id) {
-		return cacheModule[url] || cacheModule[id]
 	}
 	// pre load module
 	function preload(callback, deps) {
@@ -175,6 +163,9 @@
 			}, loadError)
 		}
 	}
+	function getModule(url, id) {
+		return cacheModule[url] || cacheModule[id]
+	}
 	function useModule(module, require, callback) {
 		if (module.isReady != !0) {
 			var nm = module.factory(require, module.exports, module);
@@ -186,7 +177,7 @@
 		callback && callback(module.exports)
 	}
 	function request(id, success, error) {
-		var url = id2url(id), idx = url.indexOf("?"), loadScript = Q("script[src='" + url + "']");
+		var url = id2url(id), idx = url.indexOf("?"), loadScript = Q("script[_src='" + url + "']");
 		if (/\/.+\.css\s*$/i.test(idx >= 0 ? url.substring(0, idx) : url)) {
 			var node = doc.createElement("link");
 			node.rel = 'stylesheet';
