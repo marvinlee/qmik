@@ -249,7 +249,6 @@
 			}
 			function load(e) {
 				state = node.readyState;
-				console.log("state:" + state);
 				if (noExec && (likeNull(state) || readyRE.test(state))) {
 					noExec = !1;
 					Q.box(success)(e)

@@ -73,7 +73,6 @@
 	}
 	var uses = [], notLoading = !0//is not loading,default=true;
 	function loadError() {
-		console.log("load error");
 		uses.splice(0, 1);
 		notLoading = !0;
 		loadSyncUses()
