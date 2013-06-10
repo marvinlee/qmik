@@ -178,10 +178,11 @@
 	function request(id, success, error) {
 		var url = id2url(id), idx = url.indexOf("?"), loadScript = Q("script[_src='" + url + "']");
 		if (/\/.+\.css\s*$/i.test(idx >= 0 ? url.substring(0, idx) : url)) {
-			var node = doc.createElement("link");
+			/*var node = doc.createElement("link");
 			node.rel = 'stylesheet';
 			node.href = url;
-			Q("head").append(node)
+			Q("head").append(node)*/
+			Q.getCss(url)
 		} else {
 			var _load = Q.box(success);
 			if (loadScript.length < 1) {
