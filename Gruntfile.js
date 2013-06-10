@@ -76,8 +76,8 @@ module.exports = function(grunt) {
 					'assets/plugins/Qmik.JSON.js' : [
 						'src/plugins/Qmik.JSON.js'
 					],
-					'assets/plugins/Qmik.fade.js' : [
-						'src/plugins/Qmik.fade.js'
+					'assets/plugins/Qmik.fn.fade.js' : [
+						'src/plugins/Qmik.fn.fade.js'
 					]
 				}
 			}
