@@ -146,6 +146,26 @@
 			return !/^\w+:\/\//.test(v) ? "/" : v
 		})
 	}
+	function loadResource(type, url, success, error) {
+		var isCss = type == "css", tagName = isCss ? "link" : "script", //
+		node = Q(doc.createElement(tagName)), state, noExec = !0 // is execed;
+		node.attr("_src", url);
+		isCss ? node.attr("rel", "stylesheet") : node.attr("type", "text/javascript");
+		function _error(e) {
+			node.remove();
+			error && error(e)
+		}
+		function load(e) {
+			state = node[0].readyState;
+			if (noExec && (likeNull(state) || readyRE.test(state))) {
+				noExec = !1;
+				Q.box(success)(e)
+			}
+		}
+		node.on("load", load).on("readystatechange", load).on("error", _error);
+		Q("head").append(node);
+		return node
+	}
 	//box bariable
 	var errorStack = {
 		count : 0
@@ -236,7 +256,7 @@
 			return r
 		},
 		getScript : function(url, success, error) {
-			var node = doc.createElement("script"), //
+			/*var node = doc.createElement("script"), //
 			state, //
 			noExec = !0 // is execed;
 			Q(node).attr( {
@@ -255,11 +275,17 @@
 				}
 			}
 			Q(node).on("load", load).on("readystatechange", load).on("error", _error);
-			Q("head").append(node);
+			Q("head").append(node);*/
+			url = Q.url(url);
+			var node = loadResource("js", url, success, error)[0];
 			Q.delay(function() {
 				node.src = url;
 			}, 1);
 			return node
+		},
+		getCss : function(url, success, error) {
+			url = Q.url(url);
+			return loadResource("css", url, success, error).attr("href", url)
 		},
 		serialize : function(array) {
 			return Q.param(Q.serializeArray(array))
