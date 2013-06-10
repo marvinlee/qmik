@@ -1,71 +1,62 @@
 /**
  * 首页家庭页面显示模块
  */
-(function($, define) {
+(function(Q, define) {
 	var xmlSerializer = new XMLSerializer();
+
 	define(function(require, exports, module) {
 		var index = require("index");
 		var formate = require("doing").formate;
 		require("Qmik.tree");
 		function showParentULLI(tar) {
-			$.log("-------")
-			$.log(tar)
+			Q.log("-------")
+			Q.log(tar)
 			if (tar.length < 1 || tar.attr("node") == "root") return;
 			tar.show();
-			$.log(tar.closest("ul"));
+			Q.log(tar.closest("ul"));
 			tar.closest("ul").show();
 			showParentULLI(tar.closest("ul").prev("LI"));
 		}
-		var tree, treeData, apiData;
-		function showTree(id, data) {
-			tree = $("#helpTree").tree(data, function(id, url) {
-				$.nav.use( {
-					module : module.id,
-					method : "showAPI",
-					param : [
-						id, url
-					]
-				})
-			});
-			var main = $("#main");
-			main.fadeOut(1, 1);
-			id && tree.showMenu(id);
-		}
-		$.extend(exports, {
+		var tree, isLoadMenu = false;
+		Q.extend(exports, {
 			/**
 			 * 显示菜单 <br/> navId: 导航条的id; id:菜单里子菜单的id
 			 */
 			showMenu : function(navId, id) {
-				$.log("use module api:showMenu;")
-				if ($("#helpTree").length < 1) {
-					$.get("view/api.html", function(data) {
-						apiData = data;
-						$("#main").html(data);
-						if (treeData) {
-							showTree(id, treeData)
-						} else {
-							$.ajax( {
-								url : $.url("data/api.json"),
-								dataType : "json",
-								success : function(data) {
-									treeData = data;
-									showTree(id, treeData)
-								}
-							})
+				Q.log("use module api:showMenu;")
+				index.showNav(navId);
+				Q("#head").css("background", "#fffaaa")
+				Q(".panel").hide();
+				Q("#api").show();
+				if (!isLoadMenu) {
+					Q.ajax( {
+						url : Q.url("data/api.json"),
+						dataType : "json",
+						success : function(data) {
+							isLoadMenu = true;
+							tree = $("#helpTree").tree(data, function(id, url) {
+								Q.nav.use( {
+									module : module.id,
+									method : "showAPI",
+									param : [
+										id, url
+									]
+								})
+							});
+							id && tree.showMenu(id);
 						}
-					});
+					})
 				}
 			},
 			// 显示api帮助说明内容
 			showAPI : function(id, url) {
-				$.log("use module api:showAPI;")
+				Q.log("use module api:showAPI;")
 				// 此模块方法,依赖此模块的showMenu方法
 				exports.showMenu("link-api", id);
-				$.ajax( {
+				Q.ajax( {
 					url : url,
+					dataType : "xml",
 					success : function(data) {
-					$("#helpContent").html(data);
-						if(true)return;
 						data = xmlToJson(data);
 						if (data) {
 							var h = [];
@@ -74,7 +65,7 @@
 								h.push('<div class="code_desc"><div>描述:</div><div>' + data.desc + '</div></div>');
 							}
 							h.push('<div class="code_examples">');
-							$.each(data.examples, function(i, value) {
+							Q.each(data.examples, function(i, value) {
 								h.push('<div class="code_exp">');
 								h.push('<div class="code_exp_title">' + value.title + '</div>');
 								if (value.code) {
@@ -87,11 +78,11 @@
 								h.push('</div>');
 							})
 							h.push('</div>');
-							$("#helpContent").html(h.join(""));
-							formate($("div.code_exp_code textarea[flag='code']"));
+							Q("#helpContent").html(h.join(""));
+							formate(Q("div.code_exp_code textarea[flag='code']"));
 						}
 					}
-				});
+				})
 			}
 		});
 	});
@@ -101,7 +92,7 @@
 		var json = {};
 		if (xml.hasChildNodes() && xml.childNodes.length == 1) {
 			var value = xml.nodeValue;
-			if ($.isString(value)) return value.trim();
+			if (Q.isString(value)) return value.trim();
 		}
 		switch (nodeName) {
 		case "#document":

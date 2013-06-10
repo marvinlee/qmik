@@ -1,0 +1,24 @@
+<root>
+	<title>
+		Qmik.isNum(obj);(Qmik.isNumber(obj))
+   </title>
+	<desc>
+		判断是否是数字类型
+   </desc>
+	<examples>
+		<example>
+			<title>
+				例子1
+         </title>
+			<code>
+				(function(Q,define){
+				var n=1;
+				Q.isNum(1);//>>:true
+
+				var opt={};
+				Q.isNum(opt);//>>:false
+				})(Qmik,Qmik.define);
+         </code>
+		</example>
+	</examples>
+</root>

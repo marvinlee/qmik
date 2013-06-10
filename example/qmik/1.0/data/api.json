@@ -12,7 +12,7 @@
 						"url" : "data/core/base/encode.xml"
 					}, {
 						"title" : "decode",
-						"url" : "data/core/base/decode.html"
+						"url" : "data/core/base/decode.xml"
 					}, {
 						"title" : "inherit",
 						"url" : "data/core/base/inherit.xml"

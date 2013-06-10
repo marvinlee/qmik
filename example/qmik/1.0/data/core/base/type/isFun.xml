@@ -1,0 +1,25 @@
+<root>
+	<title>
+		Qmik.isFun(obj);Qmik.isFunction(obj);方法
+   </title>
+	<desc>
+		判断是否是方法类型
+   </desc>
+	<examples>
+		<example>
+			<title>
+				例子1
+         </title>
+			<code>
+				(function(Q,define){
+				var fun=function(){
+				//doing
+				};
+				Q.isFun(fun) ;//>>:true
+				var opt={};
+				Q.isFun(opt) ;//>>:false
+				})(Qmik,Qmik.define);
+         </code>
+		</example>
+	</examples>
+</root>

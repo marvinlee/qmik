@@ -12,7 +12,6 @@
 			base : "file:///D:/code/github/qmik/"
 		})
 	}
-	Q.config({debug:true})
 	// 定义模块名及请求路径
 	Q.sun.config( {
 		alias : {
@@ -21,16 +20,16 @@
 			"Qmik.fade" : "src/plugins/Qmik.fn.fade",//
 			"Qmik.tree" : "src/plugins/Qmik.fn.tree",// 树型菜单组件
 			// ////////////////////////////////////////////
-			"beautify" : Q.url("js/jsformate/beautify"),//  
+			"beautify" : Q.url("jsold/jsformate/beautify"),//  
 			// "ga" : Q.url("js/jsformate/ga"),//
 			// "htmlBeautify" : Q.url("js/jsformate/HTML-Beautify"),//
-			"doing" : Q.url("js/jsformate/doing"),//
+			"doing" : Q.url("jsold/jsformate/doing"),//
 			// /
-			"index" : Q.url("js/index.js"),
-			"home" : Q.url("js/home"),
-			"download" : Q.url("js/download"),
-			"api" : Q.url("js/api"),
-			"about" : Q.url("js/about")
+			"index" : Q.url("jsold/index.js"),
+			"home" : Q.url("jsold/home"),
+			"download" : Q.url("jsold/download"),
+			"api" : Q.url("jsold/api"),
+			"about" : Q.url("jsold/about")
 		},
 		// 预加载的模块
 		preload : [

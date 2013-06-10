@@ -1,0 +1,73 @@
+/* CSS reset */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,a,p,blockquote,th,td{
+	margin: 0;
+	padding: 0;
+	text-decoration:none;
+	font-family: "微软雅黑"
+}
+li{
+    list-style: none;	
+}
+body {
+	margin: 0;
+	padding: 0;
+	width: 100% %;
+	overflow: auto;
+	text-align: center;
+	background: #ffffff;
+}
+.ccontainer{
+    margin: 0 auto;
+    min-width:990px;
+    width: 80%;
+}
+.cheader{
+	margin: 0px auto;
+	height:55px;
+	padding-top:25px;
+	border-bottom: 1px solid #AACCEE;
+}
+.logo {
+    position: relative;
+    height: 52px;
+    width: 50px;
+    float:left;
+    left:2%;
+}
+.cnav {
+    margin: 0 auto;
+    height: 52px;
+    line-height: 52px;
+    width:80%;
+}
+.cnav_fill{
+    float: left;	
+    width:100px;
+    height:52px;
+    background: #ffff00;
+    z-index: 99;
+}
+.cnav ul{
+	 float:right;
+	 height: 52px;
+}
+.cnav ul li{
+	float:left;
+    display: inline; /* li不换行 */
+    margin-left: 5px;
+}
+.chearder_a{
+	height: 52px;
+    color: #00A0E9;
+    font-weight:bold;
+    font-size: 24px;
+    width: 200px;
+    text-align: center;
+    padding: 0px 20px;
+
+}
+
+.cmain{
+    width: 100%;
+    height:100%;	
+}

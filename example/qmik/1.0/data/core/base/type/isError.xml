@@ -1,0 +1,23 @@
+<root>
+	<title>
+		Qmik.isBool(obj);方法
+   </title>
+	<desc>
+		判断是否是错误Error类型
+   </desc>
+	<examples>
+		<example>
+			<title>
+				例子1
+         </title>
+			<code>
+				(function(Q,define){
+                    var error=new Error("abc");
+                    console.log(Q.isBool(error));//>>:true
+                    var opt={};
+                     console.log(Q.isBool(opt));//>>:false
+				})(Qmik,Qmik.define);
+         </code>
+		</example>
+	</examples>
+</root>

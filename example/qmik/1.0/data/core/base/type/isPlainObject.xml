@@ -1,0 +1,23 @@
+<root>
+	<title>
+		Qmik.isPlainObject(obj);方法
+   </title>
+	<desc>
+		判断对象否为纯粹的对象字面量 
+   </desc>
+	<examples>
+		<example>
+			<title>
+				例子1
+         </title>
+			<code>
+				(function(Q,define){
+                    var bb={};
+                    console.log(Q.isPlainObject(bool));//>>:true
+                    var opt={};
+                     console.log(Q.isPlainObject(opt));//>>:true
+				})(Qmik,Qmik.define);
+         </code>
+		</example>
+	</examples>
+</root>
