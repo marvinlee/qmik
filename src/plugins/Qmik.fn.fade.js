@@ -13,7 +13,13 @@
 			callback = Q.isFun(opacity) ? opacity : callback;
 			m.show();
 			var f = function(v) {
-				if (!Q.isNum(v)) return;
+				if (!Q.isNum(v)) {
+					m.css( {
+						"opacity" : opacity / 100,
+						"filter" : "alpha(opacity=" + opacity + ");"
+					});					
+					return;
+				}
 				v = mode ? (v < opacity ? opacity : v) : (v > opacity ? opacity : v);
 				m.css( {
 					"opacity" : v / 100,
