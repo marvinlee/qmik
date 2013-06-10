@@ -39,6 +39,10 @@
 		}, ttl)
 	}
 	function get(url, data, success, dataType, type) {
+		if (isFun(data)) {
+			success = data;
+			data = null
+		}
 		ajax( {
 			url : url,
 			data : data,
