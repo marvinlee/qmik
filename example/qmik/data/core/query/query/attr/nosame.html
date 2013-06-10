@@ -1,0 +1,32 @@
+<div class="explain">
+    <div class="explain_title">Qmik("selector1[attrName!=value]")</div>
+    <div class="explain_desc">根据属性和值来查找</div>
+    <div class="exmpain_examples">
+        <div class="exmpain_row">
+            <div class="explain_sub_title">例子1</div>
+            <div class="explain_code">
+                <textarea style="overflow-y:visible;" disabled="disabled">
+                    html:
+                    <div class="show">
+                        <span>haha</span>
+                        <div>
+                            <h3>欢迎光临</h3>
+                            <span>...</span>
+                            <div flag="sub">sub</div>
+                        </div>
+                    </div>
+                    代码:
+                    (function($,define){
+                        $().ready(function(){
+                           $("div[flag!='sub']");
+                           //输出:1.<div class="show"><span>haha</span><div><h3>欢迎光临</h3><span>...</span><div flag="sub">sub</div></div></div>
+                           //     2. <div><h3>欢迎光临</h3><span>...</span><div>sub</div></div>
+
+                        })
+                    })(Qmik,Qmik.define);           
+                </textarea>
+            </div>
+            <div class="explain_desc"> </div>
+        </div>
+    </div>
+</div>

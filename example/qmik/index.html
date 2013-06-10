@@ -8,32 +8,45 @@
 	<meta name="author" content="leochen">
 	<meta name="format-detection" content="telephone=no">
 	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-	<link rel="stylesheet" type="text/css" href="css/index.css">
+    <style type="text/css">
+        /* CSS reset */
+		body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,a,p,blockquote,th,td{
+		    margin: 0;
+		    padding: 0;
+		    text-decoration:none;
+		    font-family: "微软雅黑"
+		}
+		li{
+		    list-style: none;   
+		}
+		body {
+		    margin: 0;
+		    padding: 0;
+		    width: 100% %;
+		    overflow: auto;
+		    text-align: center;
+		    background: #ffffff;
+		}
+		.ccontainer{
+		    margin: 0 auto;
+		    min-width:990px;
+		    width: 80%;
+		}
+		
+		.cmain{
+		    width: 100%;
+		    height:100%;    
+		}
+    </style>
 </head>
 <body>
 	<div id="container" class="ccontainer">
 		   <!-- 头部导航 -->
-		<div id="head" class="cheader">
-		    <div class="logo">
-		       <a ><img src="images/logo.png" width="52px" height="52px"></a>
-		    </div>
-			<div class="cnav">
-				<ul id="navigation">
-				    <li><a id="link-home" tag="nav" module="home" class="chearder_a"
-				        href="javascript:void(0)">首页</a></li>
-				    <li><a id="link-download" tag="nav" module="download"
-				        class="chearder_a" href="javascript:void(0)">下载</a></li>
-				    <li><a id="link-plugin" tag="nav" module="plugin" class="chearder_a"
-				        href="javascript:void(0)">插件</a></li>
-				    <li><a id="link-api" tag="nav" module="api" class="chearder_a" method="showMenu"
-				        href="javascript:void(0)">API</a></li>
-				    <li><a id="link-about" tag="nav" module="about" class="chearder_a"
-				        href="javascript:void(0)">关于Qmik</a></li>
-				</ul>
-			</div>
+		<div id="head_module">
+
 		</div>
 		<!-- 主内容模块 -->
-		<div id="main" class="cmain">
+		<div id="main_module" class="cmain">
 		
 		</div>
 	</div>	
@@ -42,13 +55,12 @@
 <script type="text/javascript" src="js/config.js"></script>
 <script type="text/javascript">
 (function(Q,define){
-    /*
-   Q.use(["index"],function(index){  
-      console.log("----init start");
-      console.log(index)
-       index.init();
-      });
-  */
+    
+   $.use("index",function(index){
+      $.log("use index OK:");
+      //$.log(index.init.toString().replace(/([ ]{2,}|\r|\n|\t)/g,""))
+      index.init();
+  });
    
 })(Qmik,Qmik.define);
 </script>

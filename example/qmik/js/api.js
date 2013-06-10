@@ -4,8 +4,9 @@
 (function($, define) {
 	var xmlSerializer = new XMLSerializer();
 	define(function(require, exports, module) {
-		var index = require("index");
-		var formate = require("doing").formate;
+		var index = require("index");//加载index模块
+		var nav = require("nav");//加载快捷菜单模块
+
 		require("Qmik.tree");
 		function showParentULLI(tar) {
 			$.log("-------")
@@ -27,7 +28,7 @@
 					]
 				})
 			});
-			var main = $("#main");
+			var main = $("#main_module");
 			main.fadeOut(1, 1);
 			id && tree.showMenu(id);
 		}
@@ -36,11 +37,12 @@
 			 * 显示菜单 <br/> navId: 导航条的id; id:菜单里子菜单的id
 			 */
 			showMenu : function(navId, id) {
-				$.log("use module api:showMenu;")
+				$.log("use module api:showMenu;");
 				if ($("#helpTree").length < 1) {
 					$.get("view/api.html", function(data) {
 						apiData = data;
-						$("#main").html(data);
+						$("#main_module").html(data);
+						nav.showShortcut();
 						if (treeData) {
 							showTree(id, treeData)
 						} else {
@@ -64,8 +66,11 @@
 				$.ajax( {
 					url : url,
 					success : function(data) {
-					$("#helpContent").html(data);
-						if(true)return;
+						$("#helpContent").html(data);
+						var area = $(".explain_code textarea");
+						area.css("height", area.attr("scrollHeight") + "px")
+						//console.log($(".explain_code textarea").attr("scrollHeight"))
+						if (true) return;
 						data = xmlToJson(data);
 						if (data) {
 							var h = [];
@@ -88,7 +93,7 @@
 							})
 							h.push('</div>');
 							$("#helpContent").html(h.join(""));
-							formate($("div.code_exp_code textarea[flag='code']"));
+							//formate($("div.code_exp_code textarea[flag='code']"));
 						}
 					}
 				});

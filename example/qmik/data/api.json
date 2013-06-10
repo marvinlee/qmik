@@ -9,51 +9,51 @@
 			"title" : "基础模块",
 			"list" : [{
 						"title" : "encode",
-						"url" : "data/core/base/encode.xml"
+						"url" : "data/core/base/encode.html"
 					}, {
 						"title" : "decode",
 						"url" : "data/core/base/decode.html"
 					}, {
 						"title" : "inherit",
-						"url" : "data/core/base/inherit.xml"
+						"url" : "data/core/base/inherit.html"
 					}, {
 						"title" : "类型判断",
 						"list" : [{
 									"title" : "isBool",
-									"url" : "data/core/base/type/isBool.xml"
+									"url" : "data/core/base/type/isBool.html"
 								}, {
 									"title" : "isString",
-									"url" : "data/core/base/type/isString.xml"
+									"url" : "data/core/base/type/isString.html"
 								}, {
 									"title" : "isFun(isFunction)",
-									"url" : "data/core/base/type/isFun.xml"
+									"url" : "data/core/base/type/isFun.html"
 								}, {
 									"title" : "isNum(isNumber)",
-									"url" : "data/core/base/type/isNum.xml"
+									"url" : "data/core/base/type/isNum.html"
 								}, {
 									"title" : "isArray",
-									"url" : "data/core/base/type/isArray.xml"
+									"url" : "data/core/base/type/isArray.html"
 								}, {
 									"title" : "likeArray",
-									"url" : "data/core/base/type/likeArray.xml"
+									"url" : "data/core/base/type/likeArray.html"
 								}, {
 									"title" : "isNull",
-									"url" : "data/core/base/type/isNull.xml"
+									"url" : "data/core/base/type/isNull.html"
 								}, {
 									"title" : "likeNull",
-									"url" : "data/core/base/type/likeNull.xml"
+									"url" : "data/core/base/type/likeNull.html"
 								}, {
 									"title" : "isDate",
-									"url" : "data/core/base/type/isDate.xml"
+									"url" : "data/core/base/type/isDate.html"
 								}, {
 									"title" : "isObject",
-									"url" : "data/core/base/type/isObject.xml"
+									"url" : "data/core/base/type/isObject.html"
 								}, {
 									"title" : "isPlainObject",
-									"url" : "data/core/base/type/isPlainObject.xml"
+									"url" : "data/core/base/type/isPlainObject.html"
 								}, {
 									"title" : "isError",
-									"url" : "data/core/base/type/isError.xml"
+									"url" : "data/core/base/type/isError.html"
 								}]
 					}]
 		}, {
@@ -64,31 +64,61 @@
 					"title" : "基本",
 					"list" : [{
 								"title" : "#id",
-								"url" : "data/core/query/query/base/id.xml"
+								"url" : "data/core/query/query/base/id.html"
 							}, {
 								"title" : "tagName",
-								"url" : "data/core/query/query/base/tagName.xml"
+								"url" : "data/core/query/query/base/tagName.html"
 							}, {
 								"title" : ".className",
-								"url" : "data/core/query/query/base/.className.xml"
+								"url" : "data/core/query/query/base/className.html"
 							}]
 				}, {
 					"title" : "层级",
 					"list" : [{
-								"title" : "ul li",
-								"url" : "data/core/query/query/level/ul li.xml"
+								"title" : "selector1 selector2",
+								"url" : "data/core/query/query/level/g_c.html"
 							}, {
-								"title" : "ul > li",
-								"url" : "data/core/query/query/level/ul)li.xml"
+								"title" : "selector1 > selector2",
+								"url" : "data/core/query/query/level/p_c.html"
 							}]
 				}, {
 					"title" : "属性",
 					"list" : [{
 								"title" : "[attribute=value]",
-								"url" : "data/core/query/query/attr/same.xml"
+								"url" : "data/core/query/query/attr/same.html"
 							}, {
 								"title" : "[attribute!=value]",
-								"url" : "data/core/query/query/attr/nosame.xml"
+								"url" : "data/core/query/query/attr/nosame.html"
+							}]
+				}, {
+					"title" : "过滤",
+					"list" : [{
+								"title" : "last()",
+								"url" : "data/core/query/query/filter/last.html"
+							}, {
+								"title" : "first()",
+								"url" : "data/core/query/query/filter/first.html"
+							}, {
+								"title" : "even()",
+								"url" : "data/core/query/query/filter/even.html"
+							}, {
+								"title" : "odd()",
+								"url" : "data/core/query/query/filter/odd.html"
+							}, {
+								"title" : "eq(index)",
+								"url" : "data/core/query/query/filter/eq.html"
+							}, {
+								"title" : "gt(index)",
+								"url" : "data/core/query/query/filter/gt.html"
+							}, {
+								"title" : "lt(index)",
+								"url" : "data/core/query/query/filter/lt.html"
+							}, {
+								"title" : "filter(fun)",
+								"url" : "data/core/query/query/filter/filter.html"
+							}, {
+								"title" : "find(selector)",
+								"url" : "data/core/query/query/filter/find.html"
 							}]
 				}]
 			}, {
@@ -97,445 +127,79 @@
 					"title" : "属性",
 					"list" : [{
 								"title" : "#id",
-								"url" : "data/core/query/query/base/id.xml"
+								"url" : "data/core/query/query/base/id.html"
 							}, {
 								"title" : "tagName",
-								"url" : "data/core/query/query/base/tagName.xml"
+								"url" : "data/core/query/query/base/tagName.html"
 							}, {
 								"title" : ".className",
-								"url" : "data/core/query/query/base/.className.xml"
+								"url" : "data/core/query/query/base/.className.html"
 							}]
 				}, {
 					"title" : "css",
 					"list" : [{
 								"title" : "ul li",
-								"url" : "data/core/query/query/level/ul li.xml"
+								"url" : "data/core/query/query/level/ul li.html"
 							}, {
 								"title" : "ul > li",
-								"url" : "data/core/query/query/level/ul)li.xml"
+								"url" : "data/core/query/query/level/ul)li.html"
 							}]
 				}, {
 					"title" : "html",
-					"url" : "data/core/query/query/attr/same.xml"
-				},{
-                    "title" : "文本",
-                    "url" : "data/core/query/query/attr/same.xml"
-                },{
-                    "title" : "值",
-                    "url" : "data/core/query/query/attr/same.xml"
-                }]
+					"url" : "data/core/query/query/attr/same.html"
+				}, {
+					"title" : "文本",
+					"url" : "data/core/query/query/attr/same.html"
+				}, {
+					"title" : "值",
+					"url" : "data/core/query/query/attr/same.html"
+				}]
 			}]
 		}, {
-			"title" : "模块加载模块Qmik.sun",
+			"title" : "模块化开发Qmik.sun",
 			"list" : [{
 						"title" : "define",
-						"url" : "data/Data_Name.xml"
+						"url" : "data/core/module/define.html"
 					}, {
 						"title" : "use",
-						"url" : "data/Data_Name_Value.xml"
+						"url" : "data/core/module/use.html"
 					}, {
 						"title" : "config",
-						"url" : "data/QmikLength.xml"
+						"url" : "data/QmikLength.html"
 					}, {
 						"title" : "base",
-						"url" : "data/rmData.xml"
+						"url" : "data/rmData.html"
 					}]
 		}, {
 			"title" : "ajax模块",
 			"list" : [{
 						"title" : "queue(name)",
-						"url" : "data/Queue_Name.xml"
+						"url" : "data/Queue_Name.html"
 					}, {
 						"title" : "queue(name, callback)",
-						"url" : "data/Queue_Name_Call.xml"
+						"url" : "data/Queue_Name_Call.html"
 					}, {
 						"title" : "queue(name, queue)",
-						"url" : "data/Queue_Name_Queue.xml"
+						"url" : "data/Queue_Name_Queue.html"
 					}, {
 						"title" : "rmQueue(name)",
-						"url" : "data/rmQueue.xml"
+						"url" : "data/rmQueue.html"
 					}]
 		}, {
 			"title" : "事件模块",
 			"list" : [{
 						"title" : "Qmik.fn.extend(object)",
-						"url" : "data/Qmik_Fn_Extend.xml"
+						"url" : "data/Qmik_Fn_Extend.html"
 					}, {
 						"title" : "Qmik.extend(object)",
-						"url" : "data/Qmik_Extend.xml"
+						"url" : "data/Qmik_Extend.html"
 					}]
 		}, {
 			"title" : "基础视图模块",
 			"list" : [{
 						"title" : "多库共存",
-						"url" : "data/NoConflict.xml"
+						"url" : "data/NoConflict.html"
 					}]
 		}]
-	}, {
-		"id" : "QAttr",
-		"title" : "属性",
-		"list" : [{
-					"title" : "属性",
-					"list" : [{
-								"title" : "attr(name)",
-								"url" : "data/QAttr_Attr.xml"
-							}, {
-								"title" : "attr(name,value)",
-								"url" : "data/QAttr_Attr_Value.xml"
-							}, {
-								"title" : "attr(properties)",
-								"url" : "data/QAttr_Attr_Proper.xml"
-							}, {
-								"title" : "attr(key, function())",
-								"url" : "data/QAttr_Attr_Fun.xml"
-							}, {
-								"title" : "rmAttr(name)",
-								"url" : "data/QAttr_Attr_rm.xml"
-							}]
-				}, {
-					"title" : "CSS类",
-					"list" : [{
-								"title" : "addClass(class)",
-								"url" : "data/QAttr_CSS.xml"
-							}, {
-								"title" : "addClass(function())",
-								"url" : "data/QAttr_CSS_Fun.xml"
-							}, {
-								"title" : "rmClass([class])",
-								"url" : "data/QAttr_CSS_Rm.xml"
-							}, {
-								"title" : "rmClass(function())",
-								"url" : "data/QAttr_CSS_Rm_Fun.xml"
-							}]
-				}, {
-					"title" : "HTML代码",
-					"list" : [{
-								"title" : "html()",
-								"url" : "data/QAttr_Html.xml"
-							}, {
-								"title" : "html(val)",
-								"url" : "data/QAttr_Html_Val.xml"
-							}, {
-								"title" : "html(fun())",
-								"url" : "data/QAttr_Html_Fun.xml"
-							}]
-				}, {
-					"title" : "文本",
-					"list" : [{
-								"title" : "text()",
-								"url" : "data/QAttr_Text.xml"
-							}, {
-								"title" : "text(val)",
-								"url" : "data/QAttr_Text_Val.xml"
-							}, {
-								"title" : "text(fun())",
-								"url" : "data/QAttr_Text_Fun.xml"
-							}]
-				}, {
-					"title" : "值",
-					"list" : [{
-								"title" : "val()",
-								"url" : "data/QAttr_Text.xml"
-							}, {
-								"title" : "val(val)",
-								"url" : "data/QAttr_Text_Val.xml"
-							}, {
-								"title" : "val(fun())",
-								"url" : "data/QAttr_Text_Fun.xml"
-							}]
-				}]
-	}, {
-		"id" : "QFilter",
-		"title" : "筛选",
-		"list" : [{
-					"title" : "过滤",
-					"list" : [{
-								"title" : "first",
-								"url" : "data/QFilter_First.xml"
-							}, {
-								"title" : "last",
-								"url" : "data/QFilter_Last.xml"
-							}, {
-								"title" : "filter(fn)",
-								"url" : "data/QFilter_Filter.xml"
-							}, {
-								"title" : "slice(start, [length])",
-								"url" : "data/QFilter_Slice.xml"
-							}]
-				}, {
-					"title" : "查找",
-					"list" : [{
-								"title" : "next([expr])",
-								"url" : "data/QFilter_Next.xml"
-							}, {
-								"title" : "prev([expr])",
-								"url" : "data/QFilter_Prev.xml"
-							}]
-				}]
-	}, {
-		"id" : "QDoc",
-		"title" : "文档处理",
-		"list" : [{
-					"title" : "内部插入",
-					"list" : [{
-								"title" : "append(html)",
-								"url" : "data/QDoc_Append_Html.xml"
-							}, {
-								"title" : "append(text)",
-								"url" : "data/QDoc_Append_Text.xml"
-							}, {
-								"title" : "append(function())",
-								"url" : "data/QDoc_Append_Fun.xml"
-							}]
-				}, {
-					"title" : "外部插入",
-					"list" : [{
-								"title" : "after(html)",
-								"url" : "data/QDoc_After_Html.xml"
-							}, {
-								"title" : "after(text)",
-								"url" : "data/QDoc_After_Text.xml"
-							}, {
-								"title" : "after(function())",
-								"url" : "data/QDoc_After_Fun.xml"
-							}, {
-								"title" : "before(html)",
-								"url" : "data/QDoc_Before_Html.xml"
-							}, {
-								"title" : "before(text)",
-								"url" : "data/QDoc_Before_Text.xml"
-							}, {
-								"title" : "before(function())",
-								"url" : "data/QDoc_Before_Fun.xml"
-							}]
-				}, {
-					"title" : "复制",
-					"list" : [{
-								"title" : "clone()",
-								"url" : "data/QDoc_Clone.xml"
-							}, {
-								"title" : "clone(true)",
-								"url" : "data/QDoc_Clone_True.xml"
-							}]
-				}]
-	}, {
-		"id" : "QCss",
-		"title" : "CSS",
-		"list" : [{
-					"title" : "CSS",
-					"list" : [{
-								"title" : "css(name)",
-								"url" : "data/QCss_CSS.xml"
-							}, {
-								"title" : "css(properties)",
-								"url" : "data/QCss_CSS_Prop.xml"
-							}, {
-								"title" : "css(name, value)",
-								"url" : "data/QCss_CSS_Val.xml"
-							}, {
-								"title" : "css(name, function(index, value))",
-								"url" : "data/QCss_CSS_Fun.xml"
-							}]
-				}]
-	}, {
-		"id" : "QEvent",
-		"title" : "事件",
-		"list" : [{
-					"title" : "页面载入",
-					"list" : [{
-								"title" : "ready(fn)",
-								"url" : "data/QEvent_Ready.xml"
-							}]
-				}, {
-					"title" : "事件处理",
-					"list" : [{
-								"title" : "bind(type, fn, [param])",
-								"url" : "data/QEvent_Bind.xml"
-							}, {
-								"title" : "trig(type)",
-								"url" : "data/QEvent_Trig.xml"
-							}, {
-								"title" : "unbind(type,[fn])",
-								"url" : "data/QEvent_Unbind.xml"
-							}]
-				}, {
-					"title" : "事件切换",
-					"list" : [{
-								"title" : "hover(over,out)",
-								"url" : "data/QEvent_Hover.xml"
-							}]
-				}]
-	}, {
-		"id" : "QEffect",
-		"title" : "效果",
-		"list" : [{
-					"title" : "基本",
-					"list" : [{
-								"title" : "show()",
-								"url" : "data/QEffect_Show.xml"
-							}, {
-								"title" : "hide()",
-								"url" : "data/QEffect_Hide.xml"
-							}, {
-								"title" : "toggle()",
-								"url" : "data/QEffect_Toggle.xml"
-							}]
-				}]
-	}, {
-		"id" : "QAjax",
-		"title" : "ajax",
-		"list" : [{
-					"title" : "Ajax请求",
-					"list" : [{
-								"title" : "Qmik.ajax(options)",
-								"url" : "data/QAjax_Ajax.xml"
-							}, {
-								"title" : "Qmik.get(url,data,fn,[dataType],[type])",
-								"url" : "data/QAjax_Get.xml"
-							}, {
-								"title" : "Qmik.getJSON(url,fn)",
-								"url" : "data/QAjax_GetJSON.xml"
-							}, {
-								"title" : "Qmik.getScript(url,fn)",
-								"url" : "data/QAjax_GetScript.xml"
-							}]
-				}, {
-					"title" : "其它",
-					"list" : [{
-								"title" : "Qmik.serialize()",
-								"url" : "data/QAjax_Seria.xml"
-							}, {
-								"title" : "Qmik.serializeArray()",
-								"url" : "data/QAjax_Seria_Array.xml"
-							}]
-				}]
-	}, {
-		"id" : "QUtil",
-		"title" : "工具",
-		"list" : [{
-					"title" : "数组和对象操作",
-					"list" : [{
-								"title" : "Qmik.each()",
-								"url" : "data/QUtil_Each.xml"
-							}, {
-								"title" : "Qmik.extend()",
-								"url" : "data/QUtil_Extend.xml"
-							}, {
-								"title" : "Qmik.grep(array,filterFn)",
-								"url" : "data/QUtil_Grep.xml"
-							}, {
-								"title" : "Qmik.array(obj)",
-								"url" : "data/QUtil_Array.xml"
-							}, {
-								"title" : "Qmik.merge(first,two[,...])",
-								"url" : "data/QUtil_Merge.xml"
-							}, {
-								"title" : "Qmik.parseJSON(json)",
-								"url" : "data/QUtil_ParseJSON.xml"
-							}]
-				}, {
-					"title" : "测试操作",
-					"list" : [{
-								"title" : "Qmik.isArray(obj)",
-								"url" : "data/QUtil_IsArray.xml"
-							}, {
-								"title" : "Qmik.likeArray(obj)",
-								"url" : "data/QUtil_LikeArray.xml"
-							}, {
-								"title" : "Qmik.isFun(obj)",
-								"url" : "data/QUtil_IsFun.xml"
-							}, {
-								"title" : "Qmik.isPlainObject(obj)",
-								"url" : "data/QUtil_IsPlainObject.xml"
-							}, {
-								"title" : "Qmik.isObject(obj)",
-								"url" : "data/QUtil_IsObject.xml"
-							}, {
-								"title" : "Qmik.isNull(obj)",
-								"url" : "data/QUtil_IsNull.xml"
-							}, {
-								"title" : "Qmik.likeNull(obj)",
-								"url" : "data/QUtil_LikeNull.xml"
-							}, {
-								"title" : "Qmik.isNum(obj)",
-								"url" : "data/QUtil_IsNum.xml"
-							}, {
-								"title" : "Qmik.isString(obj)",
-								"url" : "data/QUtil_IsString.xml"
-							}, {
-								"title" : "Qmik.isBool(obj)",
-								"url" : "data/QUtil_IsBool.xml"
-							}, {
-								"title" : "Qmik.isDate(obj)",
-								"url" : "data/QUtil_IsDate.xml"
-							}, {
-								"title" : "Qmik.isEvent(obj)",
-								"url" : "data/QUtil_IsEvent.xml"
-							}, {
-								"title" : "Qmik.isQmik(obj)",
-								"url" : "data/QUtil_IsQmik.xml"
-							}]
-				}, {
-					"title" : "字符串操作",
-					"list" : [{
-								"title" : "Qmik.trim(str)",
-								"url" : "data/QUtil_Trim.xml"
-							}, {
-								"title" : "Qmik.stringify(json)",
-								"url" : "data/QUtil_Stringify.xml"
-							}]
-				}, {
-					"title" : "URL操作",
-					"list" : [{
-								"title" : "Qmik.param(obj)",
-								"url" : "data/QUtil_Param.xml"
-							}]
-				}, {
-					"title" : "其它测试",
-					"list" : [{
-								"title" : "Qmik.isIphone()",
-								"url" : "data/QUtil_IsIphone.xml"
-							}, {
-								"title" : "Qmik.isAndroid()",
-								"url" : "data/QUtil_IsAndroid.xml"
-							}, {
-								"title" : "Qmik.isUC()",
-								"url" : "data/QUtil_IsUC.xml"
-							}]
-				}, {
-					"title" : "其它工具",
-					"list" : [{
-								"title" : "Qmik.delay()",
-								"url" : "data/QUtil_Delay.xml"
-							}, {
-								"title" : "Qmik.interval()",
-								"url" : "data/QUtil_Interval.xml"
-							}, {
-								"title" : "Qmik.target(e)",
-								"url" : "data/QUtil_Target.xml"
-							}]
-				}]
-	}, {
-		"id" : "QStore",
-		"title" : "存储",
-		"list" : [{
-					"title" : "本地存储",
-					"list" : [{
-								"title" : "Qmik.store(key,dataType,value [,ttl])",
-								"url" : "data/QAjax_Store_Val.xml"
-							}, {
-								"title" : "Qmik.store(key [,dataType])",
-								"url" : "data/QAjax_Store.xml"
-							}, {
-								"title" : "Qmik.storeSession(key,dataType,value)",
-								"url" : "data/QAjax_StoreSession_Val.xml"
-							}, {
-								"title" : "Qmik.storeSession(key [,dataType])",
-								"url" : "data/QAjax_StoreSession.xml"
-							}, {
-								"title" : "Qmik.clearStore()",
-								"url" : "data/QAjax_clearStore.xml"
-							}]
-				}]
 	}]
 }

@@ -2,17 +2,17 @@
  * 首页家庭页面显示模块
  */
 (function($, define) {
-	$.log("define module home:" + $.now());
 	define(function(require, exports, module) {
 		var index = require("index");
+		var nav = require("nav");
 		$.log("define init module home:" + $.now())
 		function exp(id) {
 			$.log("use module home;");
-			$("#head").css("background", "#ffffff");
-			var main=$("#main");
+			var main = $("#main_module");
 			$.get("view/home.html", function(data) {
 				main.html(data);
-				main.fadeOut(1,1);
+				main.fadeOut(1, 1);
+				nav.showShortcut();
 			});
 			index.showNav(id)
 		}

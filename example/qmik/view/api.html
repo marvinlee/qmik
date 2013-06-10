@@ -30,15 +30,24 @@
     width: 100%;
     height: 100%;
 }
+.content_displacement a {
+    color: #1e7dde;
+}
 
+.menu_displacement {
+    padding: 10px 0 0 5px;
+    width: 100%;
+    height: 100%;
+}
+.menu_displacement a {
+    color: #1e7dde;
+}
 .light {
     color: #2274c8;
     font-weight: bold;
 }
 
-.content_displacement a {
-    color: #1e7dde;
-}
+
 
 .content_block {
     margin:0 200px;
@@ -89,7 +98,7 @@
 .help ul {
     text-align: left;
     width: 220px;
-    margin: 0px auto 0 20px;
+    margin: 0px auto 0px 15px;
 }
 
 .help li {
@@ -123,66 +132,40 @@
 }
 .explain_desc{
     margin: 10px 10px;
+    line-height: 150%;
 }
 .exmpain_examples{
     margin: 10px auto;
 }
 .explain_code{
     margin: 5px 10px;
-    padding:0 10px;
     font-size: 18px;
     line-height: 160%;
-    box-shadow: -5px 5px 5px #aaa;
-    -webkit-box-shadow: 0 0 16px rgba(66, 140, 240, 0.5);
-    -webkit-animation-name: rotateY;
-    -webkit-animation-duration: 4s;
-    -webkit-animation-iteration-count: infinite;
-    -webkit-animation-direction: alternate;
-    -webkit-animation-timing-function: ease-in-out;
-    -webkit-box-shadow: 0 0 16px rgba(66, 140, 240, 0.5);
-    
-    box-shadow: 0 0 16px rgba(66, 140, 240, 0.5);
-    animation-name: rotateY;
-    animation-duration: 4s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-    animation-timing-function: ease-in-out;
-    box-shadow: 0 0 16px rgba(66, 140, 240, 0.5);    
+    border:2px;
+ 
+    -webkit-box-shadow: 0 0 8px rgba(66, 140, 240, 0.5);
+    box-shadow: 0 0 8px rgba(66, 140, 240, 0.5);
 }
 .explain_code textarea{
     width: 100%;
     overflow-y:visible;
-    border: 0px;
+    border: 1px;
     min-height: 100px;
+    resize:none;
+    background: #f4f1f1;
 }
 </style>
 <div id="home" class="content_home" style="display: block; opacity: 1;">
             <div class="content_main">
                 <div class="content_block">
                     <h2>API帮助</h2>
-                    <div class="content_displacement">
+                    <div class="menu_displacement">
                         <div id="helpTree"></div>
                         <div id="helpContent"></div>
                     </div>
                 </div>
             </div>
-     
-            <div class="shortcut">
-                <div class="shortcut_row">
-                    <span>获取源码</span>
-                    <div>
-                        <p class="content_displacement">
-                            <a href="https://github.com/leochen36/qmik">github</a>
-                        </p>
-                    </div>
-                </div>
-                <div class="shortcut_row">
-                    <span>帮助文档</span>
-                    <div>
-                        <p class="content_displacement">
-                            <a href="https://github.com/leochen36/qmik">Qmik API文档</a>
-                        </p>
-                    </div>
-                </div>
+            <div id="shortcut_module" class="shortcut">
+            
             </div>
 </div>
