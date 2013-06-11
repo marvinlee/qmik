@@ -272,7 +272,12 @@
 					attr(target, i, j, isSetValue)
 				})
 			} else {
-				(isSetValue || !SE()) ? target[name] = execObject(val) : target.setAttribute(name, execObject(val))
+				if (isDom(val)) {
+					attr(target, name, "", isSetValue);
+					Q(target).append(val)
+				} else {
+					(isSetValue || !SE()) ? target[name] = execObject(val) : target.setAttribute(name, execObject(val))
+				}
 			}
 		}
 	}
