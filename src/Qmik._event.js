@@ -78,6 +78,9 @@
 		};
 		return e
 	}
+	function getLiveName(selector, type, callback) {
+		return selector + ":live:" + type + ":" + (callback || "").toString()
+	}
 	Q.fn.extend( {
 		on : function(name, callback) {
 			var p = Array.prototype.slice.call(arguments, 2);
@@ -109,8 +112,8 @@
 			return this
 		},
 		live : function(name, callback) {
-			var select = this.selector, fun = liveFuns[select + ":live:" + callback.toString()] = function(e) {
-				if (Q((e.target || e.srcElement).childNodes[0]).closest(select).length > 0) {
+			var select = this.selector, fun = liveFuns[getLiveName(this.selector, name, callback)] = function(e) {
+				if (Q(e.target || e.srcElement).closest(select).length > 0) {
 					callback.apply(event.target, [
 						e
 					]);
@@ -120,8 +123,9 @@
 			return this
 		},
 		die : function(name, callback) {
+			var fun = liveFuns[getLiveName(this.selector, name, callback)];
 			each(Q(document.body), function(k, dom) {
-				Erm(dom, name, liveFuns[this.selector + ":live:" + (callback || "").toString()])
+				Erm(dom, name, fun)
 			});
 			return this
 		}
