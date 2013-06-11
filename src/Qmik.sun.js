@@ -131,6 +131,7 @@
 		var module = getModule(id2url(id), id);
 		return module ? module.exports : null
 	}
+	require.url = id2url;
 	// pre load module
 	function preload(callback, deps) {
 		var dependencies = deps || config.preload, length = dependencies.length, params = [];
@@ -235,7 +236,8 @@
 		define : Q.box(define),
 		config : function(opts) {
 			return Q.config(opts, config)
-		}
+		},
+		url : id2url
 	});
 	Q.cycle(function() {
 		var count = 0;
