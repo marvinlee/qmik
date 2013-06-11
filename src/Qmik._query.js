@@ -189,11 +189,12 @@
 		return findMath(muchToArray(dom.getElementsByTagName(st[0] || "*")), st[1], st[2], selector.indexOf('!=') == -1)
 	}
 	// /////////////////////////////////////////////////
-	function hasClass(o, cn) {
-		if (!isDom(o)) return !1;
-		var cs = o.className.split(" "), cn = trim(cn), i = 0;
+	function hasClass(dom, className) {
+		if (!isDom(dom)) return !1;
+		var cs = dom.className.split(" "), i = 0;
+		className = trim(className);
 		for (; i < cs.length; i++)
-			if (cs[i] == cn) return !0;
+			if (cs[i] == className) return !0;
 		return !1
 	}
 	function formateClassName(v) {
@@ -468,16 +469,16 @@
 			})
 		},
 		gt : function(i) {
-			var r = new Query();
-			each(this, function(i, v) {
-				r.push(v)
-			})
+			var r = new Query(), j = i;
+			for (; j < this.length; j++) {
+				r.push(this[j])
+			}
 			return r
 		},
 		lt : function(i) {
-			var r = new Query();
-			for (; i >= 0; i--) {
-				r.push(this[i])
+			var r = new Query(), j = 0;
+			for (; j <= i && j < this.length; j++) {
+				r.push(this[j])
 			}
 			return r
 		},
@@ -547,6 +548,11 @@
 				css(v, 'display') == 'none' ? $(v).show() : $(v).hide()
 			});
 			return this
+		},
+		toggleClass : function(className) {
+			this.each(function(i, dom) {
+				hasClass(dom, className) ? Q(dom).rmClass(className) : Q(dom).addClass(className)
+			})
 		},
 		map : function(callback) {
 			return Q.map(this, callback)
@@ -618,11 +624,17 @@
 			return hasClass(this[0], c)
 		},
 		closest : function(selector) {// 查找最近的匹配的父(祖父)节点
+			var me = this, q = new Query();
+			me.each(function(i, dom) {
+				Q(">" + selector, dom.parentNode).each(function(j, dom1) {
+					dom === dom1 && q.push(dom)
+				})
+			});
 			/**
-			 * selector:选择器 qmik:qmik查询对象 isAllP:是否包含所有父及祖父节点 默认true
-			 * isOnlyParent:往上查找的层级是否只到直接父节点 默认false
-			 */
-			return parents(selector, this, false)
+			* selector:选择器 qmik:qmik查询对象 isAllP:是否包含所有父及祖父节点 默认true
+			* isOnlyParent:往上查找的层级是否只到直接父节点 默认false
+			*/
+			return q.length > 0 ? q : parents(selector, me, !1)
 		},
 		parents : function(selector) {// 查找所有的匹配的父(祖父)节点
 			return parents(selector, this, true)
