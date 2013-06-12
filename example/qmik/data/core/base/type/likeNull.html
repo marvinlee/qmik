@@ -1,0 +1,34 @@
+<div class="explain">
+    <div class="explain_title">Qmik.likeNull(obj);方法</div>
+    <div class="explain_desc">判断是否像空值, Qmik.isNull(v) || (Qmik.isString(v) &amp;&amp; (v =="undefined"
+        || v
+        ==
+        "null" || v.trim() == ""))</div>
+    <div class="exmpain_examples">
+        <div class="exmpain_row">
+            <div class="explain_sub_title">例子1</div>
+            <div class="explain_code">
+                <textarea style="overflow-y:visible;" disabled="disabled">
+                (function($,define){
+                    var ay=[];
+                    $.Qmik.likeNull(ay);//>>:false
+                   
+                   ///
+                    var opt={};
+                    $.Qmik.likeNull(opt);//>>:false
+                     
+                    var m="";
+                    $.Qmik.likeNull(m);//>>:true
+                    
+                    var m1="null";
+                    $.Qmik.likeNull(m1);//>>:true
+                    
+                    var m1;
+                    $.Qmik.likeNull(m1);//>>:true
+                })(Qmik,Qmik.define);
+                </textarea>
+            </div>
+            <div class="explain_desc"> </div>
+        </div>
+    </div>
+</div>
