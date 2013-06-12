@@ -77,8 +77,7 @@
 		return v instanceof Array
 	}
 	function likeArray(v) { // like Array
-		return isArray(v) || (!isString(v) && (v + "" == "[object NodeList]" || v + "" == "[object HTMLCollection]"))
-					|| (Q.isQmik && Q.isQmik(v))
+		return isArray(v) || (!isString(v) && (v + "" == "[object NodeList]" || v + "" == "[object HTMLCollection]")) || (Q.isQmik && Q.isQmik(v))
 	}
 	// isFunction
 	function isFun(v) {
@@ -170,7 +169,7 @@
 	var errorStack = {
 		count : 0
 	};
-	Q.extend( {
+	Q.extend({
 		encode : encode,
 		decode : decode,
 		isDom : isDom,
@@ -233,7 +232,7 @@
 		// 合并数组或对象
 		merge : merge,
 		array : function(array) {
-			return merge( [], array)
+			return merge([], array)
 		},
 		inArray : function(value, array) {
 			if (Q.likeArray(array)) for ( var i = 0; i < array.length; i++)
