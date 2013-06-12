@@ -124,36 +124,21 @@
 			}, {
 				"title" : "属性",
 				"list" : [{
-					"title" : "属性",
-					"list" : [{
-								"title" : "#id",
-								"url" : "data/core/query/query/base/id.html"
-							}, {
-								"title" : "tagName",
-								"url" : "data/core/query/query/base/tagName.html"
-							}, {
-								"title" : ".className",
-								"url" : "data/core/query/query/base/.className.html"
-							}]
-				}, {
-					"title" : "css",
-					"list" : [{
-								"title" : "ul li",
-								"url" : "data/core/query/query/level/ul li.html"
-							}, {
-								"title" : "ul > li",
-								"url" : "data/core/query/query/level/ul)li.html"
-							}]
-				}, {
-					"title" : "html",
-					"url" : "data/core/query/query/attr/same.html"
-				}, {
-					"title" : "文本",
-					"url" : "data/core/query/query/attr/same.html"
-				}, {
-					"title" : "值",
-					"url" : "data/core/query/query/attr/same.html"
-				}]
+							"title" : "attr",
+							"url" : "data/core/query/attr/attr.html"
+						}, {
+							"title" : "css",
+							"url" : "data/core/query/attr/css.html"
+						}, {
+							"title" : "html",
+							"url" : "data/core/query/attr/html.html"
+						}, {
+							"title" : "text",
+							"url" : "data/core/query/attr/text.html"
+						}, {
+							"title" : "val",
+							"url" : "data/core/query/attr/val.html"
+						}]
 			}]
 		}, {
 			"title" : "模块化开发Qmik.sun",
@@ -164,10 +149,10 @@
 						"title" : "use",
 						"url" : "data/core/module/use.html"
 					}, {
-						"title" : "config",
+						"title" : "require",
 						"url" : "data/QmikLength.html"
 					}, {
-						"title" : "base",
+						"title" : "config",
 						"url" : "data/rmData.html"
 					}]
 		}, {
