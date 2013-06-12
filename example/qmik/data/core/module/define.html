@@ -1,0 +1,48 @@
+<div class="explain">
+    <div class="explain_title">Qmik.define,Qmik.sun.define</div>
+    <div class="explain_desc">定义模块</div>
+    <div class="explain_desc">
+    
+                    方法原型:Qmik.define([id,][dependencies,]factory)<br/>
+       参数说明:<br/><b>id</b>:模块id,不建议使用,因为amd规范才支持id<br/>
+           <b>dependencies</b>:此模块需要依赖的其它模块,不建议使用,因为amd规范才支持,不建议的原因是模块就对外部使用都而言,应该是最简化的,增加依赖会增加使用的复杂度<br/>
+           <b>factory</b>:模块主要内容,是个<b>Function</b>,不能是其它类型,这点跟<b>amd规范有点不一致</b>,
+                                    方法原型:factory(require,exports,module);
+    
+    </div>
+    <div class="exmpain_examples">
+        <div class="exmpain_row">
+            <div class="explain_sub_title">例子1</div>
+            <div class="explain_code">
+                <textarea style="overflow-y:visible;" disabled="disabled">
+
+                    代码:
+        //配置文件 config.js
+               (function($,define){
+				    Q.sun.config( {
+				        alias : {
+				            "user" : "js/user"
+				        }
+				    });
+               })(Qmik,Qmik.define);
+     //模块user,存在文件user.js中
+               (function($,define){
+                    define(require,exports,module){
+                        exports.showUserInfo=function(){
+                            $("#userInfo").html("名字:leo")
+                        }
+                    }
+               })(Qmik,Qmik.define);  
+      //使用:
+               (function($,define){
+                    $.use("user",function(user){
+                        user.showUserInfo();
+                    });
+               })(Qmik,Qmik.define);                       
+                   
+                </textarea>
+            </div>
+            <div class="explain_desc"> </div>
+        </div>
+    </div>
+</div>
