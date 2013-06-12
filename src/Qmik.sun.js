@@ -56,7 +56,7 @@
 	}
 	/** 清除注释 */
 	function clearNode(word) {
-		return word.replace(/(\/\/)\S*[^\/]{2}[^\n]*/g, "").replace(/\/\*[\S\s]*\*\//g, "")
+		return word.replace(/(\/\/)\S*[^\n]*/g, "").replace(/\/\*[\S\s]*\*\//g, "")
 	}
 	// get depends from function.toString()
 	function parseDepents(code) {
@@ -103,7 +103,7 @@
 		if (r.length == ids.length) {
 			callbackUse(ids, callback)
 		} else {
-			uses.push( {
+			uses.push({
 				ids : ids,
 				callback : callback
 			});
