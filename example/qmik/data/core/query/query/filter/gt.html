@@ -1,0 +1,31 @@
+<div class="explain">
+    <div class="explain_title">$("selector").gt(index)</div>
+    <div class="explain_desc">对查找出的结果,过滤出  >= 索引index的结果</div>
+    <div class="exmpain_examples">
+        <div class="exmpain_row">
+            <div class="explain_sub_title">例子1</div>
+            <div class="explain_code">
+                <textarea style="overflow-y:visible;" disabled="disabled">
+                    html:
+                    <div class="show">
+                        <span>haha</span>
+                        <div>
+                            <h3>欢迎光临</h3>
+                            <span>...</span>
+                            <div flag="sub">sub</div>
+                        </div>
+                    </div>
+                    代码:
+                    (function($,define){
+                        $().ready(function(){
+                           var ret=$("div").gt(2);
+                           //输出:1. <div><h3>欢迎光临</h3><span>...</span><div flag="sub">sub</div></div>
+                           //     2. <div flag="sub">sub</div>
+                        })
+                    })(Qmik,Qmik.define);           
+                </textarea>
+            </div>
+            <div class="explain_desc"> </div>
+        </div>
+    </div>
+</div>

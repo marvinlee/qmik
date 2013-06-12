@@ -1,0 +1,24 @@
+<div class="explain">
+    <div class="explain_title">Qmik("#id")</div>
+    <div class="explain_desc">根据class名字查找</div>
+    <div class="exmpain_examples">
+        <div class="exmpain_row">
+            <div class="explain_sub_title">例子1</div>
+            <div class="explain_code">
+                <textarea style="overflow-y:visible;" disabled="disabled">
+                    html:
+                    <div id="show" >
+                        <span>haha</span>
+                    </div>
+                    代码:
+                    (function($,define){
+	                    $().ready(function(){
+	                       $("div");//输出: <div class="show"><span>haha</span></div>
+	                    })
+                    })(Qmik,Qmik.define);           
+                </textarea>
+            </div>
+            <div class="explain_desc"> </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+<div class="explain">
+    <div class="explain_title">$("selector").find(selector)</div>
+    <div class="explain_desc">以查找出的结果为依据,再以新的查询selector对以找出结果的子节点做新的查找</div>
+    <div class="exmpain_examples">
+        <div class="exmpain_row">
+            <div class="explain_sub_title">例子1</div>
+            <div class="explain_code">
+                <textarea style="overflow-y:visible;" disabled="disabled">
+                    html:
+                    <div class="show">
+                        <span>haha</span>
+                        <div>
+                            <h3>欢迎光临</h3>
+                            <span>...</span>
+                            <div flag="sub">sub</div>
+                        </div>
+                    </div>
+                    代码:
+                    (function($,define){
+                        $().ready(function(){
+                           var ret=$("div").find("h3");
+                           //输出:1.<h3>欢迎光临</h3>
+                        })
+                    })(Qmik,Qmik.define);           
+                </textarea>
+            </div>
+            <div class="explain_desc"> </div>
+        </div>
+    </div>
+</div>
