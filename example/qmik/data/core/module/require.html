@@ -3,10 +3,8 @@
     <div class="explain_desc">使用模块</div>
     <div class="explain_desc">
     
-                    方法原型:Qmik.use(ids,callback)<br/>
-       参数说明:<br/><b>ids</b>:模块id,可以是个字符,也可以是个数组["id1","id2"...]<br/>
-           <b>callback</b>:模块加载完,的回调函数,函数原型:callback(module1,module2...),<br/>
-                                回调函数的参数是由前面ids参数来决定的,如果ids是字符串,就返回当前对应模块对象,如果是个数组,就返回相应个数的模块对象
+                    方法原型:require(strId)<br/>
+       参数说明:<br/><b>ids</b>:模块id,是个字符,<br/>
 
     
     </div>
@@ -15,40 +13,12 @@
             <div class="explain_sub_title">例子1</div>
             <div class="explain_code">
                 <textarea style="overflow-y:visible;" disabled="disabled">
-
-                    代码:
-        //配置文件 config.js
-               (function($,define){
-				    Q.sun.config( {
-				        alias : {
-				            "user" : "js/user",
-				            "account":"js/account"
-				        }
-				    });
-               })(Qmik,Qmik.define);
-     //模块user,存在文件user.js中
-               (function($,define){
-                    define(require,exports,module){
-                        exports.showUserInfo=function(){
-                            $("#userInfo").html("名字:leo")
-                        }
-                    }
-               })(Qmik,Qmik.define);  
-     //模块account,存在文件account.js中
-               (function($,define){
-                    define(require,exports,module){
-                        exports.showAccountInfo=function(){
-                            $("#accountInfo").html("帐号:leoAccount")
-                        }
-                    }
-               })(Qmik,Qmik.define);                 
-      //使用:
-               (function($,define){
-                    $.use(["user","account"],function(user,account){
-                        user.showUserInfo();
-                        account.showAccountInfo();
-                    });
-               })(Qmik,Qmik.define);                       
+            require:局部方法,需要请求加载的模块,同步执行,
+		         例如
+		         define(function(require,exports,module){
+		            var user=require("User");
+		            user.showUserList();
+		         });                   
                    
                 </textarea>
             </div>

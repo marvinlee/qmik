@@ -141,7 +141,7 @@
 						}]
 			}]
 		}, {
-			"title" : "模块化开发Qmik.sun",
+			"title" : "模块化开发",
 			"list" : [{
 						"title" : "define",
 						"url" : "data/core/module/define.html"
@@ -150,41 +150,62 @@
 						"url" : "data/core/module/use.html"
 					}, {
 						"title" : "require",
-						"url" : "data/QmikLength.html"
+						"url" : "data/core/module/require.html"
 					}, {
 						"title" : "config",
-						"url" : "data/rmData.html"
+						"url" : "data/core/module/config.html"
 					}]
 		}, {
 			"title" : "ajax模块",
 			"list" : [{
-						"title" : "queue(name)",
-						"url" : "data/Queue_Name.html"
+						"title" : "ajax",
+						"url" : "data/core/ajax/ajax.html"
 					}, {
-						"title" : "queue(name, callback)",
-						"url" : "data/Queue_Name_Call.html"
+						"title" : "get",
+						"url" : "data/core/ajax/get.html"
 					}, {
-						"title" : "queue(name, queue)",
-						"url" : "data/Queue_Name_Queue.html"
+						"title" : "post",
+						"url" : "data/core/ajax/post.html"
 					}, {
-						"title" : "rmQueue(name)",
-						"url" : "data/rmQueue.html"
+						"title" : "getJSON",
+						"url" : "data/core/ajax/getJSON.html"
 					}]
 		}, {
 			"title" : "事件模块",
 			"list" : [{
-						"title" : "Qmik.fn.extend(object)",
-						"url" : "data/Qmik_Fn_Extend.html"
+						"title" : "on,bind",
+						"url" : "data/core/event/on.html"
 					}, {
-						"title" : "Qmik.extend(object)",
-						"url" : "data/Qmik_Extend.html"
-					}]
+						"title" : "unon,unbind",
+						"url" : "data/core/event/unon.html"
+					}, {
+                        "title" : "live",
+                        "url" : "data/core/event/live.html"
+                    }, {
+                        "title" : "die",
+                        "url" : "data/core/event/die.html"
+                    }, {
+                        "title" : "trigger",
+                        "url" : "data/core/event/trigger.html"
+                    }]
 		}, {
 			"title" : "基础视图模块",
 			"list" : [{
-						"title" : "多库共存",
-						"url" : "data/NoConflict.html"
-					}]
+						"title" : "offset",
+						"url" : "data/core/view/offset.html"
+					},{
+                        "title" : "position",
+                        "url" : "data/core/view/position.html"
+                    },{
+                        "title" : "height",
+                        "url" : "data/core/view/height.html"
+                    },{
+                        "title" : "width",
+                        "url" : "data/core/view/width.html"
+                    },{
+                        "title" : "animate",
+                        "url" : "data/core/view/animate.html"
+                    }]
 		}]
 	}]
 }
