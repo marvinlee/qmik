@@ -73,11 +73,7 @@
 			var nselector = trim(selector), r = [], length;
 			if (isQmik(context)) {
 				each(context, function(i, v) {
-					if(isDom(v)){
-						each(find(selector, v),function(k,val){
-							isDom(val) &&r.push(val)
-						})
-					}
+					isDom(v) && (r = r.concat(muchToArray(find(selector, v))))
 				});
 			} else {
 				childs = childs || compile(nselector);// 编译查询条件，返回[{type,query,isChild}...]
