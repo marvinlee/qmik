@@ -10,9 +10,11 @@
  * probably won't need this ever, e.g js_beautify(js_source_text, {indent_size:
  * 1, indent_char: '\t'});
  */
-(function(Q, define) {
+(function($, define) {
 	define(function(require, exports, module) {
-		exports.js_beautify = js_beautify;
+		$.extend( {
+			formate : js_beautify
+		});
 	})
 	function js_beautify(js_source_text, options) {
 		var input, output, token_text, last_type, last_text, last_word, current_mode, modes, indent_string;
@@ -122,8 +124,7 @@
 					}
 				}
 				// small and surprisingly unugly hack for 1E-10 representation
-				if (parser_pos !== input.length && c.match(/^[0-9]+[Ee]$/)
-						&& (input.charAt(parser_pos) === '-' || input.charAt(parser_pos) === '+')) {
+				if (parser_pos !== input.length && c.match(/^[0-9]+[Ee]$/) && (input.charAt(parser_pos) === '-' || input.charAt(parser_pos) === '+')) {
 					var sign = input.charAt(parser_pos);
 					parser_pos += 1;
 					var t = get_next_token(parser_pos);
@@ -265,8 +266,7 @@
 		var_line_tainted = false; // false: var a = 5; true: var a = 5, b = 6
 		whitespace = "\n\r\t ".split('');
 		wordchar = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_$'.split('');
-		punct = '+ - * / % & ++ -- = += -= *= /= %= == === != !== > < >= <= >> << >>> >>>= >>= <<= && &= | || ! !! , : ? ^ ^= |= ::'
-			.split(' ');
+		punct = '+ - * / % & ++ -- = += -= *= /= %= == === != !== > < >= <= >> << >>> >>>= >>= <<= && &= | || ! !! , : ? ^ ^= |= ::'.split(' ');
 		// words which should always start on new line.
 		line_starters = 'continue,try,throw,return,var,if,switch,case,default,for,while,break,function'.split(',');
 		// states showing if we are currently in expression (i.e. "if" case) -

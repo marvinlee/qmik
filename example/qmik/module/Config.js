@@ -26,13 +26,13 @@
 			"beautify" : $.url("module/jsformate/beautify"),//  
 			// "ga" : $.url("js/jsformate/ga"),//
 			// "htmlBeautify" : $.url("js/jsformate/HTML-Beautify"),//
-			"doing" : $.url("module/jsformate/doing"),//
+			//"doing" : $.url("module/jsformate/doing"),//
 			// /
-			"nav" : $.url("module/nav/nav"),
-			"home" : $.url("module/home/home"),
-			"download" : $.url("module/download/download"),
-			"api" : $.url("module/api/api"),
-			"about" : $.url("module/about/about")
+			"Nav" : $.url("module/nav/Nav"),
+			"Home" : $.url("module/home/Home"),
+			"Download" : $.url("module/download/Download"),
+			"API" : $.url("module/api/API"),
+			"About" : $.url("module/about/About")
 		},
 		// 预加载的模块
 		preload : [

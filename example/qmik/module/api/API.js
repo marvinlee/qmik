@@ -5,19 +5,17 @@
 	var xmlSerializer = new XMLSerializer();
 	define(function(require, exports, module) {
 		
-		var nav = require("nav");//加载快捷菜单模块
+		var nav = require("Nav");//加载快捷菜单模块
 		require("Qmik.fn.tree");
-		console.log($.fn)
+		$.log($.fn)
 		function showParentULLI(tar) {
 			if (tar.length < 1 || tar.attr("node") == "root") return;
 			tar.show();
-			$.log(tar.closest("ul"));
 			tar.closest("ul").show();
 			showParentULLI(tar.closest("ul").prev("LI"));
 		}
 		var tree, treeData, apiData;
 		function showTree(id, data) {
-			console.log($("#helpTree"))
 			tree = $("#helpTree").tree(data, function(id, url) {
 				$.nav.use( {
 					module : module.id,
@@ -96,6 +94,17 @@
 						}
 					}
 				});
+			},
+			quick:function(){
+				$.ajax({
+					url:"module/api/quick.html",
+					success:function(data){
+						console.log(data)
+						var main = $("#main_module");
+						main.html(data)
+						main.fadeOut(1, 1);
+					}
+				})
 			}
 		});
 	});

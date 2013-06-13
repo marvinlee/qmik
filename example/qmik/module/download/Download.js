@@ -3,18 +3,18 @@
  */
 (function($, define) {
 	define(function(require, exports, module) {
-		require("Qmik.fn.fade");
-		var nav = require("nav");
-		$.log("define init module home:" + $.now())
+		var nav = require("Nav");
 		function exp(id) {
-			$.log("use module home;");
 			var main = $("#main_module");
-			$.get("module/home/home.html", function(data) {
+			$.get("module/download/download.html", function(data) {
 				main.html(data);
 				main.fadeOut(1, 1);
 				nav.showShortcut();
-			});
+			})
+ 
+			$(".panel").hide();
+			$("#download").show();
 		}
 		module.exports = exp
-	});
+	})
 })(Qmik, Qmik.sun.define);
