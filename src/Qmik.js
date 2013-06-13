@@ -221,7 +221,7 @@
 			}
 		},
 		trim : function(v) {
-			return v ? v.trim() : v
+			return isNull(v) ? "" : isString(v) ? v.trim() : v.toString().trim()
 		},
 		toLower : function(v) {
 			return v ? v.toLower() : v
