@@ -9,8 +9,8 @@
 	sun = Q.sun, isFun = Q.isFun, likeNull = Q.likeNull // 方法map
 	config = {
 		module : "module",// 处理方法标记名
-		method : "method",
-		defaultModule : ""// 默认的hashchange处理模块
+		method : "method"
+	//defaultModule : {module:"","method","",param:[]}// 默认的hashchange处理模块
 	}, //
 	isSupportHash = ("onhashchange" in win) && (doc.documentMode === undefined || doc.documentMode > 7);
 	// 设置hash
@@ -36,22 +36,29 @@
 		return fun.apply(module, param)
 	}
 	// 加载使用模块
-	function useModule(_event, url) {
+	function useModule(url) {
+		var moduleName, method, param;
 		if (isFun(url)) {
 			url()
+		} else if (Q.isObject(url)) {
+			moduleName = url.module;
+			method = url.method;
+			param = url.param || [];
 		} else {
-			var info = getModuleParam(url), moduleName = info[config.module];
-			moduleName && sun.use(moduleName, function(module) {
-				// module(info)
-				execModule(module, info[config.method], info)
-			});
-			return moduleName
+			param = getModuleParam(url);
+			moduleName = param[config.module];
+			method = param[config.method];
 		}
+		moduleName && sun.use(moduleName, function(module) {
+			// module(info)
+			execModule(module, method, param)
+		});
+		return moduleName
 	}
 	function hashchange(_event) {
 		// 当触发hashchange事件时,先使用hash,不行再使用url,再不行就使用默认的defaultModule
-		useModule(_event) || useModule(_event, loc.search.replace(/^\?/, ""))//
-			|| (likeNull(config.defaultModule) || useModule(_event, config.defaultModule))
+		useModule(loc.search.replace(/^\?/, ""))//
+			|| (likeNull(config.defaultModule) || useModule(config.defaultModule))
 	}
 	function bind() {
 		Q(win).on("hashchange", hashchange)
@@ -107,6 +114,9 @@
 						loc.href = url + (/\?/.test(url) ? "&" : "?") + hv.join("&");
 					}
 				})
+			},
+			onload : function(callback) {
+				(likeNull(loc.hash) || likeNull(location.hash.replace(/^#/, ""))) && callback()
 			},
 			config : function(opt) {
 				return Q.config(opt, config)
