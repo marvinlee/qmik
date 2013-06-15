@@ -6,8 +6,9 @@
 (function() {
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent, loc = win.location;
 	var encode = encodeURIComponent, decode = decodeURIComponent, //
+	baseURL = loc.protocol + "//" + loc.hostname + (loc.port ? ":" + loc.port : ""), //
 	config = {
-		baseURL : loc.protocol + "//" + loc.hostname + (loc.port ? ":" + loc.port : ""),
+		context : "/",//工程上下文目录
 		box : {
 			enable : !1,//对box异常收集的支持
 			ttl : 60000,//收集时间间隔
@@ -169,7 +170,7 @@
 	var errorStack = {
 		count : 0
 	};
-	Q.extend({
+	Q.extend( {
 		encode : encode,
 		decode : decode,
 		isDom : isDom,
@@ -232,7 +233,7 @@
 		// 合并数组或对象
 		merge : merge,
 		array : function(array) {
-			return merge([], array)
+			return merge( [], array)
 		},
 		inArray : function(value, array) {
 			if (Q.likeArray(array)) for ( var i = 0; i < array.length; i++)
@@ -364,9 +365,10 @@
 		/**
 		 * 合并url,if 参数 _url为空,则
 		 */
-		url : function(_url, baseURL) {
-			baseURL = baseURL || config.baseURL;
-			return isNull(_url) ? baseURL : !/^[a-zA-Z0-9]+:\/\//.test(_url) ? concactUrl(baseURL, _url) : _url
+		url : function(_url) {
+			_url = _url.trim();
+			return arguments.length < 1 ? baseURL : !/^[a-zA-Z0-9]+:\/\//.test(_url) ? concactUrl(baseURL, (/^\//.test(_url) ? "" : config.context || "/") + "/"
+																																			+ _url) : _url
 		},
 		box : function(callback) {
 			//enable box error notify:Q.config(error,{enable,url:"send you service"});
