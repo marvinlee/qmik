@@ -11,8 +11,7 @@
 		paths : {},
 		vars : {},
 		map : [],
-		preload : [],
-		base : Q.url()
+		preload : []
 	//
 	// context://工程目录
 	};
@@ -103,7 +102,7 @@
 		if (r.length == ids.length) {
 			callbackUse(ids, callback)
 		} else {
-			uses.push({
+			uses.push( {
 				ids : ids,
 				callback : callback
 			});
@@ -207,7 +206,7 @@
 		return map2url(id)
 	}
 	function normalize(url) {
-		url = Q.url(url, config.base);
+		url = Q.url(url);
 		return !/\?/.test(url) && !/\.(css|js)$/.test(url) ? url + ".js" : url
 	}
 	function alias2url(id) {
