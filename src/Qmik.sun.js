@@ -213,9 +213,8 @@
 		return config.alias[id] || id;
 	}
 	function paths2url(id) {
-		var key = id.match(/^[0-9a-zA-Z._]+/);
-		key = key ? key[0] : id;
-		return id.replace(new RegExp("^" + key), config.paths[key] || key)
+		var keys = id.match(/^(\/?[0-9a-zA-Z._]+)/), key = keys ? keys[0] : id;
+		return keys ? id.replace(new RegExp("^" + key), config.paths[key] || key) : id
 	}
 	function vars2url(id) {
 		var key = id.match(/\{[0-9a-zA-Z._]+\}/);
@@ -224,7 +223,7 @@
 	}
 	function map2url(id) {
 		each(config.map, function(i, v) {
-			id.indexOf(v[0]) > -1 && id.replace(v[0], v[1])
+			id = id.match(v[0]) ? id.replace(v[0], v[1]) : id
 		});
 		return id
 	}
