@@ -179,33 +179,33 @@
 						"title" : "unon,unbind",
 						"url" : "data/core/event/unon.html"
 					}, {
-                        "title" : "live",
-                        "url" : "data/core/event/live.html"
-                    }, {
-                        "title" : "die",
-                        "url" : "data/core/event/die.html"
-                    }, {
-                        "title" : "trigger",
-                        "url" : "data/core/event/trigger.html"
-                    }]
+						"title" : "live",
+						"url" : "data/core/event/live.html"
+					}, {
+						"title" : "die",
+						"url" : "data/core/event/die.html"
+					}, {
+						"title" : "trigger",
+						"url" : "data/core/event/trigger.html"
+					}]
 		}, {
 			"title" : "基础视图模块",
 			"list" : [{
 						"title" : "offset",
 						"url" : "data/core/view/offset.html"
-					},{
-                        "title" : "position",
-                        "url" : "data/core/view/position.html"
-                    },{
-                        "title" : "height",
-                        "url" : "data/core/view/height.html"
-                    },{
-                        "title" : "width",
-                        "url" : "data/core/view/width.html"
-                    },{
-                        "title" : "animate",
-                        "url" : "data/core/view/animate.html"
-                    }]
+					}, {
+						"title" : "position",
+						"url" : "data/core/view/position.html"
+					}, {
+						"title" : "height",
+						"url" : "data/core/view/height.html"
+					}, {
+						"title" : "width",
+						"url" : "data/core/view/width.html"
+					}, {
+						"title" : "animate",
+						"url" : "data/core/view/animate.html"
+					}]
 		}]
 	}]
 }
