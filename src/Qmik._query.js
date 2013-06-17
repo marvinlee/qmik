@@ -65,6 +65,7 @@
 	function isQmik(v) {
 		return v instanceof Query
 	}
+	//查找元素节点
 	function find(selector, context, childs) {
 		try {
 			return context.querySelectorAll(selector)
@@ -129,9 +130,6 @@
 						break
 					case 'CT':
 						var ds = getTagClass(q), tn = ds[0], cn = ds[1];
-						// if (tn) (dom.tagName == toUpper(tn) && hasClass(dom, cn))
-						// && r.push(dom);
-						// else hasClass(dom, cn) && r.push(dom);
 						tn ? dom.tagName == toUpper(tn) && hasClass(dom, cn) && r.push(dom) : hasClass(dom, cn) && r.push(dom)
 						break
 					case 'TAG':
@@ -168,24 +166,22 @@
 	function at(target, name) {
 		return target[name] || target.getAttribute(name)
 	}
+	//找匹配的属性和对应值
 	function findMath(array, name, value, isEqual) {
 		var exist, attribute, ret = [], isClass = name == "class";
-		each(array, function(i, n) {
-			if (isDom(n)) {
-				attribute = at(n, name);
-				// attribute = attribute ? attribute : (isClass ? n.className :
-				// attribute);
-				attribute = isClass ? n.className : attribute;
+		each(array, function(i, dom) {
+			if (isDom(dom)) {
+				attribute = at(dom, name);
+				attribute = isClass ? dom.className : attribute;
 				exist = isClass ? new RegExp(replace(value, /[ ]/g, "|")).test(attribute) : attribute == value;
-				isEqual ? exist && ret.push(n) : !exist && ret.push(n);
+				isEqual ? exist && ret.push(dom) : !exist && ret.push(dom)
 			}
 		});
 		return ret
 	}
 	function byId(dom, selector) {
-		selector = replace(selector, /^#/, "");
 		return [
-			doc.getElementById(selector)
+			doc.getElementById(replace(selector, /^#/, ""))
 		]
 	}
 	function byAttr(dom, selector) {
@@ -299,7 +295,7 @@
 			if (isNull(v) && isString(k)) return o[dn][k];
 			isString(k) ? o[dn][k] = v : each(k, function(i, j) {
 				o[dn][i] = j
-			});
+			})
 		}
 	}
 	function queue(o, k, f) {
