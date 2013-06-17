@@ -6,8 +6,14 @@
 (function() {
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent, loc = win.location;
 	var encode = encodeURIComponent, decode = decodeURIComponent, //
+	baseURL = loc.protocol + "//" + loc.hostname + (loc.port ? ":" + loc.port : ""), //
 	config = {
-		baseURL : loc.protocol + "//" + loc.hostname
+		context : "/",//工程上下文目录
+		box : {
+			enable : !1,//对box异常收集的支持
+			ttl : 60000,//收集时间间隔
+			url : "" //收集地址
+		}
 	};
 	var slice = Array.prototype.slice;
 	var readyRE = /complete|loaded|interactive/i;
@@ -72,8 +78,7 @@
 		return v instanceof Array
 	}
 	function likeArray(v) { // like Array
-		return isArray(v) || (!isString(v) && (v + "" == "[object NodeList]" || v + "" == "[object HTMLCollection]"))
-					|| (Q.isQmik && Q.isQmik(v))
+		return isArray(v) || (!isString(v) && (v + "" == "[object NodeList]" || v + "" == "[object HTMLCollection]")) || (Q.isQmik && Q.isQmik(v))
 	}
 	// isFunction
 	function isFun(v) {
@@ -141,6 +146,27 @@
 			return !/^\w+:\/\//.test(v) ? "/" : v
 		})
 	}
+	function loadResource(type, url, success, error) {
+		var isCss = type == "css", tagName = isCss ? "link" : "script", //
+		node = Q(doc.createElement(tagName)), state, noExec = !0 // is execed;
+		node.attr("_src", url);
+		isCss ? node.attr("rel", "stylesheet") : node.attr("type", "text/javascript");
+		function _error(e) {
+			node.remove();
+			error && error(e)
+		}
+		function load(e) {
+			state = node[0].readyState;
+			if (noExec && (likeNull(state) || readyRE.test(state))) {
+				noExec = !1;
+				Q.box(success)(e)
+			}
+		}
+		node.on("load", load).on("readystatechange", load).on("error", _error);
+		Q("head").append(node);
+		return node
+	}
+	//box bariable
 	var errorStack = {
 		count : 0
 	};
@@ -196,7 +222,7 @@
 			}
 		},
 		trim : function(v) {
-			return v ? v.trim() : v
+			return isNull(v) ? "" : isString(v) ? v.trim() : v.toString().trim()
 		},
 		toLower : function(v) {
 			return v ? v.toLower() : v
@@ -229,17 +255,37 @@
 			});
 			return r
 		},
-		getScript : function(url, callback) {
-			var node = doc.createElement("script"), state;
-			node.type = "text/javascript";
-			node.src = url;
-			Q("head").append(node);
+		getScript : function(url, success, error) {
+			/*var node = doc.createElement("script"), //
+			state, //
+			noExec = !0 // is execed;
+			Q(node).attr( {
+				type : "text/javascript",
+				_src : url
+			});
+			function _error(e) {
+				Q(node).remove();
+				error && error(e)
+			}
 			function load(e) {
 				state = node.readyState;
-				(likeNull(state) || readyRE.test(state)) && callback(e)
+				if (noExec && (likeNull(state) || readyRE.test(state))) {
+					noExec = !1;
+					Q.box(success)(e)
+				}
 			}
-			Q(node).on("load", load).on("readystatechange", load);
+			Q(node).on("load", load).on("readystatechange", load).on("error", _error);
+			Q("head").append(node);*/
+			url = Q.url(url);
+			var node = loadResource("js", url, success, error)[0];
+			Q.delay(function() {
+				node.src = url;
+			}, 1);
 			return node
+		},
+		getCss : function(url, success, error) {
+			url = Q.url(url);
+			return loadResource("css", url, success, error).attr("href", url)
 		},
 		serialize : function(array) {
 			return Q.param(Q.serializeArray(array))
@@ -291,7 +337,7 @@
 			}
 		},
 		isIphone : function() {
-			return /i(Phone|P(o|a)d)/.test(UA)
+			return /iPhone OS/.test(UA)
 		},
 		isAndroid : function() {
 			return /Android/.test(UA)
@@ -304,21 +350,34 @@
 		},
 		config : function(opts, _config) {
 			_config = arguments.length <= 1 ? config : (_config || {});
-			return (arguments.length < 1 || isNull(opts)) ? _config : isObject(opts) ? Q.extend(_config, opts) : _config[opts]
+			var ret = _config;
+			if (arguments.length < 1 || isNull(opts)) {
+			} else if (!isObject(opts)) {
+				ret = _config[opts]
+			} else {
+				each(opts, function(key, val) {
+					isObject(val) && _config[key] ? Q.extend(_config[key], val) : (_config[key] = val)
+				})
+			}
+			return ret
+			//return (arguments.length < 1 || isNull(opts)) ? _config : isObject(opts) ? Q.extend(_config, opts) : _config[opts]
 		},
 		/**
 		 * 合并url,if 参数 _url为空,则
 		 */
-		url : function(_url, baseURL) {
-			baseURL = baseURL || config.baseURL;
-			return isNull(_url) ? baseURL : !/^[a-zA-Z0-9]+:\/\//.test(_url) ? concactUrl(baseURL, _url) : _url
+		url : function(_url) {
+			_url = _url.trim();
+			return arguments.length < 1 ? baseURL : !/^[a-zA-Z0-9]+:\/\//.test(_url) ? concactUrl(baseURL, (/^\//.test(_url) ? "" : config.context || "/") + "/"
+																																			+ _url) : _url
 		},
-		box : function(callback, opts) {
-			return function() {
+		box : function(callback) {
+			//enable box error notify:Q.config(error,{enable,url:"send you service"});
+			return config.box.enable ? function() {
 				try {
 					callback.apply(this, arguments)
 				} catch (e) {
 					// Q.config(error,{enable,url:""});
+					//enable support box error send to service
 					var stack = e.stack, log = errorStack[stack];
 					if (log) {
 						log.num++
@@ -326,31 +385,28 @@
 						log = errorStack[stack] = {
 							num : 1
 						};
-						errorStack.count++;
-						Q.extend(log, opts)
+						errorStack.count++
 					}
 					throw e
 				}
-			}
+			} : callback
 		}
 	});
 	Q.url.toString = function() {
 		return Q.url()
-	}
-	function errorlog() {
-		var econfig = config.error || {};
-		if (errorStack.count > 0) {
-			if (econfig.enable) {
-				var img = new Image();
-				img.src = (config.error.url || "/error") + "?errorlog=" + toString(errorStack)
-			}
+	};
+	(function sendBox() {
+		var box = config.box || {};
+		if (box.enable && errorStack.count > 0) {
+			var img = new Image();
+			img.src = (config.error.url || "/error") + "?errorlog=" + toString(errorStack);
+			delete errorStack;
 			errorStack = {
 				count : 0
 			}
+			Q.delay(sendBox, box.ttl < 10000 ? 10000 : box.ttl)
 		}
-		Q.delay(errorlog, econfig.ttl || 60000)
-	}
-	errorlog();
+	})();
 	Q.version = "1.00.001";
 	Q.global = win;
 	win.Qmik = Q;
@@ -393,7 +449,12 @@
 					t.innerHTML = selector;
 					r = t.childNodes
 				} else {
-					r = find(selector, context)
+					each(selector.split(","), function(i, val) {
+						each(find(val, context), function(j, dom) {
+							dom && me.push(dom)
+						})
+					});
+					return me
 				}
 			} else {
 				r = likeArray(selector) ? selector : [
@@ -401,10 +462,9 @@
 				];
 				r = (r + "" == "[object Text]") ? [] : r
 			}
-			r = r || [];
-			for ( var i = 0; i < r.length; i++) {
-				r[i] && me.push(r[i])
-			}
+			each(r || [], function(i, dom) {
+				dom && me.push(dom)
+			})
 		})();
 		return me
 	}
@@ -422,6 +482,7 @@
 	function isQmik(v) {
 		return v instanceof Query
 	}
+	//查找元素节点
 	function find(selector, context, childs) {
 		try {
 			return context.querySelectorAll(selector)
@@ -429,7 +490,7 @@
 			var nselector = trim(selector), r = [], length;
 			if (isQmik(context)) {
 				each(context, function(i, v) {
-					isDom(v) && (r = r.concat(find(selector, v)))
+					isDom(v) && (r = r.concat(muchToArray(find(selector, v))))
 				});
 			} else {
 				childs = childs || compile(nselector);// 编译查询条件，返回[{type,query,isChild}...]
@@ -486,9 +547,6 @@
 						break
 					case 'CT':
 						var ds = getTagClass(q), tn = ds[0], cn = ds[1];
-						// if (tn) (dom.tagName == toUpper(tn) && hasClass(dom, cn))
-						// && r.push(dom);
-						// else hasClass(dom, cn) && r.push(dom);
 						tn ? dom.tagName == toUpper(tn) && hasClass(dom, cn) && r.push(dom) : hasClass(dom, cn) && r.push(dom)
 						break
 					case 'TAG':
@@ -525,24 +583,22 @@
 	function at(target, name) {
 		return target[name] || target.getAttribute(name)
 	}
+	//找匹配的属性和对应值
 	function findMath(array, name, value, isEqual) {
 		var exist, attribute, ret = [], isClass = name == "class";
-		each(array, function(i, n) {
-			if (isDom(n)) {
-				attribute = at(n, name);
-				// attribute = attribute ? attribute : (isClass ? n.className :
-				// attribute);
-				attribute = isClass ? n.className : attribute;
+		each(array, function(i, dom) {
+			if (isDom(dom)) {
+				attribute = at(dom, name);
+				attribute = isClass ? dom.className : attribute;
 				exist = isClass ? new RegExp(replace(value, /[ ]/g, "|")).test(attribute) : attribute == value;
-				isEqual ? exist && ret.push(n) : !exist && ret.push(n);
+				isEqual ? exist && ret.push(dom) : !exist && ret.push(dom)
 			}
 		});
 		return ret
 	}
 	function byId(dom, selector) {
-		selector = replace(selector, /^#/, "");
 		return [
-			doc.getElementById(selector)
+			doc.getElementById(replace(selector, /^#/, ""))
 		]
 	}
 	function byAttr(dom, selector) {
@@ -550,11 +606,12 @@
 		return findMath(muchToArray(dom.getElementsByTagName(st[0] || "*")), st[1], st[2], selector.indexOf('!=') == -1)
 	}
 	// /////////////////////////////////////////////////
-	function hasClass(o, cn) {
-		if (!isDom(o)) return !1;
-		var cs = o.className.split(" "), cn = trim(cn), i = 0;
+	function hasClass(dom, className) {
+		if (!isDom(dom)) return !1;
+		var cs = dom.className.split(" "), i = 0;
+		className = trim(className);
 		for (; i < cs.length; i++)
-			if (cs[i] == cn) return !0;
+			if (cs[i] == className) return !0;
 		return !1
 	}
 	function formateClassName(v) {
@@ -632,7 +689,12 @@
 					attr(target, i, j, isSetValue)
 				})
 			} else {
-				(isSetValue || !SE()) ? target[name] = execObject(val) : target.setAttribute(name, execObject(val))
+				if (isDom(val)) {
+					attr(target, name, "", isSetValue);
+					Q(target).append(val)
+				} else {
+					(isSetValue || !SE()) ? target[name] = execObject(val) : target.setAttribute(name, execObject(val))
+				}
 			}
 		}
 	}
@@ -656,7 +718,7 @@
 			if (isNull(v) && isString(k)) return o[dn][k];
 			isString(k) ? o[dn][k] = v : each(k, function(i, j) {
 				o[dn][i] = j
-			});
+			})
 		}
 	}
 	function queue(o, k, f) {
@@ -829,16 +891,16 @@
 			})
 		},
 		gt : function(i) {
-			var r = new Query();
-			each(this, function(i, v) {
-				r.push(v)
-			})
+			var r = new Query(), j = i;
+			for (; j < this.length; j++) {
+				r.push(this[j])
+			}
 			return r
 		},
 		lt : function(i) {
-			var r = new Query();
-			for (; i >= 0; i--) {
-				r.push(this[i])
+			var r = new Query(), j = 0;
+			for (; j <= i && j < this.length; j++) {
+				r.push(this[j])
 			}
 			return r
 		},
@@ -908,6 +970,11 @@
 				css(v, 'display') == 'none' ? $(v).show() : $(v).hide()
 			});
 			return this
+		},
+		toggleClass : function(className) {
+			this.each(function(i, dom) {
+				hasClass(dom, className) ? Q(dom).rmClass(className) : Q(dom).addClass(className)
+			})
 		},
 		map : function(callback) {
 			return Q.map(this, callback)
@@ -979,11 +1046,17 @@
 			return hasClass(this[0], c)
 		},
 		closest : function(selector) {// 查找最近的匹配的父(祖父)节点
+			var me = this, q = new Query();
+			me.each(function(i, dom) {
+				Q(">" + selector, dom.parentNode).each(function(j, dom1) {
+					dom === dom1 && q.push(dom)
+				})
+			});
 			/**
-			 * selector:选择器 qmik:qmik查询对象 isAllP:是否包含所有父及祖父节点 默认true
-			 * isOnlyParent:往上查找的层级是否只到直接父节点 默认false
-			 */
-			return parents(selector, this, false)
+			* selector:选择器 qmik:qmik查询对象 isAllP:是否包含所有父及祖父节点 默认true
+			* isOnlyParent:往上查找的层级是否只到直接父节点 默认false
+			*/
+			return q.length > 0 ? q : parents(selector, me, !1)
 		},
 		parents : function(selector) {// 查找所有的匹配的父(祖父)节点
 			return parents(selector, this, true)
@@ -1029,9 +1102,10 @@
 		// function(e) {
 		// readyRE.test(doc.readyState) && fun(e)
 		// }
-		Q(doc).bind("readystatechange", function(e) {
+		function ready(e) {
 			readyRE.test(doc.readyState) && fun(e)
-		});
+		}
+		readyRE.test(doc.readyState) ? fun(doc.createEvent("MouseEvents")) : Q(doc).on("readystatechange", ready).on("load", ready);
 		return this
 	}
 	function Eadd(dom, name, fun, paramArray) {
@@ -1090,6 +1164,9 @@
 		};
 		return e
 	}
+	function getLiveName(selector, type, callback) {
+		return selector + ":live:" + type + ":" + (callback || "").toString()
+	}
 	Q.fn.extend( {
 		on : function(name, callback) {
 			var p = Array.prototype.slice.call(arguments, 2);
@@ -1121,8 +1198,8 @@
 			return this
 		},
 		live : function(name, callback) {
-			var select = this.selector, fun = liveFuns[select + ":live:" + callback.toString()] = function(e) {
-				if (Q((e.target || e.srcElement).childNodes[0]).closest(select).length > 0) {
+			var select = this.selector, fun = liveFuns[getLiveName(this.selector, name, callback)] = function(e) {
+				if (Q(e.target || e.srcElement).closest(select).length > 0) {
 					callback.apply(event.target, [
 						e
 					]);
@@ -1132,8 +1209,9 @@
 			return this
 		},
 		die : function(name, callback) {
+			var fun = liveFuns[getLiveName(this.selector, name, callback)];
 			each(Q(document.body), function(k, dom) {
-				Erm(dom, name, liveFuns[this.selector + ":live:" + (callback || "").toString()])
+				Erm(dom, name, fun)
 			});
 			return this
 		}
@@ -1169,14 +1247,18 @@
 	}
 	Q.fn.extend( {
 		width : function(v) {
+			var dom = this[0];
 			//var o = this[0];
 			//return isNull(o) ? (v || 0) : isDom(o) ? o.offsetWidth : o == win ? win.screenX : win.screen.availWidth
-			return this[0] ? this[0].offsetWidth : 0
+			//return me[0] ? isDom(this[0])?.offsetWidth : 0
+			return isDom(dom) ? dom.offsetWidth : dom == win ? screen.availWidth : 0
 		},
 		height : function(v) {
+			var dom = this[0];
 			//var o = this[0];
 			//return isNull(o) ? (v || 0) : isDom(o) ? o.offsetHeight : o == win ? win.screenY : win.screen.availHeight
-			return this[0] ? this[0].o.offsetHeight : 0
+			//return this[0] ? this[0].o.offsetHeight : 0
+			return isDom(dom) ? dom.offsetHeight : dom == win ? screen.availHeight : 0
 		},
 		offset : function() {// 获取匹配元素在当前视口的相对偏移
 			if (!this[0]) return null;
@@ -1195,10 +1277,33 @@
 			}
 		},
 		animate : function(styles, speed, easing, callback) {
-			var m = this;
-			Q.delay(function() {
-				m.css(styles)
-			}, speed || 500)
+			var me = this, mul = 50, speed = speed || 500, stardStyle = {}, source, target;
+			var toDouble = parseFloat;
+			Q.each(styles, function(key, val) {
+				stardStyle[key] = Math.abs(Math.abs(toDouble(val)) - toDouble(me.css(key)))
+			});
+			(function cs() {
+				var mstyle = {}, isDelay = !0;
+				Q.each(styles, function(key, val) {
+					val = toDouble(val);
+					target = Math.abs(val);
+					source = toDouble(me.css(key));
+					if (target >= source) {
+						mstyle[key] = source + stardStyle[key] / mul;
+						isDelay = source >= val ? !1 : !0
+					} else {
+						mstyle[key] = source - stardStyle[key] / mul;
+						isDelay = source <= val ? !1 : !0
+					}
+				});
+				if (isDelay) {
+					me.css(mstyle);
+					Q.delay(cs, speed / mul)
+				} else {
+					me.css(styles);
+					callback && callback()
+				}
+			})()
 		}
 	});
 })(Qmik);
@@ -1244,6 +1349,10 @@
 		}, ttl)
 	}
 	function get(url, data, success, dataType, type) {
+		if (isFun(data)) {
+			success = data;
+			data = null
+		}
 		ajax( {
 			url : url,
 			data : data,
@@ -1287,8 +1396,7 @@
 		paths : {},
 		vars : {},
 		map : [],
-		preload : [],
-		base : Q.url()
+		preload : []
 	//
 	// context://工程目录
 	};
@@ -1297,8 +1405,9 @@
 	function Module(id, url, dependencies, factory) {
 		var me = this;
 		Q.extend(me, {
-			id : id || id2url(id),
+			id : id || url,
 			url : url,
+			dir:url.replace(/(\?.*)?/,"").replace(/(\/[^\/]*)$/i,"/"),
 			dependencies : dependencies,// 依赖模块
 			factory : factory,
 			// module is ready ,if no, request src from service
@@ -1308,6 +1417,7 @@
 			lastTime : Q.now(),
 			useCount : 0,// use count,使用次数
 			destroy : function() {
+				Q("script[_src='" + url + "']").remove();
 				delete cacheModule[id], cacheModule[url]
 			}
 		})
@@ -1331,7 +1441,7 @@
 	}
 	/** 清除注释 */
 	function clearNode(word) {
-		return word.replace(/(\/\/)\S*[^\/]{2}[^\n]*/g, "").replace(/\/\*[\S\s]*\*\//g, "")
+		return word.replace(/(\/\/)\S*[^\n]*/g, "").replace(/\/\*[\S\s]*\*\//g, "")
 	}
 	// get depends from function.toString()
 	function parseDepents(code) {
@@ -1346,38 +1456,67 @@
 		}
 		return match
 	}
-	function use(ids, callback) {
-		preload(function() {
-			if (isArray(ids) && ids.length > 0) {
-				var params = [];
-				(function bload(idx) {
-					load(ids[idx], function(exports) {
-						params.push(exports);
-						idx == ids.length - 1 ? callback && callback.apply(callback, params) : bload(idx + 1)
-					})
-				})(0);
-			} else if (isFun(ids)) {
-				ids.apply(ids, []);
-			} else {
-				load(ids, function(exports) {
-					callback && callback.apply(callback, [
-						exports
-					]);
+	var uses = [], notLoading = !0//is not loading,default=true;
+	function loadError() {
+		uses.splice(0, 1);
+		notLoading = !0;
+		loadSyncUses()
+	}
+	/** 同步加载使用的模块 */
+	function loadSyncUses() {
+		if (notLoading && uses.length > 0) {
+			notLoading = !1;
+			preload(function() {
+				var us = uses[0], ids = us.ids, callback = us.callback;
+				callbackUse(ids, function() {
+					uses.splice(0, 1);
+					notLoading = !0;
+					callback && callback.apply(callback, arguments);
+					loadSyncUses()
 				})
-			}
-		})
+			})
+		}
+	}
+	function use(ids, callback) {
+		ids = isArray(ids) ? ids : [
+			ids
+		];
+		//下面检测使用的模块是否已被全部加载过
+		var r = Q.grep(ids, function(val) {
+			return !isNull(getModule(id2url(val), val))
+		});
+		if (r.length == ids.length) {
+			callbackUse(ids, callback)
+		} else {
+			uses.push( {
+				ids : ids,
+				callback : callback
+			});
+			loadSyncUses()
+		}
+	}
+	/** 回调使用的模块 */
+	function callbackUse(ids, callback) {
+		if (ids.length > 0) {
+			var params = [];
+			(function bload(idx) {
+				load(ids[idx], function(exports) {
+					params.push(exports);
+					if (idx == ids.length - 1) {
+						callback && callback.apply(callback, params);
+					} else {
+						bload(idx + 1)
+					}
+				})
+			})(0)
+		}
 	}
 	// require module
 	function require(id) {
 		var module = getModule(id2url(id), id);
 		return module ? module.exports : null
 	}
-	Q.extend(require, {
-		resolve : id2url
-	});
-	function getModule(url, id) {
-		return cacheModule[url] || cacheModule[id]
-	}
+	require.url = id2url;
 	// pre load module
 	function preload(callback, deps) {
 		var dependencies = deps || config.preload, length = dependencies.length, params = [];
@@ -1406,8 +1545,11 @@
 				preload(function() {
 					useModule(getModule(url, id), require, callback)
 				}, getModule(url, id).dependencies)
-			})
+			}, loadError)
 		}
+	}
+	function getModule(url, id) {
+		return cacheModule[url] || cacheModule[id]
 	}
 	function useModule(module, require, callback) {
 		if (module.isReady != !0) {
@@ -1419,21 +1561,20 @@
 		module.lastTime = Q.now();
 		callback && callback(module.exports)
 	}
-	function request(id, callback) {
-		var url = id2url(id), idx = url.indexOf("?"), loadScript = Q("script[src='" + url + "']");
+	function request(id, success, error) {
+		var url = id2url(id), idx = url.indexOf("?"), loadScript = Q("script[_src='" + url + "']");
 		if (/\/.+\.css\s*$/i.test(idx >= 0 ? url.substring(0, idx) : url)) {
-			var node = doc.createElement("link");
+			/*var node = doc.createElement("link");
 			node.rel = 'stylesheet';
 			node.href = url;
-			Q("head").append(node)
+			Q("head").append(node)*/
+			Q.getCss(url)
 		} else {
-			function _load() {
-				callback()
-			}
+			var _load = Q.box(success);
 			if (loadScript.length < 1) {
-				currentScript = Q.getScript(url, _load)
+				currentScript = Q.getScript(url, _load, error)
 			} else {
-				loadScript.on("load", _load).on("readystatechange", _load);
+				loadScript.on("load", _load).on("readystatechange", _load).on("error", error)
 			}
 		}
 	}
@@ -1451,16 +1592,15 @@
 		return map2url(id)
 	}
 	function normalize(url) {
-		url = Q.url(url, config.base);
+		url = Q.url(url);
 		return !/\?/.test(url) && !/\.(css|js)$/.test(url) ? url + ".js" : url
 	}
 	function alias2url(id) {
 		return config.alias[id] || id;
 	}
 	function paths2url(id) {
-		var key = id.match(/^[0-9a-zA-Z._]+/);
-		key = key ? key[0] : id;
-		return id.replace(new RegExp("^" + key), config.paths[key] || key)
+		var keys = id.match(/^(\/?[0-9a-zA-Z._]+)/), key = keys ? keys[0] : id;
+		return keys ? id.replace(new RegExp("^" + key), config.paths[key] || key) : id
 	}
 	function vars2url(id) {
 		var key = id.match(/\{[0-9a-zA-Z._]+\}/);
@@ -1469,7 +1609,7 @@
 	}
 	function map2url(id) {
 		each(config.map, function(i, v) {
-			id.indexOf(v[0]) > -1 && id.replace(v[0], v[1])
+			id = id.match(v[0]) ? id.replace(v[0], v[1]) : id
 		});
 		return id
 	}
@@ -1480,7 +1620,8 @@
 		define : Q.box(define),
 		config : function(opts) {
 			return Q.config(opts, config)
-		}
+		},
+		url : id2url
 	});
 	Q.cycle(function() {
 		var count = 0;
