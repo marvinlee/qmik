@@ -20,8 +20,9 @@
 	function Module(id, url, dependencies, factory) {
 		var me = this;
 		Q.extend(me, {
-			id : id || id2url(id),
+			id : id || url,
 			url : url,
+			dir:url.replace(/(\?.*)?/,"").replace(/(\/[^\/]*)$/i,"/"),
 			dependencies : dependencies,// 依赖模块
 			factory : factory,
 			// module is ready ,if no, request src from service

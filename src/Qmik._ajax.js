@@ -3,8 +3,6 @@
 	var win = Q.global, toObject = Q.parseJSON, isFun = Q.isFun, ac = {
 		type : 'GET',
 		async : !0,
-		// cache : !1,
-		// session or local
 		dataType : 'text',
 		xhr : function() {
 			try {
