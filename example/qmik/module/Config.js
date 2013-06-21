@@ -19,7 +19,6 @@
 	$.sun.config( {
 		alias : {
 			// qmik组件
-			"Qmik.nav" : $.url("/src/plugins/Qmik.nav.js"),// 导航组件
 			"Qmik.fn.fade" : $.url("/src/plugins/Qmik.fn.fade"),//
 			"Qmik.fn.tree" : $.url("/src/plugins/Qmik.fn.tree"),// 树型菜单组件
 			// ////////////////////////////////////////////
@@ -33,11 +32,7 @@
 			"Download" : "module/download/Download",
 			"API" : "module/api/API",
 			"About" : "module/about/About"
-		},
-		// 预加载的模块
-		preload : [
-			"Qmik.nav"
-		]
+		}
 	});
 	window.onerror = function(e) {
 		$.log("window.onerror:errrrrr:" + e)

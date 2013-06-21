@@ -27,7 +27,7 @@ li {
 body {
 	margin: 0;
 	padding: 0;
-	width: 100% %;
+	width: 100%%;
 	overflow: auto;
 	text-align: center;
 	background: #ffffff;
@@ -52,18 +52,18 @@ body {
 		<!-- 主内容模块 -->
 		<div id="main_module" class="cmain"></div>
 	</div>
-     <!-- 加载框架 -->
+	<!-- 加载框架 -->
 	<script type="text/javascript" src="../../assets/Qmik-debug.js"></script>
 	<!-- 加载配置文件 -->
 	<script type="text/javascript" src="module/config.js"></script>
-	
+
 	<script type="text/javascript">
-    // 界面初始化 
+		// 界面初始化 
 		(function($, define) {
 			//依赖3个模块初始化
 			$.use([
-				 "Qmik.nav","Nav", "Home"
-			], function($, headerNav, home) {
+				"Nav", "Home"
+			], function(headerNav, home) {
 				headerNav.showHeader();//显示头部导航
 				$.nav.onload(function() {
 					home.showHome();//显示首页
