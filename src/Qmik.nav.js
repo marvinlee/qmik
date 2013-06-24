@@ -25,7 +25,7 @@
 	function getModuleParam(url) {
 		var query = url || (likeNull(get()) ? loc.search.replace(/^\?/, "") : get()), //
 		info = [];
-		Q.each(query.split("&|&amp;"), function(i, val) {
+		Q.each(query.split(/&|&amp;/g), function(i, val) {
 			var kv = val.split("=");
 			info[Q.decode(kv[0])] = Q.decode(kv[1])
 		});
