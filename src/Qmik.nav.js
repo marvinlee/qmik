@@ -24,8 +24,8 @@
 	// 取得模块参数信息,及模块名
 	function getModuleParam(url) {
 		var query = url || (likeNull(get()) ? loc.search.replace(/^\?/, "") : get()), //
-		hs = query.split("&"), info = [];
-		Q.each(hs, function(i, val) {
+		info = [];
+		Q.each(query.split("&|&amp;"), function(i, val) {
 			var kv = val.split("=");
 			info[Q.decode(kv[0])] = Q.decode(kv[1])
 		});
@@ -43,15 +43,15 @@
 		} else if (Q.isObject(url)) {
 			moduleName = url.module;
 			method = url.method;
-			param = url.param || [];
+			param = url.param
 		} else {
 			param = getModuleParam(url);
 			moduleName = param[config.module];
-			method = param[config.method];
+			method = param[config.method]
 		}
 		moduleName && sun.use(moduleName, function(module) {
 			// module(info)
-			execModule(module, method, param)
+			execModule(module, method, param || [])
 		});
 		return moduleName
 	}
@@ -70,7 +70,7 @@
 		bind();
 		hashchange(doc.createEvent ? doc.createEvent("MouseEvents") : null)
 	})
-	Q.extend( {
+	Q.extend({
 		nav : {
 			/**
 			 * opts:{ url:"url字符串,选填,用户支持页面不支持hashchange时,跳转到url页面",
@@ -90,7 +90,7 @@
 						}
 					} else if (Q.isObject(url)) {
 						param = url;
-						url = null;
+						url = null
 					} else if (isFun(url)) {
 						callback = url;
 						param = [];
@@ -112,14 +112,24 @@
 							result
 						]);
 						Q.delay(bind, 500)
-					} else {
-						loc.href = url + (/\?/.test(url) ? "&" : "?") + hv.join("&");
+					} else if (Q.isString(url)) {
+						loc.href = Q.url(url) + (/\?/.test(url) ? "&" : "?") + hv.join("&");
 					}
 				})
 			},
+			/**
+			 * 在首页初次加载时执行,执行条件是判断hash值是否为空,为空才执行callback,
+			 * 否则不执行
+			 * @param callback
+			 */
 			onload : function(callback) {
-				(likeNull(loc.hash) || likeNull(location.hash.replace(/^#/, ""))) && callback()
+				likeNull(get()) && callback()
 			},
+			/**
+			 * 配置
+			 * @param opt
+			 * @returns
+			 */
 			config : function(opt) {
 				return Q.config(opt, config)
 			}
