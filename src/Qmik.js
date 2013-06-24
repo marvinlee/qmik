@@ -10,9 +10,9 @@
 	config = {
 		context : "/",//工程上下文目录
 		box : {
-			enable : !1,//对box异常收集的支持
-			ttl : 60000,//收集时间间隔
-			url : "" //收集地址
+			enable : !0,//对box异常收集的支持
+			ttl : 20000,//收集时间间隔
+			url : "/errorCollect" //收集地址
 		}
 	};
 	var slice = Array.prototype.slice;
@@ -109,11 +109,11 @@
 	function isBool(v) {
 		return typeof v == 'boolean'
 	}
-	function isBaseType(v) {
-		return isBool(v) || isString(v) || isNum(v)
-	}
+	/*	function isBaseType(v) {
+			return isBool(v) || isString(v) || isNum(v)
+		}*/
 	function toString(v) {
-		return isBaseType(v) ? v : isFun(v) ? v.toString() : JSON.stringify(v)
+		return (isBool(v) || isString(v) || isNum(v)) ? v + "" : isFun(v) ? v.toString() : JSON.stringify(v)
 	}
 	// to json
 	function toJSON(v) {
@@ -166,11 +166,7 @@
 		Q("head").append(node);
 		return node
 	}
-	//box bariable
-	var errorStack = {
-		count : 0
-	};
-	Q.extend( {
+	Q.extend({
 		encode : encode,
 		decode : decode,
 		isDom : isDom,
@@ -233,7 +229,7 @@
 		// 合并数组或对象
 		merge : merge,
 		array : function(array) {
-			return merge( [], array)
+			return merge([], array)
 		},
 		inArray : function(value, array) {
 			if (Q.likeArray(array)) for ( var i = 0; i < array.length; i++)
@@ -248,6 +244,15 @@
 			return ret
 		},
 		contains : isGrandfather,
+		/**
+		 * 对数组里的内容,做部做一次数据映射转换,
+		 * 例:
+		 * var array=[1,2,3];
+		 * array = Qmik.map(array,function(index,val){
+		 * 	return index*val
+		 * });
+		 * console.log(array);//>>0,2,6
+		 */
 		map : function(array, callback) {
 			var r = [];
 			each(array, function(i, v) {
@@ -256,26 +261,6 @@
 			return r
 		},
 		getScript : function(url, success, error) {
-			/*var node = doc.createElement("script"), //
-			state, //
-			noExec = !0 // is execed;
-			Q(node).attr( {
-				type : "text/javascript",
-				_src : url
-			});
-			function _error(e) {
-				Q(node).remove();
-				error && error(e)
-			}
-			function load(e) {
-				state = node.readyState;
-				if (noExec && (likeNull(state) || readyRE.test(state))) {
-					noExec = !1;
-					Q.box(success)(e)
-				}
-			}
-			Q(node).on("load", load).on("readystatechange", load).on("error", _error);
-			Q("head").append(node);*/
 			url = Q.url(url);
 			var node = loadResource("js", url, success, error)[0];
 			Q.delay(function() {
@@ -285,7 +270,7 @@
 		},
 		getCss : function(url, success, error) {
 			url = Q.url(url);
-			return loadResource("css", url, success, error).attr("href", url)
+			return loadResource("css", url, success, error).attr("href", url)[0]
 		},
 		serialize : function(array) {
 			return Q.param(Q.serializeArray(array))
@@ -299,14 +284,19 @@
 			})
 		},
 		grep : filter,
-		// buid a new array,filter by fun
-		param : function(o) {
+		/**
+		 * 抽取数组里面每个元素的name和value属性,转换成一个url形式(a=b&name=g)的字符串
+		 */
+		param : function(array) {
 			var h = [];
-			each(o, function(i, v) {
+			each(array, function(i, v) {
 				h.push(encode(v.name) + '=' + encode(execObject(v.value)))
 			});
 			return h.join('&')
 		},
+		/**
+		 * 当前时间
+		 */
 		now : function(d) {
 			return (d || 0) + new Date().getTime()
 		},
@@ -317,12 +307,19 @@
 				fun.apply(fun, params)
 			}, time)
 		},
-		// 周期执行,==setInterval
-		cycle : function(fun, time) {
-			var params = slice.call(arguments, 2);
+		// 周期执行
+		/**
+		 * fun:执行的方法
+		 * time:执行的间隔时间
+		 * ttl:过期时间,执行时间>ttl时,停止执行,单位 ms(毫秒)
+		 */
+		cycle : function(fun, time, ttl) {
+			var params = slice.call(arguments, 2), start = Q.now();
 			function _exec() {
-				fun.apply(fun, params);
-				Q.delay(_exec, time)
+				if (isNull(ttl) || Q.now() - start <= ttl) {
+					fun.apply(fun, params);
+					Q.delay(_exec, time)
+				}
 			}
 			Q.delay(_exec, time)
 		},
@@ -366,7 +363,6 @@
 		 * 合并url,if 参数 _url为空,则
 		 */
 		url : function(_url) {
-			_url = _url.trim();
 			return arguments.length < 1 ? baseURL : !/^[a-zA-Z0-9]+:\/\//.test(_url) ? concactUrl(baseURL, (/^\//.test(_url) ? "" : config.context || "/") + "/"
 																																			+ _url) : _url
 		},
@@ -376,41 +372,56 @@
 				try {
 					callback.apply(this, arguments)
 				} catch (e) {
-					// Q.config(error,{enable,url:""});
-					//enable support box error send to service
-					var stack = e.stack, log = errorStack[stack];
-					if (log) {
-						log.num++
-					} else {
-						log = errorStack[stack] = {
-							num : 1
-						};
-						errorStack.count++
-					}
+					collect(e);
 					throw e
 				}
 			} : callback
 		}
 	});
-	Q.url.toString = function() {
-		return Q.url()
+	each([
+		Q.url, Q.now
+	], function(i, val) {
+		val.toString = val
+	});
+	///////////////////////////////////////////////////////
+	//box bariable
+	var errorStack = {
+		count : 0
 	};
-	(function sendBox() {
-		var box = config.box || {};
+	//收集错误信息
+	function collect(e) {
+		if (config.box.enable) {
+			// Q.config(box,{enable,url:""});
+			//enable support box error send to service
+			var stack = e.stack, log = errorStack[stack];
+			if (log) {
+				log.num++
+			} else {
+				log = errorStack[stack] = {
+					num : 1
+				};
+				errorStack.count++
+			}
+		}
+	}
+	Q.box.collect = collect;
+	win.onerror = collect;
+	function send() {
+		var box = config.box, img;
 		if (box.enable && errorStack.count > 0) {
-			var img = new Image();
-			img.src = (config.error.url || "/error") + "?errorlog=" + toString(errorStack);
-			delete errorStack;
+			img = new Image();
+			img.src = config.box.url + "?log=" + toString(errorStack);
 			errorStack = {
 				count : 0
 			}
-			Q.delay(sendBox, box.ttl < 10000 ? 10000 : box.ttl)
 		}
-	})();
-	Q.version = "1.00.001";
+		Q.delay(send, box.ttl)
+	}
+	Q.delay(send, config.box.ttl);
+	Q.version = "1.00";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
 	Q.exec = eval;
-	return Q;
+	return Q
 })();

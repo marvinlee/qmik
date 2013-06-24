@@ -4,16 +4,14 @@
  * @version:0.91.008
  */
 (function(Q) {
-	var win = Q.global, doc = win.document, loc = win.location, hostname = loc.hostname, each = Q.each;
-	var isArray = Q.isArray, isString = Q.isString, isFun = Q.isFun, isNull = Q.isNull;
+	var win = Q.global, doc = win.document, loc = win.location, hostname = loc.hostname;
+	var isArray = Q.isArray, isString = Q.isString, isFun = Q.isFun, isNull = Q.isNull, each = Q.each;
 	var config = {
 		alias : {},
 		paths : {},
 		vars : {},
 		map : [],
 		preload : []
-	//
-	// context://工程目录
 	};
 	var cacheModule = {}, currentScript;
 	var sun = {};
@@ -22,14 +20,13 @@
 		Q.extend(me, {
 			id : id || url,
 			url : url,
-			dir:url.replace(/(\?.*)?/,"").replace(/(\/[^\/]*)$/i,"/"),
+			dir : url.replace(/(\?.*)?/, "").replace(/(\/[^\/]*)$/i, "/"),//当前目录
 			dependencies : dependencies,// 依赖模块
 			factory : factory,
 			// module is ready ,if no, request src from service
 			isReady : !1,// is ready ,default false,
 			exports : {},// export object
 			createTime : Q.now(),// create time
-			lastTime : Q.now(),
 			useCount : 0,// use count,使用次数
 			destroy : function() {
 				Q("script[_src='" + url + "']").remove();
@@ -103,7 +100,7 @@
 		if (r.length == ids.length) {
 			callbackUse(ids, callback)
 		} else {
-			uses.push( {
+			uses.push({
 				ids : ids,
 				callback : callback
 			});
@@ -173,24 +170,16 @@
 		}
 		module.isReady = !0;
 		module.useCount++;
-		module.lastTime = Q.now();
 		callback && callback(module.exports)
 	}
 	function request(id, success, error) {
-		var url = id2url(id), idx = url.indexOf("?"), loadScript = Q("script[_src='" + url + "']");
-		if (/\/.+\.css\s*$/i.test(idx >= 0 ? url.substring(0, idx) : url)) {
-			/*var node = doc.createElement("link");
-			node.rel = 'stylesheet';
-			node.href = url;
-			Q("head").append(node)*/
+		var url = id2url(id), loadScript = Q("script[_src='" + url + "']");
+		if (/\/.+\.css$/i.test(url.replace(/(\?.*)?/i, ""))) {
 			Q.getCss(url)
 		} else {
 			var _load = Q.box(success);
-			if (loadScript.length < 1) {
-				currentScript = Q.getScript(url, _load, error)
-			} else {
-				loadScript.on("load", _load).on("readystatechange", _load).on("error", error)
-			}
+			loadScript.length < 1 ? (currentScript = Q.getScript(url, _load, error)) : loadScript.on("load", _load).on("readystatechange", _load)
+				.on("error", error)
 		}
 	}
 	function getCurrentScript() {
@@ -238,20 +227,14 @@
 		},
 		url : id2url
 	});
+	////////////////////////////////////////
+	//mem clear
+	var ttl = 300000;//缓存模块回收内存时间
 	Q.cycle(function() {
-		var count = 0;
 		each(cacheModule, function(key, module) {
-			count++
-		});
-		function clear(module) {
-			module.destroy();
-			count--;
-		}
-		count > 12 && each(cacheModule, function(key, module) {
-			module.useCount < 5 && clear();
-			module.useCount = 0;
+			module.useCount < (Q.now() - module.createTime) / ttl && module.destroy()
 		})
-	}, 300000);
+	}, ttl);
 	Q.sun = sun;
 	win.define = Q.define = Q.sun.define;
 	win.use = Q.use = Q.sun.use

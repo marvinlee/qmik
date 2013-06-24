@@ -29,7 +29,7 @@
 			d[name] = h = [];
 			isFun(dom['on' + name]) ? (h[0] = dom['on' + name]) : SE() ? dom.addEventListener(name, handle, !1) : dom["on" + name] = handle
 		}
-		isFun(fun) && h.push( {
+		isFun(fun) && h.push({
 			fun : fun,
 			param : paramArray || []
 		})
@@ -81,7 +81,7 @@
 	function getLiveName(selector, type, callback) {
 		return selector + ":live:" + type + ":" + (callback || "").toString()
 	}
-	Q.fn.extend( {
+	Q.fn.extend({
 		on : function(name, callback) {
 			var p = Array.prototype.slice.call(arguments, 2);
 			each(this, function(k, v) {
@@ -99,8 +99,8 @@
 		},
 		once : function(name, callback) {// 只执行一次触发事件,执行后删除
 			var me = this;
-			function oneexec() {
-				callback();
+			function oneexec(e) {
+				callback(e);
 				me.un(name, oneexec)
 			}
 			me.on(name, oneexec)
@@ -130,7 +130,7 @@
 			return this
 		}
 	});
-	Q.fn.extend( {
+	Q.fn.extend({
 		bind : Q.fn.on,
 		unbind : Q.fn.un
 	});

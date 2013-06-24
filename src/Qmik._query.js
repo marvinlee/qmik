@@ -4,22 +4,18 @@
  * @version:1.37
  */
 (function(Q) {
-	var win = Q.global, doc = win.document, protoArray = Array.prototype;
-	var isNull = Q.isNull, isDom = Q.isDom, each = Q.each, likeArray = Q.likeArray, isArray = Q.isArray, isString = Q.isString, isFun = Q.isFun, isPlainObject = Q.isPlainObject, trim = Q.trim, replace = function(value, str1, str2) {
+	var win = Q.global, doc = win.document;
+	var isNull = Q.isNull, isDom = Q.isDom, each = Q.each, likeArray = Q.likeArray, isArray = Q.isArray, //
+	isString = Q.isString, isFun = Q.isFun, isPlainObject = Q.isPlainObject, trim = Q.trim, //
+	toLower = Q.toLower, toUpper = Q.toUpper, replace = function(value, str1, str2) {
 		return value.replace(str1, str2)
-	}, toJSON = Q.parseJSON, toLower = Q.toLower, toUpper = Q.toUpper;
+	};
 	var rNode = /^\s*(<.+>.*<\/.+>)+|(<.+\/\s*>)+\s*$/, match = {
 		ID : /^#[\w-_\u00c0-\uFFFF]+/,
 		ATTR : /^([\w-_]+)\[\s*[\w-_]+\s*!?=\s*('|")?(.*)('|")?\s*\]/,
 		CT : /^([\w-_]+)?\.[\w-_]+/,
 		TAG : /^[\w-_]+/
 	};
-	// init node list
-	/*
-	 * (function(list) { for ( var ind in list) { list[ind] &&
-	 * (list[ind].prototype.slice = Array.prototype.slice) } })( [ win.NodeList,
-	 * win.HTMLCollection ]);
-	 */
 	function Query(selector, context) {
 		var me = this, r;
 		Q.box(function() {
@@ -108,8 +104,9 @@
 	}
 	// As much as possible to Array
 	function muchToArray(a) {
-		a.slice = isArray(a) ? a.slice : aslice;
-		return isArray(a) ? a : a.slice(0, a.length)
+		/*a.slice = isArray(a) ? a.slice : aslice;
+		return isArray(a) ? a : a.slice(0, a.length)*/
+		return isArray(a) ? a : Array.prototype.slice(a, 0)
 	}
 	// 具体的实现查找
 	function findHandle(context, qa) {
@@ -244,7 +241,7 @@
 		}
 	}
 	function css(o, k, v) {
-		k = isString(k) && !isNull(v) ? toJSON('{"' + k + '":"' + execObject(v) + '"}') : k;
+		k = isString(k) && !isNull(v) ? Q.parseJSON('{"' + k + '":"' + execObject(v) + '"}') : k;
 		if (likeArray(o)) {
 			if (isString(k)) return css(o[0], k);
 			each(o, function(i, j) {
@@ -357,7 +354,7 @@
 		if (!n) return parentList;
 		n = trim(n[0]);
 		selector = replace(selector, n, "");
-		parentList.push( {
+		parentList.push({
 			type : st,
 			query : n,
 			isChild : isChild
@@ -446,7 +443,7 @@
 			Query.prototype[k] = v
 		})
 	}
-	Q.fn.extend( {
+	Q.fn.extend({
 		last : function() {
 			return Q(this[this.length - 1])
 		},
@@ -550,7 +547,7 @@
 		},
 		toggle : function() {
 			each(this, function(i, v) {
-				css(v, 'display') == 'none' ? $(v).show() : $(v).hide()
+				css(v, 'display') == 'none' ? Q(v).show() : Q(v).hide()
 			});
 			return this
 		},
@@ -648,7 +645,7 @@
 			return parents(selector, this, true, true)
 		}
 	});
-	Q.fn.extend( {
+	Q.fn.extend({
 		removeClass : Q.fn.rmClass,
 		removeData : Q.fn.rmData,
 		removeAttr : Q.fn.rmAttr
@@ -658,7 +655,7 @@
 	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
 	 * 90：逆时针转了 Android2.1尚未支持重力感应
 	 */
-	var qwc = "orientationchange touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"
+	var qwc = "change orientationchange touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"
 		.split(" ");
 	each(qwc, function(i, v) {
 		Q.fn[v] = function(f) {

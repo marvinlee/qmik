@@ -32,7 +32,7 @@
 		return info
 	}
 	function execModule(module, method, param) {
-		var fun = Q.likeNull(method) ? module : module[method];
+		var fun = likeNull(method) ? module : module[method];
 		return fun.apply(module, param)
 	}
 	// 加载使用模块
@@ -74,8 +74,10 @@
 		nav : {
 			/**
 			 * opts:{ url:"url字符串,选填,用户支持页面不支持hashchange时,跳转到url页面",
-			 * param:[参数,选填,是个数组对象], callback:回调方法
-			 * module:调用模块的模块名(alise:也是模块名,只是它是对模块名定义了一个别名) method:调用模块的方法名 }
+			 * param:[参数,选填,是个数组对象], 
+			 * callback:回调方法,
+			 * module:调用模块的模块名(alise:也是模块名,只是它是对模块名定义了一个别名) ,
+			 * method:调用模块的方法名 }
 			 */
 			use : function(opts) {
 				// {module:"",method:"",url:"",param:[],callback:fun}
@@ -109,7 +111,7 @@
 						callback && callback.apply(callback, [
 							result
 						]);
-						setTimeout(bind, 500)
+						Q.delay(bind, 500)
 					} else {
 						loc.href = url + (/\?/.test(url) ? "&" : "?") + hv.join("&");
 					}
