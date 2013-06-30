@@ -11,11 +11,11 @@ module.exports = function(grunt) {
 		},
 		qunit : {
 			options : {
-				timeout : 10000,
+				timeout : 2000,
 				'--cookies-file' : '**'
 			},
 			all : [
-				'test/**/*.html'
+				'test/**/test*.html'
 			]
 		},
 		concat : {
