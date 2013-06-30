@@ -96,17 +96,9 @@
 	function execObject(v, target) {
 		return isFun(v) ? (target ? v.call(target, v) : v()) : v
 	}
-	function aslice(start, length) {
-		var r = [], size = start + length, me = this;
-		for ( var i = start; i < size && i < me.length; i++)
-			r.push(me[i]);
-		return r
-	}
 	// As much as possible to Array
 	function muchToArray(a) {
-		/*a.slice = isArray(a) ? a.slice : aslice;
-		return isArray(a) ? a : a.slice(0, a.length)*/
-		return isArray(a) ? a : Array.prototype.slice(a, 0)
+		return isArray(a) ? a : Array.prototype.slice.call(a, 0)
 	}
 	// 具体的实现查找
 	function findHandle(context, qa) {
@@ -655,7 +647,7 @@
 	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
 	 * 90：逆时针转了 Android2.1尚未支持重力感应
 	 */
-	var qwc = "change orientationchange touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"
+	var qwc = "change submit orientationchange touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"
 		.split(" ");
 	each(qwc, function(i, v) {
 		Q.fn[v] = function(f) {
