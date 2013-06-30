@@ -16,10 +16,22 @@
 		// function(e) {
 		// readyRE.test(doc.readyState) && fun(e)
 		// }
+		var node = this[0] || doc;
 		function ready(e) {
-			readyRE.test(doc.readyState) && fun(e)
+			(readyRE.test(node.readyState) || node._loadState == "ok") && fun.call(node, e)
 		}
-		readyRE.test(doc.readyState) ? fun(doc.createEvent("MouseEvents")) : Q(doc).on("readystatechange", ready).on("load", ready);
+		if (readyRE.test(node.readyState)) {
+			ready(doc.createEvent("MouseEvents"))
+		} else {
+			Q(doc).on({
+				"readystatechange" : ready,
+				"load" : ready
+			});
+			isNull(node._loadState) && Q.delay(function() {
+				node._loadState = "ok"
+			}, 3000);
+			node._loadState = "load"
+		}
 		return this
 	}
 	function Eadd(dom, name, fun, paramArray) {
