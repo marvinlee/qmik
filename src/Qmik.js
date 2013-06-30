@@ -147,10 +147,11 @@
 		})
 	}
 	function loadResource(type, url, success, error) {
-		var isCss = type == "css", tagName = isCss ? "link" : "script", //
+		var isCss = type == "css", isScript = type == "js", //
+		tagName = isCss ? "link" : isScript ? "script" : "iframe", //
 		node = Q(doc.createElement(tagName)), state, noExec = !0 // is execed;
 		node.attr("_src", url);
-		isCss ? node.attr("rel", "stylesheet") : node.attr("type", "text/javascript");
+		isCss ? node.attr("rel", "stylesheet") : isScript && node.attr("type", "text/javascript");
 		function _error(e) {
 			node.remove();
 			error && error(e)
@@ -159,7 +160,7 @@
 			state = node[0].readyState;
 			if (noExec && (likeNull(state) || readyRE.test(state))) {
 				noExec = !1;
-				Q.box(success)(e)
+				success && Q.box(success)(e)
 			}
 		}
 		node.on("load", load).on("readystatechange", load).on("error", _error);
@@ -260,14 +261,20 @@
 			});
 			return r
 		},
+		/**
+		 * 取得脚本
+		 */
 		getScript : function(url, success, error) {
 			url = Q.url(url);
 			var node = loadResource("js", url, success, error)[0];
 			Q.delay(function() {
-				node.src = url;
+				node.src = url
 			}, 1);
 			return node
 		},
+		/**
+		 * 取得css
+		 */
 		getCss : function(url, success, error) {
 			url = Q.url(url);
 			return loadResource("css", url, success, error).attr("href", url)[0]
@@ -310,18 +317,18 @@
 		// 周期执行
 		/**
 		 * fun:执行的方法
-		 * time:执行的间隔时间
+		 * cycleTime:执行的周期时间
 		 * ttl:过期时间,执行时间>ttl时,停止执行,单位 ms(毫秒)
 		 */
-		cycle : function(fun, time, ttl) {
+		cycle : function(fun, cycleTime, ttl) {
 			var params = slice.call(arguments, 2), start = Q.now();
 			function _exec() {
 				if (isNull(ttl) || Q.now() - start <= ttl) {
 					fun.apply(fun, params);
-					Q.delay(_exec, time)
+					Q.delay(_exec, cycleTime)
 				}
 			}
-			Q.delay(_exec, time)
+			Q.delay(_exec, cycleTime)
 		},
 		log : function(msg, e) {
 			if (config.debug) {
@@ -422,6 +429,5 @@
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
-	Q.exec = eval;
-	return Q
+	Q.exec = eval
 })();
