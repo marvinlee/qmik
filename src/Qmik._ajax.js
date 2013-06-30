@@ -5,18 +5,15 @@
 	var win = Q.global, toObject = Q.parseJSON, isFun = Q.isFun, ac = {
 		type : 'GET',
 		async : !0,
-		dataType : 'text',
-		xhr : function() {
-			try {
-				return win.XMLHttpRequest && (win.location.protocol !== 'file:' || !win.ActiveXObject)	? new win.XMLHttpRequest()
-																																	: new win.ActiveXObject('Microsoft.XMLHTTP')
-			} catch (e) {
-			}
-		}
+		dataType : 'text'
 	};
+	function request() {
+		return win.XMLHttpRequest && (win.location.protocol !== 'file:' || !win.ActiveXObject)	? new win.XMLHttpRequest()
+																															: new win.ActiveXObject('Microsoft.XMLHTTP')
+	}
 	function ajax(conf) {
 		var _config = Q.extend({}, ac, conf), dataType = _config.dataType, ttl = _config.timeout, //
-		xhr = ac.xhr(), data = _config.data, pid, success = _config.success, error = _config.error //
+		xhr = request(), data = _config.data, pid, success = _config.success //
 		;
 		//_config.beforeSend && _config.beforeSend();
 		xhr.onreadystatechange = Q.box(function() {
@@ -25,7 +22,7 @@
 					clearTimeout(pid);
 					success && success(dataType == 'xml' ? xhr.responseXML : (dataType == 'json' ? toObject(xhr.responseText) : xhr.responseText))
 				} else {
-					error && error(xhr.xhr, xhr.type)
+					_config.error && _config.error(xhr)
 				}
 			}
 		});
@@ -37,17 +34,18 @@
 			error && error(xhr.xhr, xhr.type)
 		}, ttl)
 	}
-	function get(url, data, success, dataType) {
+	function get(url, data, success, dataType, method) {
 		if (isFun(data)) {
 			dataType = success;
 			success = data;
-			data = null;
+			data = null
 		}
 		ajax({
 			url : url,
 			data : data,
 			success : success,
-			dataType : dataType
+			dataType : dataType,
+			type : method
 		})
 	}
 	Q.extend({
@@ -56,18 +54,8 @@
 		getJSON : function(url, data, success) {
 			get(url, data, success, 'json')
 		},
-		post : function(url, data, callback, dataType) {
-			if (isFun(data)) {
-				dataType = callback;
-				callback = data;
-				data = null
-			}
-			ajax({
-				url : url,
-				data : data,
-				success : callback,
-				type : dataType
-			})
+		post : function(url, data, success, dataType) {
+			get(url, data, success, dataType, "post")
 		}
 	})
 })(Qmik);
