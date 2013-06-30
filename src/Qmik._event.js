@@ -16,21 +16,23 @@
 		// function(e) {
 		// readyRE.test(doc.readyState) && fun(e)
 		// }
+		//doc.createEvent("MouseEvents")
 		var node = this[0] || doc;
 		function ready(e) {
-			(readyRE.test(node.readyState) || node._loadState == "ok") && fun.call(node, e)
+			(readyRE.test(node.readyState) || node._loadState == "ok") && fun.call(node, e || doc.createEvent("MouseEvents"))
 		}
 		if (readyRE.test(node.readyState)) {
-			ready(doc.createEvent("MouseEvents"))
+			ready()
 		} else {
 			Q(doc).on({
 				"readystatechange" : ready,
 				"load" : ready
 			});
 			isNull(node._loadState) && Q.delay(function() {
-				node._loadState = "ok"
+				node._loadState = "ok";
+				ready()
 			}, 3000);
-			node._loadState = "load"
+			node._loadState = ""
 		}
 		return this
 	}
