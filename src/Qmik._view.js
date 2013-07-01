@@ -21,7 +21,7 @@
 	function parentY(elem) {
 		return elem.parentNode == elem.offsetParent ? elem.offsetTop : pageY(elem) - pageY(elem.parentNode)
 	}
-	Q.fn.extend( {
+	Q.fn.extend({
 		width : function(v) {
 			var dom = this[0];
 			//var o = this[0];
@@ -56,20 +56,20 @@
 			var me = this, mul = 50, speed = speed || 500, stardStyle = {}, source, target;
 			var toDouble = parseFloat;
 			Q.each(styles, function(key, val) {
-				stardStyle[key] = Math.abs(Math.abs(toDouble(val)) - toDouble(me.css(key)))
+				stardStyle[key] = Math.abs(toDouble(val) - toDouble(me.css(key) || 0))
 			});
 			(function cs() {
 				var mstyle = {}, isDelay = !0;
 				Q.each(styles, function(key, val) {
 					val = toDouble(val);
-					target = Math.abs(val);
-					source = toDouble(me.css(key));
+					target = val;
+					source = toDouble(me.css(key) || 0);
 					if (target >= source) {
-						mstyle[key] = source + stardStyle[key] / mul;
-						isDelay = source >= val ? !1 : !0
+						mstyle[key] = (source + stardStyle[key] / mul) + "px";
+						isDelay = source > val - 12 ? !1 : !0
 					} else {
-						mstyle[key] = source - stardStyle[key] / mul;
-						isDelay = source <= val ? !1 : !0
+						mstyle[key] = (source - stardStyle[key] / mul) + "px";
+						isDelay = source < val + 12 ? !1 : !0
 					}
 				});
 				if (isDelay) {
