@@ -40,12 +40,12 @@
 		if (isFun(id)) {
 			factory = id;
 			dependencies = [];
-			id = url;
+			id = url
 		} else if (isFun(dependencies)) {
 			factory = dependencies;
 			dependencies = []
 		}
-		id = id2url(id)
+		id = id2url(id);
 		if (!getModule(id) || !Q.isIE()) {
 			dependencies = dependencies.concat(parseDepents(factory));
 			cacheModule[url] = cacheModule[id] = new Module(id, url, Q.unique(dependencies), factory)
