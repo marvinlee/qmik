@@ -9,7 +9,7 @@
 		} else if ('MozWebSocket' in win) {
 			ws = new MozWebSocket(url);
 		} else {
-			alert("Unsupported WebSocket");
+			Q.log("Unsupported WebSocket");
 		}
 		return ws;
 	}
