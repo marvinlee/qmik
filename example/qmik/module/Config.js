@@ -11,7 +11,7 @@
 		$.sun.config( {
 			base : "file:///D:/code/github/qmik/"
 		})
-	} 
+	}
 	$.config( {
 		debug : true
 	})
