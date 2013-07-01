@@ -15,7 +15,7 @@
 		ATTR : /^([\w-_]+)\[\s*[\w-_]+\s*!?=\s*('|")?(.*)('|")?\s*\]/,
 		CT : /^([\w-_]+)?\.[\w-_]+/,
 		TAG : /^[\w-_]+/
-	};
+	}, addUints = "height width top right bottom left".split(" ");
 	function Query(selector, context) {
 		var me = this, r;
 		Q.box(function() {
@@ -191,6 +191,19 @@
 			return "-" + toLower(v)
 		})
 	}
+	function formateClassNameValue(name, value) {
+		var nv = parseFloat(value || 0) + "";
+		if (nv != value) {
+			value = value.toLower();
+			for ( var i in addUints) {
+				if (value.indexOf(addUints[i])) {
+					nv = nv + "px";
+					break
+				}
+			}
+		}
+		return nv
+	}
 	function SE() {
 		return !isNull(doc.addEventListener)
 	}
@@ -243,7 +256,7 @@
 			if (isString(k)) return o.style[formateClassName(k)];
 			v = "";
 			each(k, function(i, j) {
-				v += formateClassName(i) + ':' + j + ';'
+				v += formateClassName(i) + ':' + formateClassNameValue(i, j) + ';'
 			});
 			o.style.cssText += ';' + v
 		}
