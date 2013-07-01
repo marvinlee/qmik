@@ -11,7 +11,7 @@
 		$.sun.config( {
 			base : "file:///D:/code/github/qmik/"
 		})
-	}
+	} 
 	$.config( {
 		debug : true
 	})
@@ -34,7 +34,4 @@
 			"About" : "module/about/About"
 		}
 	});
-	window.onerror = function(e) {
-		$.log("window.onerror:errrrrr:" + e)
-	}
 })(Qmik, Qmik.sun.define);
