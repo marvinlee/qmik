@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http - equiv="Content-Type" content="text/html; charset=utf-8"/ >
+<link rel="stylesheet" href="unit/qunit.css" type="text/css"
+	media="screen" />
+<script type="text/javascript" charset="utf-8" src="unit/qunit.js"></script>
+<title></title>
+<style>
+#query {
+	background: #aeaeae;
+}
+
+#query h3 {
+	background: #ff0000;
+}
+
+#query div {
+	float: left;
+	width: 100%;
+}
+
+#part1 {
+	background: #adaf49;
+}
+
+#part2 {
+	background: #1daf49;
+}
+
+#part1 li:hover {
+	background: yellow;
+}
+
+.addClass {
+	background: #ffeeaa;
+	font-size: 36px;
+	color: red;
+}
+</style>
+</head>
+
+<body>
+<div id="query">
+<div>
+	<h3>part1</h3>
+	<ol id="part1">
+		<li flag="p1"><span>theme 1</span></li>
+		<li flag="p1" id="p1li1">theme 2</li>
+		<li flag="p1">theme 3</li>
+		<li flag="p1">theme 4</li>
+		<li flag="p1"><span>theme 5</span></li>
+		<li flag="p1">theme 6</li>
+		<li flag="p1"><span>theme 7</span></li>
+	</ol>
+</div>
+
+<div>
+<h3>part2</h3>
+<ol id="part2">
+	<li flag="p2">theme 1</li>
+	<ol>
+		<li>aaa</li>
+	</ol>
+	<li flag="p2">theme 2</li>
+	<ol>
+		<li>aaa</li>
+	</ol>
+
+</ol>
+</div>
+
+
+</div>
+
+<!--          unit test -->
+<div></div>
+</body>
+<script type="text/javascript" charset="utf-8"
+	src="../assets/Qmik-debug.js"> </script>
+<script type="text/javascript">
+  (function($){
+	   $().ready(function(){
+	       var col=$("#p1li1").closest("li");
+	       console.log(col)
+	    })
+})(Qmik);
+
+ </script>
+</html>
