@@ -1,10 +1,7 @@
 ﻿// websocket客户端通信框架
 ;
 (function(Q, define) {
-	var win = window;
-	function alert(content) {
-		win.alert(content);
-	}
+	var win = Q.global;
 	function newWebSocket(url) {
 		var ws;
 		if ('WebSocket' in win) {
