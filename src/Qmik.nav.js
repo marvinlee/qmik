@@ -81,7 +81,7 @@
 			 */
 			use : function(opts) {
 				// {module:"",method:"",url:"",param:[],callback:fun}
-				var url = opts.url, param = opts.param, callback = param.callback, method = opts.method;
+				var url = opts.url, param = opts.param, callback = param.callback, method = opts.method || "";
 				sun.use(opts.module, function(module) {
 					if (Q.isString(url)) {
 						if (isFun(param)) {
