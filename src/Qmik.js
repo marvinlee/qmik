@@ -308,10 +308,13 @@
 			return (d || 0) + new Date().getTime()
 		},
 		// 延迟执行,==setTimeout
-		delay : function(fun, time) {
+		/**
+		 * target:apply,call的指向对象
+		 */
+		delay : function(fun, time, target) {
 			var params = slice.call(arguments, 2);
 			return setTimeout(function() {
-				fun.apply(fun, params)
+				fun.apply(target || fun, params)
 			}, time)
 		},
 		// 周期执行
@@ -319,12 +322,13 @@
 		 * fun:执行的方法
 		 * cycleTime:执行的周期时间
 		 * ttl:过期时间,执行时间>ttl时,停止执行,单位 ms(毫秒)
+		 * target:apply,call的指向对象
 		 */
-		cycle : function(fun, cycleTime, ttl) {
+		cycle : function(fun, cycleTime, ttl, target) {
 			var params = slice.call(arguments, 2), start = Q.now();
 			function _exec() {
 				if (isNull(ttl) || Q.now() - start <= ttl) {
-					fun.apply(fun, params);
+					fun.apply(target || fun, params);
 					Q.delay(_exec, cycleTime)
 				}
 			}
