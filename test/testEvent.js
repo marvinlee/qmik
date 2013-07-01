@@ -19,12 +19,10 @@
 	});
 	$(document).ready(function(Q){
 	    console.log("document onload ready:");
-	    console.log(Q);
-	    
+    
 	 	$("a").on("click",function(e){
-			console.log(e.target)
+			console.log("test:"+this)
 		})
-		$("a").trigger("click")
 	});
 
 
