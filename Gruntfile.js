@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
 	// Project configuration.
-	grunt.initConfig( {
+	grunt.initConfig({
 		clean : {
 			build : [
 				"assets/"
@@ -21,13 +21,7 @@ module.exports = function(grunt) {
 		concat : {
 			dist : {
 				src : [
-					'src/Qmik.js',
-					'src/Qmik._query.js',
-					'src/Qmik._event.js',
-					'src/Qmik._view.js',
-					'src/Qmik._ajax.js',
-					'src/Qmik.sun.js',
-					'src/Qmik.nav.js'
+					'src/Qmik.js', 'src/Qmik._query.js', 'src/Qmik._event.js', 'src/Qmik._view.js', 'src/Qmik._ajax.js', 'src/Qmik.sun.js', 'src/Qmik.nav.js'
 				],
 				dest : "assets/Qmik-debug.js"
 			}
@@ -40,13 +34,7 @@ module.exports = function(grunt) {
 			build : {
 				files : {
 					'assets/Qmik.js' : [
-						'src/Qmik.js',
-						'src/Qmik._query.js',
-						'src/Qmik._event.js',
-						'src/Qmik._view.js',
-						'src/Qmik._ajax.js',
-						'src/Qmik.sun.js',
-						'src/Qmik.nav.js'
+						'src/Qmik.js', 'src/Qmik._query.js', 'src/Qmik._event.js', 'src/Qmik._view.js', 'src/Qmik._ajax.js', 'src/Qmik.sun.js', 'src/Qmik.nav.js'
 					],
 					'assets/Qmik._query.js' : [
 						'src/Qmik._query.js'
@@ -80,9 +68,6 @@ module.exports = function(grunt) {
 					],
 					'assets/plugins/Qmik.fn.tree.js' : [
 						'src/plugins/Qmik.fn.tree.js'
-					],
-					'assets/Nav.js' : [
-						'test/Nav.js'
 					]
 				}
 			}
