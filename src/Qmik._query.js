@@ -192,17 +192,14 @@
 		})
 	}
 	function formateClassNameValue(name, value) {
-		var nv = parseFloat(value || 0) + "";
-		if (nv != value) {
-			value = value.toLower();
-			for ( var i in addUints) {
-				if (value.indexOf(addUints[i])) {
-					nv = nv + "px";
-					break
-				}
+		var tmp = (value + "").toLower();
+		for ( var i in addUints) {
+			if (name.indexOf(addUints[i]) >= 0) {
+				value = parseFloat(tmp || 0) + "px";
+				break
 			}
 		}
-		return nv
+		return value
 	}
 	function SE() {
 		return !isNull(doc.addEventListener)
@@ -660,7 +657,7 @@
 	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
 	 * 90：逆时针转了 Android2.1尚未支持重力感应
 	 */
-	var qwc = "change submit orientationchange touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"
+	var qwc = "change submit orientationchange blur focus touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"
 		.split(" ");
 	each(qwc, function(i, v) {
 		Q.fn[v] = function(f) {
