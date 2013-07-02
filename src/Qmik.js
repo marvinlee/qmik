@@ -312,10 +312,18 @@
 		 * target:apply,call的指向对象
 		 */
 		delay : function(fun, time, target) {
-			var params = slice.call(arguments, 2);
-			return setTimeout(function() {
-				fun.apply(target || fun, params)
-			}, time)
+			function Delay() {
+				var me = this;
+				me.pid = setTimeout(function() {
+					fun.apply(target || fun, slice.call(arguments, 2))
+				}, time)
+			}
+			Q.extend(Delay.prototype, {
+				stop : function() {
+					clearTimeout(this.pid)
+				}
+			})
+			return new Delay()
 		},
 		// 周期执行
 		/**
@@ -326,13 +334,22 @@
 		 */
 		cycle : function(fun, cycleTime, ttl, target) {
 			var params = slice.call(arguments, 2), start = Q.now();
-			function _exec() {
-				if (isNull(ttl) || Q.now() - start <= ttl) {
-					fun.apply(target || fun, params);
-					Q.delay(_exec, cycleTime)
+			function Cycle() {
+				var me = this;
+				function _exec() {
+					if ((isNull(ttl) || Q.now() - start <= ttl) && me.state != 0) {
+						fun.apply(target || fun, params);
+						Q.delay(_exec, cycleTime)
+					}
 				}
+				Q.delay(_exec, cycleTime)
 			}
-			Q.delay(_exec, cycleTime)
+			Q.extend(Cycle.prototype, {
+				stop : function() {
+					this.state = 0
+				}
+			})
+			return new Cycle()
 		},
 		log : function(msg, e) {
 			if (config.debug) {
