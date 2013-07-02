@@ -53,7 +53,7 @@
 			}
 		},
 		animate : function(styles, speed, easing, callback) {
-			var me = this, mul = 50, speed = speed || 500, stardStyle = {}, source, target;
+			var me = this, mul = 25, speed = speed || 500, stardStyle = {}, source, target;
 			var toDouble = parseFloat;
 			Q.each(styles, function(key, val) {
 				stardStyle[key] = Math.abs(toDouble(val) - toDouble(me.css(key) || 0))
@@ -66,10 +66,10 @@
 					source = toDouble(me.css(key) || 0);
 					if (target >= source) {
 						mstyle[key] = (source + stardStyle[key] / mul) + "px";
-						isDelay = source > val - 12 ? !1 : !0
+						isDelay = source >= val - 1 ? !1 : !0
 					} else {
 						mstyle[key] = (source - stardStyle[key] / mul) + "px";
-						isDelay = source < val + 12 ? !1 : !0
+						isDelay = source <= val + 1 ? !1 : !0
 					}
 				});
 				if (isDelay) {
