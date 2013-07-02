@@ -405,7 +405,7 @@
 		each(qmik, function(i, v) {
 			isNull(selector) ? r.push(GN(v, type)) : each(Q(">" + selector, v.parentNode), function(j, h) {
 				if (!f) {
-					for ( var z = v; z = GN(z);) {
+					for ( var z = v; z = GN(z, type);) {
 						if (z == h) {
 							r.push(h);
 							f = !0;
