@@ -53,7 +53,7 @@
 			}
 		},
 		animate : function(styles, speed, easing, callback) {
-			var me = this, mul = 10, speed = speed || 500, stardStyle = {}, source, target;
+			var me = this, mul = 20, speed = speed || 500, stardStyle = {}, source, target;
 			var toDouble = parseFloat;
 			Q.each(styles, function(key, val) {
 				stardStyle[key] = Math.abs(toDouble(val) - toDouble(me.css(key) || 0))

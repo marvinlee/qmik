@@ -8,68 +8,158 @@
  */
 (function(Q, define) {
 	var config = {
-		speed : 500,//动画速度
-		delay : 5000,//每个场景之间的切换时间间隔
+		speed : 200,//动画速度
+		delay : 1200,//每个场景之间的切换时间间隔
 		loop : !0,//是否循环滑动
 		direction : "horizontal" //vertical	
 	};
-	var toInt = parseInt;
+	var toInt = parseInt, toDouble = parseFloat;
 	function Silder($container, conf) {
-		var me = this;
+		var me = this, ul = Q("ul", $container), lis = Q("li", ul);
 		Q.extend(me, {
-			config : Q.extend({}, conf, config),
+			config : Q.extend({}, config, conf),
 			container : $container,
-			ul : Q("ul", $container)
+			ul : ul,
+			current : lis.first(),
+			first : lis.first(),
+			last : lis.last(),
+			left : ul.position().left,
+			width : lis.last().width(),
+			height : lis.last().height(),
+			start : true
 		});
-		var lis = Q("li", me.ul);
-		me.current = lis.first();
-		me.offset = me.ul.offset();
-		me.base = me.ul.offset();
-		me.start = true;//从头开始
-		me.ul.css("left", "-" + me.current.width() + "px");
-		me.current.before(lis.last().clone(true));
+		//前面插入最后一个图像
+		me.first.before(lis.last().clone(true));
+		//后面插入开始一个图像
+		me.last.after(lis.first().clone(true));
+		me.list = Q("li", ul);
+		Q("img", me.list).css({
+			width : me.width,
+			height : me.height
+		});
+		if (me.config.direction == "horizontal") {
+			me.ul.css("left", "-" + me.first.width());
+			me.list.css({
+				float : "left"
+			})
+		} else {
+			me.ul.css("top", "-" + me.first.height());
+			me.list.css({
+				float : "none",
+				clear : "both"
+			})
+		}
+		me.initEvent();
 		me.play();
 	}
 	Q.extend(Silder.prototype, {
+		initEvent : function() {
+			var me = this;
+			me.container.on("touchstart", function(e) {
+				e.stopPropagation();
+				e.preventDefault();
+			})
+		},
 		play : function() {
 			var me = this;
-			return Q.cycle(function() {
-				me.next()
+			me.thread = Q.cycle(function() {
+				me.prev()
 			}, this.config.delay)
 		},
 		stop : function() {
-			clearTimeout(this.pid)
+			this.thread.stop();
 		},
 		next : function() {
+			var me = this;
+			me.config.direction == "horizontal" ? me.moveLeft() : me.moveTop();
+		},
+		prev : function() {
+			var me = this;
+			me.config.direction == "horizontal" ? me.moveRight() : me.moveBottom();
+		},
+		/**
+		 * 往左边滑动
+		 */
+		moveLeft : function() {
 			var me = this, //
 			$tar = getNext(me), //
-			width = toInt($tar.attr("offsetWidth"));
+			width = me.width;
 			if ($tar.length > 0) {
-				if (me.start) {
-					me.ul.css({
-						left : "0px"
-					});
+				if (document.hasFocus()) {
 					me.ul.animate({
-						left : "-" + width + "px"
-					}, me.config.speed)
-				} else {
-					me.ul.animate({
-						left : toInt(me.ul.position().left - width) + "px"
-					}, me.config.speed)
+						left : me.start ? -2 * width : me.ul.position().left - width
+					}, me.config.speed, null, function() {
+						if (me.current[0] == me.list.last()[0]) {
+							me.ul.css("left", -width);
+							me.current = me.first
+						}
+					})
 				}
 			} else {
 				me.stop()
 			}
 		},
-		prev : function() {
+		moveRight : function() {
 			var me = this, //
 			$tar = getPrev(me), //
-			width = toInt($tar.css("left"));
+			width = me.width;
 			if ($tar.length > 0) {
-				me.ul.animate({
-					left : toInt(me.ul.css("left")) - width,
-					width : width
-				}, me.config.speed)
+				if (document.hasFocus()) {
+					var countWidth = width * (me.list.length - 2)
+					me.ul.animate({
+						left : me.start ? -countWidth : me.ul.position().left + width
+					}, me.config.speed, null, function() {
+						if (me.current[0] == me.list.first()[0]) {
+							me.ul.css("left", -countWidth);
+							me.current = me.last
+						}
+					})
+				}
+			} else {
+				me.stop()
+			}
+		},
+		/**
+		 * 往上边滑动
+		 */
+		moveTop : function() {
+			var me = this, //
+			$tar = getNext(me), //
+			height = me.height;
+			if ($tar.length > 0) {
+				if (document.hasFocus()) {
+					me.ul.animate({
+						top : me.start ? -2 * height : me.ul.position().top - height
+					}, me.config.speed, null, function() {
+						if (me.current[0] == me.list.last()[0]) {
+							me.ul.css("top", -height);
+							me.current = me.first
+						}
+					})
+				}
+			} else {
+				me.stop()
+			}
+		},
+		/**
+		 * 往下边滑动
+		 */
+		moveBottom : function() {
+			var me = this, //
+			$tar = getPrev(me), //
+			height = me.height;
+			if ($tar.length > 0) {
+				if (document.hasFocus()) {
+					var countHeight = height * (me.list.length - 2)
+					me.ul.animate({
+						top : me.start ? -countHeight : me.ul.position().top + height
+					}, me.config.speed, null, function() {
+						if (me.current[0] == me.list.first()[0]) {
+							me.ul.css("top", -countHeight);
+							me.current = me.last
+						}
+					})
+				}
 			} else {
 				me.stop()
 			}
@@ -77,18 +167,26 @@
 	});
 	function getNext(me) {
 		var $tar = me.current.next("li");
-		if ($tar.length < 1 && me.config.loop) {
-			me.current = Q("li", me.ul).eq(1);
+		if (($tar.length < 1) && me.config.loop) {
+			//me.ul.css("left", "-" + me.width);
+			me.current = me.list.first();
 			me.start = true
 		} else {
+			me.current = $tar;
 			me.start = false
 		}
-		me.current = $tar.length < 1 && me.config.loop ? Q("li", me.ul).eq(1) : $tar;
 		return me.current
 	}
 	function getPrev(me) {
 		var $tar = me.current.prev("li");
-		me.current = $tar.length < 1 && me.config.loop ? Q("li", me.ul).last() : $tar;
+		if (($tar.length < 1) && me.config.loop) {
+			//me.ul.css("left", "-" + (me.width * (me.list.length - 2)));
+			me.current = me.list.last();
+			me.start = true
+		} else {
+			me.current = $tar;
+			me.start = false
+		}
 		return me.current
 	}
 	Q.fn.extend({
