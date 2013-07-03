@@ -58,28 +58,32 @@
 			Q.each(styles, function(key, val) {
 				stardStyle[key] = Math.abs(toDouble(val) - toDouble(me.css(key) || 0))
 			});
-			(function cs() {
-				var mstyle = {}, isDelay = !0;
-				Q.each(styles, function(key, val) {
-					val = toDouble(val);
-					target = val;
-					source = toDouble(me.css(key) || 0);
-					if (target >= source) {
-						mstyle[key] = (source + stardStyle[key] / mul) + "px";
-						isDelay = source >= val - 1 ? !1 : !0
-					} else {
-						mstyle[key] = (source - stardStyle[key] / mul) + "px";
-						isDelay = source <= val + 1 ? !1 : !0
-					}
-				});
-				if (isDelay) {
+			function Animate() {
+				var me1 = this;
+				me1.thread = Q.cycle(function() {
+					var mstyle = {}, isDelay = !1;
+					Q.each(styles, function(key, val) {
+						val = toDouble(val);
+						target = val;
+						source = toDouble(me.css(key) || 0);
+						if (target >= source) {
+							mstyle[key] = (source + stardStyle[key] / mul) + "px";
+							isDelay = source >= val - 1 ? !1 : !0
+						} else {
+							mstyle[key] = (source - stardStyle[key] / mul) + "px";
+							isDelay = source <= val + 1 ? !1 : !0
+						}
+					});
 					me.css(mstyle);
-					Q.delay(cs, speed / mul)
-				} else {
-					me.css(styles);
-					callback && callback()
-				}
-			})()
+					!isDelay && me1.stop()
+				}, speed / mul)
+			}
+			Animate.prototype.stop = function() {
+				this.thread.stop();
+				me.css(styles);
+				callback && callback()
+			}
+			return new Animate()
 		}
 	});
 })(Qmik);
