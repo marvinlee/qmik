@@ -37,16 +37,16 @@
 			width : me.width,
 			height : me.height
 		});
-		if (me.config.direction == "horizontal") {
-			me.ul.css("left", "-" + me.first.width());
-			me.list.css({
-				float : "left"
-			})
-		} else {
+		if (me.isVertical()) {
 			me.ul.css("top", "-" + me.first.height());
 			me.list.css({
 				float : "none",
 				clear : "both"
+			})
+		} else {
+			me.ul.css("left", "-" + me.first.width());
+			me.list.css({
+				float : "left"
 			})
 		}
 		me.initEvent();
@@ -60,10 +60,14 @@
 				e.preventDefault();
 			})
 		},
+		//是否是垂直方向
+		isVertical : function() {
+			return this.config.direction == "vertical"
+		},
 		play : function() {
 			var me = this;
 			me.thread = Q.cycle(function() {
-				me.prev()
+				me.next()
 			}, this.config.delay)
 		},
 		stop : function() {
@@ -71,11 +75,11 @@
 		},
 		next : function() {
 			var me = this;
-			me.config.direction == "horizontal" ? me.moveLeft() : me.moveTop();
+			me.isVertical() ? me.moveTop() : me.moveLeft();
 		},
 		prev : function() {
 			var me = this;
-			me.config.direction == "horizontal" ? me.moveRight() : me.moveBottom();
+			me.isVertical() ? me.moveBottom() : me.moveRight();
 		},
 		/**
 		 * 往左边滑动
@@ -83,10 +87,12 @@
 		moveLeft : function() {
 			var me = this, //
 			$tar = getNext(me), //
+			thread, //
 			width = me.width;
 			if ($tar.length > 0) {
 				if (document.hasFocus()) {
-					me.ul.animate({
+					thread && thread.stop();
+					thread = me.ul.animate({
 						left : me.start ? -2 * width : me.ul.position().left - width
 					}, me.config.speed, null, function() {
 						if (me.current[0] == me.list.last()[0]) {
@@ -102,9 +108,11 @@
 		moveRight : function() {
 			var me = this, //
 			$tar = getPrev(me), //
+			thread, //
 			width = me.width;
 			if ($tar.length > 0) {
 				if (document.hasFocus()) {
+					thread && thread.stop();
 					var countWidth = width * (me.list.length - 2)
 					me.ul.animate({
 						left : me.start ? -countWidth : me.ul.position().left + width
@@ -124,10 +132,12 @@
 		 */
 		moveTop : function() {
 			var me = this, //
+			thread, //
 			$tar = getNext(me), //
 			height = me.height;
 			if ($tar.length > 0) {
 				if (document.hasFocus()) {
+					thread && thread.stop();
 					me.ul.animate({
 						top : me.start ? -2 * height : me.ul.position().top - height
 					}, me.config.speed, null, function() {
@@ -147,9 +157,11 @@
 		moveBottom : function() {
 			var me = this, //
 			$tar = getPrev(me), //
+			thread, //
 			height = me.height;
 			if ($tar.length > 0) {
 				if (document.hasFocus()) {
+					thread && thread.stop();
 					var countHeight = height * (me.list.length - 2)
 					me.ul.animate({
 						top : me.start ? -countHeight : me.ul.position().top + height
@@ -196,13 +208,7 @@
 			});
 			return new Silder(this, conf);
 		}
-	})
-	/*	Q.fn.silder = function(conf) {
-			this.css({
-				overflow : "hidden"
-			});
-			return new Silder(this, conf);
-		};*/
+	});
 	define(function(require, exports, module) {
 		module.exports = Q
 	})
