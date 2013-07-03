@@ -400,22 +400,30 @@
 			return isDom(dom) ? dom : GN(dom, type)
 		}
 	}
-	function upon(qmik, selector, type) {
-		var r = [], f;
-		each(qmik, function(i, v) {
-			isNull(selector) ? r.push(GN(v, type)) : each(Q(">" + selector, v.parentNode), function(j, h) {
-				if (!f) {
-					for ( var z = v; z = GN(z, type);) {
-						if (z == h) {
-							r.push(h);
-							f = !0;
-							break
-						}
-					}
+	function uponSelector(dom, selector, type, ret) {
+		var list = Q(">" + selector, dom.parentNode), i, zdom;
+		if (type == "prev") {
+			for (i = list.length - 1; i >= 0; i--) {
+				for (zdom = dom; (zdom = GN(zdom, type)) && zdom == list[i];) {
+					ret.push(zdom);
+					break
 				}
-			})
-		})
-		return new Query(r, qmik)
+			}
+		} else {
+			for (i = 0; i < list.length; i++) {
+				for (zdom = dom; (zdom = GN(zdom, type)) && zdom == list[i];) {
+					ret.push(zdom);
+					break
+				}
+			}
+		}
+	}
+	function upon(qmik, selector, type) {
+		var ret = [];
+		each(qmik, function(i, dom) {
+			isNull(selector) ? ret.push(GN(dom, type)) : uponSelector(dom, selector, type, ret)
+		});
+		return new Query(ret, qmik)
 	}
 	/**
 	 * selector:选择器 qmik:qmik查询对象 isAllP:是否包含所有父及祖父节点 默认true
