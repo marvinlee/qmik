@@ -210,7 +210,7 @@
 			F.prototype = superClass.prototype;
 			subClass.prototype = new F();
 			subClass.prototype.constructor = subClass;
-			subClass.prototype["super"] = new superClass();
+			subClass.prototype["super"] = new F();
 			if (superClass.prototype.constructor == Object.prototype.constructor) {
 				superClass.prototype.constructor = superClass;
 			}
