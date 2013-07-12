@@ -1124,7 +1124,7 @@
 		.split(" ");
 	each(qwc, function(i, v) {
 		Q.fn[v] = function(f) {
-			return this.bind(v, f)
+			return f ? this.bind(v, f) : this.trigger(v)
 		}
 	})
 })(Qmik);
