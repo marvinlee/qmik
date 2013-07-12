@@ -308,27 +308,48 @@
 			return (d || 0) + new Date().getTime()
 		},
 		// 延迟执行,==setTimeout
-		delay : function(fun, time) {
-			var params = slice.call(arguments, 2);
-			return setTimeout(function() {
-				fun.apply(fun, params)
-			}, time)
+		/**
+		 * target:apply,call的指向对象
+		 */
+		delay : function(fun, time, target) {
+			function Delay() {
+				var me = this;
+				me.pid = setTimeout(function() {
+					fun.apply(target || fun, slice.call(arguments, 2))
+				}, time)
+			}
+			Q.extend(Delay.prototype, {
+				stop : function() {
+					clearTimeout(this.pid)
+				}
+			})
+			return new Delay()
 		},
 		// 周期执行
 		/**
 		 * fun:执行的方法
 		 * cycleTime:执行的周期时间
 		 * ttl:过期时间,执行时间>ttl时,停止执行,单位 ms(毫秒)
+		 * target:apply,call的指向对象
 		 */
-		cycle : function(fun, cycleTime, ttl) {
+		cycle : function(fun, cycleTime, ttl, target) {
 			var params = slice.call(arguments, 2), start = Q.now();
-			function _exec() {
-				if (isNull(ttl) || Q.now() - start <= ttl) {
-					fun.apply(fun, params);
-					Q.delay(_exec, cycleTime)
+			function Cycle() {
+				var me = this;
+				function _exec() {
+					if ((isNull(ttl) || Q.now() - start <= ttl) && me.state != 0) {
+						fun.apply(target || fun, params);
+						Q.delay(_exec, cycleTime)
+					}
 				}
+				Q.delay(_exec, cycleTime)
 			}
-			Q.delay(_exec, cycleTime)
+			Q.extend(Cycle.prototype, {
+				stop : function() {
+					this.state = 0
+				}
+			})
+			return new Cycle()
 		},
 		log : function(msg, e) {
 			if (config.debug) {
@@ -449,7 +470,7 @@
 		ATTR : /^([\w-_]+)\[\s*[\w-_]+\s*!?=\s*('|")?(.*)('|")?\s*\]/,
 		CT : /^([\w-_]+)?\.[\w-_]+/,
 		TAG : /^[\w-_]+/
-	};
+	}, addUints = "height width top right bottom left".split(" ");
 	function Query(selector, context) {
 		var me = this, r;
 		Q.box(function() {
@@ -625,6 +646,16 @@
 			return "-" + toLower(v)
 		})
 	}
+	function formateClassNameValue(name, value) {
+		var tmp = (value + "").toLower();
+		for ( var i in addUints) {
+			if (name.indexOf(addUints[i]) >= 0) {
+				value = parseFloat(tmp || 0) + "px";
+				break
+			}
+		}
+		return value
+	}
 	function SE() {
 		return !isNull(doc.addEventListener)
 	}
@@ -677,7 +708,7 @@
 			if (isString(k)) return o.style[formateClassName(k)];
 			v = "";
 			each(k, function(i, j) {
-				v += formateClassName(i) + ':' + j + ';'
+				v += formateClassName(i) + ':' + formateClassNameValue(i, j) + ';'
 			});
 			o.style.cssText += ';' + v
 		}
@@ -824,22 +855,30 @@
 			return isDom(dom) ? dom : GN(dom, type)
 		}
 	}
-	function upon(qmik, selector, type) {
-		var r = [], f;
-		each(qmik, function(i, v) {
-			isNull(selector) ? r.push(GN(v, type)) : each(Q(">" + selector, v.parentNode), function(j, h) {
-				if (!f) {
-					for ( var z = v; z = GN(z);) {
-						if (z == h) {
-							r.push(h);
-							f = !0;
-							break
-						}
-					}
+	function uponSelector(dom, selector, type, ret) {
+		var list = Q(">" + selector, dom.parentNode), i, zdom;
+		if (type == "prev") {
+			for (i = list.length - 1; i >= 0; i--) {
+				for (zdom = dom; (zdom = GN(zdom, type)) && zdom == list[i];) {
+					ret.push(zdom);
+					break
 				}
-			})
-		})
-		return new Query(r, qmik)
+			}
+		} else {
+			for (i = 0; i < list.length; i++) {
+				for (zdom = dom; (zdom = GN(zdom, type)) && zdom == list[i];) {
+					ret.push(zdom);
+					break
+				}
+			}
+		}
+	}
+	function upon(qmik, selector, type) {
+		var ret = [];
+		each(qmik, function(i, dom) {
+			isNull(selector) ? ret.push(GN(dom, type)) : uponSelector(dom, selector, type, ret)
+		});
+		return new Query(ret, qmik)
 	}
 	/**
 	 * selector:选择器 qmik:qmik查询对象 isAllP:是否包含所有父及祖父节点 默认true
@@ -1081,7 +1120,7 @@
 	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
 	 * 90：逆时针转了 Android2.1尚未支持重力感应
 	 */
-	var qwc = "change submit orientationchange touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"
+	var qwc = "change submit orientationchange blur focus touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"
 		.split(" ");
 	each(qwc, function(i, v) {
 		Q.fn[v] = function(f) {
@@ -1265,7 +1304,7 @@
 	function parentY(elem) {
 		return elem.parentNode == elem.offsetParent ? elem.offsetTop : pageY(elem) - pageY(elem.parentNode)
 	}
-	Q.fn.extend( {
+	Q.fn.extend({
 		width : function(v) {
 			var dom = this[0];
 			//var o = this[0];
@@ -1297,33 +1336,37 @@
 			}
 		},
 		animate : function(styles, speed, easing, callback) {
-			var me = this, mul = 50, speed = speed || 500, stardStyle = {}, source, target;
+			var me = this, mul = 20, speed = speed || 500, stardStyle = {}, source, target;
 			var toDouble = parseFloat;
 			Q.each(styles, function(key, val) {
-				stardStyle[key] = Math.abs(Math.abs(toDouble(val)) - toDouble(me.css(key)))
+				stardStyle[key] = Math.abs(toDouble(val) - toDouble(me.css(key) || 0))
 			});
-			(function cs() {
-				var mstyle = {}, isDelay = !0;
-				Q.each(styles, function(key, val) {
-					val = toDouble(val);
-					target = Math.abs(val);
-					source = toDouble(me.css(key));
-					if (target >= source) {
-						mstyle[key] = source + stardStyle[key] / mul;
-						isDelay = source >= val ? !1 : !0
-					} else {
-						mstyle[key] = source - stardStyle[key] / mul;
-						isDelay = source <= val ? !1 : !0
-					}
-				});
-				if (isDelay) {
+			function Animate() {
+				var me1 = this;
+				me1.thread = Q.cycle(function() {
+					var mstyle = {}, isDelay = !1;
+					Q.each(styles, function(key, val) {
+						val = toDouble(val);
+						target = val;
+						source = toDouble(me.css(key) || 0);
+						if (target >= source) {
+							mstyle[key] = (source + stardStyle[key] / mul) + "px";
+							isDelay = source >= val - 1 ? !1 : !0
+						} else {
+							mstyle[key] = (source - stardStyle[key] / mul) + "px";
+							isDelay = source <= val + 1 ? !1 : !0
+						}
+					});
 					me.css(mstyle);
-					Q.delay(cs, speed / mul)
-				} else {
-					me.css(styles);
-					callback && callback()
-				}
-			})()
+					!isDelay && me1.stop()
+				}, speed / mul)
+			}
+			Animate.prototype.stop = function() {
+				this.thread.stop();
+				me.css(styles);
+				callback && callback()
+			}
+			return new Animate()
 		}
 	});
 })(Qmik);
@@ -1432,12 +1475,12 @@
 		if (isFun(id)) {
 			factory = id;
 			dependencies = [];
-			id = url;
+			id = url
 		} else if (isFun(dependencies)) {
 			factory = dependencies;
 			dependencies = []
 		}
-		id = id2url(id)
+		id = id2url(id);
 		if (!getModule(id) || !Q.isIE()) {
 			dependencies = dependencies.concat(parseDepents(factory));
 			cacheModule[url] = cacheModule[id] = new Module(id, url, Q.unique(dependencies), factory)
@@ -1715,7 +1758,7 @@
 			 */
 			use : function(opts) {
 				// {module:"",method:"",url:"",param:[],callback:fun}
-				var url = opts.url, param = opts.param, callback = param.callback, method = opts.method;
+				var url = opts.url, param = opts.param, callback = param.callback, method = opts.method || "";
 				sun.use(opts.module, function(module) {
 					if (Q.isString(url)) {
 						if (isFun(param)) {
