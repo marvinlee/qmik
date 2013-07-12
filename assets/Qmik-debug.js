@@ -210,12 +210,12 @@
 			F.prototype = superClass.prototype;
 			subClass.prototype = new F();
 			subClass.prototype.constructor = subClass;
-			subClass._super = superClass.prototype;
+			subClass.prototype["super"] = new superClass();
 			if (superClass.prototype.constructor == Object.prototype.constructor) {
 				superClass.prototype.constructor = superClass;
 			}
 			for ( var name in subPrototype) {
-				if (subClass.prototype[name] == null) subClass.prototype[name] = subPrototype[name];
+				subClass.prototype[name] = subPrototype[name];
 			}
 		},
 		trim : function(v) {
