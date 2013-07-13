@@ -68,6 +68,9 @@ module.exports = function(grunt) {
 					],
 					'assets/plugins/Qmik.fn.tree.js' : [
 						'src/plugins/Qmik.fn.tree.js'
+					],
+					'assets/plugins/Qmik.fn.slider.js' : [
+						'src/plugins/Qmik.fn.slider.js'
 					]
 				}
 			}

@@ -23,7 +23,6 @@
 						exports.showShortcut();
 						//事件绑定
 						$("#head a[tag=nav]").click(function(a) {
-							$.log("1:click:>module:" + $(this).attr("module")+'-'+$(this).attr("method"))
 							$.nav.use( {
 								module : $(this).attr("module"),//模块名
 								method : $(this).attr("method"),//方法名

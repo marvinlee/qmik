@@ -90,17 +90,19 @@
 			thread, //
 			width = me.width;
 			if ($tar.length > 0) {
-				if (document.hasFocus()) {
+				//if (document.hasFocus()) {
+				console.log(me.ul.attr("offsetLeft")+"--"+(me.start ? -2 * width : me.ul.attr("offsetLeft") - width))
 					thread && thread.stop();
 					thread = me.ul.animate({
-						left : me.start ? -2 * width : me.ul.position().left - width
+						offsetLeft : me.start ? -2 * width : me.ul.attr("offsetLeft") - width
 					}, me.config.speed, null, function() {
-						if (me.current[0] == me.list.last()[0]) {
+						/*if (me.current[0] == me.list.last()[0]) {
 							me.ul.css("left", -width);
 							me.current = me.first
-						}
-					})
-				}
+						}*/
+					});
+					console.log("0---->"+me.ul.attr("offsetLeft"))
+				//}
 			} else {
 				me.stop()
 			}

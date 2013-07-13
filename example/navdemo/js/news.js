@@ -10,7 +10,7 @@ define(function(require, exports, module) {
 			d.src = target.attr("_href");
 			$("head").append(d);
 			d.onload = d.onreadystatechange = function(e) {
-				console.log(e.srcElement)
+ 
 			}
 		}
 	});

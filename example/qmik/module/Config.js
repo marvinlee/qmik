@@ -14,7 +14,7 @@
 	}
 	$.config( {
 		debug : true
-	})
+	});
 	// 定义模块名及请求路径
 	$.sun.config( {
 		alias : {

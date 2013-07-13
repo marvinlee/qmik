@@ -7,7 +7,7 @@
 		
 		var nav = require("Nav");//加载快捷菜单模块
 		require("Qmik.fn.tree");
-		$.log($.fn)
+ 
 		function showParentULLI(tar) {
 			if (tar.length < 1 || tar.attr("node") == "root") return;
 			tar.show();
@@ -34,7 +34,7 @@
 			 * 显示菜单 <br/> navId: 导航条的id; id:菜单里子菜单的id
 			 */
 			showMenu : function(navId, id) {
-				$.log("use module api:showMenu;");
+ 
 				if ($("#helpTree").length < 1) {
 					$.get("module/api/api.html", function(data) {
 						apiData = data;
@@ -57,7 +57,7 @@
 			},
 			// 显示api帮助说明内容
 			showAPI : function(id, url) {
-				$.log("use module api:showAPI;")
+ 
 				// 此模块方法,依赖此模块的showMenu方法
 				exports.showMenu("link-api", id);
 				$.ajax( {
@@ -66,7 +66,6 @@
 						$("#helpContent").html(data);
 						var area = $(".explain_code textarea");
 						area.css("height", area.attr("scrollHeight") + "px")
-						//console.log($(".explain_code textarea").attr("scrollHeight"))
 						if (true) return;
 						data = xmlToJson(data);
 						if (data) {
@@ -99,7 +98,6 @@
 				$.ajax({
 					url:"module/api/quick.html",
 					success:function(data){
-						console.log(data)
 						var main = $("#main_module");
 						main.html(data)
 						main.fadeOut(1, 1);
