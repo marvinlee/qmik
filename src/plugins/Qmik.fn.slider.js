@@ -6,27 +6,32 @@
  * @version:1.0 
  * 
  */
+;
 (function(Q, define) {
 	var config = {
 		speed : 200,//动画速度
 		delay : 1200,//每个场景之间的切换时间间隔
 		loop : !0,//是否循环滑动
-		direction : "horizontal" //vertical	
+		focus : !0,//有焦点时,才滚动
+		cross : "x",//切换方向:默认水平方向	
+		move : "next",//移动类型,默认向前移动,即显示下一个模块
 	};
-	var toInt = parseInt, toDouble = parseFloat;
+	var toInt = parseInt, toDouble = parseFloat, //
+	gTranslate = "translate";
 	function Silder($container, conf) {
-		var me = this, ul = Q("ul", $container), lis = Q("li", ul);
+		var me = this, ul = Q("ul", $container), lis = Q("li", ul), ulPos = ul.position();
+		me.config = Q.extend({}, config, conf);
 		Q.extend(me, {
-			config : Q.extend({}, config, conf),
 			container : $container,
 			ul : ul,
-			current : lis.first(),
 			first : lis.first(),
 			last : lis.last(),
-			left : ul.position().left,
 			width : lis.last().width(),
 			height : lis.last().height(),
-			start : true
+			left : ulPos.left,
+			top : ulPos.top,
+			current : lis.first(),
+			_site : 0,
 		});
 		//前面插入最后一个图像
 		me.first.before(lis.last().clone(true));
@@ -37,7 +42,7 @@
 			width : me.width,
 			height : me.height
 		});
-		if (me.isVertical()) {
+		if (me.isY()) {
 			me.ul.css("top", "-" + me.first.height());
 			me.list.css({
 				float : "none",
@@ -49,166 +54,108 @@
 				float : "left"
 			})
 		}
-		me.initEvent();
+		me._initEvent();
 		me.play();
 	}
 	Q.extend(Silder.prototype, {
-		initEvent : function() {
+		_initEvent : function() {
 			var me = this;
 			me.container.on("touchstart", function(e) {
 				e.stopPropagation();
 				e.preventDefault();
-			})
+				me.stop()
+			});
+		},
+		_initPosition : function(mov) {
+			var me = this, mov = mov || 0, //
+			translate = gTranslate + (me.isY() ? "Y" : "X") + "(" + mov + "px)";
+			me._site = mov;
+			me.ul.css({
+				"-webkit-transition" : "0s ease-in",
+				"-webkit-transform" : translate
+			});
+			me.current = me.isPrev() ? me.last : me.first
 		},
 		//是否是垂直方向
-		isVertical : function() {
-			return this.config.direction == "vertical"
+		isY : function() {
+			return this.config.cross == "y"
+		},
+		isPrev : function() {
+			return this.config.move == "prev"
 		},
 		play : function() {
-			var me = this;
+			var me = this, conf = me.config;
 			me.thread = Q.cycle(function() {
-				me.next()
-			}, this.config.delay)
+				me.isPrev() ? me.prev() : me.next()
+			}, conf.speed + conf.delay)
 		},
 		stop : function() {
 			this.thread.stop();
+			this.ul.css({
+				"-webkit-transition" : "0s ease-in"
+			});
+		},
+		isToggle : function() {
+			return this.focus ? document.hasFocus() : !0
 		},
 		next : function() {
-			var me = this;
-			me.isVertical() ? me.moveTop() : me.moveLeft();
+			var me = this, conf = me.config, //
+			isY = me.isY(), //
+			$tar = getNext(me), //
+			translate = gTranslate + (isY ? "Y" : "X"), //
+			length = isY ? me.height : me.width;
+			if ($tar && $tar.length > 0) {
+				if (me.isToggle()) {
+					me._site -= length;
+					me.ul.css({
+						"-webkit-transition" : (conf.speed / 1000) + "s ease-in",
+						"-webkit-transform" : translate + "(" + me._site + "px)"
+					});
+					Q.delay(function() {
+						me.current[0] == me.list.last()[0] && me._initPosition();
+					}, conf.delay)
+				}
+			} else {
+				me.stop()
+			}
 		},
 		prev : function() {
-			var me = this;
-			me.isVertical() ? me.moveBottom() : me.moveRight();
-		},
-		/**
-		 * 往左边滑动
-		 */
-		moveLeft : function() {
-			var me = this, //
-			$tar = getNext(me), //
-			thread, //
-			width = me.width;
-			if ($tar.length > 0) {
-				//if (document.hasFocus()) {
-				console.log(me.ul.attr("offsetLeft")+"--"+(me.start ? -2 * width : me.ul.attr("offsetLeft") - width))
-					thread && thread.stop();
-					thread = me.ul.animate({
-						offsetLeft : me.start ? -2 * width : me.ul.attr("offsetLeft") - width
-					}, me.config.speed, null, function() {
-						/*if (me.current[0] == me.list.last()[0]) {
-							me.ul.css("left", -width);
-							me.current = me.first
-						}*/
+			var me = this, conf = me.config, //
+			isY = me.isY(), //
+			$tar = getPrev(me), //
+			translate = gTranslate + (isY ? "Y" : "X"), //
+			length = isY ? me.height : me.width;
+			if ($tar && $tar.length > 0) {
+				if (me.isToggle()) {
+					var countLength = length * (me.list.length - 2);
+					me._site += length;
+					me.ul.css({
+						"-webkit-transition" : (conf.speed / 1000) + "s ease-in",
+						"-webkit-transform" : translate + "(" + (me._site) + "px)"
 					});
-					console.log("0---->"+me.ul.attr("offsetLeft"))
-				//}
-			} else {
-				me.stop()
-			}
-		},
-		moveRight : function() {
-			var me = this, //
-			$tar = getPrev(me), //
-			thread, //
-			width = me.width;
-			if ($tar.length > 0) {
-				if (document.hasFocus()) {
-					thread && thread.stop();
-					var countWidth = width * (me.list.length - 2)
-					me.ul.animate({
-						left : me.start ? -countWidth : me.ul.position().left + width
-					}, me.config.speed, null, function() {
-						if (me.current[0] == me.list.first()[0]) {
-							me.ul.css("left", -countWidth);
-							me.current = me.last
-						}
-					})
+					Q.delay(function() {
+						me.current[0] == me.list.first()[0] && me._initPosition(-countLength + length);
+					}, conf.delay)
 				}
 			} else {
 				me.stop()
 			}
 		},
-		/**
-		 * 往上边滑动
-		 */
-		moveTop : function() {
-			var me = this, //
-			thread, //
-			$tar = getNext(me), //
-			height = me.height;
-			if ($tar.length > 0) {
-				if (document.hasFocus()) {
-					thread && thread.stop();
-					me.ul.animate({
-						top : me.start ? -2 * height : me.ul.position().top - height
-					}, me.config.speed, null, function() {
-						if (me.current[0] == me.list.last()[0]) {
-							me.ul.css("top", -height);
-							me.current = me.first
-						}
-					})
-				}
-			} else {
-				me.stop()
-			}
-		},
-		/**
-		 * 往下边滑动
-		 */
-		moveBottom : function() {
-			var me = this, //
-			$tar = getPrev(me), //
-			thread, //
-			height = me.height;
-			if ($tar.length > 0) {
-				if (document.hasFocus()) {
-					thread && thread.stop();
-					var countHeight = height * (me.list.length - 2)
-					me.ul.animate({
-						top : me.start ? -countHeight : me.ul.position().top + height
-					}, me.config.speed, null, function() {
-						if (me.current[0] == me.list.first()[0]) {
-							me.ul.css("top", -countHeight);
-							me.current = me.last
-						}
-					})
-				}
-			} else {
-				me.stop()
-			}
-		}
 	});
 	function getNext(me) {
-		var $tar = me.current.next("li");
-		if (($tar.length < 1) && me.config.loop) {
-			//me.ul.css("left", "-" + me.width);
-			me.current = me.list.first();
-			me.start = true
-		} else {
-			me.current = $tar;
-			me.start = false
-		}
-		return me.current
+		me.current = me.current.next("li");
+		return me.config.loop ? me.current : me.current[0] == me.list.last()[0] ? null : me.current
 	}
 	function getPrev(me) {
-		var $tar = me.current.prev("li");
-		if (($tar.length < 1) && me.config.loop) {
-			//me.ul.css("left", "-" + (me.width * (me.list.length - 2)));
-			me.current = me.list.last();
-			me.start = true
-		} else {
-			me.current = $tar;
-			me.start = false
-		}
-		return me.current
+		me.current = me.current.prev("li");
+		return me.config.loop ? me.current : me.current[0] == me.list.first()[0] ? null : me.current
 	}
 	Q.fn.extend({
 		silder : function(conf) {
 			this.css({
 				overflow : "hidden"
 			});
-			return new Silder(this, conf);
+			return new Silder(this, conf)
 		}
 	});
 	define(function(require, exports, module) {
