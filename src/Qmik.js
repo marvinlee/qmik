@@ -373,6 +373,21 @@
 		isIE : function() {
 			return /MSIE/.test(UA)
 		},
+		/**
+		 * is Firefox
+		 */
+		isFF : function() {
+			return /Firefox/.test(UA)
+		},
+		/**
+		 * is Webkit
+		 */
+		isWK : function() {
+			return /WebKit/.test(UA)
+		},
+		isOpera : function() {
+			return /Opera/.test(UA)
+		},
 		config : function(opts, _config) {
 			_config = arguments.length <= 1 ? config : (_config || {});
 			var ret = _config;
@@ -404,6 +419,14 @@
 					throw e
 				}
 			} : callback
+		},
+		cssPrefix : function(style) {
+			var ns = Q.extend({}, style);
+			each(ns, function(key, val) {
+				var prefix = Q.isWK() ? "-webkit" : Q.IE() ? "-ms" : Q.isFF() ? "-moz" : Q.isOpera() ? "-o" : "";
+				if (!likeNull(prefix)) ns[prefix + "-" + key] = val
+			});
+			return ns
 		}
 	});
 	each([
