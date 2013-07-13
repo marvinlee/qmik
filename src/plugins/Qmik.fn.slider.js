@@ -43,37 +43,40 @@
 			height : me.height
 		});
 		if (me.isY()) {
-			me.ul.css("top", "-" + me.first.height());
+			me.ul.css("top", -me.first.height());
 			me.list.css({
 				float : "none",
 				clear : "both"
 			})
 		} else {
-			me.ul.css("left", "-" + me.first.width());
+			me.ul.css("left", -me.first.width());
 			me.list.css({
 				float : "left"
 			})
 		}
+		me.ul.css(Q.cssPrefix({
+			"backface-visibility" : "hidden"
+		}));
 		me._initEvent();
 		me.play();
 	}
 	Q.extend(Silder.prototype, {
 		_initEvent : function() {
 			var me = this;
-			me.container.on("touchstart", function(e) {
-				e.stopPropagation();
-				e.preventDefault();
-				me.stop()
-			});
+			/*			me.container.on("touchstart", function(e) {
+							//e.stopPropagation();
+							//e.preventDefault();
+							//me.stop()
+						});*/
 		},
 		_initPosition : function(mov) {
 			var me = this, mov = mov || 0, //
 			translate = gTranslate + (me.isY() ? "Y" : "X") + "(" + mov + "px)";
 			me._site = mov;
-			me.ul.css({
-				"-webkit-transition" : "0s ease-in",
-				"-webkit-transform" : translate
-			});
+			me.ul.css(Q.cssPrefix({
+				"transition" : "0s",
+				"transform" : translate
+			}));
 			me.current = me.isPrev() ? me.last : me.first
 		},
 		//是否是垂直方向
@@ -91,9 +94,9 @@
 		},
 		stop : function() {
 			this.thread.stop();
-			this.ul.css({
-				"-webkit-transition" : "0s ease-in"
-			});
+			me.ul.css(Q.cssPrefix({
+				"transition" : "0s"
+			}))
 		},
 		isToggle : function() {
 			return this.focus ? document.hasFocus() : !0
@@ -107,13 +110,13 @@
 			if ($tar && $tar.length > 0) {
 				if (me.isToggle()) {
 					me._site -= length;
-					me.ul.css({
-						"-webkit-transition" : (conf.speed / 1000) + "s ease-in",
-						"-webkit-transform" : translate + "(" + me._site + "px)"
-					});
+					me.ul.css(Q.cssPrefix({
+						"transition" : conf.speed + "ms",
+						"transform" : translate + "(" + me._site + "px)"
+					}));
 					Q.delay(function() {
 						me.current[0] == me.list.last()[0] && me._initPosition();
-					}, conf.delay)
+					}, conf.speed + conf.delay - 50)
 				}
 			} else {
 				me.stop()
@@ -129,10 +132,10 @@
 				if (me.isToggle()) {
 					var countLength = length * (me.list.length - 2);
 					me._site += length;
-					me.ul.css({
-						"-webkit-transition" : (conf.speed / 1000) + "s ease-in",
-						"-webkit-transform" : translate + "(" + (me._site) + "px)"
-					});
+					me.ul.css(Q.cssPrefix({
+						"transition" : conf.speed + "ms",
+						"transform" : translate + "(" + me._site + "px)"
+					}));
 					Q.delay(function() {
 						me.current[0] == me.list.first()[0] && me._initPosition(-countLength + length);
 					}, conf.delay)
