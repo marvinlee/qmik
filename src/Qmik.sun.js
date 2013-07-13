@@ -1,11 +1,11 @@
 /**
  * @author:leochen
  * @email:cwq0312@163.com
- * @version:0.91.008
+ * @version:1.0.000
  */
 (function(Q) {
-	var win = Q.global, doc = win.document, loc = win.location, hostname = loc.hostname;
-	var isArray = Q.isArray, isString = Q.isString, isFun = Q.isFun, isNull = Q.isNull, each = Q.each;
+	var win = Q.global, doc = win.document, loc = win.location;
+	var isArray = Q.isArray, isFun = Q.isFun, isNull = Q.isNull, each = Q.each;
 	var config = {
 		alias : {},
 		paths : {},
@@ -16,8 +16,7 @@
 	var cacheModule = {}, currentScript;
 	var sun = {};
 	function Module(id, url, dependencies, factory) {
-		var me = this;
-		Q.extend(me, {
+		Q.extend(this, {
 			id : id || url,
 			url : url,
 			dir : url.replace(/(\?.*)?/, "").replace(/(\/[^\/]*)$/i, "/"),//当前目录
@@ -25,31 +24,8 @@
 			factory : factory,
 			// module is ready ,if no, request src from service
 			isReady : !1,// is ready ,default false,
-			exports : {},// export object
-			createTime : Q.now(),// create time
-			useCount : 0,// use count,使用次数
-			destroy : function() {
-				Q("script[_src='" + url + "']").remove();
-				delete cacheModule[id], cacheModule[url]
-			}
+			exports : {}
 		})
-	}
-	// factory:function(require, exports, module)
-	function define(id, dependencies, factory) {
-		var url = getCurrentScript().src;
-		if (isFun(id)) {
-			factory = id;
-			dependencies = [];
-			id = url
-		} else if (isFun(dependencies)) {
-			factory = dependencies;
-			dependencies = []
-		}
-		id = id2url(id);
-		if (!getModule(id) || !Q.isIE()) {
-			dependencies = dependencies.concat(parseDepents(factory));
-			cacheModule[url] = cacheModule[id] = new Module(id, url, Q.unique(dependencies), factory)
-		}
 	}
 	/** 清除注释 */
 	function clearNode(word) {
@@ -68,67 +44,53 @@
 		}
 		return match
 	}
-	var uses = [], notLoading = !0//is not loading,default=true;
-	function loadError() {
-		uses.splice(0, 1);
-		notLoading = !0;
-		loadSyncUses()
+	function QueueSync(fun) {
+		var me = this;
+		me._deal = fun;
+		me.notify();
 	}
-	/** 同步加载使用的模块 */
-	function loadSyncUses() {
-		if (notLoading && uses.length > 0) {
-			notLoading = !1;
-			preload(function() {
-				var us = uses[0], ids = us.ids, callback = us.callback;
-				callbackUse(ids, function() {
-					uses.splice(0, 1);
-					notLoading = !0;
-					callback && callback.apply(callback, arguments);
-					loadSyncUses()
-				})
-			})
-		}
-	}
-	function use(ids, callback) {
-		ids = isArray(ids) ? ids : [
-			ids
-		];
-		//下面检测使用的模块是否已被全部加载过
-		var r = Q.grep(ids, function(val) {
-			return !isNull(getModule(id2url(val), val))
+	{
+		Q.extend(QueueSync.prototype, {
+			notify : function() {
+				var me = this;
+				me.state = 1;
+				me.deal();
+				return me
+			},
+			pause : function() {
+				this.state = 2;
+				return this
+			},
+			pop : function() {
+				return this.splice(0, 1)[0]
+			},
+			deal : function() {
+				var me = this;
+				if (me.state == 1 && me.length > 0) {
+					me._deal(me.pause().pop(), function() {
+						me.notify()
+					})
+				}
+				return me
+			}
 		});
-		if (r.length == ids.length) {
-			callbackUse(ids, callback)
-		} else {
-			uses.push({
-				ids : ids,
-				callback : callback
-			});
-			loadSyncUses()
-		}
+		Q.inherit(QueueSync, Array)
 	}
-	/** 回调使用的模块 */
-	function callbackUse(ids, callback) {
-		if (ids.length > 0) {
-			var params = [];
-			(function bload(idx) {
-				load(ids[idx], function(exports) {
-					params.push(exports);
-					if (idx == ids.length - 1) {
-						callback && callback.apply(callback, params);
-					} else {
-						bload(idx + 1)
-					}
-				})
-			})(0)
-		}
+	var queue = new QueueSync(function(item, chain) {
+		var callback = item.callback;
+		preload(function() {
+			callback && callback.apply(callback, arguments);
+			chain()
+		}, item.ids)
+	});
+	function loadError() {
+		queue.notify()
 	}
 	// require module
 	function require(id) {
 		var module = getModule(id2url(id), id);
 		return module ? module.exports : null
 	}
-	require.url = id2url;
 	// pre load module
 	function preload(callback, deps) {
 		var dependencies = deps || config.preload, length = dependencies.length, params = [];
@@ -144,13 +106,9 @@
 		if (id == ".js") return;
 		var module = getModule(url, id);
 		if (module) {
-			if (module.isReady) {
+			module.isReady ? useModule(module, require, callback) : preload(function() {
 				useModule(module, require, callback)
-			} else {
-				preload(function() {
-					useModule(module, require, callback)
-				}, module.dependencies)
-			}
+			}, module.dependencies)
 		} else {
 			request(id, function() {
 				// useModule(getModule(id), require, callback)
@@ -161,7 +119,12 @@
 		}
 	}
 	function getModule(url, id) {
-		return cacheModule[url] || cacheModule[id]
+		var module = cacheModule[url] || cacheModule[id], modules;
+		if (!module) {
+			modules = top != win && top.Qmik ? top.Qmik.sun.modules() : cacheModule;
+			module = modules[url] || modules[id]
+		}
+		return module
 	}
 	function useModule(module, require, callback) {
 		if (module.isReady != !0) {
@@ -169,7 +132,6 @@
 			module.exports = module.exports || nm
 		}
 		module.isReady = !0;
-		module.useCount++;
 		callback && callback(module.exports)
 	}
 	function request(id, success, error) {
@@ -219,22 +181,50 @@
 	}
 	// ////////////////id to url end ///////////////////////////////
 	Q.extend(sun, {
-		use : Q.box(use),
+		use : function(ids, callback) {
+			ids = isArray(ids) ? ids : [
+				ids
+			];
+			//下面检测使用的模块是否已被全部加载过
+			var ret = Q.grep(ids, function(val) {
+				return !isNull(getModule(id2url(val), val))
+			});
+			if (ret.length == ids.length) {
+				preload(callback, ids)
+			} else {
+				queue.push({
+					ids : ids,
+					callback : callback
+				});
+				queue.deal()
+			}
+		},
 		// factory:function(require, exports, module)
-		define : Q.box(define),
+		define : function(id, dependencies, factory) {
+			var url = getCurrentScript().src;
+			if (isFun(id)) {
+				factory = id;
+				dependencies = [];
+				id = url
+			} else if (isFun(dependencies)) {
+				factory = dependencies;
+				dependencies = []
+			}
+			id = id2url(id);
+			if (!getModule(id) || !Q.isIE()) {
+				dependencies = dependencies.concat(parseDepents(factory));
+				cacheModule[url] = cacheModule[id] = new Module(id, url, Q.unique(dependencies), factory);
+				useModule(cacheModule[url], require)
+			}
+		},
 		config : function(opts) {
 			return Q.config(opts, config)
 		},
-		url : id2url
+		url : id2url,
+		modules : function() {
+			return cacheModule
+		}
 	});
-	////////////////////////////////////////
-	//mem clear
-	var ttl = 300000;//缓存模块回收内存时间
-	Q.cycle(function() {
-		each(cacheModule, function(key, module) {
-			module.useCount < (Q.now() - module.createTime) / ttl && module.destroy()
-		})
-	}, ttl);
 	Q.sun = sun;
 	win.define = Q.define = Q.sun.define;
 	win.use = Q.use = Q.sun.use
