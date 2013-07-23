@@ -421,11 +421,15 @@
 			} : callback
 		},
 		cssPrefix : function(style) {
-			var ns = Q.extend({}, style);
-			each(ns, function(key, val) {
-				var prefix = Q.isWK() ? "-webkit" : Q.IE() ? "-ms" : Q.isFF() ? "-moz" : Q.isOpera() ? "-o" : "";
-				if (!likeNull(prefix)) ns[prefix + "-" + key] = val
-			});
+			var ns;
+			if (isString(style)) {
+				ns = (Q.isWK() ? "-webkit-" : Q.isIE() ? "-ms-" : Q.isFF() ? "-moz-" : Q.isOpera() ? "-o-" : "") + style;
+			} else {
+				ns = Q.extend({}, style);
+				each(ns, function(key, val) {
+					ns[Q.cssPrefix(key)] = val
+				})
+			}
 			return ns
 		}
 	});
