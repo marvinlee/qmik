@@ -1,7 +1,7 @@
 /**
  * @author:leo
  * @email:cwq0312@163.com
- * @version:1.00.000
+ * @version:1.00.010
  */
 (function() {
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent, loc = win.location;
@@ -78,7 +78,8 @@
 		return v instanceof Array
 	}
 	function likeArray(v) { // like Array
-		return isArray(v) || (!isString(v) && (v + "" == "[object NodeList]" || v + "" == "[object HTMLCollection]")) || (Q.isQmik && Q.isQmik(v))
+		return isArray(v) || (!isString(v) && (v + "" == "[object NodeList]" || v + "" == "[object HTMLCollection]"))
+					|| (Q.isQmik && Q.isQmik(v))
 	}
 	// isFunction
 	function isFun(v) {
@@ -118,7 +119,7 @@
 	// to json
 	function toJSON(v) {
 		// return Q.exec('(' + v + ')')
-		return JSON.parse(v)
+		return likeNull(v) ? "" : JSON.parse(v)
 	}
 	function isEvent(e) {
 		return win.Event && e instanceof win.Event || e == win.event
@@ -167,272 +168,276 @@
 		Q("head").append(node);
 		return node
 	}
-	Q.extend({
-		encode : encode,
-		decode : decode,
-		isDom : isDom,
-		isBool : isBool,
-		isString : isString,
-		isFun : isFun,
-		isFunction : isFun,
-		isNum : isNum,
-		isNumber : isNum,
-		isArray : isArray,
-		isNull : isNull,
-		likeArray : likeArray,
-		isError : isError,
-		each : each,
-		stringify : toString,
-		parseJSON : toJSON,
-		isEvent : isEvent,
-		likeArray : function(v) { // like Array
-			return isArray(v) || (v && !isDom(v) && !isString(v) && isNum(v.length) && v != win)
-		},
-		isDate : function(v) {
-			return v instanceof Date
-		},
-		isObject : isObject,
-		isPlainObject : function(v) { // isPlainObject
-			if (isNull(v) || v + '' != '[object Object]' || v.nodeType || v == win) return !1;
-			var k;
-			for (k in v) {
-			}
-			return isNull(k) || Object.prototype.hasOwnProperty.call(v, k)
-		},
-		likeNull : likeNull,
-		/**
-		 * 继承类 子类subClass继承父类superClass的属性方法, 注:子类有父类的属性及方法时,不会被父类替换
-		 */
-		inherit : function(subClass, superClass) {
-			function F() {
-			}
-			var subPrototype = subClass.prototype;
-			F.prototype = superClass.prototype;
-			subClass.prototype = new F();
-			subClass.prototype.constructor = subClass;
-			subClass.prototype["super"] = new F();
-			if (superClass.prototype.constructor == Object.prototype.constructor) {
-				superClass.prototype.constructor = superClass;
-			}
-			for ( var name in subPrototype) {
-				subClass.prototype[name] = subPrototype[name];
-			}
-		},
-		trim : function(v) {
-			return isNull(v) ? "" : isString(v) ? v.trim() : v.toString().trim()
-		},
-		toLower : function(v) {
-			return v ? v.toLower() : v
-		},
-		toUpper : function(v) {
-			return v ? v.toUpper() : v
-		},
-		// 合并数组或对象
-		merge : merge,
-		array : function(array) {
-			return merge([], array)
-		},
-		inArray : function(value, array) {
-			if (Q.likeArray(array)) for ( var i = 0; i < array.length; i++)
-				if (array[i] === value) return i;
-			return -1
-		},
-		unique : function(array) {
-			var ret = [];
-			each(array, function(i, value) {
-				Q.inArray(value, ret) < 0 && ret.push(value)
-			});
-			return ret
-		},
-		contains : isGrandfather,
-		/**
-		 * 对数组里的内容,做部做一次数据映射转换,
-		 * 例:
-		 * var array=[1,2,3];
-		 * array = Qmik.map(array,function(index,val){
-		 * 	return index*val
-		 * });
-		 * console.log(array);//>>0,2,6
-		 */
-		map : function(array, callback) {
-			var r = [];
-			each(array, function(i, v) {
-				r.push(callback(i, v))
-			});
-			return r
-		},
-		/**
-		 * 取得脚本
-		 */
-		getScript : function(url, success, error) {
-			url = Q.url(url);
-			var node = loadResource("js", url, success, error)[0];
-			Q.delay(function() {
-				node.src = url
-			}, 1);
-			return node
-		},
-		/**
-		 * 取得css
-		 */
-		getCss : function(url, success, error) {
-			url = Q.url(url);
-			return loadResource("css", url, success, error).attr("href", url)[0]
-		},
-		serialize : function(array) {
-			return Q.param(Q.serializeArray(array))
-		},
-		serializeArray : function(array) {
-			return filter(array, function(v) {
-				return v && v.name ? {
-					name : v.name,
-					value : execObject(v.value)
-				} : !1
-			})
-		},
-		grep : filter,
-		/**
-		 * 抽取数组里面每个元素的name和value属性,转换成一个url形式(a=b&name=g)的字符串
-		 */
-		param : function(array) {
-			var h = [];
-			each(array, function(i, v) {
-				h.push(encode(v.name) + '=' + encode(execObject(v.value)))
-			});
-			return h.join('&')
-		},
-		/**
-		 * 当前时间
-		 */
-		now : function(d) {
-			return (d || 0) + new Date().getTime()
-		},
-		// 延迟执行,==setTimeout
-		/**
-		 * target:apply,call的指向对象
-		 */
-		delay : function(fun, time, target) {
-			function Delay() {
-				var me = this;
-				me.pid = setTimeout(function() {
-					fun.apply(target || fun, slice.call(arguments, 2))
-				}, time)
-			}
-			Q.extend(Delay.prototype, {
-				stop : function() {
-					clearTimeout(this.pid)
+	Q
+		.extend({
+			encode : encode,
+			decode : decode,
+			isDom : isDom,
+			isBool : isBool,
+			isString : isString,
+			isFun : isFun,
+			isFunction : isFun,
+			isNum : isNum,
+			isNumber : isNum,
+			isArray : isArray,
+			isNull : isNull,
+			likeArray : likeArray,
+			isError : isError,
+			each : each,
+			stringify : toString,
+			parseJSON : toJSON,
+			isEvent : isEvent,
+			likeArray : function(v) { // like Array
+				return isArray(v) || (v && !isDom(v) && !isString(v) && isNum(v.length) && v != win)
+			},
+			isDate : function(v) {
+				return v instanceof Date
+			},
+			isObject : isObject,
+			isPlainObject : function(v) { // isPlainObject
+				if (isNull(v) || v + '' != '[object Object]' || v.nodeType || v == win) return !1;
+				var k;
+				for (k in v) {
 				}
-			})
-			return new Delay()
-		},
-		// 周期执行
-		/**
-		 * fun:执行的方法
-		 * cycleTime:执行的周期时间
-		 * ttl:过期时间,执行时间>ttl时,停止执行,单位 ms(毫秒)
-		 * target:apply,call的指向对象
-		 */
-		cycle : function(fun, cycleTime, ttl, target) {
-			var params = slice.call(arguments, 2), start = Q.now();
-			function Cycle() {
-				var me = this;
-				function _exec() {
-					if ((isNull(ttl) || Q.now() - start <= ttl) && me.state != 0) {
-						fun.apply(target || fun, params);
-						Q.delay(_exec, cycleTime)
+				return isNull(k) || Object.prototype.hasOwnProperty.call(v, k)
+			},
+			likeNull : likeNull,
+			/**
+			 * 继承类 子类subClass继承父类superClass的属性方法, 注:子类有父类的属性及方法时,不会被父类替换
+			 */
+			inherit : function(subClass, superClass) {
+				function F() {
+				}
+				var subPrototype = subClass.prototype;
+				F.prototype = superClass.prototype;
+				subClass.prototype = new F();
+				subClass.prototype.constructor = subClass;
+				subClass.prototype["super"] = new F();
+				if (superClass.prototype.constructor == Object.prototype.constructor) {
+					superClass.prototype.constructor = superClass;
+				}
+				for ( var name in subPrototype) {
+					subClass.prototype[name] = subPrototype[name];
+				}
+			},
+			trim : function(v) {
+				return isNull(v) ? "" : isString(v) ? v.trim() : v.toString().trim()
+			},
+			toLower : function(v) {
+				return v ? v.toLower() : v
+			},
+			toUpper : function(v) {
+				return v ? v.toUpper() : v
+			},
+			// 合并数组或对象
+			merge : merge,
+			array : function(array) {
+				return merge([], array)
+			},
+			inArray : function(value, array) {
+				if (Q.likeArray(array)) for ( var i = 0; i < array.length; i++)
+					if (array[i] === value) return i;
+				return -1
+			},
+			unique : function(array) {
+				var ret = [];
+				each(array, function(i, value) {
+					Q.inArray(value, ret) < 0 && ret.push(value)
+				});
+				return ret
+			},
+			contains : isGrandfather,
+			/**
+			 * 对数组里的内容,做部做一次数据映射转换,
+			 * 例:
+			 * var array=[1,2,3];
+			 * array = Qmik.map(array,function(index,val){
+			 * 	return index*val
+			 * });
+			 * console.log(array);//>>0,2,6
+			 */
+			map : function(array, callback) {
+				var r = [];
+				each(array, function(i, v) {
+					r.push(callback(i, v))
+				});
+				return r
+			},
+			/**
+			 * 取得脚本
+			 */
+			getScript : function(url, success, error) {
+				url = Q.url(url);
+				var node = loadResource("js", url, success, error)[0];
+				Q.delay(function() {
+					node.src = url
+				}, 1);
+				return node
+			},
+			/**
+			 * 取得css
+			 */
+			getCss : function(url, success, error) {
+				url = Q.url(url);
+				return loadResource("css", url, success, error).attr("href", url)[0]
+			},
+			serialize : function(array) {
+				return Q.param(Q.serializeArray(array))
+			},
+			serializeArray : function(array) {
+				return filter(array, function(v) {
+					return v && v.name ? {
+						name : v.name,
+						value : execObject(v.value)
+					} : !1
+				})
+			},
+			grep : filter,
+			/**
+			 * 抽取数组里面每个元素的name和value属性,转换成一个url形式(a=b&name=g)的字符串
+			 */
+			param : function(array) {
+				var h = [];
+				each(array, function(i, v) {
+					h.push(encode(v.name) + '=' + encode(execObject(v.value)))
+				});
+				return h.join('&')
+			},
+			/**
+			 * 当前时间
+			 */
+			now : function(d) {
+				return (d || 0) + new Date().getTime()
+			},
+			// 延迟执行,==setTimeout
+			/**
+			 * target:apply,call的指向对象
+			 */
+			delay : function(fun, time, target) {
+				function Delay() {
+					var me = this;
+					me.pid = setTimeout(function() {
+						fun.apply(target || fun, slice.call(arguments, 2))
+					}, time)
+				}
+				Q.extend(Delay.prototype, {
+					stop : function() {
+						clearTimeout(this.pid)
+					}
+				})
+				return new Delay()
+			},
+			// 周期执行
+			/**
+			 * fun:执行的方法
+			 * cycleTime:执行的周期时间
+			 * ttl:过期时间,执行时间>ttl时,停止执行,单位 ms(毫秒)
+			 * target:apply,call的指向对象
+			 */
+			cycle : function(fun, cycleTime, ttl, target) {
+				var params = slice.call(arguments, 2), start = Q.now();
+				function Cycle() {
+					var me = this;
+					function _exec() {
+						if ((isNull(ttl) || Q.now() - start <= ttl) && me.state != 0) {
+							fun.apply(target || fun, params);
+							Q.delay(_exec, cycleTime)
+						}
+					}
+					Q.delay(_exec, cycleTime)
+				}
+				Q.extend(Cycle.prototype, {
+					stop : function() {
+						this.state = 0
+					}
+				})
+				return new Cycle()
+			},
+			log : function(msg, e) {
+				if (config.debug) {
+					msg = isError(msg) ? msg.stack : msg;
+					msg += isError(e) ? e.stack : "";
+					try {
+						console.log(msg)
+					} catch (e) {
 					}
 				}
-				Q.delay(_exec, cycleTime)
-			}
-			Q.extend(Cycle.prototype, {
-				stop : function() {
-					this.state = 0
+			},
+			isIphone : function() {
+				return /iPhone OS/.test(UA)
+			},
+			isAndroid : function() {
+				return /Android/.test(UA)
+			},
+			isWP : function() {
+				return /Windows Phone/.test(UA)
+			},
+			isIE : function() {
+				return /MSIE/.test(UA)
+			},
+			/**
+			 * is Firefox
+			 */
+			isFF : function() {
+				return /Firefox/.test(UA)
+			},
+			/**
+			 * is Webkit
+			 */
+			isWK : function() {
+				return /WebKit/.test(UA)
+			},
+			isOpera : function() {
+				return /Opera/.test(UA)
+			},
+			config : function(opts, _config) {
+				_config = arguments.length <= 1 ? config : (_config || {});
+				var ret = _config;
+				if (arguments.length < 1 || isNull(opts)) {
+				} else if (!isObject(opts)) {
+					ret = _config[opts]
+				} else {
+					each(opts, function(key, val) {
+						isObject(val) && _config[key] ? Q.extend(_config[key], val) : (_config[key] = val)
+					})
 				}
-			})
-			return new Cycle()
-		},
-		log : function(msg, e) {
-			if (config.debug) {
-				msg = isError(msg) ? msg.stack : msg;
-				msg += isError(e) ? e.stack : "";
-				try {
-					console.log(msg)
-				} catch (e) {
+				return ret
+				//return (arguments.length < 1 || isNull(opts)) ? _config : isObject(opts) ? Q.extend(_config, opts) : _config[opts]
+			},
+			/**
+			 * 合并url,if 参数 _url为空,则
+			 */
+			url : function(_url) {
+				return arguments.length < 1 ? baseURL
+													: !/^[a-zA-Z0-9]+:\/\//.test(_url)	? concactUrl(baseURL, (/^\//.test(_url) ? ""
+																																						: config.context || "/") + "/"
+																																	+ _url)
+																									: _url
+			},
+			box : function(callback) {
+				//enable box error notify:Q.config(error,{enable,url:"send you service"});
+				return config.box.enable ? function() {
+					try {
+						callback.apply(this, arguments)
+					} catch (e) {
+						collect(e);
+						throw e
+					}
+				} : callback
+			},
+			cssPrefix : function(style) {
+				var ns;
+				if (isString(style)) {
+					ns = (Q.isWK() ? "-webkit-" : Q.isIE() ? "-ms-" : Q.isFF() ? "-moz-" : Q.isOpera() ? "-o-" : "") + style;
+				} else {
+					ns = Q.extend({}, style);
+					each(ns, function(key, val) {
+						ns[Q.cssPrefix(key)] = val
+					})
 				}
+				return ns
 			}
-		},
-		isIphone : function() {
-			return /iPhone OS/.test(UA)
-		},
-		isAndroid : function() {
-			return /Android/.test(UA)
-		},
-		isWP : function() {
-			return /Windows Phone/.test(UA)
-		},
-		isIE : function() {
-			return /MSIE/.test(UA)
-		},
-		/**
-		 * is Firefox
-		 */
-		isFF : function() {
-			return /Firefox/.test(UA)
-		},
-		/**
-		 * is Webkit
-		 */
-		isWK : function() {
-			return /WebKit/.test(UA)
-		},
-		isOpera : function() {
-			return /Opera/.test(UA)
-		},
-		config : function(opts, _config) {
-			_config = arguments.length <= 1 ? config : (_config || {});
-			var ret = _config;
-			if (arguments.length < 1 || isNull(opts)) {
-			} else if (!isObject(opts)) {
-				ret = _config[opts]
-			} else {
-				each(opts, function(key, val) {
-					isObject(val) && _config[key] ? Q.extend(_config[key], val) : (_config[key] = val)
-				})
-			}
-			return ret
-			//return (arguments.length < 1 || isNull(opts)) ? _config : isObject(opts) ? Q.extend(_config, opts) : _config[opts]
-		},
-		/**
-		 * 合并url,if 参数 _url为空,则
-		 */
-		url : function(_url) {
-			return arguments.length < 1 ? baseURL : !/^[a-zA-Z0-9]+:\/\//.test(_url) ? concactUrl(baseURL, (/^\//.test(_url) ? "" : config.context || "/") + "/"
-																																			+ _url) : _url
-		},
-		box : function(callback) {
-			//enable box error notify:Q.config(error,{enable,url:"send you service"});
-			return config.box.enable ? function() {
-				try {
-					callback.apply(this, arguments)
-				} catch (e) {
-					collect(e);
-					throw e
-				}
-			} : callback
-		},
-		cssPrefix : function(style) {
-			var ns;
-			if (isString(style)) {
-				ns = (Q.isWK() ? "-webkit-" : Q.isIE() ? "-ms-" : Q.isFF() ? "-moz-" : Q.isOpera() ? "-o-" : "") + style;
-			} else {
-				ns = Q.extend({}, style);
-				each(ns, function(key, val) {
-					ns[Q.cssPrefix(key)] = val
-				})
-			}
-			return ns
-		}
-	});
+		});
 	each([
 		Q.url, Q.now
 	], function(i, val) {
