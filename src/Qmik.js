@@ -181,7 +181,6 @@
 			isNumber : isNum,
 			isArray : isArray,
 			isNull : isNull,
-			likeArray : likeArray,
 			isError : isError,
 			each : each,
 			stringify : toString,
