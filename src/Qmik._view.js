@@ -1,7 +1,7 @@
 /**
- * @author:leochen
+ * @author:le0
  * @email:cwq0312@163.com
- * @version:0.91.008
+ * @version:1.00.000
  */
 (function(Q) {// location位置+效果
 	var win = Q.global, doc = win.document, isNull = Q.isNull, isDom = Q.isDom;
@@ -24,16 +24,10 @@
 	Q.fn.extend({
 		width : function(v) {
 			var dom = this[0];
-			//var o = this[0];
-			//return isNull(o) ? (v || 0) : isDom(o) ? o.offsetWidth : o == win ? win.screenX : win.screen.availWidth
-			//return me[0] ? isDom(this[0])?.offsetWidth : 0
 			return isDom(dom) ? dom.offsetWidth : dom == win ? screen.availWidth : 0
 		},
 		height : function(v) {
 			var dom = this[0];
-			//var o = this[0];
-			//return isNull(o) ? (v || 0) : isDom(o) ? o.offsetHeight : o == win ? win.screenY : win.screen.availHeight
-			//return this[0] ? this[0].o.offsetHeight : 0
 			return isDom(dom) ? dom.offsetHeight : dom == win ? screen.availHeight : 0
 		},
 		offset : function() {// 获取匹配元素在当前视口的相对偏移

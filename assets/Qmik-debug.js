@@ -1,7 +1,7 @@
 /**
- * @author:leochen
+ * @author:leo
  * @email:cwq0312@163.com
- * @version:0.91.008
+ * @version:1.00.000
  */
 (function() {
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent, loc = win.location;
@@ -163,7 +163,7 @@
 				success && Q.box(success)(e)
 			}
 		}
-		node.on("load", load).on("readystatechange", load).on("error", _error);
+		node.on && node.on("load", load).on("readystatechange", load).on("error", _error);
 		Q("head").append(node);
 		return node
 	}
@@ -373,6 +373,21 @@
 		isIE : function() {
 			return /MSIE/.test(UA)
 		},
+		/**
+		 * is Firefox
+		 */
+		isFF : function() {
+			return /Firefox/.test(UA)
+		},
+		/**
+		 * is Webkit
+		 */
+		isWK : function() {
+			return /WebKit/.test(UA)
+		},
+		isOpera : function() {
+			return /Opera/.test(UA)
+		},
 		config : function(opts, _config) {
 			_config = arguments.length <= 1 ? config : (_config || {});
 			var ret = _config;
@@ -404,6 +419,18 @@
 					throw e
 				}
 			} : callback
+		},
+		cssPrefix : function(style) {
+			var ns;
+			if (isString(style)) {
+				ns = (Q.isWK() ? "-webkit-" : Q.isIE() ? "-ms-" : Q.isFF() ? "-moz-" : Q.isOpera() ? "-o-" : "") + style;
+			} else {
+				ns = Q.extend({}, style);
+				each(ns, function(key, val) {
+					ns[Q.cssPrefix(key)] = val
+				})
+			}
+			return ns
 		}
 	});
 	each([
@@ -454,9 +481,9 @@
 })();
 
 /**
- * @author:leochen
+ * @author:leo
  * @email:cwq0312@163.com
- * @version:1.37
+ * @version:1.00.100
  */
 (function(Q) {
 	var win = Q.global, doc = win.document;
@@ -902,13 +929,13 @@
 		return Q(array)
 	}
 	Q.init = init;
-	Q.fn = Query.prototype;
-	Q.fn.extend = function(o) {
+	var fn = Q.fn = Query.prototype;
+	fn.extend = function(o) {
 		each(o, function(k, v) {
 			Query.prototype[k] = v
 		})
 	}
-	Q.fn.extend({
+	fn.extend({
 		last : function() {
 			return Q(this[this.length - 1])
 		},
@@ -1110,39 +1137,28 @@
 			return parents(selector, this, true, true)
 		}
 	});
-	Q.fn.extend({
-		removeClass : Q.fn.rmClass,
-		removeData : Q.fn.rmData,
-		removeAttr : Q.fn.rmAttr
+	fn.extend({
+		removeClass : fn.rmClass,
+		removeData : fn.rmData,
+		removeAttr : fn.rmAttr
 	});
 	Q.isQmik = isQmik;
-	/**
-	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
-	 * 90：逆时针转了 Android2.1尚未支持重力感应
-	 */
-	var qwc = "change submit orientationchange blur focus touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"
-		.split(" ");
-	each(qwc, function(i, v) {
-		Q.fn[v] = function(f) {
-			return f ? this.bind(v, f) : this.trigger(v)
-		}
-	})
 })(Qmik);
 
 /**
- * @author:leochen
+ * @author:leo
  * @email:cwq0312@163.com
- * @version:0.91.008
+ * @version:1.00.000
  */
 (function(Q) { /* event */
-	var win = Q.global, doc = win.document;
+	var win = Q.global, doc = win.document, fn = Q.fn;
 	var readyRE = /complete|loaded/, // /complete|loaded|interactive/
-	ek = "$QmikEvents", liveFuns = {};
+	ek = "$QEvents", liveFuns = {};
 	var isNull = Q.isNull, isFun = Q.isFun, isDom = Q.isDom, each = Q.each;
 	function SE() {
 		return !isNull(doc.addEventListener)
 	}
-	Q.ready = Q.fn.ready = function(fun) {
+	Q.ready = fn.ready = function(fun) {
 		// SE() ? Q(doc).bind('DOMContentLoaded', fun) : doc.onreadystatechange =
 		// function(e) {
 		// readyRE.test(doc.readyState) && fun(e)
@@ -1226,7 +1242,7 @@
 	function getLiveName(selector, type, callback) {
 		return selector + ":live:" + type + ":" + (callback || "").toString()
 	}
-	Q.fn.extend({
+	fn.extend({
 		on : function(name, callback) {
 			var p = Array.prototype.slice.call(arguments, 2);
 			each(this, function(k, v) {
@@ -1275,16 +1291,26 @@
 			return this
 		}
 	});
-	Q.fn.extend({
-		bind : Q.fn.on,
-		unbind : Q.fn.un
+	fn.extend({
+		bind : fn.on,
+		unbind : fn.un
 	});
+	/**
+	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
+	 * 90：逆时针转了 Android2.1尚未支持重力感应
+	 */
+	var qwc = "blur focus load scroll click".split(" ");
+	each(qwc, function(i, v) {
+		fn[v] = function(f) {
+			return f ? this.on(v, f) : this.trigger(v)
+		}
+	})
 })(Qmik);
 
 /**
- * @author:leochen
+ * @author:le0
  * @email:cwq0312@163.com
- * @version:0.91.008
+ * @version:1.00.000
  */
 (function(Q) {// location位置+效果
 	var win = Q.global, doc = win.document, isNull = Q.isNull, isDom = Q.isDom;
@@ -1307,16 +1333,10 @@
 	Q.fn.extend({
 		width : function(v) {
 			var dom = this[0];
-			//var o = this[0];
-			//return isNull(o) ? (v || 0) : isDom(o) ? o.offsetWidth : o == win ? win.screenX : win.screen.availWidth
-			//return me[0] ? isDom(this[0])?.offsetWidth : 0
 			return isDom(dom) ? dom.offsetWidth : dom == win ? screen.availWidth : 0
 		},
 		height : function(v) {
 			var dom = this[0];
-			//var o = this[0];
-			//return isNull(o) ? (v || 0) : isDom(o) ? o.offsetHeight : o == win ? win.screenY : win.screen.availHeight
-			//return this[0] ? this[0].o.offsetHeight : 0
 			return isDom(dom) ? dom.offsetHeight : dom == win ? screen.availHeight : 0
 		},
 		offset : function() {// 获取匹配元素在当前视口的相对偏移
@@ -1372,7 +1392,9 @@
 })(Qmik);
 
 /**
- * ajax模块
+ * @author:leo
+ * @email:cwq0312@163.com
+ * @version:1.00.000
  */
 (function(Q) { /* ajax */
 	var win = Q.global, toObject = Q.parseJSON, isFun = Q.isFun, ac = {
@@ -1434,7 +1456,7 @@
 })(Qmik);
 
 /**
- * @author:leochen
+ * @author:leo
  * @email:cwq0312@163.com
  * @version:1.0.000
  */
@@ -1448,7 +1470,7 @@
 		map : [],
 		preload : []
 	};
-	var cacheModule = {}, currentScript;
+	var cacheModule = {}, currentScript, ispreload = !1;
 	var sun = {};
 	function Module(id, url, dependencies, factory) {
 		Q.extend(this, {
@@ -1513,7 +1535,7 @@
 	}
 	var queue = new QueueSync(function(item, chain) {
 		var callback = item.callback;
-		preload(function() {
+		batload(function() {
 			callback && callback.apply(callback, arguments);
 			chain()
 		}, item.ids)
@@ -1526,13 +1548,13 @@
 		var module = getModule(id2url(id), id);
 		return module ? module.exports : null
 	}
-	// pre load module
-	function preload(callback, deps) {
+	// bat sequence load module
+	function batload(callback, deps) {
 		var dependencies = deps || config.preload, length = dependencies.length, params = [];
 		length == 0 ? callback() : (function bload(idx) {
 			load(dependencies[idx], function(exports) {
 				params.push(exports);
-				idx == length - 1 ? callback && callback.apply(callback, params) : bload(idx + 1)
+				idx == length - 1 ? callback.apply(callback, params) : bload(idx + 1)
 			})
 		})(0)
 	}
@@ -1541,13 +1563,13 @@
 		if (id == ".js") return;
 		var module = getModule(url, id);
 		if (module) {
-			module.isReady ? useModule(module, require, callback) : preload(function() {
+			module.isReady ? useModule(module, require, callback) : batload(function() {
 				useModule(module, require, callback)
 			}, module.dependencies)
 		} else {
 			request(id, function() {
 				// useModule(getModule(id), require, callback)
-				preload(function() {
+				batload(function() {
 					useModule(getModule(url, id), require, callback)
 				}, getModule(url, id).dependencies)
 			}, loadError)
@@ -1574,9 +1596,8 @@
 		if (/\/.+\.css$/i.test(url.replace(/(\?.*)?/i, ""))) {
 			Q.getCss(url)
 		} else {
-			var _load = Q.box(success);
-			loadScript.length < 1 ? (currentScript = Q.getScript(url, _load, error)) : loadScript.on("load", _load).on("readystatechange", _load)
-				.on("error", error)
+			loadScript.length < 1 ? (currentScript = Q.getScript(url, success, error)) : loadScript.on("load", success)
+				.on("readystatechange", success).on("error", error)
 		}
 	}
 	function getCurrentScript() {
@@ -1620,12 +1641,18 @@
 			ids = isArray(ids) ? ids : [
 				ids
 			];
+			if (!ispreload) {
+				queue.push({
+					ids : config.preload
+				});
+				ispreload = !0
+			}
 			//下面检测使用的模块是否已被全部加载过
 			var ret = Q.grep(ids, function(val) {
 				return !isNull(getModule(id2url(val), val))
 			});
 			if (ret.length == ids.length) {
-				preload(callback, ids)
+				batload(callback, ids)
 			} else {
 				queue.push({
 					ids : ids,
@@ -1664,145 +1691,3 @@
 	win.define = Q.define = Q.sun.define;
 	win.use = Q.use = Q.sun.use
 })(Qmik);
-
-/**
- * @author:leochen
- * @email:cwq0312@163.com
- * @deprecated nav导航(利用hashchang事件实现前进后退民航,支持刷新后的前进后退)
- * @version:1.0
- */
-(function(Q, define) {
-	var win = Q.global, doc = win.document, loc = location, encode = Q.encode, //
-	sun = Q.sun, isFun = Q.isFun, likeNull = Q.likeNull // 方法map
-	config = {
-		module : "module",// 处理方法标记名
-		method : "method"
-	//defaultModule : {module:"","method","",param:[]}// 默认的hashchange处理模块
-	}, //
-	isSupportHash = ("onhashchange" in win) && (doc.documentMode === undefined || doc.documentMode > 7);
-	// 设置hash
-	function set(hash) {
-		loc.hash = hash;
-	}
-	// 取得hash
-	function get() {
-		return loc.hash.replace(/^#/g, "").trim()
-	}
-	// 取得模块参数信息,及模块名
-	function getModuleParam(url) {
-		var query = url || (likeNull(get()) ? loc.search.replace(/^\?/, "") : get()), //
-		info = [];
-		Q.each(query.split(/&|&amp;/g), function(i, val) {
-			var kv = val.split("=");
-			info[Q.decode(kv[0])] = Q.decode(kv[1])
-		});
-		return info
-	}
-	function execModule(module, method, param) {
-		var fun = likeNull(method) ? module : module[method];
-		return fun.apply(module, param)
-	}
-	// 加载使用模块
-	function useModule(url) {
-		var moduleName, method, param;
-		if (isFun(url)) {
-			url()
-		} else if (Q.isObject(url)) {
-			moduleName = url.module;
-			method = url.method;
-			param = url.param
-		} else {
-			param = getModuleParam(url);
-			moduleName = param[config.module];
-			method = param[config.method]
-		}
-		moduleName && sun.use(moduleName, function(module) {
-			// module(info)
-			execModule(module, method, param || [])
-		});
-		return moduleName
-	}
-	function hashchange(_event) {
-		// 当触发hashchange事件时,先使用hash,不行再使用url,再不行就使用默认的defaultModule
-		useModule(loc.search.replace(/^\?/, ""))//
-			|| (likeNull(config.defaultModule) || useModule(config.defaultModule))
-	}
-	function bind() {
-		Q(win).on("hashchange", hashchange)
-	}
-	function unBind() {
-		Q(win).un("hashchange", hashchange, bind);
-	}
-	Q(doc).ready(function() {
-		bind();
-		hashchange(doc.createEvent ? doc.createEvent("MouseEvents") : null)
-	})
-	Q.extend({
-		nav : {
-			/**
-			 * opts:{ url:"url字符串,选填,用户支持页面不支持hashchange时,跳转到url页面",
-			 * param:[参数,选填,是个数组对象], 
-			 * callback:回调方法,
-			 * module:调用模块的模块名(alise:也是模块名,只是它是对模块名定义了一个别名) ,
-			 * method:调用模块的方法名 }
-			 */
-			use : function(opts) {
-				// {module:"",method:"",url:"",param:[],callback:fun}
-				var url = opts.url, param = opts.param, callback = param.callback, method = opts.method || "";
-				sun.use(opts.module, function(module) {
-					if (Q.isString(url)) {
-						if (isFun(param)) {
-							callback = param;
-							param = []
-						}
-					} else if (Q.isObject(url)) {
-						param = url;
-						url = null
-					} else if (isFun(url)) {
-						callback = url;
-						param = [];
-						url = null
-					}
-					var hv = [];
-					hv.push(encode(config.module) + "=" + encode(opts.module));
-					hv.push(encode(config.method) + "=" + encode(method))
-					Q.each(param, function(name, value) {
-						hv.push(encode(name) + "=" + encode(value))
-					});
-					// 如果支持hashchange,或
-					// viewUrl=="",只使用方式来显示新数据视图(如果isSupportHash为flase,在这种情况下,将不支持前进后退)
-					if (isSupportHash || url == "") {
-						unBind();
-						set(hv.join("&"));
-						var result = execModule(module, method, param);// module(param)
-						callback && callback.apply(callback, [
-							result
-						]);
-						Q.delay(bind, 500)
-					} else if (Q.isString(url)) {
-						loc.href = Q.url(url) + (/\?/.test(url) ? "&" : "?") + hv.join("&");
-					}
-				})
-			},
-			/**
-			 * 在首页初次加载时执行,执行条件是判断hash值是否为空,为空才执行callback,
-			 * 否则不执行
-			 * @param callback
-			 */
-			onload : function(callback) {
-				likeNull(get()) && callback()
-			},
-			/**
-			 * 配置
-			 * @param opt
-			 * @returns
-			 */
-			config : function(opt) {
-				return Q.config(opt, config)
-			}
-		}
-	});
-	define(function(require, exports, module) {
-		module.exports = Q
-	})
-})(Qmik, Qmik.define);

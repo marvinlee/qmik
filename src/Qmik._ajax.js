@@ -1,5 +1,7 @@
 /**
- * ajax模块
+ * @author:leo
+ * @email:cwq0312@163.com
+ * @version:1.00.000
  */
 (function(Q) { /* ajax */
 	var win = Q.global, toObject = Q.parseJSON, isFun = Q.isFun, ac = {

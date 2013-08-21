@@ -1,7 +1,16 @@
 /**
- * @author:leochen
+ * @author:leo
  * @email:cwq0312@163.com
- * @deprecated nav导航(利用hashchang事件实现前进后退民航,支持刷新后的前进后退)
+ * @deprecated nav导航(利用hashchang事件实现前进后退民航,支持刷新后的前进后退)<br/>
+ * 依赖于Qmik,Qmik._query,Qmik._event, Qmik.sun模块
+ * 
+ * 使用方式:$.nav.use( {
+					module : $(this).attr("module"),//模块名,Qmik.sun注册的模块名
+					method : $(this).attr("method"),//方法名,在模块module.method
+					param : [//参数,方法method的参数
+						$(this).attr("id")
+					]
+			})
  * @version:1.0
  */
 (function(Q, define) {

@@ -1,7 +1,7 @@
 /**
- * @author:leochen
+ * @author:leo
  * @email:cwq0312@163.com
- * @version:1.37
+ * @version:1.00.100
  */
 (function(Q) {
 	var win = Q.global, doc = win.document;
@@ -447,13 +447,13 @@
 		return Q(array)
 	}
 	Q.init = init;
-	Q.fn = Query.prototype;
-	Q.fn.extend = function(o) {
+	var fn = Q.fn = Query.prototype;
+	fn.extend = function(o) {
 		each(o, function(k, v) {
 			Query.prototype[k] = v
 		})
 	}
-	Q.fn.extend({
+	fn.extend({
 		last : function() {
 			return Q(this[this.length - 1])
 		},
@@ -655,21 +655,10 @@
 			return parents(selector, this, true, true)
 		}
 	});
-	Q.fn.extend({
-		removeClass : Q.fn.rmClass,
-		removeData : Q.fn.rmData,
-		removeAttr : Q.fn.rmAttr
+	fn.extend({
+		removeClass : fn.rmClass,
+		removeData : fn.rmData,
+		removeAttr : fn.rmAttr
 	});
 	Q.isQmik = isQmik;
-	/**
-	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
-	 * 90：逆时针转了 Android2.1尚未支持重力感应
-	 */
-	var qwc = "change submit orientationchange blur focus touchstart touchmove touchend focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout change select keydown keypress keyup error"
-		.split(" ");
-	each(qwc, function(i, v) {
-		Q.fn[v] = function(f) {
-			return f ? this.bind(v, f) : this.trigger(v)
-		}
-	})
 })(Qmik);

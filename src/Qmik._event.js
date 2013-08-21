@@ -1,17 +1,17 @@
 /**
- * @author:leochen
+ * @author:leo
  * @email:cwq0312@163.com
- * @version:0.91.008
+ * @version:1.00.000
  */
 (function(Q) { /* event */
-	var win = Q.global, doc = win.document;
+	var win = Q.global, doc = win.document, fn = Q.fn;
 	var readyRE = /complete|loaded/, // /complete|loaded|interactive/
-	ek = "$QmikEvents", liveFuns = {};
+	ek = "$QEvents", liveFuns = {};
 	var isNull = Q.isNull, isFun = Q.isFun, isDom = Q.isDom, each = Q.each;
 	function SE() {
 		return !isNull(doc.addEventListener)
 	}
-	Q.ready = Q.fn.ready = function(fun) {
+	Q.ready = fn.ready = function(fun) {
 		// SE() ? Q(doc).bind('DOMContentLoaded', fun) : doc.onreadystatechange =
 		// function(e) {
 		// readyRE.test(doc.readyState) && fun(e)
@@ -95,7 +95,7 @@
 	function getLiveName(selector, type, callback) {
 		return selector + ":live:" + type + ":" + (callback || "").toString()
 	}
-	Q.fn.extend({
+	fn.extend({
 		on : function(name, callback) {
 			var p = Array.prototype.slice.call(arguments, 2);
 			each(this, function(k, v) {
@@ -144,8 +144,18 @@
 			return this
 		}
 	});
-	Q.fn.extend({
-		bind : Q.fn.on,
-		unbind : Q.fn.un
+	fn.extend({
+		bind : fn.on,
+		unbind : fn.un
 	});
+	/**
+	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
+	 * 90：逆时针转了 Android2.1尚未支持重力感应
+	 */
+	var qwc = "blur focus load scroll click".split(" ");
+	each(qwc, function(i, v) {
+		fn[v] = function(f) {
+			return f ? this.on(v, f) : this.trigger(v)
+		}
+	})
 })(Qmik);

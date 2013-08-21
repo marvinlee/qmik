@@ -1,7 +1,7 @@
 /**
- * @author:leochen
+ * @author:leo
  * @email:cwq0312@163.com
- * @version:0.91.008
+ * @version:1.00.000
  */
 (function() {
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent, loc = win.location;
@@ -163,7 +163,7 @@
 				success && Q.box(success)(e)
 			}
 		}
-		node.on("load", load).on("readystatechange", load).on("error", _error);
+		node.on && node.on("load", load).on("readystatechange", load).on("error", _error);
 		Q("head").append(node);
 		return node
 	}

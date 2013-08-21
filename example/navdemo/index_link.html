@@ -1,0 +1,58 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<div id="header"></div>
+<div id="main">
+<div id="content">
+<div>
+<h1>link方式打开页面</h1>
+<ul>
+	<li>美女</li>
+	<li>屌丝</li>
+	<li>游戏</li>
+	<li><a href="news.html" target="_blank">新闻</a></li>
+</ul>
+</div>
+<br />
+<br />
+<h3>--------------------------------------------------------------------------------</h3>
+<div>
+<h1>ajax方式打开页面,利用hash实现前进后退</h1>
+<ul id="navHeader">
+	<li flag="girl">美女</li>
+	<li flag="diaosi">屌丝</li>
+	<li flag="game">游戏</li>
+	<li flag="news">新闻</li>
+</ul>
+</div>
+</div>
+<div id="show"></div>
+</div>
+<div id="footer"></div>
+</body>
+<script type="text/javascript" src="/assets/Qmik-debug.js"></script>
+<script type="text/javascript" src="/assets/plugins/Qmik.nav.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/Qmik.JSON.min.js"></script>
+<script type="text/javascript">
+	$.sun.config({
+		alias:{
+	       "news":"/example/navdemo/js/news.js"
+		}
+	});
+	$.nav.config({
+		defaultModule:function(){
+	        $("#show").html("")
+		}
+	})
+     $("#navHeader").click(function(e){
+   	    var target=$(e.target);
+   	    if(target.attr("flag")=="news"){
+   	       $.nav.use("news");
+   	    }
+     })
+</script>
+</html>

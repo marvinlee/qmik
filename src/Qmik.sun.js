@@ -1,7 +1,7 @@
 /**
- * @author:leochen
+ * @author:leo
  * @email:cwq0312@163.com
- * @version:1.0.000
+ * @version:1.00.000
  */
 (function(Q) {
 	var win = Q.global, doc = win.document, loc = win.location;
@@ -13,7 +13,7 @@
 		map : [],
 		preload : []
 	};
-	var cacheModule = {}, currentScript;
+	var cacheModule = {}, currentScript, ispreload = !1;
 	var sun = {};
 	function Module(id, url, dependencies, factory) {
 		Q.extend(this, {
@@ -78,7 +78,7 @@
 	}
 	var queue = new QueueSync(function(item, chain) {
 		var callback = item.callback;
-		preload(function() {
+		batload(function() {
 			callback && callback.apply(callback, arguments);
 			chain()
 		}, item.ids)
@@ -91,13 +91,13 @@
 		var module = getModule(id2url(id), id);
 		return module ? module.exports : null
 	}
-	// pre load module
-	function preload(callback, deps) {
+	// bat sequence load module
+	function batload(callback, deps) {
 		var dependencies = deps || config.preload, length = dependencies.length, params = [];
 		length == 0 ? callback() : (function bload(idx) {
 			load(dependencies[idx], function(exports) {
 				params.push(exports);
-				idx == length - 1 ? callback && callback.apply(callback, params) : bload(idx + 1)
+				idx == length - 1 ? callback.apply(callback, params) : bload(idx + 1)
 			})
 		})(0)
 	}
@@ -106,13 +106,13 @@
 		if (id == ".js") return;
 		var module = getModule(url, id);
 		if (module) {
-			module.isReady ? useModule(module, require, callback) : preload(function() {
+			module.isReady ? useModule(module, require, callback) : batload(function() {
 				useModule(module, require, callback)
 			}, module.dependencies)
 		} else {
 			request(id, function() {
 				// useModule(getModule(id), require, callback)
-				preload(function() {
+				batload(function() {
 					useModule(getModule(url, id), require, callback)
 				}, getModule(url, id).dependencies)
 			}, loadError)
@@ -139,9 +139,8 @@
 		if (/\/.+\.css$/i.test(url.replace(/(\?.*)?/i, ""))) {
 			Q.getCss(url)
 		} else {
-			var _load = Q.box(success);
-			loadScript.length < 1 ? (currentScript = Q.getScript(url, _load, error)) : loadScript.on("load", _load).on("readystatechange", _load)
-				.on("error", error)
+			loadScript.length < 1 ? (currentScript = Q.getScript(url, success, error)) : loadScript.on("load", success)
+				.on("readystatechange", success).on("error", error)
 		}
 	}
 	function getCurrentScript() {
@@ -185,12 +184,18 @@
 			ids = isArray(ids) ? ids : [
 				ids
 			];
+			if (!ispreload) {
+				queue.push({
+					ids : config.preload
+				});
+				ispreload = !0
+			}
 			//下面检测使用的模块是否已被全部加载过
 			var ret = Q.grep(ids, function(val) {
 				return !isNull(getModule(id2url(val), val))
 			});
 			if (ret.length == ids.length) {
-				preload(callback, ids)
+				batload(callback, ids)
 			} else {
 				queue.push({
 					ids : ids,

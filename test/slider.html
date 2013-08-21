@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10"/>  
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<META HTTP-EQUIV="pragma" CONTENT="no-cache"> 
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate"> 
+<META HTTP-EQUIV="expires" CONTENT="0"> 
+<meta http - equiv="Content-Type" content="text/html; charset=utf-8"/ >
+<link rel="stylesheet" href="unit/qunit.css" type="text/css"
+	media="screen" />
+
+
+
+<title></title>
+<style type="text/css">
+.cct {
+	margin: 0 auto;
+	overflow: hidden;
+	width: 160px;
+	height: 160px;
+}
+
+ul {
+	position: relative;
+	left: 0px;
+	list-style: none;
+	list-style-type: none;
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+	width: 1300%;
+}
+
+ul li {
+	float: left;
+	padding: 0;
+	margin: 0;
+	width: 160px;
+	height: 160px;
+	animation: translateX(0px)
+}
+
+img {
+	width: 160px;
+	height: 160px;
+}
+</style>
+</head>
+<body>
+	<div id="dk" style="left: -80px"></div>
+	<div id="dg" class="cct" style="">
+
+		<ul style=" -webkit-backface-visibility: hidden;-ms-backface-visibility: hidden;backface-visibility: hidden;">
+
+			<li id="a1"><img alt=""
+				src="/test/img/1.jpg"></li>
+			<li id="a2"><img alt=""
+				src="/test/img/2.jpg"></li>
+			<li id="a3"><img alt=""
+				src="/test/img/3.jpg"></li>
+			<li id="a4"><img alt=""
+				src="/test/img/4.jpg"></li>
+
+		</ul>
+
+	<h4>0</h4> </div>
+	  <div id="show0">
+   </div>
+   <h4>1</h4> <div id="show">
+   </div>
+   <h4>2</h4> <div id="show2">
+   </div>
+    <h4>3-</h4> <div id="show3">
+   </div>
+</body>
+<script type="text/javascript" src="../assets/Qmik-debug.js"></script>
+<script type="text/javascript" src="../src/plugins/Qmik.fn.slider.js"></script>
+<script>
+	$().ready(function() {
+	    $("#show2").html($.cssPrefix("transition"));
+		
+		$("body").on("touchstart",function(e){
+         e.stopPropagation();
+         e.preventDefault();
+		})
+		
+		$("resize").focus(function() {
+			console.log(">>>>>>>>>>>>>>>>foces")
+		}).blur(function() {
+			console.log(">>>>>>>>>>>>>>>>blur")
+		}).resize(function() {
+			console.log(">>>>>>>>>>>>resize")
+		})
+		console.log(document.hasFocus())
+		var $kv = $("li[kv='m']");
+		var $next = $kv.next("li");
+		console.log($next.length);
+		var silder = $("#dg").silder({
+			focus : false,
+			delay : 500,
+			speed : 1000,
+			cross : "x",
+			move:"prev"
+		});
+ 
+	})
+</script>
+</html>

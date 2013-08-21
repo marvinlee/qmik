@@ -72,17 +72,16 @@
 			move = "next", //
 			isY = me.isY();
 			window.onerror = function(e) {
-				alert(e.message);
+				alert("error:" + e.message);
+				console.log(e.stack);
 			}
 			me.ul.on({
 				"touchstart" : function(e) {
 					me.stop();
 					if (me.isPrev()) {
-						length = isY ? me.height : me.width;
-						var countLength = isY ? me.countHeight : me.countWidth;
-						me.current.prev("li").length < 1 && me._initPosition(-countLength + length);
+						me.current.prev("li").length < 1 && (me.current = me.last)
 					} else {
-						me.current.next("li").length < 1 && me._initPosition();
+						me.current.next("li").length < 1 && (me.current = me.first)
 					}
 					var touche = e.touches[0];
 					moveStart = isY ? touche.clientY : touche.clientX;
@@ -93,16 +92,13 @@
 					var touche = e.touches[0];
 					var diff = (isY ? touche.clientY : touche.clientX) - moveStart;
 					move = diff > 0 ? "prev" : "next";
-					//setCurrentByPos(me);
-					moveStart = touche.clientX;
+					moveStart = isY ? touche.clientY : touche.clientX;
 				},
 				"touchend" : function(e) {
-					if (move == "prev") {
-						me.prev()
-					} else {
-						me.next();
-					}
-					me.play();
+					move == "prev" ? me.prev() : me.next();
+					Q.delay(function() {
+						me.play()
+					}, conf.speed + conf.delay);
 				}
 			});
 		},
@@ -116,6 +112,14 @@
 				"transform" : translate
 			}));
 			me.current = me.isPrev() ? me.last : me.first
+		},
+		_toStartPosition : function() {
+			this._initPosition();
+		},
+		_toLastPosition : function() {
+			var me = this, isY = me.isY(), length = isY ? me.height : me.width, //
+			countLength = isY ? me.countHeight : me.countWidth;
+			me._initPosition(-countLength + length);
 		},
 		//是否是垂直方向
 		isY : function() {
@@ -172,7 +176,6 @@
 			length = isY ? me.height : me.width;
 			if ($tar && $tar.length > 0) {
 				if (me.isToggle()) {
-					var countLength = isY ? me.countHeight : me.countWidth;
 					me._site += length;
 					me.ul.css(Q.cssPrefix({
 						"transition" : conf.speed + "ms",
@@ -180,7 +183,7 @@
 					}));
 					me._threadSite && me._threadSite.stop();
 					me._threadSite = Q.delay(function() {
-						me.current[0] == me.list.first()[0] && me._initPosition(-countLength + length);
+						me.current[0] == me.list.first()[0] && me._toLastPosition();
 						callback && callback(me);
 					}, conf.speed + conf.delay - 10)
 				}
