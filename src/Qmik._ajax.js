@@ -15,16 +15,17 @@
 	}
 	function ajax(conf) {
 		var _config = Q.extend({}, ac, conf), dataType = _config.dataType, ttl = _config.timeout, //
-		xhr = request(), data = _config.data, pid, success = _config.success //
+		xhr = request(), data = _config.data, pid, success = _config.success, error = _config.error //
 		;
 		//_config.beforeSend && _config.beforeSend();
 		xhr.onreadystatechange = Q.box(function() {
 			if (4 == xhr.readyState) {
 				if (200 == xhr.status) {
 					clearTimeout(pid);
-					success && success(dataType == 'xml' ? xhr.responseXML : (dataType == 'json' ? toObject(xhr.responseText) : xhr.responseText))
+					success && success(dataType == 'xml' ? xhr.responseXML
+																	: (dataType == 'json' ? toObject(xhr.responseText) : xhr.responseText))
 				} else {
-					_config.error && _config.error(xhr)
+					error && error(xhr)
 				}
 			}
 		});
