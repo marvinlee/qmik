@@ -4,7 +4,10 @@ Qmik.sun 就按需加载模块,轻松实现按需要加载相应的js,css文件
 Qmik的语法与jquery是一致的,核心库大小16-23k左右,支持uc,ie>=10,基于webkit内核的浏览器(如chrom,safari等),firefox; 
 	推荐做移动web开发.
 	
-API简介:
+API简介:<br/><br/>
+
+
+
 			encode(value) :等同于encodeURIComponent
 			decode(value) :decodeURIComponent ,
 			isBool(value) : 布尔判断,
@@ -67,18 +70,29 @@ API简介:
 			box(callback)  : 异常监控,发现异常,并把异常向服务器发送,需要执行$.config({box:{enable : true}})
 			
 			
-2.查询api:支持下面的查询格式
-	$("#id")
-	$(".class")
-	$("ul")
-	$("#id .class")
-	$("#id > .class")
-	$(".class div[flag=aaa]")	
+2.查询api:支持下面的查询格式<br/><br/>
 
 
 
-3.按需加载例子:
+			$("#id")
+			$(".class")
+			$("ul")
+			$("#id .class")
+			$("#id > .class")
+			$(".class div[flag=aaa]")	
+	
+	
+	
+<br/><br/>
+
+
+3.按需加载例子:<br/><br/>
+
+
 	a. Config.js 文件,写如下内容:
+	
+	
+	
 			(function($, define) {
 				
 				$.config({
@@ -108,7 +122,10 @@ API简介:
 			})(Qmik, Qmik.sun.define);
 	
 	
-	b.在index.html页面引入js
+	b.在index.html页面引入js<br/><br/>
+	
+	
+	
 			<!-- 加载框架 -->
 			<script type="text/javascript" src="/xxxx/Qmik.js"></script>
 			<!-- 加载配置文件 -->
@@ -117,8 +134,10 @@ API简介:
   
   
   c.实现Home业务模块功能
+  
+  
+  
   		(function($, define) {
-  			
   			function Home(nav){
   				this.nav=nav;
   			}
@@ -130,17 +149,19 @@ API简介:
 							me.doxxx();
 						});
   			}
-  			
-  			 
-  		
+
 				define(function(require, exports, module) {
 					var nav = require("Nav");//依赖导航模块
 					exports=new Home(nav);
 				});
 			})(Qmik, Qmik.sun.define);
 			
+		
 			
 	 d.使用模块,在index.html使用 Home模块功能.  在index.html的尾部加入如下代码:
+	 
+	 
+	 
 		 	<script type="text/javascript">
 				// 界面初始化 
 				(function($, define) {
