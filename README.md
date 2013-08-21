@@ -174,3 +174,23 @@ API简介:<br/><br/>
 					});
 				})(Qmik, Qmik.define);
 			</script>
+			
+			
+			
+			
+			
+			
+4.下载源码,自定义构建
+
+		1.安装github客户端,需要使用到git-shell  (http://windows.github.com/)
+		2.下载 nodejs ,安装 ,http://nodejs.org/
+		3. 把nodejs的bin配置到path里,(已经自带了npm)
+		4.运行Git Shell,进入下载下来的源码地址,如果d:/download/qmik/
+				执行命令:
+				     	npm uninstall -g grunt  卸载 
+		        	npm install -g grunt-cli  (把安装完后的grunt指令添加到 path里 C:\Users\xxx\AppData\Roaming\npm)
+							npm install grunt-contrib-uglify  安装uglify 
+							npm install  grunt-contrib-cssmin  安装cssmin
+							npm install  grunt-contrib-qunit  安装cssmin
+							npm install  grunt-contrib-concat 安装cssmin
+							npm install  grunt-contrib-clean  安装cssmin
