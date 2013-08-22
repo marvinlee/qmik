@@ -97,7 +97,7 @@
 	}
 	fn.extend({
 		on : function(name, callback) {
-			var p = Array.prototype.slice.call(arguments, 2);
+			var p = [].slice.call(arguments, 2);
 			each(this, function(k, v) {
 				Q.isPlainObject(name) ? each(name, function(k, j) {
 					Eadd(v, k, j, callback)
