@@ -96,7 +96,7 @@ API简介:<br/><br/>
 			(function($, define) {
 				
 				$.config({
-					context : "/qmik/",// 配置Qmik工程的基础路径,如果没有配置,默认= location.protocol + "//" + location.hostname
+					context : "/",// 配置工程的访问路径,如果没有配置,默认= /
 					debug:true,//debug模式
 					box:{	
 						enable : true,//启用异常收集
@@ -194,3 +194,6 @@ API简介:<br/><br/>
 							npm install  grunt-contrib-qunit  安装cssmin
 							npm install  grunt-contrib-concat 安装cssmin
 							npm install  grunt-contrib-clean  安装cssmin
+							
+			 安装完成后,进入目录,执行  grunt命令,开始自动构建,构建代码后的代码放在 assets 目录下
+			 				
