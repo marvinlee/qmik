@@ -180,7 +180,7 @@ API简介:<br/><br/>
 			
 			
 			
-4.下载源码,自定义构建
+4.下载源码,自定义构建(构建时,只能选择src目录下的文件合并成一个Qmik.js,不能包含plugins等其它目录)
 
 		1.安装github客户端,需要使用到git-shell  (http://windows.github.com/)
 		2.下载 nodejs ,安装 ,http://nodejs.org/
