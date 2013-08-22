@@ -110,20 +110,20 @@
 					switch (qa.type) {
 					case 'ID':
 						at(dom, "id") == q && r.push(dom);
-						break
+						break;
 					case 'ATTR':
 						var ds = getTagAttr(q), k = ds[1], v = ds[2], bi;
 						if (ds[3] == 1) bi = at(dom, k) == v;
 						else bi = at(dom, k) != v;
 						dom.tagName == toUpper(ds[0]) && bi && r.push(dom);
-						break
+						break;
 					case 'CT':
 						var ds = getTagClass(q), tn = ds[0], cn = ds[1];
 						tn ? dom.tagName == toUpper(tn) && hasClass(dom, cn) && r.push(dom) : hasClass(dom, cn) && r.push(dom)
-						break
+						break;
 					case 'TAG':
 						dom.tagName == toUpper(q) && r.push(dom);
-						break
+						break;
 					}
 				}
 			})
