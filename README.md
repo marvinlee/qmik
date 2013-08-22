@@ -194,3 +194,6 @@ API简介:<br/><br/>
 							npm install  grunt-contrib-qunit  安装cssmin
 							npm install  grunt-contrib-concat 安装cssmin
 							npm install  grunt-contrib-clean  安装cssmin
+							
+			 安装完成后,进入目录,执行  grunt命令,开始自动构建,构建代码后的代码放在 assets 目录下
+			 				
