@@ -94,7 +94,7 @@
 		}
 	}
 	function execObject(v, target) {
-		return isFun(v) ? (target ? v.call(target, v) : v()) : v
+		return isFun(v) ? v() : v
 	}
 	// As much as possible to Array
 	function muchToArray(a) {
@@ -593,7 +593,7 @@
 		val : function(v) {
 			if (isNull(v)) return this.attr("value") || "";
 			each(this, function(i, u) {
-				Q(u).attr("value", v)
+				u.value = execObject(v)
 			})
 		},
 		serialize : function() {
