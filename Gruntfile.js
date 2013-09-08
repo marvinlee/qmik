@@ -21,7 +21,7 @@ module.exports = function(grunt) {
 		concat : {
 			dist : {
 				src : [
-					'src/Qmik.js', 'src/Qmik._query.js', 'src/Qmik._event.js', 'src/Qmik._view.js', 'src/Qmik._ajax.js', 'src/Qmik.sun.js'
+					'src/Qmik.js', 'src/Qmik._query.js', 'src/Qmik._event.js', 'src/Qmik._ajax.js', 'src/Qmik.sun.js', 'src/Qmik._view.js', 'src/Qmik.box.js'
 				],
 				dest : "assets/Qmik-debug.js"
 			}
@@ -34,7 +34,13 @@ module.exports = function(grunt) {
 			build : {
 				files : {
 					'assets/Qmik.js' : [
-						'src/Qmik.js', 'src/Qmik._query.js', 'src/Qmik._event.js', 'src/Qmik.sun.js', 'src/Qmik._ajax.js', 'src/Qmik._view.js'
+						'src/Qmik.js',
+						'src/Qmik._query.js',
+						'src/Qmik._event.js',
+						'src/Qmik.sun.js',
+						'src/Qmik._ajax.js',
+						'src/Qmik._view.js',
+						'src/Qmik.box.js'
 					],
 					'assets/Qmik._query.js' : [
 						'src/Qmik._query.js'
@@ -53,6 +59,9 @@ module.exports = function(grunt) {
 					],
 					'assets/Qmik._ajax.js' : [
 						'src/Qmik._ajax.js'
+					],
+					'assets/Qmik._ajax.js' : [
+						'src/Qmik.box.js'
 					],
 					'assets/plugins/Qmik.nav.js' : [
 						'src/plugins/Qmik.nav.js'

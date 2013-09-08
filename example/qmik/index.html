@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -53,11 +54,21 @@ body {
 		<div id="main_module" class="cmain"></div>
 	</div>
 	<!-- 加载框架 -->
-	<script type="text/javascript" src="../../assets/Qmik.js"></script>
+	<script type="text/javascript" src="../../assets/Qmik-debug.js"></script>
 	<!-- 加载配置文件 -->
 	<script type="text/javascript" src="module/Config.js"></script>
 
 	<script type="text/javascript">
+		console.log("GOGO")
+		$().ready(function() {
+			console.log("0-----------`````````````----1");
+		});
+		$().ready(function() {
+			console.log("0-----------`````````````----2");
+		});
+		$().ready(function() {
+			console.log("0-----------`````````````----3");
+		});
 		// 界面初始化 
 		(function($, define) {
 			//依赖3个模块初始化
@@ -70,7 +81,6 @@ body {
 				});
 			});
 		})(Qmik, Qmik.define);
-		
 		//throw new Error("000emm me roor")
 	</script>
 </body>
