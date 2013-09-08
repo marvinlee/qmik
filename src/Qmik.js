@@ -8,15 +8,10 @@
 	var encode = encodeURIComponent, decode = decodeURIComponent, //
 	baseURL = loc.protocol + "//" + loc.hostname + (loc.port ? ":" + loc.port : ""), //
 	config = {
-		context : "/",//工程上下文目录
-		box : {
-			enable : !0,//对box异常收集的支持
-			ttl : 20000,//收集时间间隔
-			url : "/errorCollect" //收集地址
-		}
+		context : "/"//工程上下文目录
 	};
 	var slice = Array.prototype.slice;
-	var readyRE = /complete|loaded|interactive/i;
+	//var readyRE = /complete|loaded|interactive/i;
 	// define qmik object
 	function Q(selector, context) {
 		return Q.init(selector, context)
@@ -150,21 +145,14 @@
 	function loadResource(type, url, success, error) {
 		var isCss = type == "css", isScript = type == "js", //
 		tagName = isCss ? "link" : isScript ? "script" : "iframe", //
-		node = Q(doc.createElement(tagName)), state, noExec = !0 // is execed;
-		node.attr("_src", url);
+		node = Q(doc.createElement(tagName)).attr("_src", url);
 		isCss ? node.attr("rel", "stylesheet") : isScript && node.attr("type", "text/javascript");
-		function _error(e) {
+		node.ready(function(e) {
+			success && success(e)
+		}).on("error", function(e) {
 			node.remove();
 			error && error(e)
-		}
-		function load(e) {
-			state = node[0].readyState;
-			if (noExec && (likeNull(state) || readyRE.test(state))) {
-				noExec = !1;
-				success && Q.box(success)(e)
-			}
-		}
-		node.on && node.on("load", load).on("readystatechange", load).on("error", _error);
+		});
 		Q("head").append(node);
 		return node
 	}
@@ -281,7 +269,7 @@
 				return loadResource("css", url, success, error).attr("href", url)[0]
 			},
 			serialize : function(array) {
-				return Q.param(Q.serializeArray(array))
+				return Q.param(Q.serializeArray(isString(array) ? Q(array) : array))
 			},
 			serializeArray : function(array) {
 				return filter(array, function(v) {
@@ -413,17 +401,6 @@
 																																	+ _url)
 																									: _url
 			},
-			box : function(callback) {
-				//enable box error notify:Q.config(error,{enable,url:"send you service"});
-				return config.box.enable ? function() {
-					try {
-						callback.apply(this, arguments)
-					} catch (e) {
-						collect(e);
-						throw e
-					}
-				} : callback
-			},
 			cssPrefix : function(style) {
 				var ns;
 				if (isString(style)) {
@@ -443,40 +420,6 @@
 		val.toString = val
 	});
 	///////////////////////////////////////////////////////
-	//box bariable
-	var errorStack = {
-		count : 0
-	};
-	//收集错误信息
-	function collect(e) {
-		if (config.box.enable) {
-			// Q.config(box,{enable,url:""});
-			//enable support box error send to service
-			var stack = e.stack, log = errorStack[stack];
-			if (log) {
-				log.num++
-			} else {
-				log = errorStack[stack] = {
-					num : 1
-				};
-				errorStack.count++
-			}
-		}
-	}
-	Q.box.collect = collect;
-	win.onerror = collect;
-	function send() {
-		var box = config.box, img;
-		if (box.enable && errorStack.count > 0) {
-			img = new Image();
-			img.src = config.box.url + "?log=" + toString(errorStack);
-			errorStack = {
-				count : 0
-			}
-		}
-		Q.delay(send, box.ttl)
-	}
-	Q.delay(send, config.box.ttl);
 	Q.version = "1.00";
 	Q.global = win;
 	win.Qmik = Q;

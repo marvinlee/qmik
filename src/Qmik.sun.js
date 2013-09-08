@@ -4,7 +4,7 @@
  * @version:1.00.000
  */
 (function(Q) {
-	var win = Q.global, doc = win.document, loc = win.location;
+	var win = Q.global, loc = win.location;
 	var isArray = Q.isArray, isFun = Q.isFun, isNull = Q.isNull, each = Q.each;
 	var config = {
 		alias : {},

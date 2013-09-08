@@ -18,33 +18,31 @@
 	}, addUints = "height width top right bottom left".split(" ");
 	function Query(selector, context) {
 		var me = this, r;
-		Q.box(function() {
-			me.context = context = context || doc;
-			me.selector = selector;
-			me.length = 0;
-			if (isString(selector)) {
-				if (rNode.test(selector)) {
-					var t = doc.createElement('div');
-					t.innerHTML = selector;
-					r = t.childNodes
-				} else {
-					each(selector.split(","), function(i, val) {
-						each(find(val, context), function(j, dom) {
-							dom && me.push(dom)
-						})
-					});
-					return me
-				}
+		me.context = context = context || doc;
+		me.selector = selector;
+		me.length = 0;
+		if (isString(selector)) {
+			if (rNode.test(selector)) {
+				var t = doc.createElement('div');
+				t.innerHTML = selector;
+				r = t.childNodes
 			} else {
-				r = likeArray(selector) ? selector : [
-					selector
-				];
-				r = (r + "" == "[object Text]") ? [] : r
+				each(selector.split(","), function(i, val) {
+					each(find(val, context), function(j, dom) {
+						dom && me.push(dom)
+					})
+				});
+				return me
 			}
-			each(r || [], function(i, dom) {
-				dom && me.push(dom)
-			})
-		})();
+		} else {
+			r = likeArray(selector) ? selector : [
+				selector
+			];
+			r = (r + "" == "[object Text]") ? [] : r
+		}
+		each(r || [], function(i, dom) {
+			dom && me.push(dom)
+		});
 		return me
 	}
 	Q.extend(Query.prototype, {
@@ -596,13 +594,8 @@
 				u.value = execObject(v)
 			})
 		},
-		serialize : function() {
-			var r = [];
-			if (this) r = Q('input', this);
-			else each(this, function(i, v) {
-				if (isDom(v)) Q.merge(r, Q.serializeArray(Q('input', v)))
-			});
-			return Q.serialize(r)
+		serialize : function(selector) {
+			return Q.serialize(Q(selector || "input", this))
 		},
 		next : function(s) {
 			return upon(this, s, "next")

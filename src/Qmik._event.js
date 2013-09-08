@@ -5,34 +5,40 @@
  */
 (function(Q) { /* event */
 	var win = Q.global, doc = win.document, fn = Q.fn;
-	var readyRE = /complete|loaded/, // /complete|loaded|interactive/
+	var readyRE = /complete|loaded|interactive/i, // /complete|loaded|interactive/
 	ek = "$QEvents", liveFuns = {};
-	var isNull = Q.isNull, isFun = Q.isFun, isDom = Q.isDom, each = Q.each;
+	var isNull = Q.isNull, isFun = Q.isFun, each = Q.each;
 	function SE() {
 		return !isNull(doc.addEventListener)
 	}
-	Q.ready = fn.ready = function(fun) {
-		// SE() ? Q(doc).bind('DOMContentLoaded', fun) : doc.onreadystatechange =
-		// function(e) {
-		// readyRE.test(doc.readyState) && fun(e)
-		// }
-		//doc.createEvent("MouseEvents")
-		var node = this[0] || doc;
+	function execReady(node, event) {
+		each(node.$$handls, function(i, val) {
+			val(event);
+		});
+	}
+	Q.ready = fn.ready = function(fun, context) {
+		var node = context || this[0] || doc, state;
 		function ready(e) {
-			(readyRE.test(node.readyState) || node._loadState == "ok") && fun.call(node, e || doc.createEvent("MouseEvents"))
+			state = node.readyState;
+			if (!isNull(node.$$handls) && (readyRE.test(state) || (isNull(state) && "load" == e.type))) {
+				"loaded" == state ? Q.delay(function() {
+					execReady(node)
+				}, 1) : execReady(node, e || event);
+				node.$$handls = null
+			}
 		}
 		if (readyRE.test(node.readyState)) {
-			ready()
+			fun.call(node, doc.createEvent("MouseEvents"))
 		} else {
-			Q(doc).on({
-				"readystatechange" : ready,
-				"load" : ready
-			});
-			isNull(node._loadState) && Q.delay(function() {
-				node._loadState = "ok";
-				ready()
-			}, 3000);
-			node._loadState = ""
+			var hs = node.$$handls = node.$$handls || [];
+			hs.push(fun);
+			if (hs.length < 2) {
+				Q(node).on({
+					"DOMContentLoaded" : ready,
+					"readystatechange" : ready,
+					"load" : ready
+				});
+			}
 		}
 		return this
 	}
@@ -152,7 +158,7 @@
 	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
 	 * 90：逆时针转了 Android2.1尚未支持重力感应
 	 */
-	var qwc = "blur focus load scroll click".split(" ");
+	var qwc = "click blur focus scroll resize".split(" ");
 	each(qwc, function(i, v) {
 		fn[v] = function(f) {
 			return f ? this.on(v, f) : this.trigger(v)
