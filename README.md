@@ -36,7 +36,6 @@ API简介:<br/><br/>
 			array(array) : //合并成一个新数组,
 			inArray(value, array) : 在数组里的索引位,
 			unique(array) : 数组去重,
-			contains(grandfather, child) : 包含节点,
 			map(array, callback) : //对数组里的内容,全部做一次数据映射转换,
 			getScript(url, success, error) :  取得脚本
 			getCss(url, success, error) :  取得css
