@@ -46,15 +46,15 @@ API简介:<br/><br/>
 
 			param :  抽取数组里面每个元素的name和value属性,转换成一个url形式(a=b&name=g)的字符串,有做encode
 			now([date]) :   当前时间
-			delay(fun, time, target)  延迟执行,类似setTimeout,返回一个对象,对象有个 stop方法,用于停止执行
+			delay(fun, time,...)  延迟执行,类似setTimeout,返回一个对象,对象有个 stop方法,用于停止执行,...表示要传输的参数,如:$.delay(function(a1,a2){},1000,1,2);//1 对应 a1,2对应 a2
 			// 
 			/**
 			 * fun:执行的方法
 			 * cycleTime:执行的周期时间
 			 * ttl:过期时间,执行时间>ttl时,停止执行,单位 ms(毫秒)
-			 * target:apply,call的指向对象
+			 * ,...表示要传输的参数 $.cycle(function(a1,a2){},1000,30000,1,2);//1 对应 a1,2对应 a2
 			 */
-			cycle(fun, cycleTime, ttl) :  周期执行,类似于setInterval,会返回一个对象,对象有个 stop方法,用于停止执行
+			cycle(fun, cycleTime, ttl,...) :  周期执行,类似于setInterval,会返回一个对象,对象有个 stop方法,用于停止执行
 
 			log(msg, event) : 打日志
 			isIphone : 
