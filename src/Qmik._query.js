@@ -518,9 +518,13 @@
 			return this
 		},
 		html : function(v) {
-			if (arguments.length < 1) return attr(this, "innerHTML")
+			var me = this;
+			if (arguments.length < 1) return attr(me, "innerHTML")
 			else {
-				attr(this, "innerHTML", isQmik(v) ? v.html() : v, !0)
+				attr(me, "innerHTML", isQmik(v) ? v.html() : v, !0);
+				Q("script", me).each(function(i, dom) {
+					Q.likeNull(dom.text) || eval(dom.text)
+				})
 			}
 			return this
 		},
