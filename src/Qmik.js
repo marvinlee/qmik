@@ -300,11 +300,12 @@
 			/**
 			 * target:apply,call的指向对象
 			 */
-			delay : function(fun, time, target) {
+			delay : function(fun, time) {
+				var params = slice.call(arguments, 2);
 				function Delay() {
 					var me = this;
 					me.pid = setTimeout(function() {
-						fun.apply(target || fun, slice.call(arguments, 2))
+						fun.apply(null, params)
 					}, time)
 				}
 				Q.extend(Delay.prototype, {
@@ -321,23 +322,23 @@
 			 * ttl:过期时间,执行时间>ttl时,停止执行,单位 ms(毫秒)
 			 * target:apply,call的指向对象
 			 */
-			cycle : function(fun, cycleTime, ttl, target) {
-				var params = slice.call(arguments, 2), start = Q.now();
+			cycle : function(fun, cycleTime, ttl) {
+				var params = slice.call(arguments, 3), start = Q.now();
 				function Cycle() {
 					var me = this;
 					function _exec() {
-						if ((isNull(ttl) || Q.now() - start <= ttl) && me.state != 0) {
-							fun.apply(target || fun, params);
-							Q.delay(_exec, cycleTime)
+						if ((isNull(ttl) || Q.now() - start <= ttl)) {
+							fun.apply(null, params);
+							me.p = Q.delay(_exec, cycleTime)
 						}
 					}
 					Q.delay(_exec, cycleTime)
 				}
 				Q.extend(Cycle.prototype, {
 					stop : function() {
-						this.state = 0
+						this.p && this.p.stop()
 					}
-				})
+				});
 				return new Cycle()
 			},
 			log : function(msg, e) {
