@@ -131,9 +131,9 @@
 		}
 		return array
 	}
-	function isGrandfather(grandfather, child) {
-		return isDom(child) && (grandfather === child.parentNode ? !0 : isGrandfather(grandfather, child.parentNode))
-	}
+	/*	function isGrandfather(grandfather, child) {
+			return isDom(child) && (grandfather === child.parentNode ? !0 : isGrandfather(grandfather, child.parentNode))
+		}*/
 	// 合并url,参数个数不限
 	function concactUrl() {
 		return Q.map(arguments, function(i, url) {
@@ -233,7 +233,6 @@
 				});
 				return ret
 			},
-			contains : isGrandfather,
 			/**
 			 * 对数组里的内容,做部做一次数据映射转换,
 			 * 例:
