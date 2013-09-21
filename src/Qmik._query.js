@@ -273,18 +273,19 @@
 					attr(target, name, "", isSetValue);
 					Q(target).append(val)
 				} else {
-					(isSetValue || !SE()) ? target[name] = execObject(val) : target.setAttribute(name, execObject(val))
+					var val = execObject(val);
+					(isSetValue || !SE()) ? target[name] = val : target.setAttribute(name, val);
 				}
 			}
 		}
 	}
 	function clone(o, isDeep) {
-		if (isDom(o)) { return o.cloneNode(isDeep == !0) }
+		if (isDom(o)) { return Q(o.cloneNode(isDeep == !0)) }
 		var r = [];
 		each(o, function(k, v) {
 			isDom(v) && r.push(clone(v, isDeep))
 		})
-		return new Query(r)
+		return Q(r)
 	}
 	var dn = "$Qmikdata:";
 	function data(o, k, v) {
@@ -650,6 +651,17 @@
 		},
 		parent : function(selector) {// 查找匹配的父节点
 			return parents(selector, this, true, true)
+		},
+		children : function(selector) {//查找直接子节点
+			var me = this;
+			if (selector) return Q((/^\s*\>/.test(selector) ? selector : (">" + selector)), me);
+			var r = new Query();
+			me.each(function(i, dom) {
+				each(dom.children, function(j, d1) {
+					isDom(d1) && r.push(d1)
+				})
+			})
+			return r
 		}
 	});
 	fn.extend({
