@@ -80,8 +80,50 @@ API简介:<br/><br/>
 			$("#id > .class")
 			$(".class div[flag=aaa]")	
 	
-	
-	
+3.Qmik.fn api(即 $("#id").api)
+		last : function()
+		eq : function(i) 
+		first : function() 
+		filter : function(f) 
+		even : function()
+		odd : function() 
+		gt : function(i) 
+		lt : function(i)
+		find : function(s) 
+		each : function(f)
+		append : function(c)
+		remove : function()
+		before : function(c) 
+		after : function(c)
+		html : function(v)
+		empty : function() 
+		text : function(v) 
+		addClass : function(n) 
+		rmClass : function(n)  == removeClass
+		show : function()
+		hide : function() 
+		toggle : function()
+		toggleClass : function(className)
+		map : function(callback)
+		css : function(k, v) 
+		attr : function(k, v) 
+		rmAttr : function(k)	== removeAttr
+		data : function(k, v) 
+		rmData : function(k) == removeData
+		val : function(v)
+		serialize : function(selector)
+		next : function(s) 
+		prev : function(s)
+		queue : function(k, v) 
+		dequeue : function(k)
+		clearQueue : function(k) 
+		clone : function(t) 
+		hover : function(fin, fout) 
+		hasClass : function(c) 
+		closest : function(selector) //查找最近的匹配的父(祖父)节点
+		parents : function(selector) 
+		parent : function(selector) 
+		children : function(selector)
 <br/><br/>
 
 
