@@ -84,7 +84,7 @@
 		each(events[e.type], function(i, v) {
 			fun = v.fun;
 			param = v.param || [];
-			isFun(fun) && fun.apply(m, [
+			if(isFun(fun)) e.returnValue = fun.apply(m, [
 				e
 			].concat(param))
 		})
