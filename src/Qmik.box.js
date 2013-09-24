@@ -7,7 +7,7 @@
 	var win = Q.global, box = {};
 	var config = Q.config({
 		box : {
-			enable : !0,//对box异常收集的支持
+			enable : !1,//对box异常收集的支持,默认不启用
 			ttl : 20000,//收集时间间隔
 			url : "/errorCollect" //收集地址
 		}
