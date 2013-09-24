@@ -5,12 +5,11 @@
  */
 (function() {
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent, loc = win.location;
-	var encode = encodeURIComponent, decode = decodeURIComponent, //
+	var encode = encodeURIComponent, decode = decodeURIComponent, slice = [].slice, //
 	baseURL = loc.protocol + "//" + loc.hostname + (loc.port ? ":" + loc.port : ""), //
 	config = {
 		context : "/"//工程上下文目录
 	};
-	var slice = Array.prototype.slice;
 	//var readyRE = /complete|loaded|interactive/i;
 	// define qmik object
 	function Q(selector, context) {
@@ -286,7 +285,8 @@
 			param : function(array) {
 				var h = [];
 				each(array, function(i, v) {
-					h.push(encode(v.name) + '=' + encode(execObject(v.value)))
+					isString(i) ? h.push(encode(i) + '=' + encode(execObject(v))) : v.name && h.push(encode(v.name) + '='
+																																+ encode(execObject(v.value)))
 				});
 				return h.join('&')
 			},
@@ -420,6 +420,15 @@
 	], function(i, val) {
 		val.toString = val
 	});
+	Q._in = {};//不对外部开放,不保持此对象api不变动,
+	Q.extend(Q._in, {
+		createEvent : function(type) {
+			return doc.createEvent ? doc.createEvent(type) : doc.createEventObject(type)
+		},
+		isSE : function() {
+			return !isNull(doc.addEventListener)
+		}
+	})
 	///////////////////////////////////////////////////////
 	Q.version = "1.00";
 	Q.global = win;
