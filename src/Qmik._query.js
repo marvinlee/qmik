@@ -4,8 +4,8 @@
  * @version:1.00.100
  */
 (function(Q) {
-	var win = Q.global, doc = win.document;
-	var isNull = Q.isNull, isDom = Q.isDom, each = Q.each, likeArray = Q.likeArray, isArray = Q.isArray, //
+	var win = Q.global, doc = win.document, _in = Q._in;
+	var SE = _in.isSE, isNull = Q.isNull, isDom = Q.isDom, each = Q.each, likeArray = Q.likeArray, isArray = Q.isArray, //
 	isString = Q.isString, isFun = Q.isFun, isPlainObject = Q.isPlainObject, trim = Q.trim, //
 	toLower = Q.toLower, toUpper = Q.toUpper, replace = function(value, str1, str2) {
 		return value.replace(str1, str2)
@@ -198,9 +198,6 @@
 			}
 		}
 		return value
-	}
-	function SE() {
-		return !isNull(doc.addEventListener)
 	}
 	function muchValue2Qmik(c) {
 		c = execObject(c);
