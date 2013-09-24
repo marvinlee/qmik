@@ -4,41 +4,41 @@
  * @version:1.00.000
  */
 (function(Q) { /* event */
-	var win = Q.global, doc = win.document, fn = Q.fn;
-	var readyRE = /complete|loaded|interactive/i, // /complete|loaded|interactive/
+	var win = Q.global, doc = win.document, fn = Q.fn, _in = Q._in;
+	var SE = _in.isSE, readyRE = /complete|loaded|interactive/i, // /complete|loaded|interactive/
 	ek = "$QEvents", liveFuns = {};
 	var isNull = Q.isNull, isFun = Q.isFun, each = Q.each;
-	function SE() {
-		return !isNull(doc.addEventListener)
-	}
+	/** 执行绑定方法 */
 	function execReady(node, event) {
 		each(node.$$handls, function(i, val) {
 			val(event);
 		});
+	}
+	/** 设置节点的加载成功方法 */
+	function setLoad(node, fun) {
+		node.onreadystatechange = node.onload = node.onDOMContentLoaded = fun
 	}
 	Q.ready = fn.ready = function(fun, context) {
 		var node = context || this[0] || doc, state;
 		function ready(e) {
 			state = node.readyState;
 			if (!isNull(node.$$handls) && (readyRE.test(state) || (isNull(state) && "load" == e.type))) {
-				"loaded" == state ? Q.delay(function() {
-					execReady(node)
-				}, 1) : execReady(node, e || event);
-				node.$$handls = null
+				execReady(node, e);
+				node.$$handls = null;
+				setLoad(node, null)
 			}
 		}
 		if (readyRE.test(node.readyState)) {
-			fun.call(node, doc.createEvent("MouseEvents"))
+			fun.call(node, _in.createEvent("MouseEvents"))
 		} else {
 			var hs = node.$$handls = node.$$handls || [];
 			hs.push(fun);
-			if (hs.length < 2) {
-				Q(node).on({
-					"DOMContentLoaded" : ready,
-					"readystatechange" : ready,
-					"load" : ready
-				});
-			}
+			/*Q(node).on({
+				"DOMContentLoaded" : ready,
+				"readystatechange" : ready,
+				"load" : ready
+			});*/
+			setLoad(node, ready)
 		}
 		return this
 	}
@@ -69,10 +69,10 @@
 		if (SE()) {
 			switch (name) {
 			case "hashchange":
-				e = doc.createEvent("HashChangeEvent");
+				e = _in.createEvent("HashChangeEvent");
 				break
 			default:
-				e = doc.createEvent("MouseEvents");
+				e = _in.createEvent("MouseEvents");
 			}
 			e.initEvent(name, !0, !0);
 			dom.dispatchEvent(e)
@@ -80,13 +80,16 @@
 	}
 	function handle(e) {
 		e = e || fixEvent(win.event);
-		var m = SE() ? this : (e.target || e.srcElement), fun, param, events = Q(m).data(ek) || {};
+		var retVal, m = SE() ? this : (e.target || e.srcElement), fun, param, events = Q(m).data(ek) || {};
 		each(events[e.type], function(i, v) {
 			fun = v.fun;
 			param = v.param || [];
-			if(isFun(fun)) e.returnValue = fun.apply(m, [
-				e
-			].concat(param))
+			if (isFun(fun)) {
+				retVal = fun.apply(m, [
+					e
+				].concat(param));
+				if (!isNull(retVal)) e.returnValue = retVal
+			}
 		})
 	}
 	function fixEvent(e) {
