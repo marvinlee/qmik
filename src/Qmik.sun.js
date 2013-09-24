@@ -231,6 +231,8 @@
 		}
 	});
 	Q.sun = sun;
-	win.define = Q.define = Q.sun.define;
-	win.use = Q.use = Q.sun.use
+	Q.define = Q.sun.define;
+	Q.use = Q.sun.use;
+	if (!win.define) win.define = Q.define;
+	if (!win.use) win.use = Q.use;
 })(Qmik);
