@@ -111,10 +111,14 @@
 			}, module.dependencies)
 		} else {
 			request(id, function() {
-				// useModule(getModule(id), require, callback)
-				batload(function() {
-					useModule(getModule(url, id), require, callback)
-				}, getModule(url, id).dependencies)
+				try {
+					batload(function() {
+						useModule(getModule(url, id), require, callback)
+					}, getModule(url, id).dependencies)
+				} catch (e) {
+					queue.notify();
+					throw e
+				}
 			}, loadError)
 		}
 	}
@@ -139,8 +143,7 @@
 		if (/\/.+\.css$/i.test(url.replace(/(\?.*)?/i, ""))) {
 			Q.getCss(url)
 		} else {
-			loadScript.length < 1 ? (currentScript = Q.getScript(url, success, error)) : loadScript.on("load", success)
-				.on("readystatechange", success).on("error", error)
+			currentScript = Q.getScript(url, success, error)
 		}
 	}
 	function getCurrentScript() {
