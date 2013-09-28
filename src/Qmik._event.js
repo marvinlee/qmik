@@ -94,7 +94,7 @@
 	}
 	function fixEvent(e) {
 		e.preventDefault = function() {
-			this.returnValue = !0
+			this.returnValue = !1
 		};
 		e.stopPropagation = function() {
 			this.cancelBubble = !0
