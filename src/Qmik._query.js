@@ -96,7 +96,17 @@
 	}
 	// As much as possible to Array
 	function muchToArray(a) {
-		return isArray(a) ? a : Array.prototype.slice.call(a, 0)
+		//return isArray(a) ? a : Array.prototype.slice.call(a, 0)
+		return isArray(a) ? a : (function() {
+			var r = [], i = 0;
+			try {
+				r = [].slice.call(a, 0)
+			} catch (e) {
+				while (i < a.length)
+					r.push(a[i++])
+			}
+			return r
+		})()
 	}
 	// 具体的实现查找
 	function findHandle(context, qa) {
