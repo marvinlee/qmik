@@ -47,6 +47,7 @@
 	function QueueSync(fun) {
 		var me = this;
 		me._deal = fun;
+		me.l = me.p = 0;
 		me.notify();
 	}
 	{
@@ -61,12 +62,21 @@
 				this.state = 2;
 				return this
 			},
+			size : function() {
+				return this.l - this.p
+			},
+			push : function(val) {
+				this[this.l++] = val
+			},
 			pop : function() {
-				return this.splice(0, 1)[0]
+				//return this.splice(0, 1)[0]
+				var me = this, val = me[me.p];
+				delete me[me.p++];
+				return val
 			},
 			deal : function() {
 				var me = this;
-				if (me.state == 1 && me.length > 0) {
+				if (me.state == 1 && me.size() > 0) {
 					me._deal(me.pause().pop(), function() {
 						me.notify()
 					})
@@ -74,7 +84,7 @@
 				return me
 			}
 		});
-		Q.inherit(QueueSync, Array)
+		//Q.inherit(QueueSync, Array)
 	}
 	var queue = new QueueSync(function(item, chain) {
 		var callback = item.callback;
