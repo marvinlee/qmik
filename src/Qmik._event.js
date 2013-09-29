@@ -78,9 +78,12 @@
 			dom.dispatchEvent(e)
 		} else dom.fireEvent('on' + name)
 	}
+	function getTarget(e) {
+		return e.target || e.srcElement
+	}
 	function handle(e) {
 		e = e || fixEvent(win.event);
-		var retVal, m = SE() ? this : (e.target || e.srcElement), fun, param, events = Q(m).data(ek) || {};
+		var retVal, m = SE() ? this : getTarget(e), fun, param, events = Q(m).data(ek) || {};
 		each(events[e.type], function(i, v) {
 			fun = v.fun;
 			param = v.param || [];
@@ -135,9 +138,10 @@
 			return this
 		},
 		live : function(name, callback) {
-			var select = this.selector, fun = liveFuns[getLiveName(this.selector, name, callback)] = function(e) {
-				if (Q(e.target || e.srcElement).closest(select).length > 0) {
-					callback.apply(event.target, [
+			var select = this.selector, me, fun = liveFuns[getLiveName(select, name, callback)] = function(e) {
+				me = getTarget(e);
+				if (Q(me).closest(select).length > 0) {
+					callback.apply(me, [
 						e
 					]);
 				}
