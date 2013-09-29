@@ -72,8 +72,10 @@
 		return v instanceof Array
 	}
 	function likeArray(v) { // like Array
-		return isArray(v) || (!isString(v) && (v + "" == "[object NodeList]" || v + "" == "[object HTMLCollection]"))
-					|| (Q.isQmik && Q.isQmik(v))
+		return !isString(v) && (isArray(v) || (Q.isQmik && Q.isQmik(v)) || (function() {
+			v += "";
+			return v == "[object NodeList]" || v == "[object HTMLCollection]" || v == "[object StaticNodeList]"
+		})())
 	}
 	// isFunction
 	function isFun(v) {
@@ -112,7 +114,6 @@
 	}
 	// to json
 	function toJSON(v) {
-		// return Q.exec('(' + v + ')')
 		return likeNull(v) ? "" : JSON.parse(v)
 	}
 	function isEvent(e) {
@@ -152,8 +153,12 @@
 			node.remove();
 			error && error(e)
 		});
-		Q("head").append(node);
-		return node
+		Q.delay(function() {
+			if (isCss) node[0].link = url;
+			else node[0].src = url;
+			Q("head").append(node);
+		}, 1);
+		return node[0]
 	}
 	Q
 		.extend({
@@ -173,9 +178,7 @@
 			stringify : toString,
 			parseJSON : toJSON,
 			isEvent : isEvent,
-			likeArray : function(v) { // like Array
-				return isArray(v) || (v && !isDom(v) && !isString(v) && isNum(v.length) && v != win)
-			},
+			likeArray : likeArray,
 			isDate : function(v) {
 				return v instanceof Date
 			},
@@ -198,7 +201,6 @@
 				F.prototype = superClass.prototype;
 				subClass.prototype = new F();
 				subClass.prototype.constructor = subClass;
-				subClass.prototype["super"] = new F();
 				if (superClass.prototype.constructor == Object.prototype.constructor) {
 					superClass.prototype.constructor = superClass;
 				}
@@ -243,10 +245,12 @@
 			 * console.log(array);//>>0,2,6
 			 */
 			map : function(array, callback) {
-				var r = [];
-				each(array, function(i, v) {
+				var r = [], i = 0;
+				/*each(array, function(i, v) {
 					r.push(callback(i, v))
-				});
+				});*/
+				while (array && i < array.length)
+					r.push(callback(i, array[i++]));
 				return r
 			},
 			/**
@@ -254,18 +258,14 @@
 			 */
 			getScript : function(url, success, error) {
 				url = Q.url(url);
-				var node = loadResource("js", url, success, error)[0];
-				Q.delay(function() {
-					node.src = url
-				}, 1);
-				return node
+				return loadResource("js", url, success, error)
 			},
 			/**
 			 * 取得css
 			 */
 			getCss : function(url, success, error) {
 				url = Q.url(url);
-				return loadResource("css", url, success, error).attr("href", url)[0]
+				return loadResource("css", url, success, error)
 			},
 			serialize : function(array) {
 				return Q.param(Q.serializeArray(isString(array) ? Q(array) : array))
