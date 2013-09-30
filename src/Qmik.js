@@ -74,7 +74,7 @@
 	function likeArray(v) { // like Array
 		return !isString(v) && (isArray(v) || (Q.isQmik && Q.isQmik(v)) || (function() {
 			v += "";
-			return v == "[object NodeList]" || v == "[object HTMLCollection]" || v == "[object StaticNodeList]"
+			return v == "[object Arguments]" || v == "[object NodeList]" || v == "[object HTMLCollection]" || v == "[object StaticNodeList]"
 		})())
 	}
 	// isFunction
