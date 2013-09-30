@@ -78,12 +78,10 @@
 			dom.dispatchEvent(e)
 		} else dom.fireEvent('on' + name)
 	}
-	function getTarget(e) {
-		return e.target || e.srcElement
-	}
 	function handle(e) {
-		e = e || fixEvent(win.event);
-		var retVal, m = SE() ? this : getTarget(e), fun, param, events = Q(m).data(ek) || {};
+		e = fixEvent(e || win.event);
+		//var retVal, m = SE() ? this : getTarget(e), fun, param, events = Q(m).data(ek) || {};
+		var retVal, m = this, fun, param, events = Q(m).data(ek) || {};
 		each(events[e.type], function(i, v) {
 			fun = v.fun;
 			param = v.param || [];
@@ -101,6 +99,9 @@
 		};
 		e.stopPropagation = function() {
 			this.cancelBubble = !0
+		};
+		e.getTarget = function() {
+			return e.target || e.srcElement
 		};
 		return e
 	}
@@ -138,15 +139,15 @@
 			return this
 		},
 		live : function(name, callback) {
-			var select = this.selector, me, fun = liveFuns[getLiveName(select, name, callback)] = function(e) {
-				me = getTarget(e);
+			var select = this.selector, fun = liveFuns[getLiveName(select, name, callback)] = function(e) {
+				var me = e.getTarget();
 				if (Q(me).closest(select).length > 0) {
 					callback.apply(me, [
 						e
 					]);
 				}
 			}
-			Q("body").on(name, fun)
+			Q("body").on(name, fun);
 			return this
 		},
 		die : function(name, callback) {
