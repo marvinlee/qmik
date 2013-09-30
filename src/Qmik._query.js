@@ -247,8 +247,13 @@
 			})
 		}
 	}
+	function setValue(obj, key, val) {
+		obj[key] = val;
+		return obj
+	}
 	function css(o, k, v) {
-		k = isString(k) && !isNull(v) ? Q.parseJSON('{"' + k + '":"' + execObject(v) + '"}') : k;
+		//k = isString(k) && !isNull(v) ? Q.parseJSON('{"' + k + '":"' + execObject(v) + '"}') : k;
+		k = isString(k) && !isNull(v) ? setValue({}, k, execObject(v)) : k;
 		if (likeArray(o)) {
 			if (isString(k)) return css(o[0], k);
 			each(o, function(i, j) {
