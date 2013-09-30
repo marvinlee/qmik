@@ -43,7 +43,7 @@
 			return this.toUpperCase()
 		}
 	});
-	function filter(array, callback) {
+	function grep(array, callback) {
 		var ret = [];
 		each(array, function(i, v) {
 			(callback ? callback(v) : !isNull(v)) && ret.push(v)
@@ -119,8 +119,8 @@
 	function isEvent(e) {
 		return win.Event && e instanceof win.Event || e == win.event
 	}
-	function execObject(v, target) {
-		return isFun(v) ? (target ? v.call(target, v) : v()) : v
+	function execObject(v) {
+		return isFun(v) ? v() : v
 	}
 	function merge() { // merge array or object
 		var args = arguments, array = args[0], isA = isArray(array), i = 1;
@@ -267,18 +267,7 @@
 				url = Q.url(url);
 				return loadResource("css", url, success, error)
 			},
-			serialize : function(array) {
-				return Q.param(Q.serializeArray(isString(array) ? Q(array) : array))
-			},
-			serializeArray : function(array) {
-				return filter(array, function(v) {
-					return v && v.name ? {
-						name : v.name,
-						value : execObject(v.value)
-					} : !1
-				})
-			},
-			grep : filter,
+			grep : grep,
 			/**
 			 * 抽取数组里面每个元素的name和value属性,转换成一个url形式(a=b&name=g)的字符串
 			 */
