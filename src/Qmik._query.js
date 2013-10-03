@@ -275,7 +275,8 @@
 				attr(j, name, val, isSetValue)
 			})
 		} else if (!isNull(target)) {
-			if (isString(name) && isNull(val)) return target[name] ? target[name] : target.getAttribute(name);
+			//if (isString(name) && isNull(val)) return target[name] ? target[name] : target.getAttribute(name);
+			if (isString(name) && isNull(val)) return (isSetValue || !SE()) ? target[name] : target.getAttribute(name) || target[name];
 			if (isPlainObject(name)) {
 				each(name, function(i, j) {
 					attr(target, i, j, isSetValue)
