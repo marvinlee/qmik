@@ -26,7 +26,7 @@
 			cb = cb[0].split("=")[0];
 			url = url.replace(regUrl, cb + "=" + callbackName)
 		} else {
-			url = url + "callback=" + callbackName
+			url += "&callback=" + callbackName
 		}
 		url += gdata;
 		function err() {
@@ -67,8 +67,7 @@
 			}
 		};
 		if (isGet) {
-			if (url.indexOf("?") < 1) url += "?";
-			url += "&" + Q.param(data)
+			url += (url.indexOf("?") < 1 ? "?" : "&") + Q.param(data);
 		}
 		xhr.open(_config.type, url, _config.async);
 		xhr.setRequestHeader("Cache-Control", "no-cache");
