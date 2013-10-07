@@ -4,27 +4,31 @@
  * @version:1.00.000
  */
 (function(Q) {
-	var win = Q.global, loc = win.location;
-	var isArray = Q.isArray, isFun = Q.isFun, isNull = Q.isNull, each = Q.each;
+	var isFun = Q.isFun, isNull = Q.isNull, now = Q.now;
 	var config = {
-		alias : {},
-		paths : {},
-		vars : {},
-		map : [],
+		alias : {},//别名系统
+		vars : {},//路径变量系统
+		gap : 60, //单位秒,间隔多少秒回收模块,释放空间
 		preload : []
+	//预加载
 	};
-	var cacheModule = {}, currentScript, ispreload = !1;
+	var cacheModule = {}, //模块池
+	currentScript, //当前脚本
+	pres, //预加载的全路径url
+	ispreload = !1;//是否加载过预加载
 	var sun = {};
-	function Module(id, url, dependencies, factory) {
+	function Module(url, dependencies, factory) {
 		Q.extend(this, {
-			id : id || url,
+			id : url,
 			url : url,
-			dir : url.replace(/(\?.*)?/, "").replace(/(\/[^\/]*)$/i, "/"),//当前目录
+			dir : url.replace(/\?.*/, "").replace(/[^\/]*$/i, ""),//当前目录
 			dependencies : dependencies,// 依赖模块
 			factory : factory,
 			// module is ready ,if no, request src from service
 			isReady : !1,// is ready ,default false,
-			exports : {}
+			type : Q.inArray(url, pres) >= 0 ? 2 : 1,//2:预加载的类型,1:普通类型
+			exports : {},
+			last : now()
 		})
 	}
 	/** 清除注释 */
@@ -84,7 +88,6 @@
 				return me
 			}
 		});
-		//Q.inherit(QueueSync, Array)
 	}
 	var queue = new QueueSync(function(item, chain) {
 		var callback = item.callback;
@@ -98,7 +101,7 @@
 	}
 	// require module
 	function require(id) {
-		var module = getModule(id2url(id), id);
+		var module = getModule(id2url(id));
 		return module ? module.exports : null
 	}
 	// bat sequence load module
@@ -112,33 +115,26 @@
 		})(0)
 	}
 	function load(id, callback) {
-		var url = id2url(id);
-		if (id == ".js") return;
-		var module = getModule(url, id);
+		var url = id2url(id), module = getModule(url);
 		if (module) {
 			module.isReady ? useModule(module, require, callback) : batload(function() {
 				useModule(module, require, callback)
 			}, module.dependencies)
 		} else {
-			request(id, function() {
+			request(url, function() {
 				try {
 					batload(function() {
-						useModule(getModule(url, id), require, callback)
-					}, getModule(url, id).dependencies)
+						useModule(getModule(url), require, callback)
+					}, getModule(url).dependencies)
 				} catch (e) {
-					queue.notify();
+					loadError(e);
 					throw e
 				}
 			}, loadError)
 		}
 	}
-	function getModule(url, id) {
-		var module = cacheModule[url] || cacheModule[id], modules;
-		if (!module) {
-			modules = top != win && top.Qmik ? top.Qmik.sun.modules() : cacheModule;
-			module = modules[url] || modules[id]
-		}
-		return module
+	function getModule(alia) {
+		return cacheModule[id2url(alia)]
 	}
 	function useModule(module, require, callback) {
 		if (module.isReady != !0) {
@@ -146,106 +142,95 @@
 			module.exports = module.exports || nm
 		}
 		module.isReady = !0;
-		callback && callback(module.exports)
+		module.last = now();
+		callback(module.exports)
 	}
-	function request(id, success, error) {
-		var url = id2url(id), loadScript = Q("script[_src='" + url + "']");
-		if (/\/.+\.css$/i.test(url.replace(/(\?.*)?/i, ""))) {
-			Q.getCss(url)
-		} else {
-			currentScript = Q.getScript(url, success, error)
-		}
+	function request(url, success, error) {
+		/\/.+\.css(\?.*)?$/i.test(url) ? Q.getCss(url) : currentScript = Q.getScript(url, success, error)
 	}
 	function getCurrentScript() {
-		currentScript = currentScript || Q("script")[0];
 		return currentScript
 	}
 	// //////////////// id to url start ///////////////////////////////
 	function id2url(id) {
-		isNull(id) && (id = loc.href);
 		id = alias2url(id);
-		id = paths2url(id);
 		id = vars2url(id);
-		id = normalize(id);
-		return map2url(id)
+		return normalize(id)
 	}
 	function normalize(url) {
-		url = Q.url(url);
-		return !/\?/.test(url) && !/\.(css|js)$/.test(url) ? url + ".js" : url
+		return Q.url(!/\?/.test(url) && !/\.(css|js)$/.test(url) ? url + ".js" : url)
 	}
+	/** 别名转url */
 	function alias2url(id) {
-		return config.alias[id] || id;
+		return config.alias[id] || id
 	}
-	function paths2url(id) {
-		var keys = id.match(/^(\/?[0-9a-zA-Z._]+)/), key = keys ? keys[0] : id;
-		return keys ? id.replace(new RegExp("^" + key), config.paths[key] || key) : id
-	}
+	//变量转url
 	function vars2url(id) {
-		var key = id.match(/\{[0-9a-zA-Z._]+\}/);
-		key = key ? key[0] : id;
-		return id.replace(new RegExp(key, "g"), config.vars[key] || key)
-	}
-	function map2url(id) {
-		each(config.map, function(i, v) {
-			id = id.match(v[0]) ? id.replace(v[0], v[1]) : id
+		Q.each(id.match(/\$\{[0-9a-zA-Z._]+\}/g) || [], function(i, val) {
+			id = id.replace(new RegExp("\\" + val, "g"), config.vars[val.substring(2, val.length - 1)] || val)
 		});
 		return id
 	}
 	// ////////////////id to url end ///////////////////////////////
 	Q.extend(sun, {
 		use : function(ids, callback) {
-			ids = isArray(ids) ? ids : [
+			ids = Q.isArray(ids) ? ids : [
 				ids
 			];
 			if (!ispreload) {
 				queue.push({
 					ids : config.preload
 				});
+				pres = Q.map(config.preload, function(i, val) {
+					return id2url(val)
+				});
 				ispreload = !0
 			}
 			//下面检测使用的模块是否已被全部加载过
 			var ret = Q.grep(ids, function(val) {
-				return !isNull(getModule(id2url(val), val))
+				return !isNull(getModule(id2url(val)))
 			});
-			if (ret.length == ids.length) {
-				batload(callback, ids)
-			} else {
-				queue.push({
-					ids : ids,
-					callback : callback
-				});
-				queue.deal()
-			}
+			ret.length == ids.length ? batload(callback, ids) : queue.push({
+				ids : ids,
+				callback : callback
+			});
+			queue.deal()
 		},
 		// factory:function(require, exports, module)
-		define : function(id, dependencies, factory) {
+		define : function(dependencies, factory) {
+			if (isNull(getCurrentScript())) return;
 			var url = getCurrentScript().src;
-			if (isFun(id)) {
-				factory = id;
-				dependencies = [];
-				id = url
-			} else if (isFun(dependencies)) {
+			if (isFun(dependencies)) {
 				factory = dependencies;
 				dependencies = []
 			}
-			id = id2url(id);
-			if (!getModule(id) || !Q.isIE()) {
+			if (!getModule(url)) {
 				dependencies = dependencies.concat(parseDepents(factory));
-				cacheModule[url] = cacheModule[id] = new Module(id, url, Q.unique(dependencies), factory);
-				useModule(cacheModule[url], require)
+				cacheModule[url] = new Module(url, Q.unique(dependencies), factory);
+				//useModule(cacheModule[url], require)
 			}
 		},
-		config : function(opts) {
+		config : function(opts) {//参数配置
 			return Q.config(opts, config)
 		},
-		url : id2url,
-		modules : function() {
-			return cacheModule
-		}
+		//输出本功能里已经有的模块对象
+		getModules : getModule
 	});
+	//内存回收
+	function gc() {
+		Q.each(cacheModule, function(key, val) {
+			if (val.type == 1 && now() - val.last > (config.gap || 60) * 1000) {
+				try {
+					delete cacheModule[key];
+					Q("script[_src='" + key + "']").remove();
+					val.gc && val.gc()
+				} catch (e) {
+				}
+			}
+		})
+	}
+	Q.cycle(gc, config.gap);
 	Q.sun = sun;
 	Q.define = Q.sun.define;
 	Q.use = Q.sun.use;
-	if (!win.define) win.define = Q.define;
-	if (!win.use) win.use = Q.use;
 })(Qmik);
