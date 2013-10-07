@@ -1,7 +1,7 @@
 
 Qmik是一个快速和精简的JavaScript库，简化了HTML文档，事件处理，以及Ajax交互。 
 Qmik.sun 就按需加载模块,轻松实现按需要加载相应的js,css文件
-Qmik的语法与jquery是一致的,核心库大小16-23k左右,支持uc,ie>=10,基于webkit内核的浏览器(如chrom,safari等),firefox; 
+Qmik的语法与jquery是一致的,核心库大小16-23k左右,支持uc,ie>=8,基于webkit内核的浏览器(如chrom,safari等),firefox; 
 	推荐做移动web开发.
 	
 API简介:<br/><br/>
@@ -39,8 +39,6 @@ API简介:<br/><br/>
 			map(array, callback) : //对数组里的内容,全部做一次数据映射转换,
 			getScript(url, success, error) :  取得脚本
 			getCss(url, success, error) :  取得css
-			serialize(array) : 把数组序列化成 a=b&c=k 类型的字符串
-			serializeArray(array) : 把数组转换成[{name:value},{name:value}]这种类型的数组,如果原数组里没有name,就抛弃此节点
 			grep(array,callback):过滤
 
 			param :  抽取数组里面每个元素的name和value属性,转换成一个url形式(a=b&name=g)的字符串,有做encode
@@ -66,7 +64,6 @@ API简介:<br/><br/>
 			config(opts, _config) : 
 
 			url(_url) : 合并url,if 参数 _url为空,则
-			box(callback)  : 异常监控,发现异常,并把异常向服务器发送,需要执行$.config({box:{enable : true}})
 			
 			
 2.查询api:支持下面的查询格式<br/><br/>
