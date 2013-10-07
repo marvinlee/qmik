@@ -161,7 +161,7 @@
 		return r
 	}
 	function at(target, name) {
-		return target[name] || target.getAttribute(name)
+		return !SE() ? target[name] : target.getAttribute(name) || target[name]
 	}
 	//找匹配的属性和对应值
 	function findMath(array, name, value, isEqual) {
@@ -276,7 +276,8 @@
 			})
 		} else if (!isNull(target)) {
 			//if (isString(name) && isNull(val)) return target[name] ? target[name] : target.getAttribute(name);
-			if (isString(name) && isNull(val)) return (isSetValue || !SE()) ? target[name] : target.getAttribute(name) || target[name];
+			//if (isString(name) && isNull(val)) return (isSetValue || !SE()) ? target[name] : target.getAttribute(name) || target[name];
+			if (isString(name) && isNull(val)) return at(target, name);
 			if (isPlainObject(name)) {
 				each(name, function(i, j) {
 					attr(target, i, j, isSetValue)
@@ -352,9 +353,6 @@
 		return [
 			tag, cn
 		]
-	}
-	function at(o, n) {
-		return o[n] || o.getAttribute(n)
 	}
 	// selector 选择语句,parentList 父结果列表("div a.aa p" p的父结果列表就是 div a.aa)
 	function compile(selector, parentList) { // 编译查询条件，返回[{type,query,isChild}...]
