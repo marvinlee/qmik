@@ -89,7 +89,9 @@
 				retVal = fun.apply(m, [
 					e
 				].concat(param));
-				if (!isNull(retVal)) e.returnValue = retVal
+				//if (!isNull(retVal)) e.returnValue = retVal
+				//兼容ie处理
+				if (!isNull(retVal)) win.event.returnValue = e.returnValue = retVal
 			}
 		})
 	}
