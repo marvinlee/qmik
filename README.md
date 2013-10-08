@@ -70,7 +70,7 @@ API简介:<br/><br/>
 
 
 
-			$("#id")
+			$("#id") 
 			$(".class")
 			$("ul")
 			$("#id .class")
@@ -78,15 +78,16 @@ API简介:<br/><br/>
 			$(".class div[flag=aaa]")	
 	
 3.Qmik.fn api(即 $("#id").api)
+
 <br/><br/>
-		last : function()
-		eq : function(i) 
-		first : function() 
-		filter : function(f) 
-		even : function()
-		odd : function() 
-		gt : function(i) 
-		lt : function(i)
+		last : function() :最后一个
+		eq : function(i) 	:指定位置
+		first : function() 	:第一个
+		filter : function(f) :过滤选择
+		even : function()	:偶数个
+		odd : function() 	:奇数个
+		gt : function(i) :
+		lt : function(i) :
 		find : function(s) 
 		each : function(f)
 		append : function(c)
