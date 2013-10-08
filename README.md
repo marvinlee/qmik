@@ -78,6 +78,7 @@ API¼ò½é:<br/><br/>
 			$(".class div[flag=aaa]")	
 	
 3.Qmik.fn api(¼´ $("#id").api)
+<br/><br/>
 		last : function()
 		eq : function(i) 
 		first : function() 
