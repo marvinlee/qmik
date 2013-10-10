@@ -156,7 +156,6 @@
 			node.remove();
 			error && error(e)
 		});
-		node.attr("async","async");
 		Q.delay(function() {
 			if (isCss) node[0].link = url;
 			else node[0].src = url;
