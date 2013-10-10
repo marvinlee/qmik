@@ -234,7 +234,7 @@
 		} else if (isDom(o)) {
 			likeArray(child) ? each(child, function(k, v) {
 				before(o, v)
-			}) : o.parentNode.insertBefore(isDom(child) ? child : doc.createTextNode(child), o)
+			}) : o.parentNode.insertBefore(isDom(child) ? child.cloneNode(!0) : doc.createTextNode(child), o)
 		}
 	}
 	function after(o, child) {
