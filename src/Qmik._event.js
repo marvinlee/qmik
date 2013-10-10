@@ -47,7 +47,15 @@
 		t.data(ek, d);
 		if (!h) {
 			d[name] = h = [];
-			isFun(dom['on' + name]) ? (h[0] = dom['on' + name]) : SE() ? dom.addEventListener(name, handle, !1) : dom["on" + name] = handle
+			//isFun(dom['on' + name]) ? (h[0] = dom['on' + name]) : SE() ? dom.addEventListener(name, handle, !1) : dom["on" + name] = handle
+			if (isFun(dom['on' + name])) {
+				h.push({
+					fun : dom['on' + name],
+					param : []
+				});
+				delete dom['on' + name];
+			}
+			SE() ? dom.addEventListener(name, handle, !1) : dom["on" + name] = handle
 		}
 		isFun(fun) && h.push({
 			fun : fun,

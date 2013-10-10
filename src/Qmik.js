@@ -145,7 +145,10 @@
 	function loadResource(type, url, success, error) {
 		var isCss = type == "css", isScript = type == "js", //
 		tagName = isCss ? "link" : isScript ? "script" : "iframe", //
-		node = Q(doc.createElement(tagName)).attr("_src", url);
+		node = Q(doc.createElement(tagName)).attr({
+			_src : url,
+			async : "async"
+		});
 		isCss ? node.attr("rel", "stylesheet") : isScript && node.attr("type", "text/javascript");
 		node.ready(function(e) {
 			success && success(e)
@@ -153,6 +156,7 @@
 			node.remove();
 			error && error(e)
 		});
+		node.attr("async","async");
 		Q.delay(function() {
 			if (isCss) node[0].link = url;
 			else node[0].src = url;
@@ -419,7 +423,7 @@
 		}
 	})
 	///////////////////////////////////////////////////////
-	Q.version = "1.2.10";
+	Q.version = "1.2.11";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
