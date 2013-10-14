@@ -1,7 +1,7 @@
 /**
  * @author:leo
  * @email:cwq0312@163.com
- * @version:1.00.010
+ * @version:1.2.11
  */
 (function() {
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent, loc = win.location;
