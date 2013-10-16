@@ -119,7 +119,7 @@ API简介:<br/><br/>
 			data : function(k, v) 
 			rmData : function(k) == removeData
 			val : function(v)
-			serialize : function(selector)
+			
 			next : function(selector) //下一个指定元素
 			prev : function(selector) //上一个指定元素
 			clone : function(bool) 
