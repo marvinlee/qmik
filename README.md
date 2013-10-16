@@ -65,6 +65,14 @@ API简介:<br/><br/>
 
 			url(_url) : 合并url,if 参数 _url为空,则
 			
+			ajax:function({
+				dataType:'json'|'text'|'jsonp',
+				async:bool,
+				type: 'get'|'post'
+				success,function(data){},
+				error:function(){}
+			});
+
 			
 2.查询api:支持下面的查询格式<br/><br/>
 
@@ -112,12 +120,9 @@ API简介:<br/><br/>
 			rmData : function(k) == removeData
 			val : function(v)
 			serialize : function(selector)
-			next : function(s) 
-			prev : function(s)
-			queue : function(k, v) 
-			dequeue : function(k)
-			clearQueue : function(k) 
-			clone : function(t) 
+			next : function(selector) //下一个指定元素
+			prev : function(selector) //上一个指定元素
+			clone : function(bool) 
 			hover : function(fin, fout) 
 			hasClass : function(c) 
 			closest : function(selector) //查找最近的匹配的父(祖父)节点
@@ -125,7 +130,11 @@ API简介:<br/><br/>
 			parent : function(selector) 
 			children : function(selector)
 
-
+			width:function();//宽度
+			height:function()//高度
+			offset:function() //return {top:xx,left:xx} 获取匹配元素在当前视口的相对偏移
+			position:function() //return {top:xx,left:xx}获取匹配元素相对父元素的偏移
+			
 
 3.按需加载例子:<br/><br/>
 
