@@ -316,20 +316,6 @@
 			})
 		}
 	}
-	function queue(o, k, f) {
-		if (isF(k)) {
-			f = k;
-			k = "fx"
-		}
-		k = "queue$" + (k || "fx");
-		var s = data(o, k) || [];
-		if (likeArray(f)) data(o, k, toV(f, F));
-		else if (isF(f)) {
-			s.push(f);
-			data(o, k, s)
-		}
-		return isNull(f) ? likeArray(f) ? f : s : o
-	}
 	var rK = /[\S-_]+=/, rC = /[.][\S-_]+/;
 	function getTagAttr(select) { // div[name=aa] get div name aa
 		var s = select, tags = match.TAG.exec(s), tag = "", k, v, type = 1;
@@ -610,27 +596,11 @@
 				u.value = execObject(v)
 			})
 		},
-		serialize : function(selector) {
-			return Q.serialize(Q(selector || "input", this))
-		},
 		next : function(s) {
 			return upon(this, s, "next")
 		},
 		prev : function(s) {
 			return upon(this, s, "prev")
-		},
-		queue : function(k, v) {
-			return queue(this, k, v)
-		},
-		dequeue : function(k) {
-			var a = queue(this, k);
-			a[0] && a[0]();
-			a.splice(0, 1);
-			return this
-		},
-		clearQueue : function(k) {
-			queue(this, k, []);
-			return this
 		},
 		clone : function(t) {
 			return clone(this, t)
