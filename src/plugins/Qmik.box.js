@@ -60,4 +60,7 @@
 	//
 	box.collect = collect;
 	Q.box = box;
+	Q.define(function(require, exports, module) {
+		module.exports = box;
+	});
 })(Qmik);
