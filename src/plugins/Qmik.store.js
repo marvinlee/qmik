@@ -2,9 +2,10 @@
  * //存储框架 包含localStorage,sessionStorage,cookie
  */
 ;
-(function(Q, define) {
+(function(Q) {
 	// 声明
-	var local = localStorage, session = sessionStorage, win = window, doc = document;
+	var win = window, doc = document, local = win.localStorage, session = win.sessionStorage;
+	var encode = encodeURIComponent, decode = decodeURIComponent;
 	function setCookie(key, value, ttl, domain) {// 两个参数，一个是cookie的名子，一个是值
 		ttl = ttl || 30 * 24 * 60 * 60;
 		var exp = new Date(), str;
@@ -16,11 +17,13 @@
 			exp.setTime(exp.getTime() + ttl * 1000)
 		}
 		str += ";expires=" + exp.toGMTString();
-		doc.cookie = str
+		if (doc.cookie) doc.cookie = str
 	}
 	function getCookie(key) {// 取cookies函数
-		var arr = doc.cookie.match(new RegExp("(^| )" + key + "=([^;]*)(;|$)"));
-		return arr != null ? unescape(arr[2]) : null;
+		if (doc.cookie) {
+			var arr = doc.cookie.match(new RegExp("(^| )" + key + "=([^;]*)(;|$)"));
+			return arr != null ? unescape(arr[2]) : null;
+		}
 	}
 	function rmCookie(key, domain) {// 删除cookie
 		setCookie(key, "", -1, domain)
@@ -35,7 +38,7 @@
 	function ttlTime(ttl) {
 		return ttl < 0 ? ttl : new Date().getTime() + ttl * 1000;
 	}
-	var store = {
+	var Store = {
 		setLocal : function(key, value, ttl) {// 储存到localStorage,ttl:unit
 			// is
 			// second
@@ -44,7 +47,7 @@
 				__data : value,
 				__ttl : ttlTime(ttl)
 			};
-			local && local.setItem(key, JSON.stringify(item))
+			local && local.setItem(encode(key), encode(JSON.stringify(item)))
 		},
 		setSession : function(key, value, ttl) {// 储存到sessionStorage,ttl:unit
 			// is
@@ -54,14 +57,14 @@
 				__data : value,
 				__ttl : ttlTime(ttl)
 			};
-			session && session.setItem(key, JSON.stringify(item))
+			session && session.setItem(encode(key), encode(JSON.stringify(item)))
 		},
 		// 储存到cookie,ttl:unit is second
 		setCookie : function(key, value, ttl, domain) {
 			setCookie(key, value, ttl, domain)
 		},
 		getLocal : function(key) {
-			var item = local ? parseJSON(local.getItem(key)) : null;
+			var item = local ? parseJSON(decode(local.getItem(encode(key)))) : null;
 			if (item && item.__data && item.__ttl) {
 				if (item.__ttl >= 0 && item.__ttl <= new Date().getTime()) {
 					Store.rmLocal(key);
@@ -69,10 +72,10 @@
 				}
 				return item.__data
 			}
-			return item
+			return null
 		},
 		getSession : function(key) {
-			var item = session ? parseJSON(session.getItem(key)) : null;
+			var item = session ? parseJSON(decode(session.getItem(encode(key)))) : null;
 			if (item && item.__data && item.__ttl) {
 				if (item.__ttl >= 0 && item.__ttl <= new Date().getTime()) {
 					Store.rmSession(key);
@@ -80,16 +83,16 @@
 				}
 				return item.__data
 			}
-			return item
+			return null
 		},
 		getCookie : function(key) {
-			getCookie(key)
+			return getCookie(key)
 		},
 		rmLocal : function(key) {
-			local.removeItem(key)
+			local.removeItem(encode(key))
 		},
 		rmSession : function(key) {
-			session.removeItem(key)
+			session.removeItem(encode(key))
 		},
 		rmCookie : function(key, domain) {
 			rmCookie(key, domain)
@@ -106,9 +109,21 @@
 				setCookie(arr[i], "", -1, "")
 			}
 		}
-	}
-	Q.store = store;
-	define(function(require, exports, module) {
+	};
+	(function gc(){
+		setTimeout(function(){
+			if(local){
+				try{
+					for(var key in local){
+						Store.getLocal(key);;
+					}
+				}catch(e){}
+			}
+			gc();
+		},60 * 1000);
+	})();
+	Q.Store = Store;
+	Q.sun && Q.sun.define && Q.sun.define(function(require, exports, module) {
 		module.exports = Q
-	})
-})(Qmik, Qmik.define);
+	});
+})($);
