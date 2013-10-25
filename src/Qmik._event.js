@@ -5,7 +5,7 @@
  */
 (function(Q) { /* event */
 	var win = Q.global, doc = win.document, fn = Q.fn, _in = Q._in;
-	var SE = _in.isSE, readyRE = /complete|loaded|interactive/i, // /complete|loaded|interactive/
+	var SE = _in.isSE, readyRE = /complete|loaded|interactive|loading/i, // /complete|loaded|interactive/
 	ek = "$QEvents", liveFuns = {};
 	var isNull = Q.isNull, isFun = Q.isFun, each = Q.each;
 	/** 执行绑定方法 */
