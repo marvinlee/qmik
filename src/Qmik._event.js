@@ -29,7 +29,9 @@
 			}
 		}
 		if (readyRE.test(node.readyState)) {
-			fun.call(node, _in.createEvent("MouseEvents"))
+			Q.delay(function() {
+				fun.call(node, _in.createEvent("MouseEvents"))
+			}, 1);
 		} else {
 			var hs = node.$$handls = node.$$handls || [];
 			hs.push(fun);
@@ -99,9 +101,9 @@
 				].concat(param));
 				//if (!isNull(retVal)) e.returnValue = retVal
 				//兼容ie处理
-				if (!isNull(retVal)){
+				if (!isNull(retVal)) {
 					e.returnValue = retVal;
-					if(win.event)win.event.returnValue = retVal;
+					if (win.event) win.event.returnValue = retVal;
 				}
 			}
 		})
@@ -109,7 +111,7 @@
 	function fixEvent(e) {
 		e.preventDefault = function() {
 			this.returnValue = !1;
-			if(win.event) win.event.returnValue = !1;
+			if (win.event) win.event.returnValue = !1;
 		};
 		e.stopPropagation = function() {
 			this.cancelBubble = !0
