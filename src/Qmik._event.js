@@ -99,13 +99,17 @@
 				].concat(param));
 				//if (!isNull(retVal)) e.returnValue = retVal
 				//兼容ie处理
-				if (!isNull(retVal)) win.event.returnValue = e.returnValue = retVal
+				if (!isNull(retVal)){
+					e.returnValue = retVal;
+					if(win.event)win.event.returnValue = retVal;
+				}
 			}
 		})
 	}
 	function fixEvent(e) {
 		e.preventDefault = function() {
-			win.event.returnValue = this.returnValue = !1
+			this.returnValue = !1;
+			if(win.event) win.event.returnValue = !1;
 		};
 		e.stopPropagation = function() {
 			this.cancelBubble = !0
