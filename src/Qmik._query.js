@@ -517,7 +517,7 @@
 		},
 		html : function(v) {
 			var me = this;
-			if (arguments.length < 1) return attr(me, "innerHTML")
+			if (arguments.length < 1) return attr(me, "innerHTML") || "";
 			else {
 				attr(me, "innerHTML", isQmik(v) ? v.html() : v, !0);
 				Q("script", me).each(function(i, dom) {
