@@ -157,7 +157,7 @@
 			error && error(e)
 		});
 		Q.delay(function() {
-			if (isCss) node[0].link = url;
+			if (isCss) node[0].href = url;
 			else node[0].src = url;
 			Q("head").append(node);
 		}, 1);
@@ -420,9 +420,9 @@
 		isSE : function() {
 			return !isNull(doc.addEventListener)
 		}
-	})
+	});
 	///////////////////////////////////////////////////////
-	Q.version = "1.2.13";
+	Q.version = "1.2.14";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
