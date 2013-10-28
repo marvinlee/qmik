@@ -270,7 +270,7 @@
 	}
 	function attr(target, name, val, isSetValue) {
 		if (likeArray(target)) {
-			if (isString(name) && isNull(val)) return attr(target[0], name, val, isSetValue);
+			if (isString(name) && isNull(val)) return attr(target[0], name, val, isSetValue) || "";
 			each(target, function(i, j) {
 				attr(j, name, val, isSetValue)
 			})
@@ -517,7 +517,7 @@
 		},
 		html : function(v) {
 			var me = this;
-			if (arguments.length < 1) return attr(me, "innerHTML") || "";
+			if (arguments.length < 1) return attr(me, "innerHTML");
 			else {
 				attr(me, "innerHTML", isQmik(v) ? v.html() : v, !0);
 				Q("script", me).each(function(i, dom) {
