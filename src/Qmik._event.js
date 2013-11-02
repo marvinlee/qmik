@@ -109,16 +109,14 @@
 		})
 	}
 	function fixEvent(e) {
-		e.preventDefault = function() {
+		e.preventDefault || (e.preventDefault = function() {
 			this.returnValue = !1;
 			if (win.event) win.event.returnValue = !1;
-		};
-		e.stopPropagation = function() {
+		});
+		e.stopPropagation || (e.stopPropagation = function() {
 			this.cancelBubble = !0
-		};
-		e.getTarget = function() {
-			return e.target || e.srcElement
-		};
+		});
+		e.target || (e.target = e.srcElement);
 		return e
 	}
 	function getLiveName(selector, type, callback) {
