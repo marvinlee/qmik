@@ -131,9 +131,9 @@
 		}
 		return array
 	}
-	function isGrandfather(grandfather, child) {
-		return isDom(child) && (grandfather === child.parentNode ? !0 : isGrandfather(grandfather, child.parentNode))
-	}
+	/*	function isGrandfather(grandfather, child) {
+			return isDom(child) && (grandfather === child.parentNode ? !0 : isGrandfather(grandfather, child.parentNode))
+		}*/
 	// 合并url,参数个数不限
 	function concactUrl() {
 		return Q.map(arguments, function(i, url) {
@@ -163,6 +163,36 @@
 		}, 1);
 		return node[0]
 	}
+	//////////Delay class, function 实现setTimeout的功能
+	function Delay(fun, time, params) {
+		var me = this;
+		me.pid = setTimeout(function() {
+			fun.apply(null, params)
+		}, time)
+	}
+	Q.extend(Delay.prototype, {
+		stop : function() {
+			clearTimeout(this.pid)
+		}
+	});
+	///////////////
+	///////////////////Cycle class
+	function Cycle(fun, cycleTime, ttl, params) {
+		var me = this, start = Q.now();
+		function _exec() {
+			if ((isNull(ttl) || Q.now() - start <= ttl)) {
+				fun.apply(null, params);
+				me._p = new Delay(_exec, cycleTime, params);
+			}
+		}
+		me._p = new Delay(_exec, cycleTime, params);
+	}
+	Q.extend(Cycle.prototype, {
+		stop : function() {
+			this._p && this._p.stop()
+		}
+	});
+	//////////////////////
 	Q
 		.extend({
 			encode : encode,
@@ -237,7 +267,7 @@
 				});
 				return ret
 			},
-			contains : isGrandfather,
+			//contains : isGrandfather,
 			/**
 			 * 对数组里的内容,做部做一次数据映射转换,
 			 * 例:
@@ -293,19 +323,8 @@
 			 * target:apply,call的指向对象
 			 */
 			delay : function(fun, time) {
-				var params = slice.call(arguments, 2);
-				function Delay() {
-					var me = this;
-					me.pid = setTimeout(function() {
-						fun.apply(null, params)
-					}, time)
-				}
-				Q.extend(Delay.prototype, {
-					stop : function() {
-						clearTimeout(this.pid)
-					}
-				})
-				return new Delay()
+				//var params = slice.call(arguments, 2);
+				return new Delay(fun, time, slice.call(arguments, 2))
 			},
 			// 周期执行
 			/**
@@ -315,23 +334,8 @@
 			 * target:apply,call的指向对象
 			 */
 			cycle : function(fun, cycleTime, ttl) {
-				var params = slice.call(arguments, 3), start = Q.now();
-				function Cycle() {
-					var me = this;
-					function _exec() {
-						if ((isNull(ttl) || Q.now() - start <= ttl)) {
-							fun.apply(null, params);
-							me.p = Q.delay(_exec, cycleTime)
-						}
-					}
-					Q.delay(_exec, cycleTime)
-				}
-				Q.extend(Cycle.prototype, {
-					stop : function() {
-						this.p && this.p.stop()
-					}
-				});
-				return new Cycle()
+				//var params = slice.call(arguments, 3);
+				return new Cycle(fun, cycleTime, ttl, slice.call(arguments, 3));
 			},
 			log : function(msg, e) {
 				if (config.debug) {
@@ -422,7 +426,7 @@
 		}
 	});
 	///////////////////////////////////////////////////////
-	Q.version = "1.2.15";
+	Q.version = "1.2.16";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
