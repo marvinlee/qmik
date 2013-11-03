@@ -8,12 +8,6 @@
 	var SE = _in.isSE, readyRE = /complete|loaded|interactive|loading/i, // /complete|loaded|interactive/
 	ek = "$QEvents", liveFuns = {};
 	var isNull = Q.isNull, isFun = Q.isFun, each = Q.each;
-	/** 执行绑定方法 */
-	function execReady(node, event) {
-		each(node.$$handls, function(i, val) {
-			val(event);
-		});
-	}
 	/** 设置节点的加载成功方法 */
 	function setLoad(node, fun) {
 		node.onreadystatechange = node.onload = node.onDOMContentLoaded = fun
@@ -22,10 +16,12 @@
 		var node = context || this[0] || doc, state;
 		function ready(e) {
 			state = node.readyState;
-			if (!isNull(node.$$handls) && (readyRE.test(state) || (isNull(state) && "load" == e.type))) {
-				execReady(node, e);
-				node.$$handls = null;
-				setLoad(node, null)
+			if (state != "loading" && !isNull(node.$$handls) && (readyRE.test(state) || (isNull(state) && "load" == e.type))) {
+				setLoad(node, null);
+				each(node.$$handls, function(i, val) {
+					val(e);
+				});
+				delete node.$$handls
 			}
 		}
 		if (readyRE.test(node.readyState)) {
