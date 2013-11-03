@@ -90,7 +90,6 @@
 	}
 	function handle(e) {
 		e = fixEvent(e || win.event);
-		//var retVal, m = SE() ? this : getTarget(e), fun, param, events = Q(m).data(ek) || {};
 		var retVal, m = this, fun, param, events = Q(m).data(ek) || {};
 		each(events[e.type], function(i, v) {
 			fun = v.fun;
@@ -154,7 +153,7 @@
 		},
 		live : function(name, callback) {
 			var select = this.selector, fun = liveFuns[getLiveName(select, name, callback)] = function(e) {
-				var me = e.getTarget();
+				var me = e.target;
 				if (Q(me).closest(select).length > 0) {
 					callback.apply(me, [
 						e
