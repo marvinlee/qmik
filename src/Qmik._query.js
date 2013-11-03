@@ -40,7 +40,7 @@
 			];
 			r = (r + "" == "[object Text]") ? [] : r
 		}
-		each(r || [], function(i, dom) {
+		each(muchToArray(r || []), function(i, dom) {
 			dom && me.push(dom)
 		});
 		return me
@@ -359,6 +359,10 @@
 		});
 		return compile(selector, parentList)
 	}
+	/** 是否是父或祖父节点 */
+	function contains(grandfather, child) {
+		return isDom(child) && (grandfather === child.parentNode ? !0 : contains(grandfather, child.parentNode))
+	}
 	// 找compile()解析出的对象,判断当前的查找条件是否满足其对应的父查询条件 isCycle:是否遍历父节点,默认true
 	function adapRule(dom, parentQuery, isCycle, context) {
 		if (!isDom(dom)) return !1;
@@ -367,7 +371,7 @@
 		isCycle = isCycle != !1;
 		var query = parentQuery.query, isGP = !parentQuery.isChild && (isCycle != !1), p = dom.parentNode;
 		if (!isDom(p)) return !1;
-		if (!Q.contains(context, dom)) return !1;
+		if (!contains(context, dom)) return !1;
 		switch (parentQuery.type) {
 		case 'ID':
 			return (at(p, "id") == trim(replace(query, /^#/, ""))) ? !0 : isGP ? adapRule(p, parentQuery, isCycle, context) : !1;
@@ -638,7 +642,7 @@
 			if (selector) return Q((/^\s*\>/.test(selector) ? selector : (">" + selector)), me);
 			var r = new Query();
 			me.each(function(i, dom) {
-				each(dom.children, function(j, d1) {
+				each(muchToArray(dom.childNodes), function(j, d1) {
 					isDom(d1) && r.push(d1)
 				})
 			})
