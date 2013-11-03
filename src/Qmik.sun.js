@@ -127,6 +127,7 @@
 						useModule(getModule(url), require, callback)
 					}, getModule(url).dependencies)
 				} catch (e) {
+					Q.log("get module error:" + url);
 					loadError(e);
 					throw e
 				}
@@ -177,6 +178,9 @@
 			ids = Q.isArray(ids) ? ids : [
 				ids
 			];
+			ids = Q.grep(ids, function(val) {
+				return !Q.likeNull(val)
+			});
 			if (!ispreload) {
 				queue.push({
 					ids : config.preload
