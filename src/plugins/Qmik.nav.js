@@ -15,7 +15,7 @@
  */
 (function(Q, define) {
 	var win = Q.global, doc = win.document, loc = location, encode = Q.encode, //
-	sun = Q.sun, isFun = Q.isFun, likeNull = Q.likeNull // 方法map
+	sun = Q.sun, isFun = Q.isFun, likeNull = Q.likeNull, // 方法map
 	config = {
 		module : "module",// 处理方法标记名
 		method : "method"
@@ -42,7 +42,7 @@
 	}
 	function execModule(module, method, param) {
 		var fun = likeNull(method) ? module : module[method];
-		return fun.apply(module, param)
+		return fun.apply(module, param || []);
 	}
 	// 加载使用模块
 	function useModule(url) {
@@ -64,7 +64,7 @@
 		});
 		return moduleName
 	}
-	function hashchange(_event) {
+	function hashchange() {
 		// 当触发hashchange事件时,先使用hash,不行再使用url,再不行就使用默认的defaultModule
 		useModule(loc.search.replace(/^\?/, ""))//
 			|| (likeNull(config.defaultModule) || useModule(config.defaultModule))
@@ -77,20 +77,23 @@
 	}
 	Q(doc).ready(function() {
 		bind();
-		hashchange(doc.createEvent ? doc.createEvent("MouseEvents") : null)
+		hashchange()
 	})
 	Q.extend({
 		nav : {
 			/**
-			 * opts:{ url:"url字符串,选填,用户支持页面不支持hashchange时,跳转到url页面",
+			 * opts:{ 
+			 * url:"url字符串,选填,用户支持页面不支持hashchange时,跳转到url页面",
 			 * param:[参数,选填,是个数组对象], 
 			 * callback:回调方法,
 			 * module:调用模块的模块名(alise:也是模块名,只是它是对模块名定义了一个别名) ,
-			 * method:调用模块的方法名 }
+			 * method:调用模块的方法名 
+			 * }
 			 */
 			use : function(opts) {
+				var target = opts.target || this;
 				// {module:"",method:"",url:"",param:[],callback:fun}
-				var url = opts.url, param = opts.param, callback = param.callback, method = opts.method || "";
+				var url = opts.url, param = opts.param || [], callback = param.callback, method = opts.method || "";
 				sun.use(opts.module, function(module) {
 					if (Q.isString(url)) {
 						if (isFun(param)) {
