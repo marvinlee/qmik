@@ -168,7 +168,8 @@
 	//变量转url
 	function vars2url(id) {
 		Q.each(id.match(/\$\{[0-9a-zA-Z._]+\}/g) || [], function(i, val) {
-			id = id.replace(new RegExp("\\" + val, "g"), config.vars[val.substring(2, val.length - 1)] || val)
+			var tmp = config.vars[val.substring(2, val.length - 1)] || val;
+			id = id.replace(new RegExp("\\" + val, "g"), Q.isFun(tmp) ? tmp() : tmp)
 		});
 		return id
 	}
@@ -178,7 +179,7 @@
 			ids = Q.isArray(ids) ? ids : [
 				ids
 			];
-			ids = Q.map(ids, function(i,val) {
+			ids = Q.map(ids, function(i, val) {
 				return id2url(val)
 			});
 			if (!ispreload) {
