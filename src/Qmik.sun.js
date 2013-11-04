@@ -178,8 +178,8 @@
 			ids = Q.isArray(ids) ? ids : [
 				ids
 			];
-			ids = Q.grep(ids, function(val) {
-				return !Q.likeNull(val)
+			ids = Q.map(ids, function(i,val) {
+				return id2url(val)
 			});
 			if (!ispreload) {
 				queue.push({
@@ -192,7 +192,7 @@
 			}
 			//下面检测使用的模块是否已被全部加载过
 			var ret = Q.grep(ids, function(val) {
-				return !isNull(getModule(id2url(val)))
+				return !isNull(getModule(val))
 			});
 			ret.length == ids.length ? batload(callback, ids) : queue.push({
 				ids : ids,
@@ -217,8 +217,6 @@
 		config : function(opts) {//参数配置
 			return Q.config(opts, config)
 		},
-		//输出本功能里已经有的模块对象
-		getModules : getModule,
 		gc : gc
 	});
 	//内存回收
