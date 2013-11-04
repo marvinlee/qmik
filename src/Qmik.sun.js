@@ -218,7 +218,8 @@
 			return Q.config(opts, config)
 		},
 		//输出本功能里已经有的模块对象
-		getModules : getModule
+		getModules : getModule,
+		gc : gc
 	});
 	//内存回收
 	function gc() {
