@@ -279,11 +279,11 @@
 			 */
 			map : function(array, callback) {
 				var r = [], i = 0;
-				/*each(array, function(i, v) {
-					r.push(callback(i, v))
-				});*/
-				while (array && i < array.length)
-					r.push(callback(i, array[i++]));
+				for (; array && i < array.length; i++)
+					isNull(array[i]) || r.push(callback(i, array[i]));
+				/*each(array, function(i, val) {
+					isNull(val) || r.push(callback(i, val));
+				})*/
 				return r
 			},
 			/**
