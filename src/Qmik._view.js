@@ -22,13 +22,13 @@
 		return elem.parentNode == elem.offsetParent ? elem.offsetTop : pageY(elem) - pageY(elem.parentNode)
 	}
 	Q.fn.extend({
-		width : function(v) {
+		width : function() {
 			var dom = this[0];
-			return isDom(dom) ? dom.offsetWidth : dom == win ? screen.availWidth : 0
+			return isDom(dom) ? dom.offsetWidth : screen.availWidth
 		},
-		height : function(v) {
+		height : function() {
 			var dom = this[0];
-			return isDom(dom) ? dom.offsetHeight : dom == win ? screen.availHeight : 0
+			return isDom(dom) ? dom.offsetHeight : screen.availHeight
 		},
 		offset : function() {// 获取匹配元素在当前视口的相对偏移
 			if (!this[0]) return null;
