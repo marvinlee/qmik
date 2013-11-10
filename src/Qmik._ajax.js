@@ -95,9 +95,18 @@
 		ajax : ajax,
 		get : get,
 		getJSON : function(url, data, success) {
+			if (isFun(data)) {
+				success = data;
+				data = null
+			}
 			get(url, data, success, 'json')
 		},
 		post : function(url, data, success, dataType) {
+			if (isFun(data)) {
+				dataType = success;
+				success = data;
+				data = null;
+			}
 			get(url, data, success, dataType, "post")
 		}
 	})
