@@ -97,7 +97,7 @@
 		getJSON : function(url, data, success) {
 			if (isFun(data)) {
 				success = data;
-				data = null
+				data = {}
 			}
 			get(url, data, success, 'json')
 		},
@@ -105,7 +105,7 @@
 			if (isFun(data)) {
 				dataType = success;
 				success = data;
-				data = null;
+				data = {};
 			}
 			get(url, data, success, dataType, "post")
 		}
