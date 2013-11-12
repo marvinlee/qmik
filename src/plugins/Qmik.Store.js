@@ -111,7 +111,7 @@
 		}
 	};
 	(function gc(){
-		setTimeout(function(){
+		Q.cycle(function(){
 			if(local){
 				try{
 					for(var key in local){
