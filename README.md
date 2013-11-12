@@ -1,3 +1,6 @@
+1.2.16版本 
+修复: 1.sun模块对部分浏览器加载的bug
+			2.getJSON 少传data参数造成的bug
 
 Qmik是一个快速和精简的JavaScript库，简化了HTML文档，事件处理，以及Ajax交互。 
 Qmik.sun 就按需加载模块,轻松实现按需要加载相应的js,css文件
