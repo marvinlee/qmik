@@ -15,24 +15,62 @@
  */
 (function(Q, define) {
 	var win = Q.global, doc = win.document, loc = location, encode = Q.encode, //
-	sun = Q.sun, isFun = Q.isFun, likeNull = Q.likeNull, // 方法map
+	sun = Q.sun, isFun = Q.isFun, likeNull = Q.likeNull, //
+	session = win.sessionStorage, // 方法map
 	config = {
 		module : "module",// 处理方法标记名
 		method : "method"
 	//defaultModule : {module:"","method","",param:[]}// 默认的hashchange处理模块
-	}, //
-	isSupportHash = ("onhashchange" in win) && (doc.documentMode === undefined || doc.documentMode > 7);
+	}; //是否支持hash
+	var isSupportHash = ("onhashchange" in win) && (doc.documentMode === undefined || doc.documentMode > 7);
+	///////////////////////////////////////////////
+	function setStore(key, val) {
+		session && session.setItem(key, JSON.stringify(val))
+	}
+	function getStore(key) {
+		return session && session[key] ? JSON.parse(session[key]) : []
+	}
+	//队列类
+	function Queue(key) {
+		var me = this;
+		me.key = key;
+		me._queue = getStore(key);
+	}
+	Q.extend(Queue.prototype, {
+		pop : function() {//弹出
+			var me = this, r = null;
+			if (me.size() > 0) {
+				r = me._queue[me.size() - 1];
+				me._queue.splice(me.size() - 1, 1);
+				setStore(me.key, me._queue)
+			}
+			return r
+		},
+		push : function(item) {//压入
+			var me = this;
+			item && me._queue.push(item);
+			setStore(me.key, me._queue)
+		},
+		get : function(index) {
+			return this._queue[index]
+		},
+		size : function() {//大小
+			return this._queue.length
+		}
+	})
+	var goBack = new Queue("store_nav_goBack"), goForward = new Queue("store_nav_goForward");//前进,后退队列
+	///////////////////////////////////////////////
 	// 设置hash
-	function set(hash) {
+	function setHash(hash) {
 		loc.hash = hash;
 	}
 	// 取得hash
-	function get() {
-		return loc.hash.replace(/^#/g, "").trim()
+	function getHash() {
+		return isSupportHash ? loc.hash.replace(/^#/g, "").trim() : loc.search.replace(/.*#/g, "").trim()
 	}
 	// 取得模块参数信息,及模块名
-	function getModuleParam(url) {
-		var query = url || (likeNull(get()) ? loc.search.replace(/^\?/, "") : get()), //
+	function getModuleParam(hash) {
+		var query = hash || getHash() || "", //
 		info = [];
 		Q.each(query.split(/&|&amp;/g), function(i, val) {
 			var kv = val.split("=");
@@ -45,29 +83,25 @@
 		return fun.apply(module, param || []);
 	}
 	// 加载使用模块
-	function useModule(url) {
+	function useModule(hash) {
 		var moduleName, method, param;
-		if (isFun(url)) {
-			url()
-		} else if (Q.isObject(url)) {
-			moduleName = url.module;
-			method = url.method;
-			param = url.param
+		if (Q.isObject(hash)) {
+			moduleName = hash.module;
+			method = hash.method;
+			param = hash.param
 		} else {
-			param = getModuleParam(url);
+			param = getModuleParam(hash);
 			moduleName = param[config.module];
 			method = param[config.method]
 		}
 		moduleName && sun.use(moduleName, function(module) {
-			// module(info)
 			execModule(module, method, param || [])
 		});
 		return moduleName
 	}
 	function hashchange() {
 		// 当触发hashchange事件时,先使用hash,不行再使用url,再不行就使用默认的defaultModule
-		useModule(loc.search.replace(/^\?/, ""))//
-			|| (likeNull(config.defaultModule) || useModule(config.defaultModule))
+		useModule() || (likeNull(config.defaultModule) || useModule(config.defaultModule))
 	}
 	function bind() {
 		Q(win).on("hashchange", hashchange)
@@ -76,58 +110,60 @@
 		Q(win).un("hashchange", hashchange, bind);
 	}
 	Q(doc).ready(function() {
-		bind();
-		hashchange()
-	})
+		var hash = getHash(), bhash = goBack.get(goBack.size() - 1);
+		if (hash != bhash) {
+			goBack.push(hash)
+		}
+		hashchange();
+		bind()
+	});
 	Q.extend({
 		nav : {
 			/**
 			 * opts:{ 
-			 * url:"url字符串,选填,用户支持页面不支持hashchange时,跳转到url页面",
-			 * param:[参数,选填,是个数组对象], 
+			 w* param:[参数,选填,是个数组对象], 
 			 * callback:回调方法,
 			 * module:调用模块的模块名(alise:也是模块名,只是它是对模块名定义了一个别名) ,
 			 * method:调用模块的方法名 
 			 * }
 			 */
 			use : function(opts) {
-				var target = opts.target || this;
 				// {module:"",method:"",url:"",param:[],callback:fun}
-				var url = opts.url, param = opts.param || [], callback = param.callback, method = opts.method || "";
+				var param = opts.param || [], callback = param.callback, method = opts.method || "";
 				sun.use(opts.module, function(module) {
-					if (Q.isString(url)) {
-						if (isFun(param)) {
-							callback = param;
-							param = []
-						}
-					} else if (Q.isObject(url)) {
-						param = url;
-						url = null
-					} else if (isFun(url)) {
-						callback = url;
-						param = [];
-						url = null
-					}
 					var hv = [];
 					hv.push(encode(config.module) + "=" + encode(opts.module));
 					hv.push(encode(config.method) + "=" + encode(method))
 					Q.each(param, function(name, value) {
 						hv.push(encode(name) + "=" + encode(value))
 					});
-					// 如果支持hashchange,或
-					// viewUrl=="",只使用方式来显示新数据视图(如果isSupportHash为flase,在这种情况下,将不支持前进后退)
-					if (isSupportHash || url == "") {
-						unBind();
-						set(hv.join("&"));
-						var result = execModule(module, method, param);// module(param)
-						callback && callback.apply(callback, [
-							result
-						]);
-						Q.delay(bind, 500)
-					} else if (Q.isString(url)) {
-						loc.href = Q.url(url) + (/\?/.test(url) ? "&" : "?") + hv.join("&");
-					}
+					var hash = hv.join("&");
+					unBind();//取消绑定
+					setHash(hash);
+					goBack.push(hash);
+					var result = execModule(module, method, param);// module(param)
+					callback && callback.apply(callback, [
+						result
+					]);
+					Q.delay(bind, 500)//500ms后恢复绑定
 				})
+			},
+			//后退
+			back : function() {
+				new Image().src="http://www.abc.com?"+goBack.size()+"--"+isSupportHash;
+				if (goBack.size() > 0) {
+					var hash = goBack.pop();
+					isSupportHash ? history.back() : useModule(hash);
+					goForward.push(hash);
+				}
+			},
+			//前进
+			forward : function() {
+				if (goForward.size() > 0) {
+					var hash = goForward.pop();
+					isSupportHash ? history.forward() : useModule(hash);
+					goBack.push(hash);
+				}
 			},
 			/**
 			 * 在首页初次加载时执行,执行条件是判断hash值是否为空,为空才执行callback,
@@ -135,7 +171,7 @@
 			 * @param callback
 			 */
 			onload : function(callback) {
-				likeNull(get()) && callback()
+				likeNull(getHash()) && callback()
 			},
 			/**
 			 * 配置
@@ -149,5 +185,5 @@
 	});
 	define(function(require, exports, module) {
 		module.exports = Q
-	})
+	});
 })(Qmik, Qmik.define);
