@@ -143,6 +143,7 @@
 		})
 	}
 	function loadResource(type, url, success, error) {
+        url = Q.url(url);
 		var isCss = type == "css", isScript = type == "js", //
 		tagName = isCss ? "link" : isScript ? "script" : "iframe", //
 		node = Q(doc.createElement(tagName)).attr({
@@ -290,14 +291,12 @@
 			 * 取得脚本
 			 */
 			getScript : function(url, success, error) {
-				url = Q.url(url);
 				return loadResource("js", url, success, error)
 			},
 			/**
 			 * 取得css
 			 */
 			getCss : function(url, success, error) {
-				url = Q.url(url);
 				return loadResource("css", url, success, error)
 			},
 			grep : grep,
