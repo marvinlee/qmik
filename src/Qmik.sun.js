@@ -192,7 +192,7 @@
 				ispreload = !0
 			}
 			//下面检测使用的模块是否已被全部加载过
-			var ret = Q.grep(ids, function(val) {
+			var ret = Q.grep(ids, function(i,val) {
 				return !isNull(getModule(val))
 			});
 			ret.length == ids.length ? batload(callback, ids) : queue.push({

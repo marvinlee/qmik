@@ -46,7 +46,7 @@
 	function grep(array, callback) {
 		var ret = [];
 		each(array, function(i, v) {
-			(callback ? callback(v) : !isNull(v)) && ret.push(v)
+			(callback ? callback(i,v) : !isNull(v)) && ret.push(v)
 		});
 		return ret
 	}
@@ -74,7 +74,7 @@
 	function likeArray(v) { // like Array
 		return !isString(v) && (isArray(v) || (Q.isQmik && Q.isQmik(v)) || (function() {
 			v += "";
-			return v == "[object Arguments]" || v == "[object NodeList]" || v == "[object HTMLCollection]" || v == "[object StaticNodeList]"
+                return v == "[object Arguments]" || v == "[object NodeList]" || v == "[object HTMLCollection]" || v == "[object StaticNodeList]"
 		})())
 	}
 	// isFunction
@@ -399,16 +399,15 @@
 																									: _url
 			},
 			cssPrefix : function(style) {
-				var ns;
+				var ret = {};
 				if (isString(style)) {
-					ns = (Q.isWK() ? "-webkit-" : Q.isIE() ? "-ms-" : Q.isFF() ? "-moz-" : Q.isOpera() ? "-o-" : "") + style;
+                    ret = (Q.isWK() ? "-webkit-" : Q.isIE() ? "-ms-" : Q.isFF() ? "-moz-" : Q.isOpera() ? "-o-" : "") + style;
 				} else {
-					ns = Q.extend({}, style);
-					each(ns, function(key, val) {
-						ns[Q.cssPrefix(key)] = val
+					each(Q.extend({}, style), function(key, val) {
+						ret[Q.cssPrefix(key)] = val
 					})
 				}
-				return ns
+				return ret
 			}
 		});
 	each([
