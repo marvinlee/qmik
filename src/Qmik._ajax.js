@@ -47,7 +47,7 @@
 	}
 	function ajax(conf) {
 		var _config = Q.extend({}, ac, conf), dataType = _config.dataType, ttl = _config.timeout, //
-		xhr = request(), url = _config.url, data = _config.data, isGet = _config.type == "GET", //
+		xhr = request(), url = Q.url(_config.url), data = _config.data, isGet = _config.type == "GET", //
 		success = _config.success, error = _config.error, //
 		thread;
 		if (dataType == "jsonp") {
