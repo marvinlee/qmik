@@ -148,15 +148,24 @@
 			return this
 		},
 		live : function(name, callback) {
-			var select = this.selector, fun = liveFuns[getLiveName(select, name, callback)] = function(e) {
-				var me = e.target;
-				if (Q(me).closest(select).length > 0) {
-					callback.apply(me, [
-						e
-					]);
-				}
+			var select = this.selector;
+			var names = name;
+			if(!Q.isPlainObject(name)){
+				names={};
+				names[name]=callback
 			}
-			Q("body").on(name, fun);
+			each(names,function(key,callback){
+				var fun = liveFuns[getLiveName(select, key, callback)] = function(e) {
+					var me = e.target,_me=Q(me);
+					if ( Q.isString(select) ? _me.closest(select).length > 0 : 
+							Q.isDom(select) ? Q.inArray(select, _me.parents()) >= 0 : 0) {
+						callback.apply(me, [
+							e
+						])
+					}
+				};
+				Q("body").on(key, fun)
+			});
 			return this
 		},
 		die : function(name, callback) {

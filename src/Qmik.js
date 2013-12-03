@@ -1,7 +1,7 @@
 /**
  * @author:leo
  * @email:cwq0312@163.com
- * @version:1.2.11
+ * @version:1.2.20
  */
 (function() {
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent, loc = win.location;
@@ -424,9 +424,8 @@
 		}
 	});
 	///////////////////////////////////////////////////////
-	Q.version = "1.2.16";
+	Q.version = "1.2.20";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
-	Q.exec = eval
 })();

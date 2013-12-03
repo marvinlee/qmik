@@ -3,7 +3,7 @@
  * @email:cwq0312@163.com
  * @deprecated nav导航(利用hashchang事件实现前进后退民航,支持刷新后的前进后退)<br/>
  * 依赖于Qmik,Qmik._query,Qmik._event, Qmik.sun模块
- * 
+ *
  * 使用方式:$.nav.use( {
 					module : $(this).attr("module"),//模块名,Qmik.sun注册的模块名
 					method : $(this).attr("method"),//方法名,在模块module.method
@@ -15,7 +15,7 @@
  */
 (function(Q, define) {
 	var win = Q.global, doc = win.document, loc = location, encode = Q.encode, //
-	sun = Q.sun, isFun = Q.isFun, likeNull = Q.likeNull, //
+	sun = Q.sun, isFun = Q.isFun, likeNull = Q.likeNull,gConstructor={}.constructor //
 	session = win.sessionStorage, // 方法map
 	config = {
 		module : "module",// 处理方法标记名
@@ -28,7 +28,11 @@
 		session && session.setItem(key, JSON.stringify(val))
 	}
 	function getStore(key) {
-		return session && session[key] ? JSON.parse(session[key]) : []
+        try{
+		    return session && session[key] ? JSON.parse(session[key]) : []
+        }catch(e){
+            return []
+        }
 	}
 	//队列类
 	function Queue(key) {
@@ -42,14 +46,12 @@
 			if (me.size() > 0) {
 				r = me._queue[me.size() - 1];
 				me._queue.splice(me.size() - 1, 1);
-				setStore(me.key, me._queue)
 			}
 			return r
 		},
 		push : function(item) {//压入
 			var me = this;
 			item && me._queue.push(item);
-			setStore(me.key, me._queue)
 		},
 		get : function(index) {
 			return this._queue[index]
@@ -59,6 +61,13 @@
 		}
 	})
 	var goBack = new Queue("store_nav_goBack"), goForward = new Queue("store_nav_goForward");//前进,后退队列
+    function _unload(){
+        setStore(goBack.key, goBack._queue);
+        setStore(goForward.key, goForward._queue);
+    }
+    Q(window).on({
+        "unload" : _unload
+    });
 	///////////////////////////////////////////////
 	// 设置hash
 	function setHash(hash) {
@@ -79,8 +88,15 @@
 		return info
 	}
 	function execModule(module, method, param) {
+        module = getModule(module);
 		var fun = likeNull(method) ? module : module[method];
-		return fun.apply(module, param || []);
+        try{
+		    return fun.apply(module, param || []);
+        }catch(e){
+            Q.log(module);
+            Q.log(method);
+            Q.log(param);
+        }
 	}
 	// 加载使用模块
 	function useModule(hash) {
@@ -99,6 +115,13 @@
 		});
 		return moduleName
 	}
+    function getModule(module){
+        //module不是{}这种对象,并且 module 是方法且有 getInstance 取单例方法
+        if(module.constructor != gConstructor && Q.isFun(module) && Q.isFun(module.getInstance) ){
+            module = module.getInstance();
+        }
+        return module;
+    }
 	function hashchange() {
 		// 当触发hashchange事件时,先使用hash,不行再使用url,再不行就使用默认的defaultModule
 		useModule() || (likeNull(config.defaultModule) || useModule(config.defaultModule))
@@ -120,7 +143,7 @@
 	Q.extend({
 		nav : {
 			/**
-			 * opts:{ 
+			 * opts:{
 			 w* param:[参数,选填,是个数组对象], 
 			 * callback:回调方法,
 			 * module:调用模块的模块名(alise:也是模块名,只是它是对模块名定义了一个别名) ,
@@ -131,6 +154,10 @@
 				// {module:"",method:"",url:"",param:[],callback:fun}
 				var param = opts.param || [], callback = param.callback, method = opts.method || "";
 				sun.use(opts.module, function(module) {
+                    //module不是{}这种对象,并且 module 是方法且有 getInstance 取单例方法
+                    if(module.constructor != gConstructor && Q.isFun(module) && Q.isFun(module.getInstance) ){
+                        module = module.getInstance();
+                    }
 					var hv = [];
 					hv.push(encode(config.module) + "=" + encode(opts.module));
 					hv.push(encode(config.method) + "=" + encode(method))
@@ -148,6 +175,10 @@
 					Q.delay(bind, 500)//500ms后恢复绑定
 				})
 			},
+            getInfo : function(name){
+                var info=getModuleParam();
+                return name ? info[name] : info
+            },
 			//后退
 			back : function() {
 				new Image().src="http://www.abc.com?"+goBack.size()+"--"+isSupportHash;
@@ -176,7 +207,7 @@
 			/**
 			 * 配置
 			 * @param opt
-			 * @returns
+			 * @return
 			 */
 			config : function(opt) {
 				return Q.config(opt, config)
