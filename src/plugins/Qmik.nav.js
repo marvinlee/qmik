@@ -19,7 +19,9 @@
 	session = win.sessionStorage, // 方法map
 	config = {
 		module : "module",// 处理方法标记名
-		method : "method"
+		method : "method",
+		enableTouch : false, //开户手势前进后退
+		navDiff : 60 //手势滑动距离
 	//defaultModule : {module:"","method","",param:[]}// 默认的hashchange处理模块
 	}; //是否支持hash
 	var isSupportHash = ("onhashchange" in win) && (doc.documentMode === undefined || doc.documentMode > 7);
@@ -51,7 +53,7 @@
 		},
 		push : function(item) {//压入
 			var me = this;
-			item && me._queue.push(item);
+			item && me.get(me.size()-1) != item && me._queue.push(item);
 		},
 		get : function(index) {
 			return this._queue[index]
@@ -140,6 +142,7 @@
 		hashchange();
 		bind()
 	});
+	
 	Q.extend({
 		nav : {
 			/**
@@ -181,7 +184,6 @@
             },
 			//后退
 			back : function() {
-				new Image().src="http://www.abc.com?"+goBack.size()+"--"+isSupportHash;
 				if (goBack.size() > 0) {
 					var hash = goBack.pop();
 					isSupportHash ? history.back() : useModule(hash);
@@ -214,6 +216,78 @@
 			}
 		}
 	});
+//手势前进后退
+	{
+		////////////////////////
+		var oStart = {
+            x: 0,
+            y: 0
+        };
+		var oDiff = {
+            x: 0,
+            y: 0
+        };
+        var direct;
+        var isStart=false;
+         //确定滑动方向,垂直=Y or 水平=X, 未确定=null
+		function sureDirect(e) {
+			var touch = e.touches ? e.touches[0] : e;
+            oDiff.x = touch.clientX - oStart.x;
+            oDiff.y = touch.clientY - oStart.y;
+            if (Math.abs(oDiff.y) >= config.navDiff) {
+                return "Y"
+            }
+            if (oDiff.x >= config.navDiff) {
+                return "-X"
+            }else if(oDiff.x <= -config.navDiff){
+            	return "+X"
+            }
+            return null;
+        }
+        function _start(e) {
+            direct = null;
+            isStart = true;
+            var touch = e.touches ? e.touches[0] : e;
+            oStart.x = touch.clientX;
+            oStart.y = touch.clientY;
+        }
+        function _move(e) {
+       		if(isStart){
+        		//判断滑动方向确定没有
+	            if (Q.likeNull(direct)) {
+	                direct = sureDirect(e);
+	                return;
+	            }
+        	}
+        }
+        function _end(e) {
+        	if(isStart){
+        		isStart = false;
+        		if (direct) {
+	                e.preventDefault();
+	                e.stopPropagation();
+	            }
+	            switch(direct){
+	            case "+X":Q.nav.forward();break;
+	            case "-X":Q.nav.back();break;
+	            }
+	            direct = null;
+        	}
+        }
+        //如果没有绑定过事件,就绑定下
+
+        if(Q("body").attr("data-bindNav")!="true"){
+            Q("body").on({
+                "touchstart": _start,
+                "mouseover": _start,
+                "mousedown":_start,
+                "touchmove": _move,
+                "mousemove": _move,
+                "touchend": _end,
+                "mouseup": _end
+            }); 
+        }
+	}
 	define(function(require, exports, module) {
 		module.exports = Q
 	});
