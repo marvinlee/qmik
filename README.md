@@ -13,7 +13,7 @@
 
 Qmik是一个快速和精简的JavaScript库，简化了HTML文档，事件处理，以及Ajax交互。 
 Qmik.sun 就按需加载模块,轻松实现按需要加载相应的js,css文件
-Qmik的语法与jquery是一致的,核心库大小16-23k左右,支持uc,ie>=8,基于webkit内核的浏览器(如chrom,safari等),firefox; 
+Qmik的语法与jquery是一致的,核心库大小16-23k左右,支持uc,ie>=9,基于webkit内核的浏览器(如chrom,safari等),firefox; 
 	推荐做移动web开发.
 	
 API简介:<br/><br/>
