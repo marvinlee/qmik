@@ -44,6 +44,10 @@
         var scroll = null;
         var bg = null ;
         var bar = null ;
+        me.css(Q.cssPrefix({
+            "transition": "10ms",
+            "transform": "translateY(0px)"
+        }));
         if (_parent.height() > window.innerHeight - 30) {
             _parent.css({
                 height: (window.innerHeight - 30) + "px"
