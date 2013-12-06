@@ -4,7 +4,8 @@
  * @version:1.2.20
  */
 (function() {
-	var win = this, doc = win.document || {}, nav = win.navigator || {}, UA = nav.userAgent, loc = win.location;
+	var win = this, doc = win.document || {}, nav = win.navigator || {}, //
+	UA = nav.userAgent, loc = win.location;
 	var encode = encodeURIComponent, decode = decodeURIComponent, slice = [].slice, //
 	baseURL = loc.protocol + "//" + loc.hostname + (loc.port ? ":" + loc.port : ""), //
 	config = {
@@ -152,10 +153,10 @@
 		});
 		isCss ? node.attr("rel", "stylesheet") : isScript && node.attr("type", "text/javascript");
 		node.ready(function(e) {
-			success && success(e)
+			success && success(e || {target:node})
 		}).on("error", function(e) {
 			node.remove();
-			error && error(e)
+			error && error(e || {target:node})
 		});
 		Q.delay(function() {
 			if (isCss) node[0].href = url;
