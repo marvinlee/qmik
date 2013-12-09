@@ -1,6 +1,7 @@
 (function(Q) {
+    var win = window, doc = document;
     var gConfig = {
-        height: window.innerHeight,
+        height: win.innerHeight,
         width: 3,
         maxWidth:5,
         goX: 60, //滑动时,如果水平方向差值超过30,认为是水平滑动
@@ -48,9 +49,10 @@
             "transition": "10ms",
             "transform": "translateY(0px)"
         }));
-        if (_parent.height() > window.innerHeight - 30) {
+        if (_parent.height() > win.innerHeight - 30) {
             _parent.css({
-                height: (window.innerHeight - 30) + "px"
+                height: (win.innerHeight - 30) + "px",
+                minHeight: (win.innerHeight - 30) + "px"
             });
         }
         _parent.css(gCss);
@@ -76,7 +78,8 @@
                 overflow:"hidden",
                 position: "absolute",
                 "top": "0",
-                left: (me.position().left + me.width() - bg.width() - 1) + "px"
+                //left: (me.position().left + me.width() - bg.width() - 1) + "px"
+                right:"1px"
             });
             scroll.css(gCss);
             bg.css({
@@ -92,13 +95,6 @@
             });
             
             bar.css(gCss);
-            Q(window).on({
-                resize: function(e) {
-                    scroll.css({
-                        height: _parent.height() + "px"
-                    });
-                }
-            });
             caulateBar(bar, me); //计算滚动条的高度
         }
         var thread;
@@ -136,7 +132,6 @@
         var viewHeight = _parent.height();
         var isMobile = Q.isWP() || Q.isAndroid() || Q.isIphone();
         //确定滑动方向,垂直=Y or 水平=X, 未确定=null
-
         function sureDirect(e) {
             if (e.touches) {
                 var touch = e.touches ? e.touches[0] : e;
@@ -169,7 +164,7 @@
         //是否是在边界触发
 
         function isBorderTrig() {
-            return oStart.x < conf.border || (Q(window).width() - oStart.x < conf.border)
+            return oStart.x < conf.border || (win.innerWidth - oStart.x < conf.border)
         }
 
         function caulateNewDiff(val){
