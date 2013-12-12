@@ -159,12 +159,7 @@ API简介:<br/><br/>
 				
 				$.config({
 					context : "/",// 配置工程的访问路径,如果没有配置,默认= /
-					debug:true,//debug模式
-					box:{	
-						enable : true,//启用异常收集
-						ttl : 20000,//收集时间间隔
-						url : "/errorCollect" //收集地址
-					}
+					debug:true//debug模式
 				});
 		
 				// 定义模块名及请求路径
