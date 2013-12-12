@@ -149,13 +149,15 @@ API简介:<br/><br/>
 			
 
 3.按需加载例子:<br/><br/>
-
+	$.sun.use(["module1","module2"],function(module1,module2){});
+	$.sun.define(function(require, exports, module){});
+	$.sun.config();
 
 	a. Config.js 文件,写如下内容:
 	
 	
 	
-			(function($, define) {
+			(function($) {
 				
 				$.config({
 					context : "/",// 配置工程的访问路径,如果没有配置,默认= /
@@ -176,7 +178,7 @@ API简介:<br/><br/>
 						"Qmik.nav"
 					]
 				});
-			})(Qmik, Qmik.sun.define);
+			})(Qmik);
 	
 	
 	b.在index.html页面引入js<br/><br/>
@@ -194,7 +196,7 @@ API简介:<br/><br/>
   
   
   
-  		(function($, define) {
+  		(function($) {
   			function Home(nav){
   				this.nav=nav;
   			}
@@ -207,11 +209,11 @@ API简介:<br/><br/>
 						});
   			}
 
-				define(function(require, exports, module) {
+				Q.sun.define(function(require, exports, module) {
 					var nav = require("Nav");//依赖导航模块
 					exports=new Home(nav);
 				});
-			})(Qmik, Qmik.sun.define);
+			})(Qmik);
 			
 		
 			
@@ -221,15 +223,15 @@ API简介:<br/><br/>
 	 
 		 	<script type="text/javascript">
 				// 界面初始化 
-				(function($, define) {
+				(function($) {
 					//依赖3个模块初始化
-					$.use([
+					$.sun.use([
 						"Nav", "Home"
 					], function(nav, home) {
 							nav.doxxx();//显示头部导航
 							home.showHome();//显示首页
 					});
-				})(Qmik, Qmik.define);
+				})(Qmik);
 			</script>
 			
 			
