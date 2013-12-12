@@ -79,6 +79,9 @@ module.exports = function(grunt) {
 					],
 					'assets/plugins/Qmik.fn.slider.js' : [
 						'src/plugins/Qmik.fn.slider.js'
+					],
+					'assets/plugins/Qmik.fn.scrollBar.js' : [
+						'src/plugins/Qmik.fn.scrollBar.js'
 					]
 				}
 			}
