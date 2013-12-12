@@ -167,10 +167,10 @@ API简介:<br/><br/>
 					//别名系统,把路径抽象成一个key来表示,后续通过这个key来找到对应的url
 					alias : {
 						// qmik组件
-						"Qmik.nav" : $.url("/assets/plugins/Qmik.nav"),//
+						"Qmik.nav" : $.url("/assets/plugins/Qmik.nav.js"),//
 						///
 						//业务模块
-						"Home" : "module/home/Home",
+						"Home" : "module/home/Home.js",
 					},
 					preload : [//预加载,在加载其它模块前,最优先加载下面定义的模块
 						"Qmik.nav"
