@@ -244,12 +244,22 @@
             }
             return null;
         }
+        //延迟设置状态机,防止快速多次点击滑动,可能出现的异常现象
+        function delaySetState(ttl){
+        	delaySetState.thread && delaySetState.thread.stop();
+        	delaySetState.thread=Q.delay(function(){
+        		isStart = false;
+        	},ttl||500);
+        }
         function _start(e) {
-            direct = null;
-            isStart = true;
-            var touch = e.touches ? e.touches[0] : e;
-            oStart.x = touch.clientX;
-            oStart.y = touch.clientY;
+        	if(!isStart){
+        		direct = null;
+	            isStart = true;
+	            delaySetState(1000);
+	            var touch = e.touches ? e.touches[0] : e;
+	            oStart.x = touch.clientX;
+	            oStart.y = touch.clientY;
+        	}
         }
         function _move(e) {
        		if(isStart){
@@ -262,7 +272,7 @@
         }
         function _end(e) {
         	if(isStart){
-        		isStart = false;
+        		delaySetState(100);
         		if (direct) {
 	                e.preventDefault();
 	                e.stopPropagation();
