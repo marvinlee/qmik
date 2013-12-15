@@ -67,8 +67,9 @@
             scroll = Q("[muid=" + muid + "]", _parent);
             bg = Q(".c-q-bg", scroll);
             bar = Q(".c-q-bar", scroll);
+            var bgHeight = _parent.height()-10;
             scroll.css({
-                height: _parent.height() + "px",
+                height: bgHeight + "px",
                 minWidth: "3px",
                 width:conf.width+"px",
                 maxWidth:conf.maxWidth+"px",
@@ -84,7 +85,7 @@
             scroll.css(gCss);
             bg.css({
                 minWidth: "3px",
-                height: _parent.height() + "px"
+                height: bgHeight + "px"
             });
             bg.css(gCss);
             var radius= bg.width() / 2 + 1;
@@ -291,6 +292,7 @@
                 "transform": "translateY(" + site + "px)"
             }));
             var scrollSite = -site * rate(me);
+            scrollSite +=10;
             bar.css(Q.cssPrefix({
                 "transition": gad + "ms",
                 "transform": "translateY(" + scrollSite + "px)"
@@ -320,6 +322,7 @@
         me[0].__q_scrollbar_start = _start;
         me[0].__q_scrollbar_scroll = _scroll;
         me[0].__q_scrollbar_end = _end;
+        return me;
     }
 
     Q.fn.scrollBar = scroll;

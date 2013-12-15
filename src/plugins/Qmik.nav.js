@@ -25,6 +25,7 @@
 	//defaultModule : {module:"","method","",param:[]}// 默认的hashchange处理模块
 	}; //是否支持hash
 	var isSupportHash = ("onhashchange" in win) && (doc.documentMode === undefined || doc.documentMode > 7);
+	var currentModuleHash;
 	///////////////////////////////////////////////
 	function setStore(key, val) {
 		session && session.setItem(key, JSON.stringify(val))
@@ -167,10 +168,10 @@
 					Q.each(param, function(name, value) {
 						hv.push(encode(name) + "=" + encode(value))
 					});
-					var hash = hv.join("&");
+					currentModuleHash = hv.join("&");
 					unBind();//取消绑定
-					setHash(hash);
-					goBack.push(hash);
+					setHash(currentModuleHash);
+					goBack.push(currentModuleHash);
 					var result = execModule(module, method, param);// module(param)
 					callback && callback.apply(callback, [
 						result
@@ -198,6 +199,9 @@
 					goBack.push(hash);
 				}
 			},
+			flush:function(){
+				currentModuleHash && useModule(currentModuleHash);
+			},
 			/**
 			 * 在首页初次加载时执行,执行条件是判断hash值是否为空,为空才执行callback,
 			 * 否则不执行
@@ -221,7 +225,8 @@
 		////////////////////////
 		var oStart = {
             x: 0,
-            y: 0
+            y: 0,
+            t: 0
         };
 		var oDiff = {
             x: 0,
@@ -259,6 +264,7 @@
 	            var touch = e.touches ? e.touches[0] : e;
 	            oStart.x = touch.clientX;
 	            oStart.y = touch.clientY;
+	            oStart.t = Q.now();
         	}
         }
         function _move(e) {
@@ -272,14 +278,16 @@
         }
         function _end(e) {
         	if(isStart){
-        		delaySetState(100);
+        		delaySetState(200);
         		if (direct) {
 	                e.preventDefault();
 	                e.stopPropagation();
 	            }
-	            switch(direct){
-	            case "+X":Q.nav.forward();break;
-	            case "-X":Q.nav.back();break;
+	            if((Q.now() - oStart.t < 500) && ( Q.isNull(e.button) || e.button == 0)){
+					switch(direct){
+		            case "+X":Q.nav.forward();break;
+		            case "-X":Q.nav.back();break;
+		            }
 	            }
 	            direct = null;
         	}
