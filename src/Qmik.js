@@ -338,7 +338,7 @@
 				return new Cycle(fun, cycleTime, ttl, slice.call(arguments, 3));
 			},
 			log : function(msg, e) {
-				if (config.debug) {
+				if (config.debug || isError(msg) || isError(e)) {
 					msg = isError(msg) ? msg.stack : msg;
 					msg += isError(e) ? e.stack : "";
 					try {

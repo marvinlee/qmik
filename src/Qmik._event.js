@@ -88,19 +88,21 @@
 		e = fixEvent(e || win.event);
 		var retVal, m = this, fun, param, events = Q(m).data(ek) || {};
 		each(events[e.type], function(i, v) {
-			fun = v.fun;
-			param = v.param || [];
-			if (isFun(fun)) {
-				retVal = fun.apply(m, [
-					e
-				].concat(param));
-				//if (!isNull(retVal)) e.returnValue = retVal
-				//兼容ie处理
-				if (!isNull(retVal)) {
-					e.returnValue = retVal;
-					if (win.event) win.event.returnValue = retVal;
+			try{
+				fun = v.fun;
+				param = v.param || [];
+				if (isFun(fun)) {
+					retVal = fun.apply(m, [
+						e
+					].concat(param));
+					//if (!isNull(retVal)) e.returnValue = retVal
+					//兼容ie处理
+					if (!isNull(retVal)) {
+						e.returnValue = retVal;
+						if (win.event) win.event.returnValue = retVal;
+					}
 				}
-			}
+			}catch(e){Q.log(e.message,e)}
 		})
 	}
 	function fixEvent(e) {
@@ -178,7 +180,8 @@
 	});
 	fn.extend({
 		bind : fn.on,
-		unbind : fn.un
+		unbind : fn.un,
+		off : fn.un
 	});
 	/**
 	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
