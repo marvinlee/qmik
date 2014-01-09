@@ -1,0 +1,18 @@
+{
+	"id": "dataQmikSun",
+	"title": "sun核心模块",
+	"list": [
+		{
+			"title":"use",
+			"url":"data/qmik/sun/use.html"
+		},
+		{
+			"title":"define",
+			"url":"data/qmik/sun/define.html"
+		},
+		{
+			"title":"config",
+			"url":"data/qmik/sun/config.html"
+		}
+	]
+}

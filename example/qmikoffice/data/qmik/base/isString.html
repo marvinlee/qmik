@@ -1,0 +1,16 @@
+<div class="example">
+	<h2>isString 方法</h2>
+	<h3>描述</h3>
+	<div class="desc">判断对象是否是字符串</div>
+	<h3>例子</h3>
+	<pre class="code">
+(function(Q){
+	var ch="abc";
+	var ch1=Q.isString(ch);
+	console.log(ch1);//out:>>>true
+	ch={};
+	ch1=Q.isString(ch);
+	console.log(ch1);//out:>>>false
+})(Qmik)
+	</pre>
+</div>

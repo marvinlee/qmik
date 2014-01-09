@@ -1,0 +1,59 @@
+<div class="example">
+	<h2>$.sun.define(function(require,exports,module))</h2>
+	<h3>描述</h3>
+	<div class="desc">
+		定义模块<br/>
+		require:是个方法,用于请求依赖的模块,使用:require("Qmik.nav");var BaseAct=require("BaseAct");<br/>
+		exports:导出变量,exports就module的一个字段,用于导出对象,如exports.age=11,
+		exports.fun=function(){};<br/>
+		module:模块对象,包含<br/>
+			&nbsp;id,id标识,等于url<br/>
+			&nbsp;url,url标识,等于id<br/>
+			&nbsp;dependencies,// 依赖模块<br/>
+			&nbsp;exports : {} //导出变量<br/>
+			&nbsp;gc:		//自定义此模块的内存回收,由后台执行<br/>
+	</div>
+	<h3>例子</h3>
+	<pre class="code">
+//Person.js 类文件
+(function(Q){
+	function Person(){}
+	Q.extend(Person.prototype,{
+		say:function(){
+			console.log("hello!")
+		},
+		goHome:function(){
+			console.log("i am go home!");
+		}
+	});
+	Q.defind(function(require,exports,module){
+		module.exports=Person;
+	});
+})(Qmik);
+
+//Boy.js 类文件
+(function(Q){
+	function Boy(){}
+	Q.extend(Boy.prototype,{
+		say:function(){
+			console.log("hello boy!")
+		}
+	});
+	Q.defind(function(require,exports,module){
+		var Person=require("Persion.js");
+		Q.inherit(Boy,Person);//继承父类Person
+		module.exports=Boy;
+	});
+})(Qmik);
+
+//index.html使用
+(function(Q){
+	Q.sun.use(["Boy.js"],function(Boy){
+		var boy=new Boy();
+		boy.say();//>>hello boy!
+		boy.goHome();//>>i am go home!
+	});
+})(Qmik)
+	</pre>
+</div>
+

@@ -1,0 +1,18 @@
+{
+	"id": "dataQmikAjax",
+	"title": "ajax核心模块",
+	"list": [
+		{
+			"title":"ajax",
+			"url":"data/qmik/base/ajax.html"
+		},
+		{
+			"title":"get",
+			"url":"data/qmik/base/get.html"
+		},
+		{
+			"title":"getJSON",
+			"url":"data/qmik/base/getJSON.html"
+		}
+	]
+}

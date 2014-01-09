@@ -1,0 +1,115 @@
+<div class="example">
+	<h2>Q("#id"),Q(".class"),Q("tagName"),Q("[attr=value]"),
+		Q("query1 query2"),Q("query1 > query2")
+	</h2>
+</div>
+<div class="example">
+	<h2>Q("#id")</h2>
+	<h3>描述</h3>
+	<div class="desc">
+		根据id查找,如果有多个重复的id,只取第一个,返回一个类数组对象
+	</div>
+	<h3>例子</h3>
+	<pre class="code">
+&lt;div id="bak"&gt;
+ &lt;div id="ban"&gt;
+	
+ &lt;/div&gt;	
+&lt;/div&gt;
+(function(Q){
+ var qs=Q("#bak"); 
+})(Qmik)
+	</pre>
+</div>
+
+
+<div class="example">
+	<h2>Q(".class")</h2>
+	<h3>描述</h3>
+	<div class="desc">
+		根据class查找,返回一个类数组对象
+	</div>
+	<h3>例子</h3>
+	<pre class="code">
+&lt;div id="bak" class="ab"&gt;
+	&lt;div id="ban"&gt;
+	
+	&lt;/div&gt;
+&lt;/div&gt;
+(function(Q){
+	var qs=Q(".ab"); 
+})(Qmik)
+	</pre>
+</div>
+
+
+<div class="example">
+	<h2>Q("tagName")</h2>
+	<h3>描述</h3>
+	<div class="desc">
+		根据标签名查找,返回一个类数组对象
+	</div>
+	<h3>例子</h3>
+	<pre class="code">
+&lt;div id="bak"&gt;
+	&lt;div id="ban"&gt;
+	
+	&lt;/div&gt;
+&lt;/div&gt;
+(function(Q){
+	var qs=Q("div"); 
+})(Qmik)
+	</pre>
+</div>
+
+
+<div class="example">
+	<h2>Q("query1 query2")</h2>
+	<h3>描述</h3>
+	<div class="desc">
+		根据多个条件来查找,query1是query2的父级以上的节点(父,祖父,祖祖父)
+	</div>
+	<h3>例子</h3>
+	<pre class="code">
+&lt;div id="bak"&gt;
+	&lt;div id="ban" class="cb"&gt;
+		&lt;div class="cb"&gt;
+	
+		&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div class="cb"&gt;
+	
+	&lt;/div&gt;	
+&lt;/div&gt;
+(function(Q){
+	var qs=Q("#bak .cb"); 
+})(Qmik)
+	</pre>
+</div>
+
+
+<div class="example">
+	<h2>Q("query1 > query2")</h2>
+	<h3>描述</h3>
+	<div class="desc">
+		根据多个条件来查找,query1是query2的父级节点
+
+	</div>
+	<h3>例子</h3>
+	<pre class="code">
+&lt;div id="bak"&gt;
+	&lt;div id="ban" class="cb"&gt;
+		&lt;div class="cb"&gt;
+	
+		&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div class="cb"&gt;
+	
+	&lt;/div&gt;	
+&lt;/div&gt;
+(function(Q){
+	var qs=Q("#bak > .cb"); 
+})(Qmik)
+	</pre>
+</div>
+

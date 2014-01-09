@@ -1,0 +1,24 @@
+<div class="example">
+	<h2>$.fn.live()</h2>
+	<h3>描述</h3>
+	<div class="desc">
+		创建事件委托<br/>
+	</div>
+	<h3>例子</h3>
+	<pre class="code">
+&lt;div id="bak"&gt;
+	&lt;div id="ban"&gt;
+	&lt;/div&gt;	
+&lt;/div&gt;
+(function(Q){
+	Q().ready(function(){
+		//绑定事件委托
+		Q("#bak").live("click",function(e){
+			console.log("live click")
+		});
+		
+	})
+})(Qmik)
+	</pre>
+</div>
+

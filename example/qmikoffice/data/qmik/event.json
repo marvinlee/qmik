@@ -1,0 +1,30 @@
+{
+	"id": "dataQmikEvent",
+	"title": "event核心模块",
+	"list": [
+		{
+			"title":"on,bind",
+			"url":"data/qmik/event/on.html"
+		},
+		{
+			"title":"un,unbind",
+			"url":"data/qmik/event/un.html"
+		},
+		{
+			"title":"once",
+			"url":"data/qmik/event/once.html"
+		},
+		{
+			"title":"trigger",
+			"url":"data/qmik/event/trigger.html"
+		},
+		{
+			"title":"live",
+			"url":"data/qmik/event/live.html"
+		},
+		{
+			"title":"die",
+			"url":"data/qmik/event/die.html"
+		}
+	]
+}

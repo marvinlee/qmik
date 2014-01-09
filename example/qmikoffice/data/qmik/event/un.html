@@ -1,0 +1,38 @@
+<div class="example">
+	<h2>$.fn.un(name[,fun]),$.fn.unbind(name[,fun])</h2>
+	<h3>描述</h3>
+	<div class="desc">
+		取消绑定事件<br/>
+	</div>
+	<h3>使用方式</h3>
+	<pre class="desc">
+		方式1,清除对象的所有的click事件
+		$("#bak").un("click");
+
+		方式2,适用于清除对象上指定的click事件
+		$("#bak").on("click",fun)
+	</pre>
+	<h3>例子</h3>
+	<pre class="code">
+&lt;div id="bak"&gt;
+	&lt;div id="ban"&gt;
+	&lt;/div&gt;	
+&lt;/div&gt;
+(function(Q){
+	Q().ready(function(){
+		function cclick(e){
+			console.log("live click")
+		}
+		//绑定事件
+		Q("#bak").on("click",cclick);
+		
+		//取消指定的click事件cclick
+		Q("#bak").un("click",cclick);
+
+		//取消所有的click事件
+		Q("#bak").un("click");
+	})
+})(Qmik)
+	</pre>
+</div>
+

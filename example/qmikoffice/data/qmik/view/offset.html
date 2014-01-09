@@ -1,0 +1,23 @@
+<div class="example">
+	<h2>fn.offset()</h2>
+	<h3>描述</h3>
+	<div class="desc">
+		获取元素在当前视口的相对偏移,返回{left,top}<br/>
+	</div>
+	<h3>例子</h3>
+	<pre class="code">
+&lt;div id="bak"&gt;
+	&lt;div id="ban"&gt;
+	
+	&lt;/div&gt;	
+&lt;/div&gt;
+(function(Q){
+	Q().ready(function(){
+		var off 	=Q("#bak").offset();
+		var left	=off.left;
+		var right	=off.right;
+	})
+})(Qmik)
+	</pre>
+</div>
+

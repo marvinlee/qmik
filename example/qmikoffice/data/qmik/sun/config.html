@@ -1,0 +1,72 @@
+<div class="example">
+	<h2>$.sun.config({}})</h2>
+	<h3>描述</h3>
+	<div class="desc">
+		配置运行参数<br/>
+		alias : {},//别名系统,用简单的名称标识对应url的js文件,便宜后期的维护修改
+		vars : {},//路径变量系统,可以定义时间戳,版本标识等动态变量
+		gap : 60, //单位秒,默认60,间隔多少秒回收模块,释放空间
+		preload : []//预加载
+	</div>
+	<h3>例子</h3>
+	<pre class="code">
+//Config.js 配置文件
+(function(Q){
+	Q.sun.config({
+		alias : {//别名系统(可以通过别名来引用js模块)
+			// qmik组件
+			"Persion" : Q.url("Persion.js?${time}"),//
+			"Boy" : Q.url("Boy.js?${time}")
+		},
+		vars : {//变量系统
+			time:Q.now()
+			//time:function(){return parseInt(Q.now()/1000000)}
+		},//路径变量系统
+		preload : [
+			"Persion"
+		]
+	});
+})(Qmik);
+
+//Person.js 类文件
+(function(Q){
+	function Person(){}
+	Q.extend(Person.prototype,{
+		say:function(){
+			console.log("hello!")
+		},
+		goHome:function(){
+			console.log("i am go home!");
+		}
+	});
+	Q.defind(function(require,exports,module){
+		module.exports=Person;
+	});
+})(Qmik);
+
+//Boy.js 类文件
+(function(Q){
+	function Boy(){}
+	Q.extend(Boy.prototype,{
+		say:function(){
+			console.log("hello boy!")
+		}
+	});
+	Q.defind(function(require,exports,module){
+		var Person=require("Persion");
+		Q.inherit(Boy,Person);//继承父类Person
+		module.exports=Boy;
+	});
+})(Qmik);
+
+//index.html使用,通过script引用Qmik.js和Config.js文件
+(function(Q){
+	Q.sun.use(["Boy"],function(Boy){
+		var boy=new Boy();
+		boy.say();//>>hello boy!
+		boy.goHome();//>>i am go home!
+	});
+})(Qmik)
+	</pre>
+</div>
+

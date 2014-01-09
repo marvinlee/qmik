@@ -19,9 +19,9 @@
 	$.sun.config({
 		alias : {
 			// qmik组件
-			"Qmik.nav" : $.url("/assets/plugins/Qmik.nav"),//
-			"Qmik.fn.fade" : $.url("/assets/plugins/Qmik.fn.fade"),//
-			"Qmik.fn.tree" : $.url("/assets/plugins/Qmik.fn.tree"),// 树型菜单组件
+			"Qmik.nav" : $.url("/src/plugins/Qmik.nav.js?adsf"),//
+			"Qmik.fn.fade" : $.url("/assets/plugins/Qmik.fn.fade.js?asdfasdf"),//
+			"Qmik.fn.tree" : $.url("/src/plugins/Qmik.fn.tree.js"),// 树型菜单组件
 			// ////////////////////////////////////////////
 			//"beautify" : "module/jsformate/beautify",//  
 			// "ga" : $.url("js/jsformate/ga"),//

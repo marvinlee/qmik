@@ -1,0 +1,104 @@
+:-webkit-full-screen {
+  background: pink;
+}
+:full-screen {
+  background: pink;
+}
+@-ms-viewport{
+	max-width: 480px;
+	min-width: 320px;
+	min-height: 360px;
+	width: 320px;
+}
+.c_g_wrap,.c_g_ul .c_g_li ,.c_head_1{
+	max-width: 480px;
+	min-width: 320px;
+	-webkit-backface-visibility: hidden;
+	-ms-backface-visibility: hidden;
+	backface-visibility: hidden;
+}
+
+body,img,div,ul,li,p{
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+a{
+	cursor: pointer;
+}
+body{
+	overflow-x: hidden;
+}
+/** 虚化对象,使其不存在效果,任何的点击等都不能触发它 */
+.pointer-events{
+  pointer-events:none;
+}
+.c_g_float{
+	float: left;
+}
+.c_g_float_right{
+	float: right;
+}
+.c_g_wrap{
+	overflow: hidden;
+	position: relative;
+	width: 100%;
+	margin: 0 auto;
+}
+.c_g_ul,.c_g_ul .c_g_li{
+	list-style-type: none;
+	position: relative;
+}
+.c_g_ul{
+	width:100000%;
+}
+.c_g_ul .c_g_li{
+	float: left;
+	opacity: 0;
+	overflow: hidden;
+}
+.c_g_ul .c_g_li_full{
+	position: relative;
+	top:-49px;
+	background: red;
+	z-index: 100;
+}
+.c_g_view{
+	width: 100%;
+}
+.c_g_main{
+	padding: 0 5px;
+}
+/** 一级导航条 */
+.c_head_1{
+	background: #db4927;
+	height: 49px;
+	position: relative;
+	width:100%;
+}
+
+.c-g-logo{
+	position: absolute;
+	left: 4px;
+	top:4px;
+	width: 22px;
+	height: 22px;
+}
+.c_g_nav{
+	width: 80%;
+	margin: 0 auto;
+}
+.c_g_nav a{
+	line-height: 49px;
+	height: 49px;
+	font-size: 16px;
+	min-width: 39px;
+	color: #fff;
+	font-family: "微软雅黑";
+	font-weight: bold;
+	display: inline-block;
+	text-align: center;
+	cursor: pointer;
+}
+
+

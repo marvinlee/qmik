@@ -1,0 +1,22 @@
+{
+	"id": "dataQmikAjax",
+	"title": "ajax核心模块",
+	"list": [
+		{
+			"title":"width",
+			"url":"data/qmik/view/width.html"
+		},
+		{
+			"title":"height",
+			"url":"data/qmik/view/height.html"
+		},
+		{
+			"title":"offset",
+			"url":"data/qmik/view/offset.html"
+		},
+		{
+			"title":"position",
+			"url":"data/qmik/view/position.html"
+		}
+	]
+}

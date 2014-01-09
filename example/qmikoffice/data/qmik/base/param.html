@@ -1,0 +1,16 @@
+<div class="example">
+	<h2>param(array) 方法</h2>
+	<h3>描述</h3>
+	<div class="desc">
+		把数组内容转换成age=11&name=leo这种url参数形式,要求:数组里每个元素是个对象且包含name和value字段<br/>
+		array:数组
+	</div>
+	<h3>例子</h3>
+	<pre class="code">
+(function(Q){
+	var arr=[{name:"age",value:11},{name:"name",value:"leo"}];
+	var param=Q.param(arr);
+	console.log(param);//>>>:age=11&name=leo
+})(Qmik)
+	</pre>
+</div>

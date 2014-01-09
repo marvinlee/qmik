@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html menifest="">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="x-ua-compatible" content="IE=10">
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">
+	<meta name="keywords" content="Qmik js">
+	<meta name="description"
+	content="Qmik是一个精简高效的js框架,核心框架大小20kb,是一个html5移动开发的最佳首选,修改了ajax的缓存机制,使您的网站得到飞速的体验,采用的html5的本地缓存机制加入了ajax的缓存里">
+	<title></title>
+	<meta name="copyright" content="2012-2012 Qmik. All Rights Reserved">
+	<meta name="author" content="leochen">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="viewport"
+	content="width=device-width,user-scalable=0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+	<link rel="stylesheet" href="/qmik/qmikoffice/module/index.css?afddf">
+	<!-- 加载框架 -->
+	<script type="text/javascript" src="/qmik/qmikoffice/module/frame/qmik/Qmik.js"></script>
+	<!-- 加载配置文件 -->
+	<script type="text/javascript" src="/qmik/qmikoffice/module/Config.js"></script>
+
+	<script type="text/javascript">
+		(function(Q){
+			Q(function(){
+				/*if(window.innerWidth>480){
+					Q.getCss("module/common_pc.css",function(e){
+						Q(e.target||e.srcElement).attr("media","screen and (min-width: 481px)");
+					});
+				}*/
+			});		
+		})(Qmik);
+</script>
+</head>
+<body>
+	<div id="wrap" class="c_g_wrap" bubble="true">
+		<!-- 固定导航 -->
+		<div class="c_head_1">
+			<div id="navHome" class="c_g_nav">
+				<a id="navQmik" m-name="QmikAPI" m-method="showHelpEnter" >Qmik</a>
+				<a id="navQmikjson" m-name="Plug" m-method="showList">插件</a>
+				<a id="navDownload" m-name="Download" m-method="showList" >下载</a>
+				<a id="navAbout" m-name="About" m-method="show" >关于</a>
+			</div>
+		</div>
+		<ul class="c_g_ul">
+			<li id="area_qmik" class="c_g_li" style="opacity: 1;">
+				<div class="c_g_view">
+					<iframe width="100%" height="100%" scrolling="no" frameborder="no" _src="module/qmik/qmikAPI.html"></iframe>
+				</div>
+			</li>
+			<li id="area_plug" class="c_g_li">
+				<div class="c_g_view">
+					<iframe width="100%" height="100%" scrolling="no" frameborder="no" _src="module/plug/plug.html"></iframe>
+				</div>
+			</li>
+			<li id="area_download" class="c_g_li">
+				<div class="c_g_view">
+					<iframe width="100%" height="100%" scrolling="no" frameborder="no" _src="module/download/download.html"></iframe>
+				</div>
+			</li>
+			<li id="area_attach" class="c_g_li c_g_li_full">
+				<div class="c_g_view">
+					<iframe width="100%" height="100%" scrolling="no" frameborder="no" _src="module/plug/plug.html"></iframe>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<script type="text/javascript">
+		// 界面初始化 
+		(function(Q) {
+			scroll(0,0);
+			Q.sun.use("View",function(View){
+				View.initView();
+				View.addResize(function(scale){
+					//setViewQmik(scale);
+				});
+			});
+			Q("#area_qmik iframe").each(function(i,dom){
+				try{
+					dom.src = Q.url(Q(dom).attr("_src"));
+				}catch(e){}
+			});
+		})(window['$']);
+	</script>
+</body>
+</html>
