@@ -102,7 +102,7 @@
 						if (win.event) win.event.returnValue = retVal;
 					}
 				}
-			}catch(e){Q.log(e.message,e)}
+			}catch(e1){Q.log(e1.message,e1)}
 		})
 	}
 	function fixEvent(e) {
