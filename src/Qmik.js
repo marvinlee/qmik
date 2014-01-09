@@ -1,7 +1,7 @@
 /**
  * @author:leo
  * @email:cwq0312@163.com
- * @version:1.2.20
+ * @version:1.2.21
  */
 (function() {
 	var win = this, doc = win.document || {}, nav = win.navigator || {}, //
@@ -242,6 +242,9 @@
 				for ( var name in subPrototype) {
 					subClass.prototype[name] = subPrototype[name];
 				}
+				for ( var name in superClass) {
+					subClass[name] = superClass[name];
+				}
 			},
 			trim : function(v) {
 				return isNull(v) ? "" : isString(v) ? v.trim() : v.toString().trim()
@@ -425,7 +428,7 @@
 		}
 	});
 	///////////////////////////////////////////////////////
-	Q.version = "1.2.20";
+	Q.version = "1.2.21";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
