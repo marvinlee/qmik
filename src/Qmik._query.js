@@ -113,11 +113,12 @@
 		})
 	}
 	function formateClassNameValue(name, value) {
-		var tmp = (value + "").toLower();
 		for ( var i in addUints) {
 			if (name.indexOf(addUints[i]) >= 0) {
-				value = parseFloat(tmp || 0) + "px";
-				break
+				if(!/\D/.test(value)){
+					value += "px";
+					break
+				}
 			}
 		}
 		return value
@@ -164,6 +165,9 @@
 		obj[key] = val;
 		return obj
 	}
+	function getStyle(dom,name){
+		return dom.currentStyle ? dom.currentStyle[name] : doc.defaultView.getComputedStyle(dom,false)[name]
+	}
 	function css(o, k, v) {
 		//k = isString(k) && !isNull(v) ? Q.parseJSON('{"' + k + '":"' + execObject(v) + '"}') : k;
 		k = isString(k) && !isNull(v) ? setValue({}, k, execObject(v)) : k;
@@ -173,7 +177,8 @@
 				css(j, k)
 			})
 		} else if (isDom(o)) {
-			if (isString(k)) return o.style[formateClassName(k)];
+			//if (isString(k)) return o.style[formateClassName(k)];
+			if (isString(k)) return getStyle(o,formateClassName(k));
 			v = "";
 			each(k, function(i, j) {
 				v += formateClassName(i) + ':' + formateClassNameValue(i, j) + ';'
