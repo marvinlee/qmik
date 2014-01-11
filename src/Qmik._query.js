@@ -112,17 +112,6 @@
 			return "-" + toLower(v)
 		})
 	}
-	function formateClassNameValue(name, value) {
-		for ( var i in addUints) {
-			if (name.indexOf(addUints[i]) >= 0) {
-				if(!/\D/.test(value)){
-					value += "px";
-					break
-				}
-			}
-		}
-		return value
-	}
 	function muchValue2Qmik(c) {
 		c = execObject(c);
 		return isString(c) && rNode.test(c) ? Q(c) : c
@@ -164,6 +153,17 @@
 	function setValue(obj, key, val) {
 		obj[key] = val;
 		return obj
+	}
+	function formateClassNameValue(name, value) {
+		for ( var i in addUints) {
+			if (name.indexOf(addUints[i]) >= 0) {
+				if(!/[^\d\.-]/.test(value)){
+					value += "px"				
+				}
+				break
+			}
+		}
+		return value
 	}
 	function getStyle(dom,name){
 		return dom.currentStyle ? dom.currentStyle[name] : doc.defaultView.getComputedStyle(dom,false)[name]
