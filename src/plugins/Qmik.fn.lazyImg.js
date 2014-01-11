@@ -8,27 +8,31 @@
 		var min = win.pageYOffset - Q(dom).height() * 2;
 		var max = win.pageYOffset + win.innerHeight;
 		var _top = Q(dom).offset().top;
-		console.log(min+":"+max+":"+_top)
 		return _top >= min && _top <= max;
 	}
 
 	function bindEvent() {
-		var loadIndex=0;
-		Q(win).on("scroll", function() {
-			var oldIndex = loadIndex;
-			loadIndex++;
-			var lazys = Q('img.lazy');
-			for (var i = 0; i < lazys.length; i++) {
-				if (oldIndex + 1 != loadIndex) {
-					break;
-				}
-				var node = lazys[i];
-				var Qme = Q(node);
-				if (inViewport(Qme)) {
-					load(Qme);
+		var loadIndex = 0;
+		Q(win).on({
+			"scroll": function() {
+				var oldIndex = loadIndex;
+				loadIndex++;
+				var lazys = Q('img.lazy');
+				for (var i = 0; i < lazys.length; i++) {
+					if (oldIndex + 1 != loadIndex) {
+						break;
+					}
+					var node = lazys[i];
+					var Qme = Q(node);
+					if (inViewport(Qme)) {
+						load(Qme);
+					}
 				}
 			}
 		}).trigger("scroll");
+		Q.cycle(function(){
+			Q(win).trigger("scroll");
+		},1000,3000);
 	}
 
 	function load(me) {
