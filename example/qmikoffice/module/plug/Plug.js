@@ -11,19 +11,25 @@
 	Q.extend(Plug.prototype, {
 		showList: function() {
 			var me=this;
-			//area_attach
-			//me.pop(Q("#area_plug"));
-			me.popAttach();
+			var qiframe = Q("#areaPlug iframe");
+			if(qiframe.attr("_src")){
+				qiframe[0].src=Q.url(qiframe.attr("_src"));
+				me.show(Q("#areaPlug"));
+			}
+			
 		},
 		showHelp: function(plug) {
 			var me=this;
-			//me.pop(Q("#area_plug"));
-			me.popAttach();
+			var qiframe = Q("#areaPlug iframe");
+			if(qiframe.attr("_src")){
+				qiframe[0].src=Q.url(qiframe.attr("_src"));
+				me.pop(Q("#areaPlug"));
+			}
 		}
 	});
 	Q.define(function(require, exports, module) {
-		var BaseAct = require("BaseAct");
-		Q.inherit(Plug, BaseAct);
+		var View = require("View");
+		Q.inherit(Plug, View);
 		intance = new Plug();
 		module.exports = Plug;
 	});

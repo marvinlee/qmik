@@ -12,7 +12,7 @@
 		//显示帮助模块入口 
 		showHelpEnter: function() {
 			var me=this;
-			me.pop(Q("#area_qmik"));
+			me.show(Q("#areaQmik"));
 		},
 		//取对应帮助数据文件的url
 		getIHelpUrl: function(id) {
@@ -43,30 +43,28 @@
 		showHelp: function(id, url) {
 			var me = this;
 			var helpUlr = me.getIHelpUrl(id); //取得帮助内容的接口url
-			var $tar = Q("#" + id);
-			
-			if ($tar.length < 1) {
-				this.pop();
+			console.log(helpUlr);
+			//if ($tar.length < 1) {
 				//var gotoUrl=Q.url("img/goto.png");
 				Q.getJSON(helpUlr, function(data) {
 					var h = [];
+					var area = Q("#areaAttach",parent.document);
 					h.push('<li id="' + id + '" class="c-g-view c-g-area">');
 					h.push('<div mid="left-nav" class="c-g-left-nav c-g-float">');
 					h.push('<ul>');
 					Q.each(data.list, function(i, item) {
-
 						h.push('<li trig-type="click" url="' + item.url + '">' + item.title + '</li>');
 					});
 					h.push('</ul>');
 					h.push('</div>');
 					h.push('<div mid="main-view" class="c-g-main-view c-g-float"></div>');
 					h.push('</div>');
-					Q("#sheetsSub").html(h.join(""));
-
+					area.html(h.join(""));
+					parent.View.popAttach();
 					if (url) {
 						me.showHelpDetail(id,url); //如果有url,查看详细说明
 					}
-					Q("#sheetsSub [mid=left-nav] ul").on({
+					Q("[mid=left-nav] ul",area).on({
 						click: function(e) {
 							e.stopPropagation();
 							var info = Q.nav.getInfo() || [];
@@ -80,15 +78,15 @@
 								});
 							}
 						}
-					}).scrollBar();
+					});
 				});
 				if (Q("link[_src='" + Q.url('module/qmik/qmik.css') + "']").length < 1) {
 					Q.getCss('module/qmik/qmik.css');
 				}
 				
-			} else {
+			/*} else {
 				me.showHelpDetail(id,url);
-			}
+			}*/
 		},
 		showHelpDetail: function(id, url) { //查看详细说明
 			Q.get(url, function(text) {
@@ -102,7 +100,6 @@
 		var View = require("View");
 		Q.inherit(QmikAPI, View);
 		intance = new QmikAPI();
-		Q("#sheetsSub").css({height:window.innerHeight+"px"});
 		module.exports = QmikAPI;
 	});
 })($);

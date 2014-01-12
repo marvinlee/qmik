@@ -10,23 +10,17 @@
 
 	Q.extend(Download.prototype, {
 		showList: function() {
-			this.push();
-			Q("#sheets [mid=show] [view=main]").hide();
-			Q("#sheets [mid=show] [mid=download]").show();
-			Q.get('module/download/download.html', function(txt) {
-				txt = txt.replace(/\r|\n/g, "");
-				Q("#sheets [mid=show] [mid=download]").html(txt);
-				Q("#mDownload a").each(function(index,dom){
-					dom.href=Q.url(Q(dom).attr("_href"));
-				});
-			});
-			
+			var me=this;
+			var qiframe = Q("#areaDownload iframe");
+			if(qiframe.attr("_src")){
+				qiframe[0].src=Q.url(qiframe.attr("_src"));
+				me.show(Q("#areaDownload"));
+			}
 		}
 	});
 	Q.define(function(require, exports, module) {
-		var BaseAct = require("BaseAct");
-		require("Qmik.fn.scrollBar");
-		Q.inherit(Download, BaseAct);
+		var View = require("View");
+		Q.inherit(Download, View);
 		intance = new Download();
 		module.exports = Download;
 	});

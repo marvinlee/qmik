@@ -114,7 +114,6 @@
 			method = param[config.method]
 		}
 		moduleName && sun.use(moduleName, function(module) {
-			console.log(module)
 			execModule(module, method, param || [])
 		});
 		return moduleName

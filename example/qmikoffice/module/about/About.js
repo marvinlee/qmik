@@ -9,22 +9,15 @@
 	}
 
 	Q.extend(About.prototype, {
-		show: function() {
+		showView: function() {
 			var me=this;
-			me.push();
-			Q("#sheets [mid=show] [view=main]").hide();
-			Q("#sheets [mid=show] [mid=plug]").show();
-			
-			Q.get('module/about/about.html', function(txt) {
-				txt = txt.replace(/\r|\n/g, "");
-				Q("#sheets [mid=show] [mid=plug]").html(txt).scrollBar({
-					update:function(xx){
-						me.flush();
-					}
-				}).css({
-					height:me.height()+"px"
-				});
-			});		
+			var qiframe = Q("#areaAbout iframe");
+			if(Q.likeNull(qiframe.attr("src"))){
+				if(qiframe.attr("_src")){
+					qiframe[0].src=Q.url(qiframe.attr("_src"));
+				}
+			}
+			View.show(Q("#areaAbout"));
 		},
 		showHelp: function(plug) {
 			var me=this;
@@ -45,9 +38,8 @@
 		}
 	});
 	Q.define(function(require, exports, module) {
-		var BaseAct = require("BaseAct");
-		require("Qmik.fn.scrollBar");
-		Q.inherit(About, BaseAct);
+		var View = require("View");
+		Q.inherit(About, View);
 		intance = new About();
 		module.exports = About;
 	});

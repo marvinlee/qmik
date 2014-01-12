@@ -8,14 +8,6 @@
 	max-width: 480px;
 	min-width: 320px;
 	min-height: 360px;
-	width: 320px;
-}
-.c_g_wrap,.c_g_ul .c_g_li ,.c_head_1{
-	max-width: 480px;
-	min-width: 320px;
-	-webkit-backface-visibility: hidden;
-	-ms-backface-visibility: hidden;
-	backface-visibility: hidden;
 }
 
 body,img,div,ul,li,p{
@@ -27,11 +19,17 @@ a{
 	cursor: pointer;
 }
 body{
+	-webkit-backface-visibility: hidden;
+	-ms-backface-visibility: hidden;
+	backface-visibility: hidden;
 	overflow-x: hidden;
 }
 /** 虚化对象,使其不存在效果,任何的点击等都不能触发它 */
 .pointer-events{
   pointer-events:none;
+}
+.c_g_clear{
+	clear:both;
 }
 .c_g_float{
 	float: left;
@@ -42,7 +40,6 @@ body{
 .c_g_wrap{
 	overflow: hidden;
 	position: relative;
-	width: 100%;
 	margin: 0 auto;
 }
 .c_g_ul,.c_g_ul .c_g_li{
@@ -50,12 +47,14 @@ body{
 	position: relative;
 }
 .c_g_ul{
-	width:100000%;
+	width:100%;
 }
 .c_g_ul .c_g_li{
 	float: left;
 	opacity: 0;
 	overflow: hidden;
+	width: 100%;
+	background: #fff;
 }
 .c_g_ul .c_g_li_full{
 	position: relative;
@@ -63,6 +62,14 @@ body{
 	background: red;
 	z-index: 100;
 }
+.c_g_wrap,.c_g_ul .c_g_li ,.c_head_1{
+	max-width: 480px;
+	min-width: 320px;
+	-webkit-backface-visibility: hidden;
+	-ms-backface-visibility: hidden;
+	backface-visibility: hidden;
+}
+
 .c_g_view{
 	width: 100%;
 }
@@ -70,7 +77,7 @@ body{
 	padding: 0 5px;
 }
 /** 一级导航条 */
-.c_head_1{
+.c_g_head_1{
 	background: #db4927;
 	height: 49px;
 	position: relative;
@@ -87,6 +94,7 @@ body{
 .c_g_nav{
 	width: 80%;
 	margin: 0 auto;
+	height: 49px;
 }
 .c_g_nav a{
 	line-height: 49px;
@@ -100,5 +108,9 @@ body{
 	text-align: center;
 	cursor: pointer;
 }
-
-
+iframe{
+	min-height: 360px;
+}
+.c_footer{
+	height: 50px;
+}

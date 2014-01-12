@@ -15,11 +15,28 @@
 	<meta name="format-detection" content="telephone=no">
 	<meta name="viewport"
 	content="width=device-width,user-scalable=0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
-	<link rel="stylesheet" href="/qmik/qmikoffice/module/index.css?afddf">
+	<link rel="stylesheet" href="/qmikoffice/module/index.css?afddf">
 	<!-- 加载框架 -->
-	<script type="text/javascript" src="/qmik/qmikoffice/module/frame/qmik/Qmik.js"></script>
+	<script type="text/javascript" src="/qmikoffice/module/frame/qmik/Qmik.js"></script>
 	<!-- 加载配置文件 -->
-	<script type="text/javascript" src="/qmik/qmikoffice/module/Config.js"></script>
+	<script type="text/javascript" src="/qmikoffice/module/Config.js"></script>
+
+	<style type="text/css">
+		body{
+			overflow: hidden;
+		}
+		div{
+			 scrollbar-face-color: #e8e7e7; 
+			 scrollbar-highlight-color: #ffffff; 
+			 scrollbar-shadow-color: #ffffff; 
+			 scrollbar-3dlight-color: #cccccc; 
+			 scrollbar-arrow-color: #03b7ec; 
+			 scrollbar-track-color: #efefef; 
+			 scrollbar-darkshadow-color: #b2b2b2; 
+			 scrollbar-base-color: #000000;	
+		}
+
+	</style>
 
 	<script type="text/javascript">
 		(function(Q){
@@ -36,35 +53,41 @@
 <body>
 	<div id="wrap" class="c_g_wrap" bubble="true">
 		<!-- 固定导航 -->
-		<div class="c_head_1">
+		<div id="head" class="c_g_head_1">
 			<div id="navHome" class="c_g_nav">
-				<a id="navQmik" m-name="QmikAPI" m-method="showHelpEnter" >Qmik</a>
-				<a id="navQmikjson" m-name="Plug" m-method="showList">插件</a>
-				<a id="navDownload" m-name="Download" m-method="showList" >下载</a>
-				<a id="navAbout" m-name="About" m-method="show" >关于</a>
+				<a id="navQmik" mName="QmikAPI" mMethod="showHelpEnter" >Qmik</a>
+				<a id="navQmikjson" mName="Plug" mMethod="showList">插件</a>
+				<a id="navDownload" mName="Download" mMethod="showList" >下载</a>
+				<a id="navAbout" mName="About" mMethod="showView" >关于</a>
 			</div>
 		</div>
 		<ul class="c_g_ul">
-			<li id="area_qmik" class="c_g_li" style="opacity: 1;">
+			<li id="areaQmik" class="c_g_li" style="opacity: 1;">
 				<div class="c_g_view">
-					<iframe width="100%" height="100%" scrolling="no" frameborder="no" _src="module/qmik/qmikAPI.html"></iframe>
+					<iframe width="100%" height="100%" marginWidth=0 frameSpacing=0 marginHeight=0  vspale="0" scrolling="yes" frameborder="no" noResize _src="module/qmik/qmikAPI.html"></iframe>
 				</div>
 			</li>
-			<li id="area_plug" class="c_g_li">
+			<li id="areaPlug" class="c_g_li">
 				<div class="c_g_view">
 					<iframe width="100%" height="100%" scrolling="no" frameborder="no" _src="module/plug/plug.html"></iframe>
 				</div>
 			</li>
-			<li id="area_download" class="c_g_li">
+			<li id="areaDownload" class="c_g_li">
 				<div class="c_g_view">
 					<iframe width="100%" height="100%" scrolling="no" frameborder="no" _src="module/download/download.html"></iframe>
 				</div>
 			</li>
-			<li id="area_attach" class="c_g_li c_g_li_full">
+			<li id="areaAbout" class="c_g_li">
+				<div class="c_g_view">
+					<iframe width="100%" height="100%" scrolling="no" frameborder="no" _src="module/about/about.html"></iframe>
+				</div>
+			</li>
+			<li id="areaAttach" type="attach" class="c_g_li">
 				<div class="c_g_view">
 					<iframe width="100%" height="100%" scrolling="no" frameborder="no" _src="module/plug/plug.html"></iframe>
 				</div>
 			</li>
+			<li class="c_g_clear"></li>
 		</ul>
 	</div>
 
@@ -74,13 +97,16 @@
 			scroll(0,0);
 			Q.sun.use("View",function(View){
 				View.initView();
+				View.initEvent();
 				View.addResize(function(scale){
 					//setViewQmik(scale);
 				});
 			});
-			Q("#area_qmik iframe").each(function(i,dom){
+			Q("#areaQmik iframe").each(function(i,dom){
 				try{
-					dom.src = Q.url(Q(dom).attr("_src"));
+					if(Q(dom).attr("_src")){
+						dom.src = Q.url(Q(dom).attr("_src"))+"?"+new Date().getTime();
+					}
 				}catch(e){}
 			});
 		})(window['$']);

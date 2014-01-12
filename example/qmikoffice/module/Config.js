@@ -5,7 +5,7 @@
 
 	// 配置Qmik工程的基础路径,如果没有配置,默认= location.protocol + "//" + location.hostname
 	Q.config({
-		context : "/qmik/qmikoffice/"
+		context : "/qmikoffice/"
 	});
 	Q.config({
 		debug : true
@@ -14,10 +14,9 @@
 	Q.sun.config({
 		alias : {//别名系统(可以通过别名来引用js模块)
 			// qmik组件
-			"Qmik.nav" : Q.url("/qmik/qmikoffice/module/frame/qmik/Qmik.nav.js?${time}"),//
+			"Qmik.nav" : Q.url("module/frame/qmik/Qmik.nav.js?${time}"),//
 			// /
 			"View" : "module/common/View.js?${time}",
-			"BaseAct" : "module/common/BaseAct.js?${time}",
 			"home" : "module/home/home.js?${time}",
 			"QmikAPI" : "module/qmik/QmikAPI.js?${time}",
 			"Download" : "module/download/Download.js?${time}",
@@ -31,8 +30,7 @@
 			}*/
 		},//路径变量系统
 		preload : [
-			"Qmik.nav",
-			"BaseAct"
+			"Qmik.nav"
 		]
 	});
 })(Qmik);

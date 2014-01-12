@@ -1,34 +1,54 @@
+function getStyle(o, a) {
+	return o.currentStyle ? o.currentStyle[a] : document.defaultView.getComputedStyle(o, false)[a];
+}
 (function(Q) {
 	var win = window,
 		doc = document;
-	/** c语言的学法,防止多次加载,造成多次引入*/
-	if (win.___View_JS__) {
-		return;
-	}
-	win.___View_JS__ = true;
+
 	var resizes = [];
+	var areaActive = Q(".c_g_ul > .c_g_li")[0];
+	var zIndex = 10;
 
 	function View() {}
 	Q.extend(View, {
-		initView: function() {
-			Q(function() {
-				initViewSize();
-				initEvent();
-				onResize();
+		initView: initView, //初始化视图
+		initEvent: initEvent, //初始化事件
+		addResize: addResize, //添加窗口变动事件
+		width: getWidth,
+		height: getHeight,
+		show:function(area){
+			area = Q(area);
+			var width = area.width();
+			zIndex++;
+			var posi = area.position();
+			area.css({
+				opacity: 1
 			});
-		},
-		addResize: function(fun) {
-			fun && resizes.push(fun)
-		},
-		width: function() {
-			return win.innerWidth
-		},
-		height: function() {
-			return win.innerHeigh
+			Q(".c_g_li").removeClass("c_g_li_active");
+			area.addClass("c_g_li_active");
+			var x = -posi.left;
+			//var mainArea = Q(".c_g_ul");
+			var css = Q.cssPrefix({
+				"transition": "0ms",
+				"transform": "translateX(" + x + "px)",
+				"z-index": zIndex
+			});
+			css.zIndex=zIndex;
+			area.css(css);
+			Q("#areaAttach").css(Q.cssPrefix({
+				"transition": "0ms",
+				"transform": "translateX(" + x + "px)",
+				"display":"none"
+			}));
+			area.closest(".c_g_ul").css({
+				height:area.height()+"px"
+			})
 		},
 		//弹出内容
 		pop: function(area) {
 			area = Q(area);
+			var width = area.width();
+			zIndex++;
 			var posi = area.position();
 			area.css({
 				opacity: 1
@@ -37,36 +57,87 @@
 			area.addClass("c_g_li_active");
 			var x = -posi.left;
 			var mainArea = Q(".c_g_ul");
-			mainArea.css(Q.cssPrefix({
-				"transition": config.popTime + "ms",
-				"transform": "translateX(" + x + "px)"
+			area.css(Q.cssPrefix({
+				"transition": "0ms",
+				"transform": "translateX(" + width + "px)"
 			}));
+			var css = Q.cssPrefix({
+				"transition": "400ms",
+				"transform": "translateX(" + x + "px)",
+				"z-index": zIndex
+			});
+			css.zIndex=zIndex;
+			area.css(css);
 		},
 		//弹出附件层
 		popAttach: function() {
-			View._areaActive = Q(".c_g_li_active");
-			View.pop(Q("#area_attach"));
+			var me = this;
+			areaActive = Q(".c_g_li_active");
+			me.pop(Q("#areaAttach"));
 		},
 		//收起附件层
 		hideAttach: function() {
-			View.pop(View._areaActive || Q(".c_g_li")[0]);
+			var me = this;
+			me.pop(areaActive || Q(".c_g_li")[0]);
 		}
 	});
+	Q.extend(View.prototype, View);
+
+	function initView() {
+		Q(function() {
+			initViewSize();
+		});
+	}
 	/** 初始化窗口大小 */
 	function initViewSize() {
 		//if(true)return;
-		var width = win.innerWidth;
-		var height = win.innerHeight;
-		Q("body,.c_g_wrap,.c_g_li").css({
+		var width = getWidth();
+		var height = getHeight();
+		var fheight = height < screen.availHeight / 2 ? screen.availHeight / 2 : height;
+		var headHeight = Q("#head").height();
+
+		Q("body").css({
 			width: width + "px",
-			minHeight: height + "px"
+			height: fheight + "px"
 		});
-		Q(".c_g_li iframe").each(function(i,dom){
-			dom.height = height+"px";
+		Q(".c_g_wrap").css({
+			width: width + "px",
+			height: fheight + "px"
 		});
+		width = Q(".c_g_wrap").width();
+		var luHeight = fheight - headHeight;
+		Q(".c_g_li iframe").each(function(i, dom) {
+			dom.height = luHeight + "px";
+			//Q(dom).css("height", luHeight+ "px");
+		});
+		Q(".c_g_li").css({
+			width: width + "px",
+			height: luHeight + "px"
+		});
+		Q.delay(function(){
+			Q(".c_g_ul").css({
+				width: "10000%"
+			});
+		},1000);
+		
+	}
+
+	function addResize(fun) {
+		fun && resizes.push(fun)
+	}
+
+	function getWidth() {
+		var width = win.innerWidth;
+		var parentWidth = $(parent.document.body).width()
+		return Math.min(width,parentWidth);
+	}
+
+	function getHeight() {
+		return win.innerHeigh
 	}
 
 	function initEvent() {
+		onResize();
 		View.addResize(initViewSize); //添加窗口大小变化事件处理方法
 		function noTrigBrowerEvent(e) {
 			//e.stopPropagation();
@@ -127,7 +198,11 @@
 		});
 	}
 	/** 绑定resion事件 */
-	function _onResize(e) {
+	function trigResize(e) {
+		trigResize.state = 1;
+		Q.delay(function() {
+			trigResize.state = 0;
+		}, 500);
 		var availWidth = screen.availWidth;
 		var inWidth = win.innerWidth;
 		var scale = inWidth / availWidth;
@@ -140,19 +215,18 @@
 			} catch (e) {
 				Q.log(e);
 			}
-		})
+		});
 	}
 
 	function onResize() {
 		Q(win).on({
-			resize: _onResize
+			resize: trigResize
 		});
 	}
-
 	Q.sun.define(function(require, exports, module) {
 		module.gc = function() {
 			win.___View_JS__ = false;
-			Q(win).un("resize", _onResize);
+			Q(win).un("resize", trigResize);
 		}
 		window.View = module.exports = View
 	});
