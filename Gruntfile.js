@@ -60,7 +60,7 @@ module.exports = function(grunt) {
 						'src/Qmik._ajax.js'
 					],
 					'assets/Qmik.box.js' : [
-						'src/Qmik.box.js'
+						'src/plugins/Qmik.box.js'
 					],
 					'assets/plugins/Qmik.nav.js' : [
 						'src/plugins/Qmik.nav.js'
@@ -82,6 +82,12 @@ module.exports = function(grunt) {
 					],
 					'assets/plugins/Qmik.fn.scrollBar.js' : [
 						'src/plugins/Qmik.fn.scrollBar.js'
+					],
+					'assets/plugins/Qmik.Store.js' : [
+						'src/plugins/Qmik.Store.js'
+					],
+					'assets/plugins/Qmik.fn.lazyImg.js' : [
+						'src/plugins/Qmik.fn.lazyImg.js'
 					]
 				}
 			}
