@@ -28,29 +28,26 @@
 			if (rNode.test(selector)) {
 				var t = doc.createElement('div');
 				t.innerHTML = selector;
-				r = t.childNodes
+				r = t.children;
 			} else {
-				each(selector.split(","), function(i, val) {
-					each(find(val, context), function(j, dom) {
-						dom && me.push(dom)
-					})
-				});
+				each(find(selector, context), function(j, dom) {
+					me._push(dom)
+				})
 				return me
 			}
 		} else {
 			r = likeArray(selector) ? selector : [
 				selector
-			];
-			r = (r + "" == "[object Text]") ? [] : r
+			]
 		}
-		each(muchToArray(r || []), function(i, dom) {
-			Q.inArray(dom,me) < 0 && dom && me.push(dom)
-		});
+		for(var i=0;i<r.length ;i++){
+			me._push(r[i])
+		}
 		return me
 	}
 	Q.extend(Query.prototype, {
-		push : function(v) {
-			this[this.length++] = v
+		_push : function(v) {
+			v && ( this[this.length++] = v )
 		}
 	});
 	// Q.inherit(Query, Array);
@@ -69,7 +66,7 @@
 			context = isString(context) ? Q(context) : context;
 			if(isQmik(context)){
 				each(context, function(i, v) {
-					isDom(v) && (result = result.concat(muchToArray(v.querySelectorAll(selector))))
+					isDom(v) && (result = result.concat(arrayConcat(result,v.querySelectorAll(selector))))
 				});
 			}else{
 				result=context.querySelectorAll(selector) || []
@@ -81,18 +78,15 @@
 		return isFun(v) ? v() : v
 	}
 	// As much as possible to Array
-	function muchToArray(a) {
-		//return isArray(a) ? a : Array.prototype.slice.call(a, 0)
-		return isArray(a) ? a : (function() {
-			var r = [], i = 0;
-			try {
-				r = [].slice.call(a, 0)
-			} catch (e) {
-				while (i < a.length)
-					r.push(a[i++])
+	function arrayConcat(sarray,tarray) {
+		if(isArray(tarray)){
+			sarray =sarray.concat(tarray)
+		}else{
+			for(var i=0;i<tarray.length;i++){
+				sarray.push(tarray[i])
 			}
-			return r
-		})()
+		}
+		return sarray
 	}
 	function at(target, name) {
 		return !SE() ? target[name] : target.getAttribute(name) || target[name]
@@ -272,6 +266,12 @@
 		});
 		return new Query(ret, qmik)
 	}
+	function matchesSelector(dom, selector) {
+		if(dom){
+			dom._matchesSelector = dom.matchesSelector || dom.msMatchesSelector || dom.mozMatchesSelector || dom.webkitMatchesSelector;
+			return dom._matchesSelector && dom._matchesSelector(selector)
+		}
+	}
 	/**
 	 * 	selector:选择器 
 	 	qmik:qmik查询对象 
@@ -283,16 +283,17 @@
 		var array = [],isPush=0;
 		isAllP = isAllP != !1;
 		isOnlyParent = isOnlyParent == !0;
+		var isSelector = !isNull(selector);
 		each(qmik,function(i, dom){
-			var v = dom,p = v.parentNode,tp;
-			while(v && p && p != doc.body.parentNode){
+			var p = dom.parentNode,tp;
+			while(isDom(p) && p != doc.body){
 				isPush = 0;
-				if(!isNull(selector)){
+				if(isSelector){
 					tp = p.parentNode;
-					if(selector && tp && tp.querySelector(selector) == p){
+					if(tp && Q.inArray(p ,Q(tp).children(selector))>-1){
 						isPush = 1
 					}
-				}else if(isDom(p)){
+				}else{
 					isPush = 1
 				}
 				if(isPush){
@@ -300,8 +301,7 @@
 					if (!isAllP) break
 				}
 				if (isOnlyParent) break;	
-				v = v.parentNode;
-				v && ( p = v.parentNode )
+				p && ( p = p.parentNode )
 			}
 		});
 		return Q(array)
@@ -326,7 +326,7 @@
 		filter : function(f) {
 			var r = new Query();
 			each(this, function(i, v) {
-				if (f(i, v)) r.push(v)
+				if (f(i, v)) r._push(v)
 			});
 			return r
 		},
@@ -343,14 +343,14 @@
 		gt : function(i) {// 大于
 			var r = new Query(), j = i + 1;
 			for (; j < this.length && j >= 0; j++) {
-				r.push(this[j])
+				r._push(this[j])
 			}
 			return r
 		},
 		lt : function(i) {// 小于
 			var r = new Query(), j = 0;
 			for (; j < i && j < this.length; j++) {
-				r.push(this[j])
+				r._push(this[j])
 			}
 			return r
 		},
@@ -482,7 +482,7 @@
 			var me = this, q = new Query();
 			me.each(function(i, dom) {
 				Q(selector, dom.parentNode).each(function(j, dom1) {
-					dom === dom1 && q.push(dom)
+					dom === dom1 && q._push(dom)
 				})
 			});
 			/**
@@ -502,14 +502,15 @@
 		children : function(selector) {//查找直接子节点
 			var r = new Query();
 			var me = this;
-			var isSelector =!isNull(selector);
+			var isNullSelector = isNull(selector);
 			me.each(function(i, dom) {
-				var k=0, 
-					tdom,
-					selects=isSelector ? Q(selector,dom) : dom.childNodes;
-				while( k <= selects.length ){
-					tdom = selects[k++];
-					isDom(tdom) && tdom.parentNode == dom && r.push(tdom)
+				//var childs = dom.childNodes;
+				var childs = dom.children;
+				var j = 0,
+					tdom;
+				while (j < childs.length) {
+					tdom = childs[j++];
+					isDom(tdom) && (isNullSelector || matchesSelector(tdom, selector)) && r._push(tdom)
 				}
 			});			
 			return r
