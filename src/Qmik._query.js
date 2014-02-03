@@ -66,7 +66,7 @@
 			context = isString(context) ? Q(context) : context;
 			if(isQmik(context)){
 				each(context, function(i, v) {
-					isDom(v) && (result = result.concat(arrayConcat(result,v.querySelectorAll(selector))))
+					isDom(v) && (result = arrayConcat(result,v.querySelectorAll(selector)))
 				});
 			}else{
 				result=context.querySelectorAll(selector) || []
