@@ -46,6 +46,7 @@
 				top : parentY(o)
 			}
 		},
+		//要废弃的方法,不建议使用
 		animate : function(styles, speed, easing, callback) {
 			var me = this, mul = 20, speed = speed || 500, stardStyle = {}, source, target;
 			var toDouble = parseFloat;
