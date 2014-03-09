@@ -45,6 +45,40 @@
 				left : parentX(o),
 				top : parentY(o)
 			}
+		},
+		//要废弃的方法,不建议使用
+		animate : function(styles, speed, easing, callback) {
+			var me = this, mul = 20, speed = speed || 500, stardStyle = {}, source, target;
+			var toDouble = parseFloat;
+			Q.each(styles, function(key, val) {
+				stardStyle[key] = Math.abs(toDouble(val) - toDouble(me.css(key) || 0))
+			});
+			function Animate() {
+				var me1 = this;
+				me1.thread = Q.cycle(function() {
+					var mstyle = {}, isDelay = !1;
+					Q.each(styles, function(key, val) {
+						val = toDouble(val);
+						target = val;
+						source = toDouble(me.css(key) || 0);
+						if (target >= source) {
+							mstyle[key] = (source + stardStyle[key] / mul) + "px";
+							isDelay = source >= val - 1 ? !1 : !0
+						} else {
+							mstyle[key] = (source - stardStyle[key] / mul) + "px";
+							isDelay = source <= val + 1 ? !1 : !0
+						}
+					});
+					me.css(mstyle);
+					!isDelay && me1.stop()
+				}, speed / mul)
+			}
+			Animate.prototype.stop = function() {
+				this.thread.stop();
+				me.css(styles);
+				callback && callback()
+			}
+			return new Animate()
 		}
 	});
 })(Qmik);
