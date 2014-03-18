@@ -125,5 +125,4 @@ module.exports = function(grunt) {
 	grunt.registerTask('default', [
 		'clean', 'uglify', 'concat', 'qunit'
 	]);
-	
 };
