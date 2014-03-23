@@ -22,7 +22,7 @@
 	function Query(selector, context) {
 		var me = this, r;
 		me.context = context = context || doc;
-		me.selector = selector;
+		me.selector = selector = clearLine(selector);
 		me.length = 0;
 		if (isString(selector)) {
 			if (rNode.test(selector)) {
@@ -74,6 +74,10 @@
 		}
 		return result
 	}
+	function clearLine(str){
+		return isString(str) ? str.replace(/\r|\n/g,"") : str
+	}
+
 	function execObject(v, target) {
 		return isFun(v) ? v() : v
 	}
@@ -108,6 +112,7 @@
 	}
 	function muchValue2Qmik(c) {
 		c = execObject(c);
+		c = clearLine(c);
 		return isString(c) && rNode.test(c) ? Q(c) : c
 	}
 	function append(o, child) {
@@ -119,7 +124,7 @@
 		} else if (isDom(o)) {
 			likeArray(child) ? each(child, function(k, v) {
 				append(o, v)
-			}) : o.appendChild(isDom(child) ? child : doc.createTextNode(child.replace(/\r|\n/g,"")))
+			}) : o.appendChild(isDom(child) ? child : doc.createTextNode(child))
 		}
 	}
 	function before(o, child) {
