@@ -119,7 +119,7 @@
 		} else if (isDom(o)) {
 			likeArray(child) ? each(child, function(k, v) {
 				append(o, v)
-			}) : o.appendChild(isDom(child) ? child : doc.createTextNode(child))
+			}) : o.appendChild(isDom(child) ? child : doc.createTextNode(child.replace(/\r|\n/g,"")))
 		}
 	}
 	function before(o, child) {

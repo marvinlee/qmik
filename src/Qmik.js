@@ -180,12 +180,13 @@
 	///////////////
 	///////////////////Cycle class
 	function Cycle(fun, cycleTime, ttl, params) {
-		var me = this, start = Q.now();
+		var me = this, start = Q.now(), chisu = 1;
 		function _exec() {
-			if ((isNull(ttl) || Q.now() - start <= ttl)) {
+			if ((isNull(ttl) || (chisu * cycleTime - start) <= ttl)) {
 				fun.apply(null, params);
 				me._p = new Delay(_exec, cycleTime, params);
 			}
+			chisu++;
 		}
 		me._p = new Delay(_exec, cycleTime, params);
 	}
@@ -377,6 +378,9 @@
 			isOpera : function() {
 				return /Opera/.test(UA)
 			},
+			isRetinal : function(){//判断是否是视网膜高清屏,默认是高清屏
+				return (win.devicePixelRatio || 2) >= 1.5;
+			},
 			config : function(opts, _config) {
 				_config = arguments.length <= 1 ? config : (_config || {});
 				var ret = _config;
@@ -428,7 +432,7 @@
 		}
 	});
 	///////////////////////////////////////////////////////
-	Q.version = "1.2.22";
+	Q.version = "1.2.23";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
