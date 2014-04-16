@@ -153,10 +153,10 @@
 		});
 		isCss ? node.attr("rel", "stylesheet") : isScript && node.attr("type", "text/javascript");
 		node.ready(function(e) {
-			success && success(e || {target:node})
+			success && success(node)
 		}).on("error", function(e) {
 			node.remove();
-			error && error(e || {target:node})
+			error && error(node)
 		});
 		Q.delay(function() {
 			if (isCss) node[0].href = url;
@@ -432,7 +432,7 @@
 		}
 	});
 	///////////////////////////////////////////////////////
-	Q.version = "1.2.23";
+	Q.version = "1.2.24";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;

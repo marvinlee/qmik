@@ -37,7 +37,7 @@
 			}
 		}
 		win[callbackName] = function(data) {
-			win[callbackName] = null;
+			delete win[callbackName];
 			Q("script[jsonp='" + callbackName + "']").remove();
 			thread && thread.stop();
 			success && success(data)
@@ -47,9 +47,9 @@
 	}
 	function ajax(conf) {
 		var _config = Q.extend({}, ac, conf), dataType = _config.dataType, ttl = _config.timeout, //
-		xhr = request(), url = Q.url(_config.url), data = _config.data, isGet = _config.type == "GET", //
+		xhr = request(), url = Q.url(_config.url), isGet = Q.toUpper(_config.type) == "GET", //
 		success = _config.success, error = _config.error, //
-		thread;
+		thread,formData = Q.param(conf.data);
 		if (dataType == "jsonp") {
 			ajaxJSONP(_config, success, error);
 			return;
@@ -66,12 +66,14 @@
 				}
 			}
 		};
-		if (isGet) {
-			url += (url.indexOf("?") < 1 ? "?" : "&") + Q.param(data);
-		}
 		xhr.open(_config.type, url, _config.async);
+		if (isGet) {
+			url += (/\?/.test(url) ? "&" : "?") + formData;
+		}else{
+			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');	
+		}
 		xhr.setRequestHeader("Cache-Control", "no-cache");
-		xhr.send(isGet ? {} : data)
+		xhr.send(formData)
 		if (ttl > 0) thread = Q.delay(function() {
 			xhr.abort();
 			error && error(xhr.xhr, xhr.type)
