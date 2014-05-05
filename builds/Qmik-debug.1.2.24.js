@@ -1234,15 +1234,15 @@
 				}
 			}
 		};
-		xhr.open(_config.type, url, _config.async);
+		
 		if (isGet) {
 			url += (/\?/.test(url) ? "&" : "?") + formData;
-		}else{
-			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');	
 		}
+		xhr.open(_config.type, url, _config.async);
 		xhr.setRequestHeader("Cache-Control", "no-cache");
 		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-		xhr.send(formData)
+		!isGet && xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');	
+		xhr.send(isGet ? null : formData);
 		if (ttl > 0) thread = Q.delay(function() {
 			xhr.abort();
 			error && error(xhr.xhr, xhr.type)
