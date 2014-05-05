@@ -73,6 +73,7 @@
 			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');	
 		}
 		xhr.setRequestHeader("Cache-Control", "no-cache");
+		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 		xhr.send(formData)
 		if (ttl > 0) thread = Q.delay(function() {
 			xhr.abort();
