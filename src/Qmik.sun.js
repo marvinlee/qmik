@@ -3,7 +3,7 @@
  * @email:cwq0312@163.com
  * @version:1.00.000
  */
-(function(Q) {
+;(function(Q) {
 	var isFun = Q.isFun, isNull = Q.isNull, now = Q.now;
 	var config = {
 		alias : {},//别名系统
@@ -101,7 +101,7 @@
 	}
 	// require module
 	function require(id) {
-		var module = getModule(id2url(id));
+		var module = cacheModule[id2url(id)];
 		return module ? module.exports : null
 	}
 	// bat sequence load module
@@ -114,8 +114,9 @@
 			})
 		})(0)
 	}
-	function load(id, callback) {
-		var url = id2url(id), module = getModule(url);
+	function load(url, callback) {
+		var moduleName = getDemainPath(url),
+			module = cacheModule[moduleName];
 		if (module) {
 			module.isReady ? useModule(module, require, callback) : batload(function() {
 				useModule(module, require, callback)
@@ -124,18 +125,19 @@
 			request(url, function() {
 				try {
 					batload(function() {
-						useModule(getModule(url), require, callback)
-					}, getModule(url).dependencies)
+						useModule(cacheModule[moduleName], require, callback)
+					}, cacheModule[moduleName].dependencies)
 				} catch (e) {
-					Q.log("get module error:" + url);
+					Q.log("get module error:" + moduleName);
 					loadError(e);
 					throw e
 				}
 			}, loadError)
 		}
 	}
-	function getModule(alia) {
-		return cacheModule[id2url(alia)]
+	//取得url的域名+路径,去掉参数及hash(frament)
+	function getDemainPath(url){
+		return url.replace(/[\?#].*$/,"");
 	}
 	function useModule(module, require, callback) {
 		if (module.isReady != !0) {
@@ -154,9 +156,10 @@
 	}
 	// //////////////// id to url start ///////////////////////////////
 	function id2url(id) {
-		id = alias2url(id);
-		id = vars2url(id);
-		return normalize(id)
+		var url = alias2url(id);
+		if(url == id)return id;
+		url = vars2url(url);
+		return normalize(url)
 	}
 	function normalize(url) {
 		return Q.url(!/\?/.test(url) && !/\.(css|js)$/.test(url) ? url + ".js" : url)
@@ -193,7 +196,7 @@
 			}
 			//下面检测使用的模块是否已被全部加载过
 			var ret = Q.grep(ids, function(i,val) {
-				return !isNull(getModule(val))
+				return !isNull(cacheModule[val])
 			});
 			ret.length == ids.length ? batload(callback, ids) : queue.push({
 				ids : ids,
@@ -202,38 +205,36 @@
 			queue.deal()
 		},
 		// factory:function(require, exports, module)
-		define : function(dependencies, factory) {
-			if (isNull(getCurrentScript())) return;
-			var url = getCurrentScript().src;
+		define : function(uid, dependencies, factory) {
+			var url, module;
+			if(getCurrentScript()) url = getCurrentScript().src;
+			if (Q.isFun(uid) || Q.isArray(uid)) {
+				factory = dependencies;
+				dependencies = uid;
+				uid = "";
+			}
 			if (isFun(dependencies)) {
 				factory = dependencies;
 				dependencies = []
 			}
-			if (!getModule(url)) {
-				dependencies = dependencies.concat(parseDepents(factory));
-				cacheModule[url] = new Module(url, Q.unique(dependencies), factory);
-				//useModule(cacheModule[url], require)
+			dependencies = dependencies.concat(parseDepents(factory));
+			dependencies = Q.unique(dependencies);
+			if(uid){
+				cacheModule[uid] && console.log("module is overwrited:",uid,",",factory);
+				cacheModule[uid] = new Module(uid, dependencies, factory)		
+			}
+			if(url){
+				var moduleName = getDemainPath(url);
+				!cacheModule[moduleName] && (cacheModule[moduleName] = new Module(moduleName, dependencies, factory));
 			}
 		},
 		config : function(opts) {//参数配置
 			return Q.config(opts, config)
 		},
-		gc : gc
+		modules : function(){
+			return Q.extend({},cacheModule)
+		}
 	});
-	//内存回收
-	function gc() {
-		Q.each(cacheModule, function(key, val) {
-			if (val.type == 1 && now() - val.last > (config.gap || 60) * 1000) {
-				try {
-					delete cacheModule[key];
-					Q("script[_src='" + key + "']").remove();
-					val.gc && val.gc()
-				} catch (e) {
-				}
-			}
-		})
-	}
-	Q.cycle(gc, config.gap);
 	Q.sun = sun;
 	Q.define = Q.sun.define;
 	Q.use = Q.sun.use;
