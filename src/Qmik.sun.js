@@ -220,7 +220,7 @@
 			dependencies = dependencies.concat(parseDepents(factory));
 			dependencies = Q.unique(dependencies);
 			if(uid){
-				cacheModule[uid] && console.log("module is overwrited:",uid,",",factory);
+				cacheModule[uid] && console.log("warn module is overwrited:",uid,",",factory);
 				cacheModule[uid] = new Module(uid, dependencies, factory)		
 			}
 			if(url){
