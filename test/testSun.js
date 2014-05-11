@@ -1,5 +1,4 @@
-﻿console.log("fdfdfdf");
-;(function(Q){
+﻿;(function(Q){
 	Q.config("debug",true);
 	Q.config("error",{enable:true})
 	Q.sun.config( {
@@ -26,20 +25,20 @@
 		module.exports=log
 		return log;
 	});
-	console.log(33);
 	Q(document).ready(function() {
 		Q("#bbq").on({
 			click:function(e){
 				Q.sun.use(["mo"], function(mo) {
-					alert(mo());
+					mo();
+					//alert(mo());
 				})
 			}
 		});
 		console.log("==================");
-		Q.sun.use(["ak","mo1","mo"], function(ak,mo1,mo) {
+		Q.sun.use(["ak","mo1"], function(ak,mo1) {
 			console.log("use ak: value=:"+ak());
 			console.log("use mo1:value:="+mo1());
-			console.log("use mo:value:="+mo());
+			//console.log("use mo:value:="+mo());
 			Q.sun.use(["mo2"],function(mo2){
 				console.log(mo2())
 			});

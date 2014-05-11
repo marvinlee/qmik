@@ -107,10 +107,10 @@
 	// bat sequence load module
 	function batload(callback, deps) {
 		var dependencies = deps || config.preload, length = dependencies.length, params = [];
-		length == 0 ? callback() : (function bload(idx) {
+		length == 0 ? callback && callback() : (function bload(idx) {
 			load(dependencies[idx], function(exports) {
 				params.push(exports);
-				idx == length - 1 ? callback.apply(callback, params) : bload(idx + 1)
+				idx == length - 1 ? callback && callback.apply(callback, params) : bload(idx + 1)
 			})
 		})(0)
 	}
@@ -219,6 +219,9 @@
 			}
 			dependencies = dependencies.concat(parseDepents(factory));
 			dependencies = Q.unique(dependencies);
+			for(var i=0;i<dependencies.length;i++){
+				dependencies[i]=id2url(dependencies[i]);
+			}
 			if(uid){
 				cacheModule[uid] && console.log("warn module is overwrited:",uid,",",factory);
 				cacheModule[uid] = new Module(uid, dependencies, factory)		

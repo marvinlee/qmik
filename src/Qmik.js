@@ -146,24 +146,33 @@
 	function loadResource(type, url, success, error) {
         url = Q.url(url);
 		var isCss = type == "css", isScript = type == "js", //
-		tagName = isCss ? "link" : isScript ? "script" : "iframe", //
-		node = Q(doc.createElement(tagName)).attr({
+		tagName = isCss ? "link" : isScript ? "script" : "iframe", node=doc.createElement(tagName),
+		qnode = Q(node).attr({
 			_src : url,
 			async : "async"
 		});
-		isCss ? node.attr("rel", "stylesheet") : isScript && node.attr("type", "text/javascript");
-		node.ready(function(e) {
+		isCss ? qnode.attr("rel", "stylesheet") : isScript && qnode.attr("type", "text/javascript");
+		/*node.ready(function(e) {
 			success && success(node)
 		}).on("error", function(e) {
 			node.remove();
 			error && error(node)
+		});*/
+		qnode.on({
+			load:function(){
+				success && success(node)
+			},
+			error:function(){
+				qnode.remove();
+				error && error(node)
+			}
 		});
 		Q.delay(function() {
-			if (isCss) node[0].href = url;
-			else node[0].src = url;
+			if (isCss) node.href = url;
+			else node.src = url;
 			Q("head").append(node);
 		}, 1);
-		return node[0]
+		return node
 	}
 	//////////Delay class, function 实现setTimeout的功能
 	function Delay(fun, time, params) {
