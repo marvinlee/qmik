@@ -149,7 +149,7 @@
 		callback(module.exports)
 	}
 	function request(url, success, error) {
-		/\/.+\.css(\?.*)?$/i.test(url) ? Q.getCss(url) : currentScript = Q.getScript(url, success, error)
+		/\/.+\.css(\?.*)?$/i.test(url) ? Q.getCss(url,error,error) : currentScript = Q.getScript(url, success, error)
 	}
 	function getCurrentScript() {
 		return currentScript
