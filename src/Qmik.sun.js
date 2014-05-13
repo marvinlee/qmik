@@ -96,7 +96,8 @@
 			chain()
 		}, item.ids)
 	});
-	function loadError() {
+	function loadError(e) {
+		console.error(e);
 		queue.notify()
 	}
 	// require module
