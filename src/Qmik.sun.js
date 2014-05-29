@@ -150,7 +150,6 @@
 			module.last = now();
 		}catch(e){
 			console.log("module isError[", module.id, "],exports set null" ,e);
-			module.exports = null;
 		}
 		callback(module.exports)
 	}
