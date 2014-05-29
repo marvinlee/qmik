@@ -1,3 +1,5 @@
+增加1.2.32版本:增强sun模块的稳定性,防止多重依赖时,一个模块异常,造成其它模块不能正常加载
+
 增加1.2.31版本:1优化了模块加载异常的日志信息打印,对节点的after,before调整为直接对本节点操作,不clone节点
 
 增加1.2.30版本:1.优化sun模板,修复并优化getScript的回调策略
@@ -62,12 +64,12 @@ API简介:
         cycle(fun, cycleTime, ttl,...) :  周期执行,类似于setInterval,会返回一个对象,对象有个 stop方法,用于停止执行
 
         log(msg, event) : 打日志
-        isIphone : 
-        isAndroid :
-        isWP : 
-        isIE : 
-        isFF : is Firefox
-        isWK : is Webkit
+        isIphone() : 
+        isAndroid() :
+        isWP() : 
+        isIE() : 
+        isFF() : is Firefox
+        isWK() : is Webkit
         isOpera : 
         config(opts, _config) : 
 
@@ -119,6 +121,7 @@ API简介:
         css : function(k, v) 
         attr : function(k, v) 
         rmAttr : function(k)    == removeAttr
+        removeAttr : function(k)
         data : function(k, v) 
         rmData : function(k) == removeData
         val : function(v)
