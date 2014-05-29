@@ -141,12 +141,17 @@
 		return url.replace(/[\?#].*$/,"");
 	}
 	function useModule(module, require, callback) {
-		if (module.isReady != !0) {
-			var nm = module.factory(require, module.exports, module);
-			module.exports = module.exports || nm
+		try{
+			if (module.isReady != !0) {
+				var nm = module.factory(require, module.exports, module);				
+				module.exports = module.exports || nm
+			}
+			module.isReady = !0;
+			module.last = now();
+		}catch(e){
+			console.log("module isError[", module.id, "],exports set null" ,e);
+			module.exports = null;
 		}
-		module.isReady = !0;
-		module.last = now();
 		callback(module.exports)
 	}
 	function request(url, success, error) {

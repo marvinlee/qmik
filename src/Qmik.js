@@ -431,17 +431,17 @@
 	], function(i, val) {
 		val.toString = val
 	});
-	Q._in = {};//不对外部开放,不保持此对象api不变动,
-	Q.extend(Q._in, {
+	//不对外部开放,不保持此对象api不变动,
+	Q._in = {
 		createEvent : function(type) {
 			return doc.createEvent ? doc.createEvent(type) : doc.createEventObject(type)
 		},
 		isSE : function() {
 			return !isNull(doc.addEventListener)
 		}
-	});
+	};
 	///////////////////////////////////////////////////////
-	Q.version = "1.2.31";
+	Q.version = "1.2.32";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
