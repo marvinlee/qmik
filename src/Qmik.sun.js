@@ -111,7 +111,16 @@
 		length == 0 ? callback && callback() : (function bload(idx) {
 			load(dependencies[idx], function(exports) {
 				params.push(exports);
-				idx == length - 1 ? callback && callback.apply(callback, params) : bload(idx + 1)
+				if(idx == length - 1){
+					try{
+						callback && callback.apply(callback, params)
+					}catch(e){
+						console.log(e, e.stack)
+					}
+				}else{
+					bload(idx + 1)
+				}
+				//idx == length - 1 ? callback && callback.apply(callback, params) : bload(idx + 1)
 			})
 		})(0)
 	}

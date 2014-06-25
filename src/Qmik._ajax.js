@@ -5,7 +5,7 @@
  */
 (function(Q) { /* ajax */
 	var win = Q.global, toObject = Q.parseJSON, isFun = Q.isFun, //
-	regUrl = /[\w\d_$-]+\s*=\s*\?/, jsonp = 1, prefex = "jsonp", //
+	regUrl = /[\w\d_$-]+\s*=\s*\?/, jsonp = 1, prefex = "jsonpqmik", //
 	ac = {
 		type : 'GET',
 		async : !0,
@@ -32,6 +32,7 @@
 		function err() {
 			if (isExe == 1) {
 				isExe = 0;
+				delete win[callbackName];
 				Q("script[jsonp='" + callbackName + "']").remove();
 				error && error()
 			}
@@ -40,7 +41,7 @@
 			delete win[callbackName];
 			Q("script[jsonp='" + callbackName + "']").remove();
 			thread && thread.stop();
-			success && success(data)
+			isExe == 1 && success && success(data)
 		}
 		Q(Q.getScript(url, null, err)).attr("jsonp", callbackName);
 		if (ttl > 0) thread = Q.delay(err, ttl)
