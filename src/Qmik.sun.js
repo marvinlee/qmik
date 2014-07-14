@@ -138,7 +138,7 @@
 						useModule(cacheModule[moduleName], require, callback)
 					}, cacheModule[moduleName].dependencies)
 				} catch (e) {
-					Q.log("get module error:" + moduleName);
+					console.log("get module error:" + moduleName);
 					loadError(e);
 					throw e
 				}
