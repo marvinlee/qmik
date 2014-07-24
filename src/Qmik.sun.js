@@ -15,6 +15,7 @@
 	var cacheModule = {}, //模块池
 	currentScript, //当前脚本
 	pres, //预加载的全路径url
+	readModuleName,//读取
 	ispreload = !1;//是否加载过预加载
 	var sun = {};
 	function Module(url, dependencies, factory) {
@@ -92,12 +93,16 @@
 	var queue = new QueueSync(function(item, chain) {
 		var callback = item.callback;
 		batload(function() {
-			callback && callback.apply(callback, arguments);
+			try{
+				callback && callback.apply(callback, arguments);
+			}catch(e){
+				console.log("exec modules is error:",item.ids,callback.toString());
+			}
 			chain()
 		}, item.ids)
 	});
 	function loadError(e) {
-		console.error(e);
+		console.error(readModuleName,e);
 		queue.notify()
 	}
 	// require module
@@ -127,6 +132,7 @@
 	function load(url, callback) {
 		var moduleName = getDemainPath(url),
 			module = cacheModule[moduleName];
+			readModuleName = moduleName;
 		if (module) {
 			module.isReady ? useModule(module, require, callback) : batload(function() {
 				useModule(module, require, callback)
@@ -140,7 +146,6 @@
 				} catch (e) {
 					console.log("get module error:" + moduleName);
 					loadError(e);
-					throw e
 				}
 			}, loadError)
 		}
