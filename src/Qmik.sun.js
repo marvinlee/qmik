@@ -96,13 +96,13 @@
 			try{
 				callback && callback.apply(callback, arguments);
 			}catch(e){
-				console.log("exec modules is error:",item.ids,callback.toString());
+				console.log("exec modules is error:", e, e.stack);
 			}
 			chain()
 		}, item.ids)
 	});
 	function loadError(e) {
-		console.error(readModuleName,e);
+		console.error(readModuleName, e, e.stack);
 		queue.notify()
 	}
 	// require module
@@ -120,7 +120,7 @@
 					try{
 						callback && callback.apply(callback, params)
 					}catch(e){
-						console.log(e, e.stack)
+						console.log(dependencies[idx],e, e.stack)
 					}
 				}else{
 					bload(idx + 1)
@@ -144,7 +144,7 @@
 						useModule(cacheModule[moduleName], require, callback)
 					}, cacheModule[moduleName].dependencies)
 				} catch (e) {
-					console.log("get module error:" + moduleName);
+					console.log("get module error:" + moduleName, e, e.stack);
 					loadError(e);
 				}
 			}, loadError)
@@ -163,7 +163,7 @@
 			module.isReady = !0;
 			module.last = now();
 		}catch(e){
-			console.log("module isError[", module.id, "],exports set null" ,e);
+			console.log("module isError[", module.id, "],exports set null" ,e, e.stack);
 		}
 		callback(module.exports)
 	}
