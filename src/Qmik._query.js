@@ -115,6 +115,13 @@
 		c = clearLine(c);
 		return isString(c) && rNode.test(c) ? Q(c) : c
 	}
+
+	function createTextNode(val){
+		if(val instanceof Object && isString(val.tag) && !isFun(val) ){
+			val = Q.render(val)
+		}
+		doc.createTextNode( val )
+	}
 	function append(o, child) {
 		child = muchValue2Qmik(child);
 		if (likeArray(o)) {
@@ -124,7 +131,7 @@
 		} else if (isDom(o)) {
 			likeArray(child) ? each(child, function(k, v) {
 				append(o, v)
-			}) : o.appendChild(isDom(child) ? child : doc.createTextNode(child))
+			}) : o.appendChild(isDom(child) ? child : createTextNode(child))
 		}
 	}
 	function before(o, child) {
@@ -136,7 +143,7 @@
 		} else if (isDom(o)) {
 			likeArray(child) ? each(child, function(k, v) {
 				before(o, v)
-			}) : o.parentNode.insertBefore(isDom(child) ? child : doc.createTextNode(child), o)
+			}) : o.parentNode.insertBefore(isDom(child) ? child : createTextNode(child), o)
 		}
 	}
 	function after(o, child) {

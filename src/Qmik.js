@@ -132,6 +132,9 @@
 		}
 		return array
 	}
+	function xss(val){
+		return val.replace(/>/g,"&lt;").replace(/</g,"&gt;")
+	}
 	/*	function isGrandfather(grandfather, child) {
 			return isDom(child) && (grandfather === child.parentNode ? !0 : isGrandfather(grandfather, child.parentNode))
 		}*/
@@ -424,6 +427,52 @@
 					})
 				}
 				return ret
+			},
+			/** 局部页面渲染引擎 
+				struct:数据结构:{
+					tag:'div[id="${id}" name="${name}"  itemid="${itemid}"]',
+					text:'显示文本',
+					child:[//子节点
+						{
+							tag:'p[class="title"]',
+							text:'显示内容'
+						},
+						{
+							tag:'p[class="remark"]',
+							text:'显示内容'
+						}
+					]
+				},
+				item://数据
+				{
+					id:"",
+					name:"",
+					itemid:""
+				}
+			*/
+			render: function (struct, item){
+				var h = [];
+				var tag = struct.tag;
+				var text = struct.text;
+				if( isNull(tag) && !isNull(text) ){
+					return xss(text);
+				}
+				var tags = tag.split("[");
+				var tagName =  tags[0];
+				var attr = (tags[1]||"").replace(/\}\s*$/,"");
+				h.push('<'+tagName+" ");
+				attr = attr.replace(/\$[!]?\{[\w_-]*\}/g,function(name){
+					var key = name.replace(/(^\$[!]?\{\s*)|(\s*\}$)/g,"");
+					return xss( item[key]||"" );
+				});
+				h.push(attr);
+				h.push('>');
+				Q.isNull(text) || h.push( xss(text) );
+				isArray(struct.child) && each(struct.child, function(i, ch){
+					ch && h.push( Q.render(ch, item) );
+				});
+				h.push('</'+tagName+'>');
+				return h.join("");
 			}
 		});
 	each([
@@ -441,7 +490,7 @@
 		}
 	};
 	///////////////////////////////////////////////////////
-	Q.version = "1.2.36";
+	Q.version = "1.3.01";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
