@@ -1,4 +1,8 @@
-增加1.3.01大版本, 增加html局部渲染功能$.render(htmljson, data),任务进度处理模块$.task,有$.series(串行执行), $.parallel(并行执行),废弃不推荐的方法$.fn.animate,$.fn.hover;
+增加1.3.01大版本, 
+    增加html局部渲染功能$.render(htmljson, data),
+    任务进度处理模块$.task,有$.series(串行执行), $.parallel(并行执行),
+    方法执行,不抛出异常:$.execCatch(fun,args,error);
+    废弃不推荐的方法$.fn.animate,$.fn.hover;
 
 增加1.2.36版本,可调试性
 
@@ -142,6 +146,11 @@ API简介:
                 ],function(){
                     //全部执行完,回调
                 });
+            execCatch:function(fun, args, error)
+                //执行方法并捕获异常,不向外抛出异常,try{}catch(e){} 影响代码的美观性
+                fun:执行方法
+                args:数组,参数[]
+                error:抛出异常回调,无异常不回调
 2.查询api:支持下面的查询格式
 
 
