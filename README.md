@@ -1,8 +1,10 @@
-增加1.3.36版本,可调试性
+增加1.3.01大版本, 增加html局部渲染功能$.render(htmljson, data),任务进度处理模块$.task,有$.series(串行执行), $.parallel(并行执行)
 
-增加1.3.35版本,增强sun模块可调试性
+增加1.2.36版本,可调试性
 
-增加1.3.33版本,增强稳定性,兼容性
+增加1.2.35版本,增强sun模块可调试性
+
+增加1.2.33版本,增强稳定性,兼容性
 
 增加1.2.32版本:增强sun模块的稳定性,防止多重依赖时,一个模块异常,造成其它模块不能正常加载
 
@@ -88,6 +90,58 @@ API简介:
             success,function(data){},
             error:function(){}
         });
+        render: function(htmljson, data), 
+            //参数说明:
+            htmljson:{
+                tag:'div[name="testdiv" class="show" time="${time}"]',
+                text:'显示的文件',//如果<div>显示的文件</div>
+                child:[//子节点,tag:是用来描述标签及属性的(如果有子节点child,则一定要有tag,text:输出innerText文本的)
+                    {
+                        tag:'p[name="title"]',
+                        text:'title',
+                        child:[
+                            {
+                                tag:'span[class='remark']',
+                                text:'remark'
+                            },{
+                                text:' xxxxxx'
+                            }
+                        ]
+                    }
+                ]
+            }
+            data:{
+                time:'haha' //这个参数在htmljson里通过  ${time} 来引用
+            }
+        
+            series:function(tasks, callback)//串行执行任务列队,如果有输出参数,则前一个任务输出参数给下一个任务
+                //例子,tasks:任务方法数组,callback:执行完任务后,回调
+                $.series([
+                    function(callback){//callback:function(err, exports){}
+                        var m = {};
+                        callback(null, m);
+                    },
+                    function(callback, val){
+                        callback(null, {name:"leo"});
+                    },
+                    function(callback, val){
+                        callback(null, {name:"leo"});
+                    }
+                ],function(err, exports){
+                    //全部执行完,回调
+                });
+            parallel:function(tasks, callback)//并行执行任务列队,当中有任务执行出错,不影响其它任务的执行
+                //例子:tasks:任务方法数组, callback:执行完任务后,回调
+                $.parallel([
+                    function(callback){//callback: function(){}
+                        callback();
+                    },
+                    function(callback){
+                        callback();
+                    }
+                ],function(){
+                    //全部执行完,回调
+                });
 2.查询api:支持下面的查询格式
 
 
