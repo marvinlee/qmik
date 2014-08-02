@@ -9,7 +9,8 @@
 		local = win.localStorage,
 		session = win.sessionStorage || {};
 	var encode = encodeURIComponent,
-		decode = decodeURIComponent;
+		decode = decodeURIComponent,
+		prefixCache =  location.pathname + "/"; //key前辍;
 
 	function setCookie(key, value, ttl, domain) { // 两个参数，一个是cookie的名子，一个是值
 		ttl = ttl || 30 * 24 * 60 * 60;
@@ -33,10 +34,6 @@
 		}
 	}
 
-	function rmCookie(key, domain) { // 删除cookie
-		setCookie(key, "", -1, domain)
-	}
-
 	function parseJSON(value) {
 		try {
 			return JSON.parse(value)
@@ -44,14 +41,13 @@
 			return value
 		}
 	}
-
+	function getKey(key){
+		return prefixCache + key;
+	}
 	function ttlTime(ttl) {
 		return ttl < 0 ? ttl : new Date().getTime() + ttl * 1000;
 	}
 
-	function log(e) {
-		console.log(e, e.stack);
-	}
 	var Store = {
 		set: function(key, value, ttl) { // 储存到localStorage,ttl:unit
 			try {
@@ -63,7 +59,7 @@
 				};
 				if (local) local[key] = JSON.stringify(item);
 			} catch (e) {
-				log(e);
+				Q.log(e);
 			}
 		},
 		setSession: function(key, value, ttl) { // 储存到sessionStorage,ttl:unit
@@ -74,7 +70,7 @@
 				};
 				session[key] = JSON.stringify(item);
 			} catch (e) {
-				log(e, e.stack);
+				Q.log(e, e.stack);
 			}
 		},
 		get: function(key) {
@@ -95,7 +91,7 @@
 					}
 				}
 			} catch (e) {
-				log(e, e.stack);
+				Q.log(e, e.stack);
 			}
 			return null
 		},
@@ -108,7 +104,7 @@
 					return item.data
 				}
 			} catch (e) {
-				log(e, e.stack);
+				Q.log(e, e.stack);
 			}
 			return null
 		},
@@ -132,6 +128,9 @@
 			}
 		}
 	};
+	function to2Bit(val){
+		return val < 10 ? "0"+val : val
+	}
 	Q.sun.define("lib/qmik/Store", function(require, exports, module) {
 		module.exports = Store;
 	});
@@ -149,9 +148,10 @@
 					}
 				}
 			} catch (e) {
-				console.log(e);
+				Q.log(e, stack);
 			}
 			Store.set(key, true, 24 * 60 * 60); //1天清除一次
 		}
-	})();
+	})();//
+
 })(Qmik);
