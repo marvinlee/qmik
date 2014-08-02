@@ -5,7 +5,7 @@
  */
 (function(Q) { /* ajax */
 	var win = Q.global, toObject = Q.parseJSON, isFun = Q.isFun, //
-	regUrl = /[\w\d_$-]+\s*=\s*\?/, jsonp = 1, prefex = "jsonpqmik", //
+	regUrl = /[\w\d_$-]+\s*=\s*\?/, jsonp = 1, prefex = "qjsonp", //
 	ac = {
 		type : 'GET',
 		async : !0,

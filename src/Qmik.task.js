@@ -31,6 +31,7 @@
 */
 ;
 (function(Q) {
+	var execCatch = Q.execCatch;
 	//串行执行任务列队,报错不继续执行,各任务间有依赖关系
 	function execSeriesTasksWithParam(tasks, callback) {
 		var length = tasks.length;
@@ -48,8 +49,8 @@
 	function execSeriesTasksWithParallel(tasks, callback) {
 		var length = tasks.length;
 		length == 0 ? callback() : (function bload(idx) {
-			execTaskNoArgs(tasks[idx], function(err) {
-				idx == length - 1 ? callback(err) : bload(idx + 1);
+			execTaskNoArgs(tasks[idx], function() {
+				idx == length - 1 ? callback() : bload(idx + 1);
 			})
 		})(0);
 	}
@@ -57,10 +58,9 @@
 	//并行执行任务列队
 	function execParallelTasks(tasks, callback) {
 		var length = tasks.length,
-			params = new Array(length),
-			dealTask = 0;
-		var pageSize = parseInt((tasks.length - 1) / dealTasks) + 1; //每组要处理的长度
-		var groups = new Array(dealTasks < tasks.length ? dealTasks : tasks.length); //几组
+			params = new Array(length);
+		var pageSize = parseInt((length - 1) / dealTasks) + 1; //每组要处理的长度
+		var groups = new Array(dealTasks < length ? dealTasks : length); //几组
 
 		/*for (i = 0; i < groups.length; i++) {
 			groups[i] = tasks.slice(i * pageSize, (i + 1) * pageSize);
@@ -89,21 +89,11 @@
 
 
 	function execTask(task, callback, param) {
-		try {
-			var exports = task(callback, param);
-		} catch (e) {
-			Q.log(e.stack);
-			callback(e);
-		}
+		execCatch(task, [callback, param], callback);
 	}
 
 	function execTaskNoArgs(task, callback) {
-		try {
-			var exports = task(callback);
-		} catch (e) {
-			Q.log(e, e.stack);
-			callback();
-		}
+		execCatch(task, [callback], callback);
 	}
 	//function Task() {};
 	var Task = {};
@@ -127,11 +117,8 @@
 	*/
 	Task.series = function(tasks, callback) {
 		execSeriesTasksWithParam(tasks, function(err, exports) {
-			try {
-				callback(err, exports);
-			} catch (e) {
-				Q.log(e, e.stack);
-			}
+			err && Q.log(err, err.stack);
+			execCatch(callback, [err, exports]);
 		});
 	};
 
@@ -150,7 +137,9 @@
 		});
 	*/
 	Task.parallel = function(tasks, callback) {
-		execParallelTasks(tasks, callback);
+		execParallelTasks(tasks, function() {
+			execCatch(callback);
+		});
 	};
 	Q.task = Task;
 	Q.series = Task.series;

@@ -225,7 +225,7 @@
 		})
 		return Q(r)
 	}
-	var dn = "$Qmikdata:";
+	var dn = "Qmikdata:";
 	function data(o, k, v) {
 		if (likeArray(o)) {
 			if (isString(k) && isNull(v)) return data(o[0], k, v);
@@ -481,12 +481,12 @@
 		clone : function(t) {
 			return clone(this, t)
 		},
-		hover : function(fin, fout) {
+		/*hover : function(fin, fout) {
 			this.bind("mouseover", fin).bind("mouseout", fout).bind("touchstart", function() {
 				fin();
 				Q.delay(fout, 500)
 			})
-		},
+		},*/
 		hasClass : function(c) {
 			return hasClass(this[0], c)
 		},

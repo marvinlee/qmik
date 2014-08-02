@@ -4,16 +4,25 @@
  * @version:1.00.000
  */
 (function(Q) { /* event */
-	var win = Q.global, doc = win.document, fn = Q.fn, _in = Q._in;
-	var SE = _in.isSE, readyRE = /complete|loaded|interactive|loading/i, // /complete|loaded|interactive/
-	ek = "$QEvents", liveFuns = {};
-	var isNull = Q.isNull, isFun = Q.isFun, each = Q.each;
+	var win = Q.global,
+		doc = win.document,
+		fn = Q.fn,
+		_in = Q._in;
+	var SE = _in.isSE,
+		readyRE = /complete|loaded|interactive|loading/i, // /complete|loaded|interactive/
+		ek = "QEvents",
+		liveFuns = {};
+	var isNull = Q.isNull,
+		isFun = Q.isFun,
+		each = Q.each;
 	/** 设置节点的加载成功方法 */
 	function setLoad(node, fun) {
 		node.onreadystatechange = node.onload = node.onDOMContentLoaded = fun
 	}
 	Q.ready = fn.ready = function(fun, context) {
-		var node = context || this[0] || doc, state;
+		var node = context || this[0] || doc,
+			state;
+
 		function ready(e) {
 			state = node.readyState;
 			if (state != "loading" && !isNull(node.$$handls) && (readyRE.test(state) || (isNull(state) && "load" == e.type))) {
@@ -40,28 +49,34 @@
 		}
 		return this
 	}
+
 	function Eadd(dom, name, fun, paramArray) {
-		var t = Q(dom), d = t.data(ek) || {}, h = d[name];
+		var t = Q(dom),
+			d = t.data(ek) || {},
+			h = d[name];
 		t.data(ek, d);
 		if (!h) {
 			d[name] = h = [];
 			//isFun(dom['on' + name]) ? (h[0] = dom['on' + name]) : SE() ? dom.addEventListener(name, handle, !1) : dom["on" + name] = handle
 			if (isFun(dom['on' + name])) {
 				h.push({
-					fun : dom['on' + name],
-					param : []
+					fun: dom['on' + name],
+					param: []
 				});
 				delete dom['on' + name];
 			}
 			SE() ? dom.addEventListener(name, handle, !1) : dom["on" + name] = handle
 		}
 		isFun(fun) && h.push({
-			fun : fun,
-			param : paramArray || []
+			fun: fun,
+			param: paramArray || []
 		})
 	}
+
 	function Erm(dom, name, fun) {
-		var s = Q(dom).data(ek) || {}, h = s[name] || [], i = h.length - 1;
+		var s = Q(dom).data(ek) || {},
+			h = s[name] || [],
+			i = h.length - 1;
 		if (fun) {
 			for (; i >= 0; i--)
 				h[i].fun == fun && h.splice(i, 1)
@@ -70,25 +85,28 @@
 			delete s[name]
 		}
 	}
+
 	function Etrig(dom, name) {
 		var e;
 		if (SE()) {
 			switch (name) {
-			case "hashchange":
-				e = _in.createEvent("HashChangeEvent");
-				break
-			default:
-				e = _in.createEvent("MouseEvents");
+				case "hashchange":
+					e = _in.createEvent("HashChangeEvent");
+					break
+				default:
+					e = _in.createEvent("MouseEvents");
 			}
 			e.initEvent(name, !0, !0);
 			dom.dispatchEvent(e)
 		} else dom.fireEvent('on' + name)
 	}
+
 	function handle(e) {
 		e = fixEvent(e || win.event);
-		var retVal, m = this, fun, param, events = Q(m).data(ek) || {};
+		var retVal, m = this,
+			fun, param, events = Q(m).data(ek) || {};
 		each(events[e.type], function(i, v) {
-			try{
+			Q.execCatch(function() {
 				fun = v.fun;
 				param = v.param || [];
 				if (isFun(fun)) {
@@ -102,9 +120,10 @@
 						if (win.event) win.event.returnValue = retVal;
 					}
 				}
-			}catch(e1){Q.log(e1.message,e1)}
+			});
 		})
 	}
+
 	function fixEvent(e) {
 		e.preventDefault || (e.preventDefault = function() {
 			this.returnValue = !1;
@@ -116,11 +135,12 @@
 		e.target || (e.target = e.srcElement);
 		return e
 	}
+
 	function getLiveName(selector, type, callback) {
 		return selector + ":live:" + type + ":" + (callback || "").toString()
 	}
 	fn.extend({
-		on : function(name, callback) {
+		on: function(name, callback) {
 			var p = [].slice.call(arguments, 2);
 			each(this, function(k, v) {
 				Q.isPlainObject(name) ? each(name, function(k, j) {
@@ -129,38 +149,40 @@
 			});
 			return this
 		},
-		un : function(name, callback) {
+		un: function(name, callback) {
 			each(this, function(k, v) {
 				Erm(v, name, callback)
 			});
 			return this
 		},
-		once : function(name, callback) {// 只执行一次触发事件,执行后删除
+		once: function(name, callback) { // 只执行一次触发事件,执行后删除
 			var me = this;
+
 			function oneexec(e) {
 				callback(e);
 				me.un(name, oneexec)
 			}
 			me.on(name, oneexec)
 		},
-		trigger : function(name) {
+		trigger: function(name) {
 			each(this, function(k, v) {
 				Etrig(v, name)
 			});
 			return this
 		},
-		live : function(name, callback) {
+		live: function(name, callback) {
 			var select = this.selector;
 			var names = name;
-			if(!Q.isPlainObject(name)){
-				names={};
-				names[name]=callback
+			if (!Q.isPlainObject(name)) {
+				names = {};
+				names[name] = callback
 			}
-			each(names,function(key,callback){
+			each(names, function(key, callback) {
 				var fun = liveFuns[getLiveName(select, key, callback)] = function(e) {
-					var me = e.target,_me=Q(me);
-					if ( Q.isString(select) ? _me.closest(select).length > 0 : 
-							Q.isDom(select) ? Q.inArray(select, _me.parents()) >= 0 : 0) {
+					var me = e.target,
+						_me = Q(me);
+					if (Q.isString(select) ? _me.closest(select).length > 0 :
+						Q.isDom(select) ? Q.inArray(select, _me.parents()) >= 0 : 0) {
 						callback.apply(me, [
 							e
 						])
@@ -170,7 +192,7 @@
 			});
 			return this
 		},
-		die : function(name, callback) {
+		die: function(name, callback) {
 			var fun = liveFuns[getLiveName(this.selector, name, callback)];
 			each(Q(document.body), function(k, dom) {
 				Erm(dom, name, fun)
@@ -179,9 +201,9 @@
 		}
 	});
 	fn.extend({
-		bind : fn.on,
-		unbind : fn.un,
-		off : fn.un
+		bind: fn.on,
+		unbind: fn.un,
+		off: fn.un
 	});
 	/**
 	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°

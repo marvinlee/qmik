@@ -40,16 +40,13 @@
 		});
 		return ret
 	}
-	Q.extend(String.prototype, {
+	var strtype = String.prototype;
+	Q.extend(strtype, {
 		trim: function() {
 			return this.replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "")
 		},
-		toLower: function() {
-			return this.toLowerCase()
-		},
-		toUpper: function() {
-			return this.toUpperCase()
-		}
+		toLower: strtype.toLowerCase,
+		toUpper: strtype.toUpperCase
 	});
 
 	function grep(array, callback) {
@@ -143,13 +140,12 @@
 	function merge() { // merge array or object
 		var args = arguments,
 			array = args[0],
-			isA = isArray(array),
-			i = 1;
-		for (; i < args.length; i++) {
-			each(args[i], function(k, v) {
+			isA = isArray(array);
+		each(args,function(i, arg){
+			each(arg, function(k, v){
 				isA ? array.push(v) : array[k] = v
 			})
-		}
+		})
 		return array
 	}
 
@@ -497,6 +493,20 @@
 				});
 				h.push('</' + tagName + '>');
 				return h.join("");
+			},
+			/**
+				执行方法并捕获异常,不向外抛出异常,try{}catch(e){} 影响方法的美观性
+				fun:执行方法
+				args:数组,参数[]
+				error:抛出异常回调,无异常不回调
+			*/
+			execCatch: function (fun, args, error) {
+				try {
+					fun.apply(fun, args||[]);
+				} catch (e) {
+					Q.log(e, e.stack);
+					error && error(e);
+				} 
 			}
 		});
 	each([

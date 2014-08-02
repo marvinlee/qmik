@@ -1,52 +1,50 @@
-﻿;(function(Q){
-	Q.config("debug",true);
-	Q.config("error",{enable:true})
-	Q.sun.config( {
-		alias : {
-			'mo1' : '/test/module/mo1.js?v=${time}',
-			'mo' : '/test/module/mo.js?v=${time}'
+﻿;
+(function(Q) {
+	Q.config("debug", true);
+	Q.sun.config({
+		alias: {
+			'qmik/Loadimg': 'http://g.tbcdn.cn/tmmob/lib-loadimg/1.0.0/loadimg.js',
+			'qmik/Store':'http://g.tbcdn.cn/tmmob/lib-store/1.0.0/store.js'
 		},
-		vars:{
-			time:parseInt(Q.now()/3600000)
+		vars: {
+			time: parseInt(Q.now() / 3600000)
 		}
 	});
-	Q.sun.define("ak", function(require, exports, module) {
-
-		var d,k // ,c = require("mcco")//
-		;
-		/** 
-		 * var    d=c = require("mcco")
-		 * 
-		 */
-		//console.log("ak vvv mo:" + c+"--");
-		function log() {
-			return 333;
-		}
-		module.exports=log
-		return log;
-	});
-	Q(document).ready(function() {
-		Q("#bbq").on({
-			click:function(e){
-				Q.sun.use(["mo"], function(mo) {
-					mo();
-					//alert(mo());
-				})
+	Q.define("test/Mo", function(require, exports, module) {
+		var Mo = {
+			exec: function(msg) {
+				console.log("Mo.exec:", msg);
 			}
-		});
-		console.log("==================");
-		Q.sun.use(["ak","mo1"], function(ak,mo1) {
-			console.log("use ak: value=:"+ak());
-			console.log("use mo1:value:="+mo1());
-			//console.log("use mo:value:="+mo());
-			Q.sun.use(["mo2"],function(mo2){
-				console.log(mo2())
-			});
-		});
-		Q.sun.use("mo1",function(mo1){
-			console.log("==="+mo1());
-		});
+		};
+		module.exports = Mo;
 	});
+	Q.define("test/Style", function(require, exports, module) {
+		var Style = {
+			exec: function(msg) {
+				console.log("Style.exec:", msg);
+			}
+		};
+		module.exports = Style;
+	});
+	Q.define("test/Pop", function(require, exports, module) {
+		var Pop = {
+			exec: function(msg) {
+				console.log("Pop.exec:", msg);
+			}
+		};
+		module.exports = Pop;
+	});
+	Q.use(["test/Mo","test/Style", "test/Pop"], function(Mo, Style, Pop) {
+		Mo.exec("haha test mo");
+		Style.exec("yoxi  test Style");
+		Pop.exec("  yoxi  test Pop");
+	});
+
+	Q.use(["qmik/Loadimg", 'qmik/Store'], function(Loadimg, Store) {
+		Loadimg.load();
+		Store.set("gogo", "bb");
+		Store.get("gogo")
+	});
+
 
 })(Qmik);
-

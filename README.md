@@ -1,4 +1,4 @@
-增加1.3.01大版本, 增加html局部渲染功能$.render(htmljson, data),任务进度处理模块$.task,有$.series(串行执行), $.parallel(并行执行)
+增加1.3.01大版本, 增加html局部渲染功能$.render(htmljson, data),任务进度处理模块$.task,有$.series(串行执行), $.parallel(并行执行),废弃不推荐的方法$.fn.animate,$.fn.hover;
 
 增加1.2.36版本,可调试性
 

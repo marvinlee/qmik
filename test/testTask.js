@@ -34,11 +34,10 @@
 	var tasks1 = new Array(10);
 	$.each(tasks1, function(i, task) {
 		tasks1[i] = function(callback) {
-			$.delay(function() {
-				console.log("exec parallel taskss ", i, " exports:", exports);
-				exports = "export value:" + i;
+			//$.delay(function() {
+				console.log("exec parallel taskss ", i);
 				callback();
-			}, parseInt(Math.random() * 1000));
+			//}, parseInt(Math.random() * 1000));
 		}
 	});
 	$.parallel(tasks1, function(err) {
