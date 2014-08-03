@@ -1,25 +1,17 @@
 ## 关于Qmik
 ```
 Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库大小22kb,gzip=8kb,
-```
-```
+
 快速的入门,jquery的语法,兼容60%jquery,是替换zepto的理解框架,
-```
-```
+
 集成了模块开发,插件开发的核心架构(不推荐使用插件模式,插件模式会破坏框架的代码结构,推荐使用模块模式)
-[api连接](https://github.com/leochen36/qmik/wiki/sun-%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91)
-[api连接](https://github.com/leochen36/qmik/wiki/sun-%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91),
-```
-```
+
 简化了dom查询,事件,ajax通讯等的使用,
-```
-```
+
 html局部渲染内核($.render)
-```
-```
+
 任务队列处理内核($.series,$.parallel)
-```
-```
+
 支持uc,ie>=9,基于webkit内核的浏览器(如chrom,safari等),firefox; 推荐做移动web开发.
 ```
 
