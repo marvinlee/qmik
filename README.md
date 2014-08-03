@@ -2,7 +2,7 @@
 
 Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库大小22kb,gzip=8kb,
 
-快速的入门,jquery的语法,兼容60%jquery,是替换zepto的理解框架,
+入门极期简单,只要你使用过jquery(jquery的语法),是在无线端替换jquery,zepto,seajs,task任务处理等的理想框架,
 
 集成了[模块开发](https://github.com/leochen36/qmik/wiki/sun-%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91), 
 [插件开发](https://github.com/leochen36/qmik/wiki/%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91)的核心架构
@@ -13,7 +13,9 @@ Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库�
 html[局部渲染](https://github.com/leochen36/qmik/wiki/$.render-%E5%B1%80%E9%83%A8%E6%B8%B2%E6%9F%93)
 内核($.render)
 
-任务队列处理内核($.series,$.parallel)
+任务队列处理内核(
+[$.series](https://github.com/leochen36/qmik/wiki/$.series-%E4%B8%B2%E8%A1%8C%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97),
+[$.parallel](https://github.com/leochen36/qmik/wiki/$.parallel-%E5%B9%B6%E8%A1%8C%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97))
 
 支持uc,ie>=9,基于webkit内核的浏览器(如chrom,safari等),firefox; 推荐做移动web开发.
 
