@@ -1,3 +1,46 @@
+## 关于Qmik
+Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库大小22kb,gzip=8kb,
+快速的入门,jquery的语法,兼容60%jquery,是替换zepto的理解框架,
+集成了模块开发,插件开发的核心架构(不推荐使用插件模式,插件模式会破坏框架的代码结构,推荐使用模块模式),
+简化了dom查询,事件,ajax通讯等的使用,
+html局部渲染内核($.render)
+任务队列处理内核($.series,$.parallel)
+支持uc,ie>=9,基于webkit内核的浏览器(如chrom,safari等),firefox; 推荐做移动web开发.
+
+
+## 应用场景
+天猫2013双11(亿级pv)
+天猫无线一系列大促活动(亿级pv,千万uv,投放入口有淘宝客户端,天猫客户端,无线浏览器等)
+天猫客户端喵一眼,头条等频道
+天猫ipad客户端
+深圳宜搜科技(音乐频道等,百万uv)
+
+
+## html5无线开发的一些心得
+在传统的web开发下,由于网速快,pc性能强,在一些需要前端渲染地方,引入了前端的渲染引擎,
+var h=[];
+h.push('<div>');
+h.push('.....');
+h.push('</div>');
+这当然远离了上面这种很不友好的前端渲染页面的方式,如:(AngularJS,ejs,jade等等渲染引擎,或具有此功能的框架)
+
+造成的问题:
+    h5体验下降的厉害
+
+问题分析:
+    1.无线网速偏慢(虽然有wifi,但是我们也要适当照顾下2g的用户),造成.js资源加载耗时大大增长(x00%的增长),
+        阻塞页面加载,代码执行时长大大增加
+
+    2.手机性能比较低(iphone还好些,android就惨不忍睹(平台分裂,硬件相差太大)),
+        解析模版源码的时长就变长
+
+    3. 以上两点就大大拖累了体验
+
+所以在qmik1.3版本里,增加了局部渲染的功能$.render,这个渲染采用了json的方式,解放了去解析模版源码性能问题,
+    且不用加载别的框架,减少了http的请求
+
+
+## 版本记录
 增加1.3.01大版本, 
     增加html局部渲染功能$.render(htmljson, data),
     任务进度处理模块$.task,有$.series(串行执行), $.parallel(并行执行),
@@ -24,9 +67,7 @@
 
 1.2.16版本 修复: 1.sun模块对部分浏览器加载的bug 2.getJSON 少传data参数造成的bug
 
-Qmik是一个快速和精简的JavaScript库，简化了HTML文档，事件处理，以及Ajax交互。 Qmik.sun 就按需加载模块,轻松实现按需要加载相应的js,css文件 Qmik的语法与jquery是一致的,核心库大小16-23k左右,支持uc,ie>=9,基于webkit内核的浏览器(如chrom,safari等),firefox; 推荐做移动web开发.
-
-API简介:
+## API简介:
 
 
         encode(value) :等同于encodeURIComponent
@@ -118,7 +159,7 @@ API简介:
                 time:'haha' //这个参数在htmljson里通过  ${time} 来引用
             }
         
-            series:function(tasks, callback)//串行执行任务列队,如果有输出参数,则前一个任务输出参数给下一个任务
+        series:function(tasks, callback)//串行执行任务列队,如果有输出参数,则前一个任务输出参数给下一个任务
                 //例子,tasks:任务方法数组,callback:执行完任务后,回调
                 $.series([
                     function(callback){//callback:function(err, exports){}
@@ -134,7 +175,7 @@ API简介:
                 ],function(err, exports){
                     //全部执行完,回调
                 });
-            parallel:function(tasks, callback)//并行执行任务列队,当中有任务执行出错,不影响其它任务的执行
+        parallel:function(tasks, callback)//并行执行任务列队,当中有任务执行出错,不影响其它任务的执行
                 //例子:tasks:任务方法数组, callback:执行完任务后,回调
                 $.parallel([
                     function(callback){//callback: function(){}
@@ -151,7 +192,7 @@ API简介:
                 fun:执行方法
                 args:数组,参数[]
                 error:抛出异常回调,无异常不回调
-2.查询api:支持下面的查询格式
+查询api:支持下面的查询格式
 
 
         $("#id") 
@@ -160,7 +201,7 @@ API简介:
         $("#id .class")
         $("#id > .class")
         $(".class div[flag=aaa]")   
-3.Qmik.fn api(即 $("#id").api)
+Qmik.fn api(即 $("#id").api)
 
 
         last : function() :最后一个
@@ -209,7 +250,8 @@ API简介:
         height:function()//高度
         offset:function() //return {top:xx,left:xx} 获取匹配元素在当前视口的相对偏移
         position:function() //return {top:xx,left:xx}获取匹配元素相对父元素的偏移
-3.按需加载例子:
+
+## 按需加载例子:
 
 $.sun.use(["module1","module2"],function(module1,module2){}); $.sun.define(function(require, exports, module){}); $.sun.config();
 
@@ -288,7 +330,7 @@ c.实现Home业务模块功能
                 });
             })(Qmik);
         </script>
-4.下载源码,自定义构建(构建时,只能选择src目录下的文件合并成一个Qmik.js,不能包含plugins等其它目录)
+## 下载源码,自定义构建(构建时,只能选择src目录下的文件合并成一个Qmik.js,不能包含plugins等其它目录)
 
     1.安装github客户端,需要使用到git-shell  (http://windows.github.com/)
     2.下载 nodejs ,安装 ,http://nodejs.org/
@@ -304,3 +346,10 @@ c.实现Home业务模块功能
                         npm install  grunt-contrib-clean  安装cssmin
 
          安装完成后,进入目录,执行  grunt命令,开始自动构建,构建代码后的代码放在 assets 目录下
+
+
+## 5. Copyright
+
+© 2011 - 2014 leo(cwq0312@163.com)  版权所有 , 遵从BSD开源协议
+
+
