@@ -98,8 +98,8 @@
 	}
 
 	function requireModule(id) {
-		var name = getDemainPath(id2url(id));
-		return cacheModule[name];
+		//如果已定义了模块,就返回,否则转换名称系统,取映射的名称,再取模块
+		return cacheModule[id] || cacheModule[getDemainPath(id2url(id))];
 	}
 	// bat sequence load module
 	function batload(callback, deps, chain) {
@@ -218,7 +218,7 @@
 			dependencies = dependencies.concat(parseDepents(factory));
 			dependencies = Q.unique(dependencies);
 			if (uid) {
-				cacheModule[uid] && Q.log("warn module is overwrited:", uid, ",", factory);
+				cacheModule[uid] && console.log("warn module is overwrited:", uid, ",", factory);
 				cacheModule[uid] = new Module(uid, dependencies, factory)
 			}
 			if (url) {
