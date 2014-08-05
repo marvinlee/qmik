@@ -61,6 +61,17 @@ h.push('</div>');
 
 
 ## 版本记录
+增加1.3.10版本,,,此版本对sun模块的加载机制进行了调整,影响:新版本如果页面代码里已定义模块名:如 lib/qmik/Store,
+在新版本中,如果定义了别名
+$.sun.config({
+    alias: {
+        "lib/qmik/Store":"http://xxx.com/xxx/store.js"
+    }
+});
+那么新版本开始会认为 别名 "lib/qmik/Store" 就是模块名,会优先以模块名进行加载模块,如果加载不到,再去请求对应的js文件,
+老版本认为是不一样,在实际使用中及反馈中,应该把二者统一为一样
+
+
 增加1.3.01大版本, 
     增加html局部渲染功能$.render(htmljson, data),
     任务进度处理模块$.task,有$.series(串行执行), $.parallel(并行执行),
