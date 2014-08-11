@@ -112,7 +112,7 @@
 		return isString(c) && rNode.test(c) ? Q(c) : c
 	}
 	function render(val) {
-		return (val instanceof Object && isString(val.tag) && !isFun(val)) ? Q.render(val) : val
+		return ( Q.isPlainObject(val) && (isString(val.tag) || isString(val.text)) ) ? Q.render(val) : val
 	}
 	function createTextNode(val){
 		doc.createTextNode( render(val) )
