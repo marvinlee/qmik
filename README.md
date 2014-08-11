@@ -65,8 +65,7 @@ h.push('</div>');
 1.取消tag必须为 div[]的格式限制,tag:选填,有填必须符合正则(^\s*\w+\s*(\[.*\])?\s*$),
 2.取消text对输入< >符号的转换(这种代码安全的检验应该在数据输入时就做了,,放开后的好处是更加方便节点的拼装,
 原先只能输入innerText类内容,现在可以输入任意的内容,如果:<div><span>hello</span></div> 这样更加容易生成节点)
-3.对$().html,$(),$().append() 等增加对 渲染结构的支持,可以直接 $("body").append({tag:'div[class="name"]',text:'test render'});
-4.增加模块加载定义时对return的支持:如:
+3.增加模块加载定义时对return的支持:如:
 ```
 $.define("demo",function(require, exports, module){
     module.exports = {name:"exports"};
