@@ -26,8 +26,8 @@
 			factory: factory,
 			// module is ready ,if no, request src from service
 			isReady: !1, // is ready ,default false,
-			type: Q.inArray(url, pres) >= 0 ? 2 : 1 //2:预加载的类型,1:普通类型
-			//exports: null
+			type: Q.inArray(url, pres) >= 0 ? 2 : 1, //2:预加载的类型,1:普通类型
+			exports: {}
 		})
 	}
 	/** 清除注释 */
@@ -138,9 +138,9 @@
 	function useModule(module, require, callback) {
 		if (module.isReady != !0) { //模块还没有准备好
 			batload(function() {
-				module.exports = {};
-				module.factory(require, module.exports, module);
+				var exports = module.factory(require, module.exports, module);
 				module.isReady = !0;
+				Q.isNull(exports) || (module.exports = exports);
 				callback(module.exports);
 			}, module.dependencies)
 		} else {

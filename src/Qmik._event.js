@@ -164,7 +164,7 @@
 			}
 			me.on(name, oneexec)
 		},
-		trigger: function(name) {
+		emit: function(name) {
 			each(this, function(k, v) {
 				Etrig(v, name)
 			});
@@ -203,16 +203,16 @@
 	fn.extend({
 		bind: fn.on,
 		unbind: fn.un,
-		off: fn.un
+		off: fn.un,
+		trigger: fn.emit
 	});
 	/**
 	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
 	 * 90：逆时针转了 Android2.1尚未支持重力感应
 	 */
-	var qwc = "click blur focus scroll resize".split(" ");
-	each(qwc, function(i, v) {
+	each("click blur focus scroll resize".split(" "), function(i, v) {
 		fn[v] = function(f) {
-			return f ? this.on(v, f) : this.trigger(v)
+			return f ? this.on(v, f) : this.emit(v)
 		}
 	})
 })(Qmik);

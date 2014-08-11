@@ -68,36 +68,6 @@ module.exports = function(grunt) {
 					],
 					'assets/Qmik.task.js' : [
 						'src/Qmik.task.js'
-					],
-					'assets/Qmik.box.js' : [
-						'src/plugins/Qmik.box.js'
-					],
-					'assets/plugins/Qmik.nav.js' : [
-						'src/plugins/Qmik.nav.js'
-					],
-					'assets/plugins/Qmik.Cache.js' : [
-						'src/plugins/Qmik.Cache.js'
-					],
-					'assets/plugins/Qmik.JSON.js' : [
-						'src/plugins/Qmik.JSON.js'
-					],
-					'assets/plugins/Qmik.fn.fade.js' : [
-						'src/plugins/Qmik.fn.fade.js'
-					],
-					'assets/plugins/Qmik.fn.tree.js' : [
-						'src/plugins/Qmik.fn.tree.js'
-					],
-					'assets/plugins/Qmik.fn.slider.js' : [
-						'src/plugins/Qmik.fn.slider.js'
-					],
-					'assets/plugins/Qmik.fn.scrollBar.js' : [
-						'src/plugins/Qmik.fn.scrollBar.js'
-					],
-					'assets/plugins/Qmik.Store.js' : [
-						'src/plugins/Qmik.Store.js'
-					],
-					'assets/plugins/Qmik.fn.lazyImg.js' : [
-						'src/plugins/Qmik.fn.lazyImg.js'
 					]
 				}
 			}

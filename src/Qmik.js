@@ -109,6 +109,7 @@
 				callback.call(obj[i], i, obj[i])
 			}
 		}
+		return obj;
 	}
 	// isNumber
 	function isNum(v) {
@@ -149,9 +150,6 @@
 		return array
 	}
 
-	function xss(val) {
-		return val.replace(/>/g, "&gt;").replace(/</g, "&lt;")
-	}
 	/*	function isGrandfather(grandfather, child) {
 			return isDom(child) && (grandfather === child.parentNode ? !0 : isGrandfather(grandfather, child.parentNode))
 		}*/
@@ -196,6 +194,26 @@
 			Q("head").append(node);
 		}, 1);
 		return node
+	}
+	/**
+		字符串变量${name}替换
+	*/
+	function replaceVar(str, data){
+		data = data || {};
+		return isNull(str) ? null : str.replace(/\$[!]?\{[\.\w_-]*\}/g, function(name) {
+			var keys = name.replace(/(^\$[!]?\{\s*)|(\s*\}$)/g, "");
+			keys = keys.split(".");
+			var val = data[keys[0]];
+			for (var i = 1; i < keys.length; i++) {
+				try {
+					val = val[keys[i]]
+				} catch (e) {
+					Q.log(e, str);
+					return ""
+				}
+			}
+			return val || "";
+		})
 	}
 	//////////Delay class, function 实现setTimeout的功能
 	function Delay(fun, time, params) {
@@ -467,27 +485,20 @@
 				var h = [],
 					tag = (struct.tag || "").trim(),
 					text = struct.text;
+				text = replaceVar(text, item);
 				if ( tag=="" && !isNull(text)) {
-					return xss(text);
+					return text;
 				}
-				if(!/^\s*\w+\s*\[.*\]\s*$/.test(tag)){
+				if(!/^\s*\w+\s*(\[.*\])?\s*$/.test(tag)){
 					throw new Error("input args is lllegal:"+tag);
 				}
 				var tagName = (tag.match(/^[^\[]+/)||[""])[0];
 				var attr = (tag.match(/\[.*$/) || [""])[0].replace(/(^\s*\[)|(\s*\]\s*$)/g, "");
 				h.push('<' + tagName + " ");
-				attr = attr.replace(/\$[!]?\{[\.\w_-]*\}/g, function(name) {
-					var keys = name.replace(/(^\$[!]?\{\s*)|(\s*\}$)/g, "");
-					keys = keys.split(".");
-					var val = item[keys[0]];
-					for(var i=1; i<keys.length ;i++){
-						val = val[keys[i]];
-					}
-					return xss(val || "");
-				});
+				attr = replaceVar(attr, item);
 				h.push(attr);
 				h.push('>');
-				Q.isNull(text) || h.push(xss(text));
+				isNull(text) || h.push(text);
 				isArray(struct.child) && each(struct.child, function(i, ch) {
 					ch && h.push(Q.render(ch, item));
 				});
@@ -524,7 +535,7 @@
 		}
 	};
 	///////////////////////////////////////////////////////
-	Q.version = "1.3.10";
+	Q.version = "1.3.20";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;

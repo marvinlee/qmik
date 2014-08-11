@@ -22,7 +22,7 @@
 	function Query(selector, context) {
 		var me = this, r;
 		me.context = context = context || doc;
-		me.selector = selector = clearLine(selector);
+		me.selector = selector = render(selector);
 		me.length = 0;
 		if (isString(selector)) {
 			if (rNode.test(selector)) {
@@ -74,12 +74,9 @@
 		}
 		return result
 	}
-	function clearLine(str){
-		return isString(str) ? str.replace(/\r|\n/g,"") : str
-	}
 
-	function execObject(v, target) {
-		return isFun(v) ? v() : v
+	function execObject(v) {
+		return isFun(v) ? v() : render(v)
 	}
 	// As much as possible to Array
 	function arrayConcat(sarray,tarray) {
@@ -112,15 +109,13 @@
 	}
 	function muchValue2Qmik(c) {
 		c = execObject(c);
-		c = clearLine(c);
 		return isString(c) && rNode.test(c) ? Q(c) : c
 	}
-
+	function render(val) {
+		return (val instanceof Object && isString(val.tag) && !isFun(val)) ? Q.render(val) : val
+	}
 	function createTextNode(val){
-		if(val instanceof Object && isString(val.tag) && !isFun(val) ){
-			val = Q.render(val)
-		}
-		doc.createTextNode( val )
+		doc.createTextNode( render(val) )
 	}
 	function append(o, child) {
 		child = muchValue2Qmik(child);
