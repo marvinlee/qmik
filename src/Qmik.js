@@ -496,7 +496,8 @@
 					return text;
 				}
 				if(!/^\s*\w+\s*(\[.*\])?\s*$/.test(tag)){
-					throw new Error("input args is lllegal:"+tag);
+					console.log("tag is lllegal:",tag);
+					return "";
 				}
 				var tagName = (tag.match(/^[^\[]+/)||[""])[0];
 				var attr = (tag.match(/\[.*$/) || [""])[0].replace(/(^\s*\[)|(\s*\]\s*$)/g, "");
@@ -505,7 +506,9 @@
 				h.push(attr);
 				h.push('>');
 				isNull(text) || h.push(text);
-				struct.exec && struct.exec();
+				struct.exec && Q.execCatch(function(){
+					struct.exec()
+				});
 				isArray(struct.child) && each(struct.child, function(i, ch) {
 					ch && h.push(Q.render(ch, item));
 				});				

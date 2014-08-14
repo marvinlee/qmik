@@ -226,7 +226,8 @@
 			if (isString(k) && isNull(v)) return data(o[0], k, v);
 			each(o, function(i, j) {
 				data(j, k, v)
-			})
+			});
+			return o;
 		} else if (!isNull(o)) {
 			if (isNull(o[dn])) o[dn] = {};
 			if (isNull(v) && isString(k)) return o[dn][k];
