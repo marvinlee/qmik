@@ -181,18 +181,16 @@
 		});*/
 		qnode.on({
 			load: function() {
-				success && success(node)
+				success && Q.delay(success, 1, node)
 			},
 			error: function() {
 				qnode.remove();
 				error && error(node)
 			}
 		});
-		Q.delay(function() {
-			if (isCss) node.href = url;
-			else node.src = url;
-			Q("head").append(node);
-		}, 1);
+		if (isCss) node.href = url;
+		else node.src = url;
+		Q("head").append(node);
 		return node
 	}
 	/**
@@ -200,7 +198,7 @@
 	*/
 	function replaceVar(str, data){
 		data = data || {};
-		return isNull(str) ? null : str.replace(/\$[!]?\{[\.\w_-]*\}/g, function(name) {
+		return isNull(str) ? null : (str+"").replace(/\$[!]?\{[\.\w_-]*\}/g, function(name) {
 			var keys = name.replace(/(^\$[!]?\{\s*)|(\s*\}$)/g, "");
 			keys = keys.split(".");
 			var val = data[keys[0]];
@@ -215,11 +213,18 @@
 			return val || "";
 		})
 	}
+	/* 为每个渲染模块注入此方法 */
+	function addRenderChild(struct, item){
+		this.child = this.child || [];
+		this.child.push({
+			text:Q.render(struct, item)
+		});
+	}
 	//////////Delay class, function 实现setTimeout的功能
 	function Delay(fun, time, params) {
 		var me = this;
 		me.pid = setTimeout(function() {
-			fun.apply(null, params)
+			fun.apply(fun, params)
 		}, time)
 	}
 	Q.extend(Delay.prototype, {
@@ -236,7 +241,7 @@
 
 		function _exec() {
 			if ((isNull(ttl) || (chisu * cycleTime - start) <= ttl)) {
-				fun.apply(null, params);
+				fun.apply(fun, params);
 				me._p = new Delay(_exec, cycleTime, params);
 			}
 			chisu++;
@@ -486,6 +491,7 @@
 					tag = (struct.tag || "").trim(),
 					text = struct.text;
 				text = replaceVar(text, item);
+				struct.add = addRenderChild;
 				if ( tag=="" && !isNull(text)) {
 					return text;
 				}
@@ -499,9 +505,10 @@
 				h.push(attr);
 				h.push('>');
 				isNull(text) || h.push(text);
+				struct.exec && struct.exec();
 				isArray(struct.child) && each(struct.child, function(i, ch) {
 					ch && h.push(Q.render(ch, item));
-				});
+				});				
 				h.push('</' + tagName + '>');
 				return h.join("");
 			},
@@ -535,7 +542,7 @@
 		}
 	};
 	///////////////////////////////////////////////////////
-	Q.version = "1.3.20";
+	Q.version = "1.3.50";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;

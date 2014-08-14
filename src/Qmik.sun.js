@@ -137,12 +137,18 @@
 
 	function useModule(module, require, callback) {
 		if (module.isReady != !0) { //模块还没有准备好
-			batload(function() {
+			/*batload(function() {
 				var exports = module.factory(require, module.exports, module);
 				module.isReady = !0;
 				Q.isNull(exports) || (module.exports = exports);
 				callback(module.exports);
-			}, module.dependencies)
+			}, module.dependencies)*/
+			Q.use(module.dependencies, function() {
+				var exports = module.factory(require, module.exports, module);
+				module.isReady = !0;
+				Q.isNull(exports) || (module.exports = exports);
+				callback(module.exports);
+			});
 		} else {
 			callback(module.exports)
 		}

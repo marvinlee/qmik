@@ -22,7 +22,7 @@
 	function Query(selector, context) {
 		var me = this, r;
 		me.context = context = context || doc;
-		me.selector = selector = render(selector);
+		me.selector = selector = render(selector, context);
 		me.length = 0;
 		if (isString(selector)) {
 			if (rNode.test(selector)) {
@@ -111,8 +111,8 @@
 		c = execObject(c);
 		return isString(c) && rNode.test(c) ? Q(c) : c
 	}
-	function render(val) {
-		return ( Q.isPlainObject(val) && (isString(val.tag) || isString(val.text)) ) ? Q.render(val) : val
+	function render(val, context) {
+		return ( Q.isPlainObject(val) && (isString(val.tag) || isString(val.text)) ) ? Q.render(val, context||{}) : val
 	}
 	function createTextNode(val){
 		doc.createTextNode( render(val) )
@@ -372,6 +372,10 @@
 			append(this, c);
 			return this
 		},
+		appendTo: function(c){
+			Q(c).append(this);
+			return this;
+		},
 		remove : function() {
 			each(this, function(i, v) {
 				isDom(v.parentNode) && v.parentNode.removeChild(v)
@@ -384,6 +388,14 @@
 		},
 		after : function(c) {
 			after(this, c);
+			return this
+		},
+		beforeTo: function(c){
+			before(c, this);
+			return this
+		},
+		afterTo: function(c){
+			after(c, this);
 			return this
 		},
 		html : function(v) {
