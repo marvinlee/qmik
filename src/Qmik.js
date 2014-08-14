@@ -181,7 +181,7 @@
 		});*/
 		qnode.on({
 			load: function() {
-				success && Q.delay(success, 1, node)
+				success && success(node)
 			},
 			error: function() {
 				qnode.remove();

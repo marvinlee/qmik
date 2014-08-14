@@ -61,6 +61,12 @@ h.push('</div>');
 
 
 ## 版本记录
+增加1.3.50版本: 
+    修复sun模块加载远程模块代码可能出现的异常
+    优化模板渲染机制,使用各简洁
+    添加fn.appendTo,fn.afterTo,fn.beforeTo;
+
+
 增加1.3.20版本, 此版本优化的局部渲染机制 $.render 的使用,
 1.取消tag必须为 div[]的格式限制,tag:选填,有填必须符合正则(^\s*\w+\s*(\[.*\])?\s*$),
 2.取消text对输入< >符号的转换(这种代码安全的检验应该在数据输入时就做了,,放开后的好处是更加方便节点的拼装,
@@ -179,9 +185,9 @@ $.sun.config({
             success,function(data){},
             error:function(){}
         });
-        render: function(htmljson, data), 
+        render: function(struct, data), 
             //参数说明:
-            htmljson:{
+            struct:{
                 tag:'div[name="testdiv" class="show" time="${time}"]',
                 text:'显示的文件',//如果<div>显示的文件</div>
                 child:[//子节点,tag:是用来描述标签及属性的(如果有子节点child,则一定要有tag,text:输出innerText文本的)
@@ -374,6 +380,50 @@ c.实现Home业务模块功能
                 });
             })(Qmik);
         </script>
+
+
+## 模板渲染例子:
+var list=[
+    {id:'a3',title:'ww',price:100},
+    {id:'a4',title:'nn',price:178}
+];
+$({
+    tag:'div[class="bg"]',
+    child:[
+        {
+            tag:'span[class="tm" style="display:inline-block; padding:5px"]',
+            text:'价格'
+        },{
+            tag:'span[class="tm" style="display:inline-block padding:5px"]',
+            text:'18很小呀'
+        },{
+            tag:'span[class="tm" style="display:inline-block padding:5px"]',
+            text:'24'
+        }
+    ],
+    exec: function(){
+      var me = this;
+        $.each(list, function(i, item){
+            me.add({
+                tag:'i[]',
+                text:'价格:${price}'
+            }, item);
+        });
+    }
+}).on({
+    click:function(e){
+        console.log(e.target);
+        var qt = $( e.target ).closest(".bg");
+        var me = $(this);
+        console.log( me.data("name") );
+    }
+}).appendTo($("body")).data({
+    name:'leo'
+})
+
+
+
+
 ## 下载源码,自定义构建(构建时,只能选择src目录下的文件合并成一个Qmik.js,不能包含plugins等其它目录)
 
     1.安装github客户端,需要使用到git-shell  (http://windows.github.com/)
