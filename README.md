@@ -382,7 +382,8 @@ c.实现Home业务模块功能
         </script>
 
 
-## 模板渲染例子:
+## [模板渲染例子:](https://github.com/leochen36/qmik/wiki/$.render-%E5%B1%80%E9%83%A8%E6%B8%B2%E6%9F%93)
+内核($.render)
 var list=[
     {id:'a3',title:'ww',price:100},
     {id:'a4',title:'nn',price:178}
