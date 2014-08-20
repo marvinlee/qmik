@@ -25,7 +25,7 @@
 			dependencies: dependencies, // 依赖模块
 			factory: factory,
 			// module is ready ,if no, request src from service
-			isReady: !1, // is ready ,default false,
+			state: 3, // is ready ,default false, 1=ok,2=准备中,3=寻找模块
 			type: Q.inArray(url, pres) >= 0 ? 2 : 1, //2:预加载的类型,1:普通类型
 			exports: {}
 		})
@@ -136,21 +136,18 @@
 	}
 
 	function useModule(module, require, callback) {
-		if (module.isReady != !0) { //模块还没有准备好
-			/*batload(function() {
-				var exports = module.factory(require, module.exports, module);
-				module.isReady = !0;
-				Q.isNull(exports) || (module.exports = exports);
-				callback(module.exports);
-			}, module.dependencies)*/
-			Q.use(module.dependencies, function() {
-				var exports = module.factory(require, module.exports, module);
-				module.isReady = !0;
-				Q.isNull(exports) || (module.exports = exports);
-				callback(module.exports);
-			});
-		} else {
+		switch(module.state){
+		case 1:
 			callback(module.exports)
+			break;
+		case 3:
+			batload(function() {
+				var exports = module.factory(require, module.exports, module);
+				module.state = 1;//ok
+				Q.isNull(exports) || (module.exports = exports);
+				callback(module.exports);
+			}, module.dependencies);
+			break;
 		}
 	}
 
@@ -199,10 +196,12 @@
 				ispreload = !0
 			}
 			//下面检测使用的模块是否已被全部加载过
-			var ret = Q.grep(ids, function(i, val) {
-				return require(val)
+			var ret = [];
+			Q.each(ids, function(i, val) {
+				var module = requireModule(val)||{};
+				module.state == 1 && ret.push(require(val));
 			});
-			ret.length == ids.length ? batload(callback, ids) : queue.push({
+			ret.length == ids.length ? callback.apply(callback, ret) : queue.push({
 				ids: ids,
 				callback: callback
 			});
