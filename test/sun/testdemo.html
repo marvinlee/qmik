@@ -1,0 +1,59 @@
+<html>
+ <head> 
+  <meta charset="gbk" /> 
+  <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport" /> 
+  <meta name="-webkit-tap-highlight" content="no" /> 
+  <title>女装七夕清仓全场1折起</title> 
+  <script type="text/javascript" src="../unit/qunit.js"></script>
+  <script type="text/javascript" src="../../assets/Qmik.js"></script>
+</head>
+<body>
+<div>
+</div>
+<script type="text/javascript">
+
+
+	$.config({log:"debug"});
+	$.sun.config({
+		alias:{
+			"demo/Demo1":'${url}/demo1.js',
+			"demo/Demo2":'${url}/demo2.js',
+			"demo/Demo3":'${url}/demo3.js',
+			"demo/Demo4":'${url}/demo4.js',
+			"demo/Common":'${url}/common.js',
+		},
+		vars:{
+			url:function(){
+				return location.href.replace(/\/[^\/]*$/,"");
+			}
+		}
+
+	});
+	$.use("demo/Demo1",function(Demo1){
+		Demo1.doing("..............demo1");
+		console.log("\r\n\r\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+	});
+	$.use("demo/Demo2",function(Demo2){
+		Demo2.doing("...>>>>>>>>>>>>>>>>>>>>demo2 xx");
+		console.log("\r\n\r\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+	});
+
+	$.use("demo/Demo3",function(Demo2){
+		Demo2.doing(".....................`demo3");
+		console.log("\r\n\r\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+	});
+
+	$.use("demo/Demo4",function(Demo2){
+		Demo2.doing("......xxxxxxxxxxxxxxxxxdemo4");
+		console.log("\r\n\r\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+	});
+	/*$.use(["demo/Demo1","demo/Demo2"],function(Demo1,Demo2){
+		Demo1.doing("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< demo1");
+		Demo2.doing(" ---------------------- demo2");
+	})*/ 
+console.log("=================>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+ console.log(">>>><<<<<<<<<<<<<<end")
+ 
+</script>
+ </body>
+</html>

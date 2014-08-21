@@ -11,13 +11,21 @@ module.exports = function(grunt) {
 		},
 		qunit : {
 			options : {
-				timeout : 2000,
+				timeout : 5000,
 				'--cookies-file' : '**'
 			},
 			all : [
 				'test/**/test*.html'
 			]
 		},
+		connect: {
+	        server: {
+	            options: {
+	                port: 3000,
+	                base: '.'
+	            }
+	        }
+	    },
 		concat : {
 			dist : {
 				src : [
@@ -101,7 +109,11 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	// grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.registerTask('server', ['connect', 'watch']);
 	// Default task(s).
+	grunt.event.on('qunit.spawn', function (url) {
+	  grunt.log.ok("Running test: " + url);
+	});
 	grunt.registerTask('default', [
 		'clean', 'uglify', 'concat', 'qunit'
 	]);

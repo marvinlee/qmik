@@ -32,7 +32,9 @@
 	}
 	/** 清除注释 */
 	function clearNode(word) {
-		return word.replace(/(\/\/)\S*[^\n]*/g, "").replace(/\/\*[\S\s]*\*\//g, "")
+		return word.replace(/(\n\s*\/\/[^\n]*)|(\/\*[^\n]*\*\/)|("[^"\n]*\()|('[^'\n]*\()/g, "").replace(/[^\n]*[^:]+\/\/[^\n]*/g, function(val) {
+			return val.replace(/\/\/[^\n\/]*$/, "");
+		}).replace(/\/\*[\S\s]*\*\//g, "");
 	}
 	// get depends from function.toString()
 	function parseDepents(code) {
@@ -88,7 +90,7 @@
 
 	var queue = new QueueSync(function(item, chain) {
 		var callback = item.callback;
-		batload(callback, item.ids, chain)
+		batload(callback, item.ids, null, chain)
 	});
 
 	// require module
@@ -102,7 +104,7 @@
 		return cacheModule[id] || cacheModule[getDemainPath(id2url(id))];
 	}
 	// bat sequence load module
-	function batload(callback, deps, chain) {
+	function batload(callback, deps, refer, chain) {
 		var tasks = [];
 		var params = [];
 		Q.each(deps, function(i, id) {
@@ -110,7 +112,7 @@
 				load(id, function(exports, err) {
 					params.push(exports);
 					cb(err);
-				});
+				}, refer);
 			});
 		});
 		Q.series(tasks, function(err) {
@@ -121,11 +123,11 @@
 		});
 	}
 
-	function load(id, callback) {
+	function load(id, callback, refer) {
 		var module = requireModule(id);
-		module ? useModule(module, require, callback) : request(id, function() {
+		module ? useModule(module, require, callback, refer) : request(id, function() {
 			module = requireModule(id);
-			useModule(module, require, callback)
+			useModule(module, require, callback, refer)
 		}, function() {
 			callback(null, new Error("load error:" + id))
 		})
@@ -135,19 +137,30 @@
 		return url.replace(/[\?#].*$/g, "");
 	}
 
-	function useModule(module, require, callback) {
-		switch(module.state){
-		case 1:
-			callback(module.exports)
-			break;
-		case 3:
-			batload(function() {
-				var exports = module.factory(require, module.exports, module);
-				module.state = 1;//ok
-				Q.isNull(exports) || (module.exports = exports);
-				callback(module.exports);
-			}, module.dependencies);
-			break;
+	function makeFactory(module) {
+		if (!module.isMake) {
+			module.isMake = !0;
+			exports = module.factory(require, module.exports, module);
+			Q.isNull(exports) || (module.exports = exports);
+		}
+		return module.exports;
+	}
+
+	function useModule(module, require, callback, refer) {
+		switch (module.state) {
+			case 1:
+				callback(module.exports)
+				break;
+			case 2:
+				refer && callback(makeFactory(module));
+				break;
+			case 3:
+				module.state = 2;
+				batload(function() {
+					module.state = 1; //ok
+					callback(makeFactory(module));
+				}, module.dependencies, module);
+				break;
 		}
 	}
 
@@ -184,6 +197,9 @@
 		});
 	}
 	// ////////////////id to url end ///////////////////////////////
+	function define(id, url, dependencies, factory) {
+		return cacheModule[id] = cacheModule[url] = new Module(id, dependencies, factory);
+	}
 	Q.extend(sun, {
 		use: function(ids, callback) {
 			ids = Q.isArray(ids) ? ids : [
@@ -198,7 +214,7 @@
 			//下面检测使用的模块是否已被全部加载过
 			var ret = [];
 			Q.each(ids, function(i, val) {
-				var module = requireModule(val)||{};
+				var module = requireModule(val) || {};
 				module.state == 1 && ret.push(require(val));
 			});
 			ret.length == ids.length ? callback.apply(callback, ret) : queue.push({
@@ -222,14 +238,7 @@
 			}
 			dependencies = dependencies.concat(parseDepents(factory));
 			dependencies = Q.unique(dependencies);
-			if (uid) {
-				cacheModule[uid] && console.log("warn module is overwrited:", uid, ",", factory);
-				cacheModule[uid] = new Module(uid, dependencies, factory)
-			}
-			if (url) {
-				var moduleName = getDemainPath(url);
-				!cacheModule[moduleName] && (cacheModule[moduleName] = new Module(moduleName, dependencies, factory));
-			}
+			define(uid, getDemainPath(url || uid), dependencies, factory);
 		},
 		config: function(opts) { //参数配置
 			return Q.config(opts, config)
