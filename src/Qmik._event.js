@@ -35,7 +35,7 @@
 		}
 		if (readyRE.test(node.readyState)) {
 			Q.delay(function() {
-				fun.call(node, _in.createEvent("MouseEvents"))
+				fun.call(node, Q)
 			}, 1);
 		} else {
 			var hs = node.$$handls = node.$$handls || [];

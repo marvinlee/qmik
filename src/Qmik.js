@@ -401,7 +401,7 @@
 			log: function() {
 				var args = arguments;
 				if (config.debug || isError(args[0])) {
-					console.log(args);
+					try{console.log.apply(Q, args)}catch(e){Q.each(args,function(i,v){console.log(v)})};
 				}
 			},
 			isIphone: function() {

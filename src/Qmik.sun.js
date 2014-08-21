@@ -165,8 +165,8 @@
 	}
 
 	function request(url, success, error) {
-		url = id2url(url);
-		/\/.+\.css(\?.*)?$/i.test(url) ? Q.getCss(url, error, error) : currentScript = Q.getScript(url, success, error)
+		currentScript = id2url(url);
+		/\/.+\.css(\?.*)?$/i.test(url) ? Q.getCss(url, error, error) : Q.getScript(currentScript, success, error)
 	}
 
 	// //////////////// id to url start ///////////////////////////////
@@ -226,7 +226,7 @@
 		// factory:function(require, exports, module)
 		define: function(uid, dependencies, factory) {
 			var url, module;
-			if (currentScript) url = currentScript.src;
+			if (currentScript) url = currentScript;
 			if (isFun(uid) || Q.isArray(uid)) {
 				factory = dependencies;
 				dependencies = uid;
@@ -239,6 +239,7 @@
 			dependencies = dependencies.concat(parseDepents(factory));
 			dependencies = Q.unique(dependencies);
 			define(uid, getDemainPath(url || uid), dependencies, factory);
+			currentScript = null;
 		},
 		config: function(opts) { //参数配置
 			return Q.config(opts, config)
