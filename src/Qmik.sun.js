@@ -32,9 +32,17 @@
 	}
 	/** 清除注释 */
 	function clearNode(word) {
-		return word.replace(/(\/\/\S*[^\n]*)|(\/\*[^\n]*\*\/)|(["'][^"'\n]*["'])/g, function(val){
+		/*return word.replace(/(\/\/[^\n]*)|(\/\*[^\n]*\*\/)|(["'][^"'\n]*["'])/g, function(val){
 			return /[\(\)]/.test(val) ? "" : val;
-		}).replace(/\/\*[\S\s]*\*\//g, "")
+		}).replace(/(\/\*.*\*\/)|(\/\*[\S\s]*\*\/)/g, "")*/
+		var list = [];
+		Q.each(word.replace(/(\/\/[^\n]*)|(\/\*[^\n]*\*\/)|(["'][^"'\n]*["'])/g, function(val) {
+			return (/[\(\)]/.test(val) ? "" : val).replace(/\*/g,"");
+		}).replace(/\/\*.*\*\//g, "").split(/\/\*/), function(i, val) {
+			list.push(val.replace(/[\s\S]+\*\//, ""))
+		});
+		return list.join("");
+
 	}
 	// get depends from function.toString()
 	function parseDepents(code) {

@@ -3,8 +3,9 @@ $.define("demo/Demo4",function(require, exports, module){
 	module.exports = {
 		doing:function(msg){
 			var Demo = require("demo/Demo3");
-			
-			console.log("loading: require('bbb')   x  ");
+			console.log("  bg  /*");
+			console.log("loading:// require('bbb')   //x*/  ");
+			console.log("ab //");require("demo/Demo3");
 			/*$.use(["http://g.tbcdn.cn/tmmob/lib-store/2.0.0/store.js",'http://g.tbcdn.cn/tmmob/lib-loadimg/1.0.0/loadimg.js'],
 				function(Store,Loadimg){
 				console.log("store:",Store, msg);
