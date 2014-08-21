@@ -37,9 +37,9 @@
 		}).replace(/(\/\*.*\*\/)|(\/\*[\S\s]*\*\/)/g, "")*/
 		var list = [];
 		Q.each(word.replace(/(\/\/[^\n]*)|(\/\*[^\n]*\*\/)|(["'][^"'\n]*["'])/g, function(val) {
-			return (/[\(\)]/.test(val) ? "" : val).replace(/\*/g,"");
-		}).replace(/\/\*.*\*\//g, "").split(/\/\*/), function(i, val) {
-			list.push(val.replace(/[\s\S]+\*\//, ""))
+			return /[\(\)\*]/.test(val) ? "" : val;//.replace(/\*/g,"");
+		}).replace(/\/\*.*\*\//g, "").split(/\*\//), function(i, val) {
+			list.push(val.replace(/\/\*[\s\S]+/, ""))
 		});
 		return list.join("");
 
@@ -204,8 +204,12 @@
 			return isFun(tmp) ? tmp() : tmp;
 		});
 	}
+	function checkLegalId(id){
+		if(/[\)\(\*]/.test(id))throw new Error("define id:"+id+" is Illegal,not contain )(*");
+	}
 	// ////////////////id to url end ///////////////////////////////
 	function define(id, url, dependencies, factory) {
+		checkLegalId(id);checkLegalId(url);
 		return cacheModule[id] = cacheModule[url] = new Module(id, dependencies, factory);
 	}
 	Q.extend(sun, {
