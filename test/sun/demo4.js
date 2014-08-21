@@ -11,7 +11,7 @@ $.define("demo/Demo4",function(require, exports, module){
 				console.log("Loadimg:",Loadimg, msg);
 				require("bb1");
 			});*/
-
+			console.log("a('bb')")
 			//var Demo1 = require("demo/Demo1");
 			//Demo.doing(msg);
 			console.log("demo4>demo3:",msg);

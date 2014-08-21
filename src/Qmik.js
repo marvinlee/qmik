@@ -401,7 +401,7 @@
 			log: function() {
 				var args = arguments;
 				if (config.debug || isError(args[0])) {
-					console.log.apply(console, args);
+					console.log(args);
 				}
 			},
 			isIphone: function() {

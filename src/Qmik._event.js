@@ -28,7 +28,7 @@
 			if (state != "loading" && !isNull(node.$$handls) && (readyRE.test(state) || (isNull(state) && "load" == e.type))) {
 				setLoad(node, null);
 				each(node.$$handls, function(i, val) {
-					val(e);
+					val(Q);
 				});
 				delete node.$$handls
 			}

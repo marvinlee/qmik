@@ -32,9 +32,9 @@
 	}
 	/** 清除注释 */
 	function clearNode(word) {
-		return word.replace(/(\n\s*\/\/[^\n]*)|(\/\*[^\n]*\*\/)|("[^"\n]*\()|('[^'\n]*\()/g, "").replace(/[^\n]*[^:]+\/\/[^\n]*/g, function(val) {
-			return val.replace(/\/\/[^\n\/]*$/, "");
-		}).replace(/\/\*[\S\s]*\*\//g, "");
+		return word.replace(/(\/\/\S*[^\n]*)|(\/\*[^\n]*\*\/)|(["'][^"'\n]*["'])/g, function(val){
+			return /[\(\)]/.test(val) ? "" : val;
+		}).replace(/\/\*[\S\s]*\*\//g, "")
 	}
 	// get depends from function.toString()
 	function parseDepents(code) {
