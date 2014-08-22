@@ -4,8 +4,10 @@ Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库�
 
 入门极期简单,只要你使用过jquery(jquery的语法),是在无线端替换jquery,zepto,seajs,task任务处理等的理想框架,
 
-集成了[模块开发](https://github.com/leochen36/qmik/wiki/sun-%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91), 
-[插件开发](https://github.com/leochen36/qmik/wiki/%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91)的核心架构
+[模块开发内核](https://github.com/leochen36/qmik/wiki/sun-%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91)
+(支持模块压缩代码)
+
+[插件开发内核](https://github.com/leochen36/qmik/wiki/%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91)
 (推荐使用模块开发模式,不推荐使用插件模式,插件模式会破坏框架的代码结构)
 
 简化了dom查询,事件,ajax通讯等的使用,
@@ -17,7 +19,9 @@ html[局部渲染](https://github.com/leochen36/qmik/wiki/$.render-%E5%B1%80%E9%
 [$.series](https://github.com/leochen36/qmik/wiki/$.series-%E4%B8%B2%E8%A1%8C%E4%BB%BB%E5%8A%A1%E5%A4%84%E7%90%86),
 [$.parallel](https://github.com/leochen36/qmik/wiki/$.parallel-%E5%B9%B6%E8%A1%8C%E4%BB%BB%E5%8A%A1%E5%A4%84%E7%90%86))
 
-支持uc,ie>=9,基于webkit内核的浏览器(如chrom,safari等),firefox; 推荐做移动web开发.
+支持uc,ie>=9,基于webkit内核的浏览器(如chrom,safari等),firefox; 推荐做移动web开发,也可以做pc端的开发,
+
+您可以利用这一份框架Qmik来替换掉seajs,jquery,asnyc和模块引擎,,,可以减少框架的维护成本及页面请求大小和数量,提升性能
 
 
 ## 应用场景
