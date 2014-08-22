@@ -61,7 +61,7 @@ h.push('</div>');
 
 
 ## 版本记录
-增加1.3.60版本:
+[增加1.3.60版本:](https://github.com/leochen36/qmik/tree/master/builds)
 1.3.60 版本,对1.3.50版本修改sun模块造成的严重bug进行修复(请直接跳过1.3.50版本), 调整ready方法,ready里的方法,导出参数Qmik本身 Qmik.ready(function($){}), 
 修复对ie9的log方法不支持情况
 
