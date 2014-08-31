@@ -1,4 +1,4 @@
-## 关于Qmik [下载压缩](http://g.tbcdn.cn/tmmob/qmik/1.3.61/Qmik.js) [下载不压缩](http://g.tbcdn.cn/tmmob/qmik/1.3.61/Qmik-debug.js)
+## 关于Qmik [下载压缩](http://g.tbcdn.cn/tmmob/qmik/1.3.61/Qmik.js)
 
 Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库大小22kb,gzip=8kb,
 
