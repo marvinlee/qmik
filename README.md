@@ -65,6 +65,9 @@ h.push('</div>');
 
 
 ## 版本记录
+[增加1.3.61版本:](https://github.com/leochen36/qmik/tree/master/builds)
+1.3.61 版本, 增加渲染引用变量方式,原先变量引用:${name},会跟很多的后台系统引用变量会冲突(如:velocity),如果代码直接放在后台的渲染模板上(跟页面在一起,页面又被后台模板引擎渲染),就会被被替换,,因此多增加一种变量引用方式:{{name}},借鉴angular的变量引用
+
 [增加1.3.60版本:](https://github.com/leochen36/qmik/tree/master/builds)
 1.3.60 版本,对1.3.50版本修改sun模块造成的严重bug进行修复(请直接跳过1.3.50版本), 调整ready方法,ready里的方法,导出参数Qmik本身 Qmik.ready(function($){}), 
 修复对ie9的log方法不支持情况

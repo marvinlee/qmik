@@ -198,8 +198,8 @@
 	*/
 	function replaceVar(str, data){
 		data = data || {};
-		return isNull(str) ? null : (str+"").replace(/\$[!]?\{[\.\w_-]*\}/g, function(name) {
-			var keys = name.replace(/(^\$[!]?\{\s*)|(\s*\}$)/g, "");
+		return isNull(str) ? null : (str+"").replace(/(\$[!]?\{[\.\w_ -]*\})|(\{\{[\.\w_ -]*\}\})/g, function(name) {
+			var keys = name.replace(/(^\$?[!]?\{\{?)|(\}\}?$)/g, "").trim();
 			keys = keys.split(".");
 			var val = data[keys[0]];
 			for (var i = 1; i < keys.length; i++) {
@@ -545,7 +545,7 @@
 		}
 	};
 	///////////////////////////////////////////////////////
-	Q.version = "1.3.60";
+	Q.version = "1.3.61";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;

@@ -37,7 +37,7 @@
 		}).replace(/(\/\*.*\*\/)|(\/\*[\S\s]*\*\/)/g, "")*/
 		var list = [];
 		Q.each(word.replace(/(\/\/[^\n]*)|(\/\*[^\n]*\*\/)|(["'][^"'\n]*["'])/g, function(val) {
-			return /[\(\)\*]/.test(val) ? "" : val;//.replace(/\*/g,"");
+			return /[\(\)\*]/.test(val) ? "" : val; //.replace(/\*/g,"");
 		}).replace(/\/\*.*\*\//g, "").split(/\*\//), function(i, val) {
 			list.push(val.replace(/\/\*[\s\S]+/, ""))
 		});
@@ -204,36 +204,40 @@
 			return isFun(tmp) ? tmp() : tmp;
 		});
 	}
-	function checkLegalId(id){
-		if(/[\)\(\*]/.test(id))throw new Error("define id:"+id+" is Illegal,not contain )(*");
+
+	function checkLegalId(id) {
+		if (/[\)\(\*]/.test(id)) throw new Error("define id:" + id + " is Illegal,not contain )(*");
 	}
 	// ////////////////id to url end ///////////////////////////////
 	function define(id, url, dependencies, factory) {
-		checkLegalId(id);checkLegalId(url);
+		checkLegalId(id);
+		checkLegalId(url);
 		return cacheModule[id] = cacheModule[url] = new Module(id, dependencies, factory);
 	}
 	Q.extend(sun, {
 		use: function(ids, callback) {
-			ids = Q.isArray(ids) ? ids : [
-				ids
-			];
-			if (!ispreload) {
-				queue.push({
-					ids: pres
+			Q.delay(function() {
+				ids = Q.isArray(ids) ? ids : [
+					ids
+				];
+				if (!ispreload) {
+					queue.push({
+						ids: pres
+					});
+					ispreload = !0
+				}
+				//下面检测使用的模块是否已被全部加载过
+				var ret = [];
+				Q.each(ids, function(i, val) {
+					var module = requireModule(val) || {};
+					module.state == 1 && ret.push(require(val));
 				});
-				ispreload = !0
-			}
-			//下面检测使用的模块是否已被全部加载过
-			var ret = [];
-			Q.each(ids, function(i, val) {
-				var module = requireModule(val) || {};
-				module.state == 1 && ret.push(require(val));
-			});
-			ret.length == ids.length ? callback.apply(callback, ret) : queue.push({
-				ids: ids,
-				callback: callback
-			});
-			queue.deal()
+				ret.length == ids.length ? callback.apply(callback, ret) : queue.push({
+					ids: ids,
+					callback: callback
+				});
+				queue.deal()
+			}, 1);
 		},
 		// factory:function(require, exports, module)
 		define: function(uid, dependencies, factory) {
