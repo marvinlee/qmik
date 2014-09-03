@@ -1,0 +1,128 @@
+<html>
+ <head> 
+  <meta charset="utf8" /> 
+  <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport" /> 
+  <meta name="-webkit-tap-highlight" content="no" /> 
+  <title>测试sun模块开发</title> 
+  <script type="text/javascript" src="../../../test/unit/qunit.js"></script>
+  <script type="text/javascript" src="../../../builds/qmik.1.3.61.js"></script>
+  <style type="text/css">
+  	#result{
+  		position: fixed;
+  		right:0;
+  		top:0;
+  		width: 40%;
+  		height: 100%;
+  		background: #cfcfcf;
+  		padding:3px;
+  		overflow-y:scroll;
+  	}
+  </style>
+</head>
+<body>
+<div>
+	<pre>
+		$.config({debug:true});
+		$.sun.config({
+			alias:{
+				"demo/Demo1":'${url}/demo1.js',
+				"demo/Demo2":'${url}/demo2.js',
+				"demo/Demo3":'${url}/demo3.js',
+				"demo/Demo4":'${url}/demo4.js',
+				"demo/Common":'${url}/common.js',
+			},
+			vars:{
+				url:function(){
+					return location.href.replace(/\/[^\/]*$/,"");
+				}
+			}
+
+		});
+		$.use("demo/Demo1",function(Demo1){
+			Demo1.doing("..............demo1");
+			console.log("use demo1 ok");
+			console.log("\r\n\r\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+		});
+		$.use("demo/Demo2",function(Demo2){
+			Demo2.doing("...>>>>>>>>>>>>>>>>>>>>demo2 xx");
+			console.log("use demo2 ok");
+			console.log("\r\n\r\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+		});
+
+		$.use("demo/Demo3",function(Demo2){
+			Demo2.doing(".....................`demo3");
+			console.log("use demo3 ok");
+			console.log("\r\n\r\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+		});
+
+		$.use("demo/Demo4",function(Demo2){
+			Demo2.doing("......xxxxxxxxxxxxxxxxxdemo4");
+			console.log("use demo4 ok");
+			console.log("\r\n\r\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+		});
+	</pre>
+	<h3>执行结果</h3>
+	<div id="result" >
+		
+	</div>
+</div>
+<script type="text/javascript">
+	console.log("\r\n\r\n-=-=-sun=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-start")
+
+	$.config({log:"debug"});
+	$.sun.config({
+		alias:{
+			"demo/Demo1":'${url}/demo1.js',
+			"demo/Demo2":'${url}/demo2.js',
+			"demo/Demo3":'${url}/demo3.js',
+			"demo/Demo4":'${url}/demo4.js',
+			"demo/Common":'${url}/common.js',
+		},
+		vars:{
+			url:function(){
+				return location.href.replace(/\/[^\/]*$/,"");
+			}
+		}
+
+	});
+	var result = $("#result");
+	$.use("demo/Demo1",function(Demo1){
+		Demo1.doing("..............demo1 trigger");
+		console.log("use demo1 ok");
+		result.append("<p>use demo1 ok</p>");
+		result.append("<p>-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-</p><br/>");
+		console.log("\r\n\r\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+	});
+	$.use("demo/Demo2",function(Demo2){
+		Demo2.doing("...>>>>>>>>>>>>>>>>>>>>demo2 trigger");
+		console.log("use demo2 ok");
+		result.append("<p>use demo2 ok</p>");
+		result.append("<p>-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-</p><br/>");
+		console.log("\r\n\r\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+	});
+
+	$.use("demo/Demo3",function(Demo2){
+		Demo2.doing(".....................`demo3 trigger");
+		console.log("use demo3 ok");
+		console.log("\r\n\r\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+		result.append("<p>use demo3 ok</p>");
+		result.append("<p>-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-</p><br/>");
+	});
+
+	$.use("demo/Demo4",function(Demo2){
+		Demo2.doing("......xxxxxxxxxxxxxxxxx demo4 trigger");
+		console.log("use demo4 ok");
+		console.log("\r\n\r\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+		result.append("<p>use demo4 ok</p>");
+		result.append("<p>-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-</p><br/>");
+	});
+	/*$.use(["demo/Demo1","demo/Demo2"],function(Demo1,Demo2){
+		Demo1.doing("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< demo1");
+		Demo2.doing(" ---------------------- demo2");
+	})*/ 
+console.log("=================>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+ console.log(">>>><<<<<<<<<<<<<<end")
+ 
+</script>
+ </body>
+</html>
