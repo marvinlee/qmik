@@ -21,14 +21,14 @@
 		url = _config.url, gdata = Q.param(_config.data), //
 		callbackName = prefex + (jsonp++), //
 		cb = url.match(regUrl);
-		if (url.indexOf("?") < 0) url += "?";
+		/\?/.test(url) || (url+="?");
 		if (cb) {
 			cb = cb[0].split("=")[0];
 			url = url.replace(regUrl, cb + "=" + callbackName)
 		} else {
 			url += "&callback=" + callbackName
 		}
-		url += gdata;
+		url += "&"+gdata;
 		function err() {
 			if (isExe == 1) {
 				isExe = 0;

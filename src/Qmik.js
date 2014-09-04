@@ -236,11 +236,10 @@
 	///////////////////Cycle class
 	function Cycle(fun, cycleTime, ttl, params) {
 		var me = this,
-			start = Q.now(),
 			chisu = 1;
 
 		function _exec() {
-			if ((isNull(ttl) || (chisu * cycleTime - start) <= ttl)) {
+			if ((isNull(ttl) || (chisu * cycleTime) < ttl)) {
 				fun.apply(fun, params);
 				me._p = new Delay(_exec, cycleTime, params);
 			}
@@ -545,7 +544,7 @@
 		}
 	};
 	///////////////////////////////////////////////////////
-	Q.version = "1.3.61";
+	Q.version = "1.3.62";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;

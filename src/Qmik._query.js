@@ -115,7 +115,7 @@
 		return ( Q.isPlainObject(val) && (isString(val.tag) || isString(val.text)) ) ? Q.render(val, context||{}) : val
 	}
 	function createTextNode(val){
-		doc.createTextNode( render(val) )
+		return doc.createTextNode( val )
 	}
 	function append(o, child) {
 		child = muchValue2Qmik(child);

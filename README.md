@@ -65,6 +65,12 @@ h.push('</div>');
 
 
 ## 版本记录
+[增加1.3.62版本:](https://github.com/leochen36/qmik/tree/master/builds)
+1.3.62 版本, 
+1.增强cycle的功能,增加循环结束时间的支持: $.cycle(function(){}, cycleTime, ttl);
+2.修复 jsonp 对一小部分传递对象的参数的拼接url连接参数的bug,$.ajax({url:"https://github.com/leochen36/qmik",data:{name:'leo',haha:20}}) 这种
+2.修复 append 对象不是节点型字符串的支持(非<p>xxx</p>这种)
+
 [增加1.3.61版本:](https://github.com/leochen36/qmik/tree/master/builds)
 1.3.61 版本, 增加渲染引用变量方式,原先变量引用:${name},会跟很多的后台系统引用变量会冲突(如:velocity),如果代码直接放在后台的渲染模板上(跟页面在一起,页面又被后台模板引擎渲染),就会被被替换,,因此多增加一种变量引用方式:{{name}},借鉴angular的变量引用
 
