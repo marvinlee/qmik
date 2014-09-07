@@ -415,10 +415,10 @@ $({
     child:[
         {
             tag:'span[class="tm" style="display:inline-block; padding:5px"]',
-            text:'价格 ${price}  {{price}} 这个在1.6.1里开始支持'
+            text:'价格price: ${price}  '
         },{
             tag:'span[class="tm" style="display:inline-block padding:5px"]',
-            text:'18很小呀'
+            text:'18很小呀 price: {{price}} 这个变量取法在1.6.1里开始支持'
         },{
             tag:'span[class="tm" style="display:inline-block padding:5px"]',
             text:'24'
@@ -436,13 +436,8 @@ $({
 }, {price:96}).on({
     click:function(e){
         console.log(e.target);
-        var qt = $( e.target ).closest(".bg");
-        var me = $(this);
-        console.log( me.data("name") );
     }
-}).appendTo("body").data({
-    name:'leo'
-})
+}).appendTo($("body"))
 ````
 
 
