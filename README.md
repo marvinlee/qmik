@@ -191,14 +191,13 @@ $.sun.config({
         isIE() : 
         isFF() : is Firefox
         isWK() : is Webkit
-        isOpera : 
+        isOpera() : isOpera
         config(opts, _config) : 
-
         url(_url) : 合并url,if 参数 _url为空,则
 
         ajax:function({
             dataType:'json'|'text'|'jsonp',
-            async:bool,
+            async:bool,(default:true)
             type: 'get'|'post'
             success,function(data){},
             error:function(){}
