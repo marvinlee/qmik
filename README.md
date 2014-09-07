@@ -174,7 +174,7 @@ $.sun.config({
 
         param :  抽取数组里面每个元素的name和value属性,转换成一个url形式(a=b&name=g)的字符串,有做encode
         now([date]) :   当前时间
-        delay(fun, time,...)  延迟执行,类似setTimeout,返回一个对象,对象有个 stop方法,用于停止执行,...表示要传输的参数,如:$.delay(function(a1,a2){},1000,1,2);//1 对应 a1,2对应 a2
+        [delay(fun, time,...)](https://github.com/leochen36/qmik/wiki/$.delay)  延迟执行,类似setTimeout,返回一个对象,对象有个 stop方法,用于停止执行,...表示要传输的参数,如:$.delay(function(a1,a2){},1000,1,2);//1 对应 a1,2对应 a2
         // 
         /**
          * fun:执行的方法
