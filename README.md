@@ -405,6 +405,7 @@ c.实现Home业务模块功能
 
 ## [模板渲染例子:](https://github.com/leochen36/qmik/wiki/$.render-%E5%B1%80%E9%83%A8%E6%B8%B2%E6%9F%93)
 内核($.render)
+````
 var list=[
     {id:'a3',title:'ww',price:100},
     {id:'a4',title:'nn',price:178}
@@ -414,7 +415,7 @@ $({
     child:[
         {
             tag:'span[class="tm" style="display:inline-block; padding:5px"]',
-            text:'价格'
+            text:'价格 ${price}  {{price}} 这个在1.6.1里开始支持'
         },{
             tag:'span[class="tm" style="display:inline-block padding:5px"]',
             text:'18很小呀'
@@ -432,17 +433,17 @@ $({
             }, item);
         });
     }
-}).on({
+}, {price:96}).on({
     click:function(e){
         console.log(e.target);
         var qt = $( e.target ).closest(".bg");
         var me = $(this);
         console.log( me.data("name") );
     }
-}).appendTo($("body")).data({
+}).appendTo("body").data({
     name:'leo'
 })
-
+````
 
 
 
