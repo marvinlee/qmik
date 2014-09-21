@@ -65,6 +65,12 @@ h.push('</div>');
 
 
 ## 版本记录
+[增加1.3.70版本:](https://github.com/leochen36/qmik/tree/master/builds)
+1.3.70 版本, 
+1.优化sun模块的异常调试日志,
+2.重构事件模块 
+3.增强render功能
+
 [增加1.3.62版本:](https://github.com/leochen36/qmik/tree/master/builds)
 1.3.62 版本, 
 1.增强cycle的功能,增加循环结束时间的支持: $.cycle(function(){}, cycleTime, ttl);
