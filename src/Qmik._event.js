@@ -202,7 +202,7 @@
 		die: function(name, callback) {
 			var me = this,
 				fun = me.__lives[getLiveName(name, callback)];
-			fun && Erm(doc.body, name, fun);
+			(arguments.length < 2 || fun) && Erm(doc.body, name, fun);
 			return me
 		}
 	});

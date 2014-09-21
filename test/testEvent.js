@@ -18,11 +18,44 @@
 	  ok(!simpleTest("2"), '"2"不是一个数字');
 	});
 	$(document).ready(function(Q){
-	    console.log("document onload ready:");
-    
-	 	$("a").on("click",function(e){
-			console.log("test:"+this)
-		})
+		function deal(e){
+			console.log("deal ",e.target);
+		}
+	    var click1 = $("#click1").on({
+	    	click:deal
+	    });
+	    var click2 = $("#click2").on({
+	    	click:function(e){
+	    		console.log("click2", e.target);
+	    	}
+	    });
+	    var live1 = $("#live1").live({
+	    	click:deal
+	    });
+	    var live2 = $("#live2").live({
+	    	click:function(e){
+	    		console.log("live2", e.target);
+	    	}
+	    });
+	    $("#once1").once({
+	    	click:function(e){
+	    		console.log("once1", e.target);
+	    	}
+	    });
+	    
+	    var die1 = $("#die1").on({
+	    	click:function(e){
+	    		console.log("die1 ", e.target);
+	    		live1.die("click", deal);
+	    		live2.die("click");
+	    	}
+	    });
+	    var un1 = $("#un1").on({
+	    	click:function(e){
+	    		console.log("un1", e.target);
+	    		click1.un("click", deal);
+	    	}
+	    });
 	});
 
 
