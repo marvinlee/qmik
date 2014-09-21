@@ -14,7 +14,8 @@
 		liveFuns = {};
 	var isNull = Q.isNull,
 		isFun = Q.isFun,
-		each = Q.each;
+		each = Q.each,
+		isPlainObject = Q.isPlainObject;
 	/** 设置节点的加载成功方法 */
 	function setLoad(node, fun) {
 		node.onreadystatechange = node.onload = node.onDOMContentLoaded = fun
@@ -136,16 +137,29 @@
 		return e
 	}
 
-	function getLiveName(selector, type, callback) {
-		return selector + ":live:" + type + ":" + (callback || "").toString()
+	function getLiveName(type, callback) {
+		return type  + (callback || "").toString()
+	}
+
+	function mapEvent(name, fun, dealFun) {
+		var ents = {};
+		if(isPlainObject(name))
+			ents = name;
+		else
+			ents[name] = fun;
+		dealFun && each(ents, dealFun);
+		return ents;
+	}
+	/** 是否是父或祖父节点 */
+	function contains(grandfather, child) {
+		return Q.isDom(child) && (grandfather === child || grandfather === child.parentNode ? !0 : contains(grandfather, child.parentNode))
 	}
 	fn.extend({
 		on: function(name, callback) {
-			var p = [].slice.call(arguments, 2);
 			each(this, function(k, v) {
-				Q.isPlainObject(name) ? each(name, function(k, j) {
-					Eadd(v, k, j, callback)
-				}) : Eadd(v, name, callback, p)
+				mapEvent(name, callback, function(key, fun){
+					Eadd(v, key, fun)
+				})
 			});
 			return this
 		},
@@ -156,13 +170,14 @@
 			return this
 		},
 		once: function(name, callback) { // 只执行一次触发事件,执行后删除
-			var me = this;
-
-			function oneexec(e) {
-				callback(e);
-				me.un(name, oneexec)
-			}
-			me.on(name, oneexec)
+			var me = this, ents={};
+			mapEvent(name, callback, function(key, fun){
+				ents[key] = function(e){
+					me.un(key, ents[key]);
+					fun(e);
+				}
+			});
+			return me.on(ents);
 		},
 		emit: function(name) {
 			each(this, function(k, v) {
@@ -171,33 +186,24 @@
 			return this
 		},
 		live: function(name, callback) {
-			var select = this.selector;
-			var names = name;
-			if (!Q.isPlainObject(name)) {
-				names = {};
-				names[name] = callback
-			}
-			each(names, function(key, callback) {
-				var fun = liveFuns[getLiveName(select, key, callback)] = function(e) {
-					var me = e.target,
-						_me = Q(me);
-					if (Q.isString(select) ? _me.closest(select).length > 0 :
-						Q.isDom(select) ? Q.inArray(select, _me.parents()) >= 0 : 0) {
-						callback.apply(me, [
-							e
-						])
-					}
-				};
+			var me = this;
+			mapEvent(name, callback, function(key, callback){
+				var fun = me.__lives[getLiveName(key, callback)] = function(e){
+					var target = e.target,
+						qtar = Q(target);
+					each(me, function(i, dom){
+						contains(dom, target) && callback.call(me, e)
+					});
+				}
 				Q("body").on(key, fun)
 			});
-			return this
+			return me
 		},
 		die: function(name, callback) {
-			var fun = liveFuns[getLiveName(this.selector, name, callback)];
-			each(Q(document.body), function(k, dom) {
-				Erm(dom, name, fun)
-			});
-			return this
+			var me = this,
+				fun = me.__lives[getLiveName(name, callback)];
+			fun && Erm(doc.body, name, fun);
+			return me
 		}
 	});
 	fn.extend({
@@ -208,7 +214,7 @@
 	});
 	/**
 	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
-	 * 90：逆时针转了 Android2.1尚未支持重力感应
+	 * 90：逆时针转了 Android2.1尚未支持重力感应 click blur focus scroll resize
 	 */
 	each("click blur focus scroll resize".split(" "), function(i, v) {
 		fn[v] = function(f) {

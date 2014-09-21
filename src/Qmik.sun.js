@@ -6,7 +6,8 @@
 ;
 (function(Q) {
 	var isFun = Q.isFun,
-		execCatch = Q.execCatch;
+		execCatch = Q.execCatch,
+		NULL = null;
 	var config = {
 		alias: {}, //别名系统
 		vars: {}, //路径变量系统
@@ -98,13 +99,13 @@
 
 	var queue = new QueueSync(function(item, chain) {
 		var callback = item.callback;
-		batload(callback, item.ids, null, chain)
+		batload(callback, item.ids, NULL, chain)
 	});
 
 	// require module
 	function require(id) {
 		var module = requireModule(id);
-		return module ? module.exports : null
+		return module ? module.exports : NULL
 	}
 
 	function requireModule(id) {
@@ -135,10 +136,13 @@
 		var module = requireModule(id);
 		module ? useModule(module, require, callback, refer) : request(id, function() {
 			module = requireModule(id);
-			useModule(module, require, callback, refer)
+			module ? useModule(module, require, callback, refer) : loadModuleError(id, callback)
 		}, function() {
-			callback(null, new Error("load error:" + id))
+			loadModuleError(id, callback)
 		})
+	}
+	function loadModuleError(id,callback){
+		callback(NULL, new Error("load module is error " + id))
 	}
 	//取得url的域名+路径,去掉参数及hash(frament)
 	function getDemainPath(url) {
@@ -255,7 +259,7 @@
 			dependencies = dependencies.concat(parseDepents(factory));
 			dependencies = Q.unique(dependencies);
 			define(uid, getDemainPath(url || uid), dependencies, factory);
-			currentScript = null;
+			currentScript = NULL;
 		},
 		config: function(opts) { //参数配置
 			return Q.config(opts, config)

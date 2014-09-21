@@ -24,6 +24,7 @@
 		me.context = context = context || doc;
 		me.selector = selector = render(selector, context);
 		me.length = 0;
+		me.__lives = {};
 		if (isString(selector)) {
 			if (rNode.test(selector)) {
 				var t = doc.createElement('div');
@@ -74,9 +75,15 @@
 		}
 		return result
 	}
-
+	function muchValue2Qmik(c) {
+		c = execObject(c);
+		return isString(c) && rNode.test(c) ? Q(c) : c
+	}
 	function execObject(v) {
 		return isFun(v) ? v() : render(v)
+	}
+	function render(val, context) {
+		return ( Q.isPlainObject(val) && (isString(val.tag) || isString(val.text)) ) ? Q.render(val, context||{}) : val
 	}
 	// As much as possible to Array
 	function arrayConcat(sarray,tarray) {
@@ -106,13 +113,6 @@
 		return replace(v, /[A-Z]/g, function(v) {
 			return "-" + toLower(v)
 		})
-	}
-	function muchValue2Qmik(c) {
-		c = execObject(c);
-		return isString(c) && rNode.test(c) ? Q(c) : c
-	}
-	function render(val, context) {
-		return ( Q.isPlainObject(val) && (isString(val.tag) || isString(val.text)) ) ? Q.render(val, context||{}) : val
 	}
 	function createTextNode(val){
 		return doc.createTextNode( val )
@@ -238,10 +238,10 @@
 	}
 	
 	/** 是否是父或祖父节点 */
-	function contains(grandfather, child) {
+	/*function contains(grandfather, child) {
 		//return isDom(child) && (grandfather === child.parentNode ? !0 : contains(grandfather, child.parentNode))
 		return isDom(child) &&( grandfather===doc || (grandfather.contains(child)))
-	}
+	}*/
 	
 	function GN(dom, type) {
 		if (dom) {
@@ -411,8 +411,7 @@
 			return this
 		},
 		empty : function() {
-			this.html("");
-			return this
+			return this.html("")
 		},
 		text : function(v) {
 			var r = attr(this, "innerText", isQmik(v) ? v.text() : v, !0);

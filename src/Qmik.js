@@ -485,23 +485,24 @@
 					itemid:""
 				}
 			*/
-			render: function(struct, item) {
+			render: function(struct, data) {
 				var h = [],
 					tag = (struct.tag || "").trim(),
 					text = struct.text;
-				text = replaceVar(text, item);
+				data = struct.data || data;
+				text = replaceVar(text, data);
 				struct.add = addRenderChild;
 				if ( tag=="" && !isNull(text)) {
-					return text;
+					return text
 				}
 				if(!/^\s*\w+\s*(\[.*\])?\s*$/.test(tag)){
 					console.log("tag is lllegal:",tag);
-					return "";
+					return ""
 				}
 				var tagName = (tag.match(/^[^\[]+/)||[""])[0];
 				var attr = (tag.match(/\[.*$/) || [""])[0].replace(/(^\s*\[)|(\s*\]\s*$)/g, "");
 				h.push('<' + tagName + " ");
-				attr = replaceVar(attr, item);
+				attr = replaceVar(attr, data);
 				h.push(attr);
 				h.push('>');
 				isNull(text) || h.push(text);
@@ -509,7 +510,7 @@
 					struct.exec()
 				});
 				isArray(struct.child) && each(struct.child, function(i, ch) {
-					ch && h.push(Q.render(ch, item));
+					ch && h.push(Q.render(ch, data));
 				});				
 				h.push('</' + tagName + '>');
 				return h.join("");
@@ -544,7 +545,7 @@
 		}
 	};
 	///////////////////////////////////////////////////////
-	Q.version = "1.3.62";
+	Q.version = "1.3.70";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
