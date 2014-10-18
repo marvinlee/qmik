@@ -153,7 +153,7 @@ $.sun.config({
         isFun(value) : 方法判断,
         isFunction(value) : 方法判断,
         isNum(value) :整形判断 ,
-        isNumber : 整形判断,
+        isNumber(value) : 整形判断,
         isArray(value) : 数组判断,
         isNull(value) : 空指针判断,
         isRetinal() : 判断是否是高清屏,默认是高清屏
@@ -162,12 +162,12 @@ $.sun.config({
         stringify(value) : json转字符串,
         parseJSON(value) : 字符串转json,
         likeArray(value) : 像数组
-        isDate(value) :,
-        isObject(value) : ,
+        isDate(value) :是否是时间类型
+        isObject(value) : 是否是对象
         isPlainObject(value) : 
         likeNull(value) : 像空值,如 "","null","undefined",null等会被认为True,
         inherit(subClass, superClass) : 继承类 子类subClass继承父类superClass的属性方法, 注:子类有父类的属性及方法时,不会被父类替换,
-        trim(value) :,
+        trim(value) : 过滤前后不可见字符,
         toLower(value) :字符串小写,
         toUpper(value) : 大写,
 
@@ -210,11 +210,14 @@ $.sun.config({
             success,function(data){},
             error:function(){}
         });
-        render: function(struct, data), 
+        render: function(struct), 
             //参数说明:
             struct:{
                 tag:'div[name="testdiv" class="show" time="${time}"]',
                 text:'显示的文件',//如果<div>显示的文件</div>
+                data:{
+                    time:'haha'
+                }, //这个参数在htmljson里通过  ${time} 来引用
                 child:[//子节点,tag:是用来描述标签及属性的(如果有子节点child,则一定要有tag,text:输出innerText文本的)
                     {
                         tag:'p[name="title"]',
@@ -229,9 +232,6 @@ $.sun.config({
                         ]
                     }
                 ]
-            }
-            data:{
-                time:'haha' //这个参数在htmljson里通过  ${time} 来引用
             }
         
         series:function(tasks, callback)//串行执行任务列队,如果有输出参数,则前一个任务输出参数给下一个任务
@@ -317,12 +317,11 @@ Qmik.fn api(即 $("#id").api)
         next : function(selector) //下一个指定元素
         prev : function(selector) //上一个指定元素
         clone : function(bool) 
-        hover : function(fin, fout) 
         hasClass : function(c) 
-        closest : function(selector) //查找最近的匹配的父(祖父)节点
-        parents : function(selector) 
-        parent : function(selector) 
-        children : function(selector)
+        closest : function(selector) //查找最近的匹配的父(祖父)节点(从自身开始查找)
+        parents : function(selector) //查找所有的匹配的父(祖父)节点
+        parent : function(selector) //查找最接近的一个匹配的父(祖父)节点
+        children : function(selector)//查找子节点
 
         width:function();//宽度
         height:function()//高度
@@ -419,6 +418,9 @@ var list=[
 ];
 $({
     tag:'div[class="bg"]',
+    data:{
+        price:96
+    },
     child:[
         {
             tag:'span[class="tm" style="display:inline-block; padding:5px"]',
@@ -440,7 +442,7 @@ $({
             }, item);
         });
     }
-}, {price:96}).on({
+}).on({
     click:function(e){
         console.log(e.target);
     }
