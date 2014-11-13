@@ -334,8 +334,6 @@ $.sun.use(["module1","module2"],function(module1,module2){}); $.sun.define(funct
 
 a. Config.js 文件,写如下内容:
 
-
-
         (function($) {
 
             $.config({
