@@ -171,17 +171,16 @@ $.sun.config({
         toLower(value) :字符串小写,
         toUpper(value) : 大写,
 
-        merge(arr1,arr2) : merge,   // 合并数组或对象
-        array(array) : //合并成一个新数组,
-        inArray(value, array) : 在数组里的索引位,
-        unique(array) : 数组去重,
+        merge(map1,map2) : merge,   // 合并对象 var m1={name:'leo'}, m2={age:11}, m= $.merge(m1, m2); //>>>result: {name:'leo', age:11}
+        inArray(value, array) : 在数组里的索引位,var array=[1,2,3,4], idx = $.inArray(3,array);console.log(idx);//result:2
+        unique(array) : 数组去重,//var array=[1,2,3,4,5,4,3,6];array = $.unique(array);//result:[1, 2, 3, 4, 5, 6]
         map(array, callback) : //对数组里的内容,全部做一次数据映射转换,
         getScript(url, success, error) :  取得脚本
         getCss(url, success, error) :  取得css
-        grep(array,callback):过滤
+        grep(array[,callback]):过滤// var array=[1,2,null,3,6,5];var narray = $.grep(array, function(i, val){return val && val%2==0});console.log(narray);//result:[2, 6]
+        param(array) :  抽取数组里面每个元素的name和value属性,转换成一个url形式(a=b&name=g)的字符串,有做encode,//[{name:'',value:''},{name:'',value:''}]
+        now([datetime]) :   当前时间
 
-        param :  抽取数组里面每个元素的name和value属性,转换成一个url形式(a=b&name=g)的字符串,有做encode
-        now([date]) :   当前时间
         delay(fun, time [arg1, arg2, arg3,...]) (https://github.com/leochen36/qmik/wiki/$.delay)  \<br>延迟执行,类似setTimeout,返回一个对象,对象有个 stop方法,用于停止执行,...表示要传输的参数,如:$.delay(function(a1,a2){},1000,1,2);//1 对应 a1,2对应 a2
         // 
         /**
@@ -195,8 +194,8 @@ $.sun.config({
         log(msg, event) : 打日志
         isIphone() : 
         isAndroid() :
-        isWP() : 
-        isIE() : 
+        isWP() : //is windowsphone
+        isIE() : //is ie浏览器
         isFF() : is Firefox
         isWK() : is Webkit
         isOpera() : isOpera
@@ -206,11 +205,12 @@ $.sun.config({
         ajax:function({
             dataType:'json'|'text'|'jsonp',
             async:bool,(default:true)
-            type: 'get'|'post'
+            type: 'get'|'post',
+            timeout:100000,//超时时间
             success,function(data){},
             error:function(){}
         });
-        render: function(struct), 
+        render: function(struct [,data]), 
             //参数说明:
             struct:{
                 tag:'div[name="testdiv" class="show" time="${time}"]',
@@ -267,8 +267,8 @@ $.sun.config({
                 fun:执行方法
                 args:数组,参数[]
                 error:抛出异常回调,无异常不回调
-查询api:支持下面的查询格式
 
+查询api:支持下面的查询格式,api采用h5原生的方法querySelectorAll来检索,性能最高效,但是会存在不同浏览器支持的程度不太一样,下面的写法,所有浏览器都会支持
 
         $("#id") 
         $(".class")
@@ -276,8 +276,8 @@ $.sun.config({
         $("#id .class")
         $("#id > .class")
         $(".class div[flag=aaa]")   
-Qmik.fn api(即 $("#id").api)
 
+Qmik.fn api(即 $("#id").api)
 
         last : function() :最后一个
         eq : function(i)    :指定位置
