@@ -7,7 +7,7 @@
 	var win = this,
 		doc = win.document || {},
 		nav = win.navigator || {}, //
-		UA = nav.userAgent,
+		UA = nav.appVersion || nav.userAgent,
 		loc = win.location;
 	var encode = encodeURIComponent,
 		decode = decodeURIComponent,
@@ -142,11 +142,11 @@
 		var args = arguments,
 			array = args[0],
 			isA = isArray(array);
-		each(args,function(i, arg){
-			each(arg, function(k, v){
+		for(var i=1;i<args.length;i++){
+			each(args[i], function(k, v){
 				isA ? array.push(v) : array[k] = v
 			})
-		})
+		}
 		return array
 	}
 
@@ -313,9 +313,6 @@
 			},
 			// 合并数组或对象
 			merge: merge,
-			array: function(array) {
-				return merge([], array)
-			},
 			inArray: function(value, array) {
 				if (Q.likeArray(array))
 					for (var i = 0; i < array.length; i++)
@@ -545,7 +542,7 @@
 		}
 	};
 	///////////////////////////////////////////////////////
-	Q.version = "1.3.70";
+	Q.version = "1.3.80";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
