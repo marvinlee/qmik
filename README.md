@@ -70,7 +70,7 @@ h.push('</div>');
 [增加1.3.80版本:](https://github.com/leochen36/qmik/tree/master/builds)
 1.3.80 版本, 
 1.修复$.merge 对数组合拼操作的bug
-2.去掉不推荐的$.array方法,这个方法在设计上有问题 
+2.去掉不推荐的$.array方法
 
 
 [增加1.3.70版本:](https://github.com/leochen36/qmik/tree/master/builds)
