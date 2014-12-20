@@ -1,4 +1,4 @@
-## 关于Qmik [下载压缩](http://g.tbcdn.cn/tmmob/qmik/1.3.70/Qmik.js)
+## 关于Qmik [下载压缩请下载最新版1.3.80](https://raw.githubusercontent.com/leochen36/qmik/master/builds/Qmik.1.3.80.js) 
 
 Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库大小22kb,gzip=8kb,
 
@@ -27,43 +27,27 @@ html[局部渲染](https://github.com/leochen36/qmik/wiki/$.render-%E5%B1%80%E9%
 ## 应用场景
 
 天猫双11(亿级pv)
+[我的双11](http://m.tmall.com/my_double_eleven.htm)
+[我的双11优惠卷](http://m.tmall.com/coupon.htm)
+
+[天猫wap首页](http://page.m.tmall.com/tmwapsy/index.html)
 
 天猫无线一系列大促活动(亿级pv,千万uv,投放入口有淘宝客户端,天猫客户端,无线浏览器等)
-
-天猫wap首页(http://page.m.tmall.com/tmwapsy/index.html)
+[421时尚大促](http://page.m.tmall.com/421xss/xsszhc.html)
 
 天猫无线喵一眼,头条等频道及无线模板
 
-天猫ipad客户端
+[天猫ipad客户端等](http://page.m.tmall.com/tmkhd/ipad/pptm.html)
 
-深圳宜搜科技(音乐频道等,百万uv)
+[深圳宜搜科技 百万uv](http://mp3.easou.com/index.html?wver=t#rec%3A)
 
 其它公司朋友的使用
 
 
-## html5无线开发的一些心得
+## 官方插件
+1.[图片懒加载插件](https://github.com/leochen36/qmik-loadimg)
+2.[h5存储插件](https://github.com/leochen36/qmik-store)
 
-在传统的web开发下,由于网速快,pc性能强,在一些需要前端渲染地方,引入了前端的渲染引擎,
-var h=[];
-h.push('<div>');
-h.push('.....');
-h.push('</div>');
-这当然远离了上面这种很不友好的前端渲染页面的方式,如:(AngularJS,ejs,jade等等渲染引擎,或具有此功能的框架)
-
-造成的问题:
-    h5体验下降的厉害
-
-问题分析:
-    1.无线网速偏慢(虽然有wifi,但是我们也要适当照顾下2g的用户),造成.js资源加载耗时大大增长(x00%的增长),
-        阻塞页面加载,代码执行时长大大增加
-
-    2.手机性能比较低(iphone还好些,android就惨不忍睹(平台分裂,硬件相差太大)),
-        解析模版源码的时长就变长
-
-    3. 以上两点就大大拖累了体验
-
-所以在qmik1.3版本里,增加了局部渲染的功能$.render,这个渲染采用了json的方式,解放了去解析模版源码性能问题,
-    且不用加载别的框架,减少了http的请求
 
 
 ## 版本记录
