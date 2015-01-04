@@ -1,0 +1,136 @@
+ <head> 
+  <meta charset="utf8" /> 
+  <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport" /> 
+  <meta name="-webkit-tap-highlight" content="no" /> 
+  <title>测试sun模块开发</title> 
+  <script type="text/javascript" src="../../assets/qmik-debug.js"></script>
+  <style type="text/css">
+  	#result{
+  		position: fixed;
+  		right:0;
+  		top:0;
+  		width: 40%;
+  		height: 100%;
+  		background: #cfcfcf;
+  		padding:3px;
+  		overflow-y:scroll;
+  	}
+  </style>
+</head>
+<body name="${name}" go="${n1}+${name}" >
+    ${name} + ${n1}
+  <div qi-app>
+  	<form q-click="subccess()">
+  		<input name="name" value="aaa" type="text" />
+      <input id="n1" name="n1" value="n1" type="text" />
+      <input id="n2" name="n2" value="n2" type="hidden" />
+      <input name="n3" value="n3" type="hidden" />
+      <input name="n4" value="n4" type="hidden" />
+      <select name="select">
+        <option value="2" select>2</option>
+        <option value="1" >1</option>
+      </select>
+      <select name="mselect" multiple>
+        <option value="2" select>2</option>
+        <option value="1" >1</option>
+        <option value="3" >3</option>
+        <option value="3" >3</option>
+        <option value="3" >3</option>
+      </select>
+      <textarea name="textarea"></textarea>
+      <br/>
+      cbk1 <input type="checkbox" name="cbk" value="cbk1">
+      cbk1 <input type="checkbox" name="cbk" value="cbk2">
+      cbk1 <input type="checkbox" name="cbk" value="cbk3">
+      <br/>
+      <br/>
+      ra1 <input type="radio" name="ra" value="ra1">
+      ra2 <input type="radio" name="ra" value="ra2">
+      ra3 <input type="radio" name="ra" value="ra3">
+      <br/>
+  		name:${name} name:{{name}}  n1:${n1}  select:${select}  mselect:<${mselect}>
+      textarea:${textarea}  cbk:${cbk}  ra:${ra}
+      <ul q-for="item in list">
+          <li name="${name}">  ${item.name} -- age:  ${ item.age } </li>
+      </ul>
+      <div q-ctrl="ctrlAbc">
+        ${addr}
+      </div>
+  	</form>
+  	${n12}
+  	<form q-ctrl="subdent1">
+  	</form>
+    ${n3} ${name}
+
+  </div>
+  <div>
+    <li>a<${name}>c</li>
+  </div>
+  <div>
+    <li>a<${name}>c</li>
+  </div>
+  <div>
+    <li>a<${name}>c</li>
+  </div>
+  <div>
+    <li>a<${name}>c</li>
+  </div>
+  <div>
+    <li>a<${name}>c</li>
+  </div>
+  <div>
+    <li>a<${name}>c</li>
+  </div>
+  <div>
+    <li>a<${name}>c</li>
+  </div>
+  <div>
+    <li>a<${name}>c</li>
+  </div>
+  <div>
+    <li>a<${name}>c</li>
+  </div>
+  
+
+  ${n4} ${name}
+  <script type="text/javascript">
+    $(function(){
+      var app = $.app({
+        name:'leo'
+      });
+      app.ctrl("subdent", function(scope){
+          scope.watch("name", function(value){
+            value = value.replace(/xxoo/g, "**oo");
+            scope["name"] = value;
+          });
+          scope.list= [{
+            name: "k1"
+          },{
+            name: "k2",
+            age: 16
+          },{
+            name: "k2",
+            age: 16
+          },{
+            name: "k2",
+            age: 16
+          },{
+            name: "k2",
+            age: 16
+          },{
+            name: "k2",
+            age: 16
+          }];
+
+          $.delay(function(){
+              scope.list = [{
+                name:"mmn"
+              }];
+          }, 1000);
+      }).ctrl("ctrlAbc", function(scope){
+        scope.addr="fuji";
+        console.log(scope.rootScope);
+      });
+    });
+  </script>
+ </body>

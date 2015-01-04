@@ -7,6 +7,7 @@
 (function(Q) {
 	var isFun = Q.isFun,
 		execCatch = Q.execCatch,
+		win = window,
 		NULL = null;
 	var config = {
 		alias: {}, //别名系统
@@ -270,5 +271,6 @@
 	});
 	Q.sun = sun;
 	Q.define = Q.sun.define;
+	win.define = win.define || Q.define;//如果外面没有引入其它cmd框架,设置全局变量define
 	Q.use = Q.sun.use;
 })(Qmik);

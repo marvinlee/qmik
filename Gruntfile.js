@@ -35,7 +35,8 @@ module.exports = function(grunt) {
 					'src/Qmik._ajax.js', 
 					'src/Qmik.task.js',
 					'src/Qmik.sun.js', 
-					'src/Qmik._view.js'
+					'src/Qmik._view.js', 
+					'src/modules/mvc.js'
 				],
 				dest : "assets/Qmik-debug.js"
 			}
@@ -54,7 +55,8 @@ module.exports = function(grunt) {
 						'src/Qmik.task.js',
 						'src/Qmik.sun.js',
 						'src/Qmik._ajax.js',
-						'src/Qmik._view.js'
+						'src/Qmik._view.js', 
+						'src/modules/mvc.js'
 					],
 					'assets/Qmik._query.js' : [
 						'src/Qmik._query.js'
@@ -76,6 +78,9 @@ module.exports = function(grunt) {
 					],
 					'assets/Qmik.task.js' : [
 						'src/Qmik.task.js'
+					],
+					'assets/module/mvc.js' : [
+						'src/module/mvc.js'
 					]
 				}
 			}

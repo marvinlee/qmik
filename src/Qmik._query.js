@@ -294,7 +294,7 @@
 		var isSelector = !isNull(selector);
 		each(qmik,function(i, dom){
 			var p = dom.parentNode,tp;
-			while(isDom(p) && p != doc.body){
+			while(isDom(p)){
 				isPush = 0;
 				if(isSelector){
 					tp = p.parentNode;
@@ -431,7 +431,7 @@
 			return this
 		},
 		show : function() {
-			css(this, 'display', 'block');
+			css(this, 'display', '');
 			return this
 		},
 		hide : function() {
@@ -474,10 +474,13 @@
 			})
 		},
 		val : function(v) {
-			if (isNull(v)) return this.attr("value") || "";
-			each(this, function(i, u) {
+			var me = this;
+			if (isNull(v)) return me.attr("value") || "";
+			each(me, function(i, u) {
 				u.value = execObject(v)
-			})
+			});
+			me.trigger("input");
+			return me
 		},
 		next : function(s) {
 			return upon(this, s, "next")

@@ -220,6 +220,9 @@
 			text:Q.render(struct, item)
 		});
 	}
+	function _delete(object, name){
+		try{delete object[name]}catch(e){object[name]=null}
+	}
 	//////////Delay class, function 实现setTimeout的功能
 	function Delay(fun, time, params) {
 		var me = this;
@@ -539,10 +542,11 @@
 		},
 		isSE: function() {
 			return !isNull(doc.addEventListener)
-		}
+		},
+		_delete: _delete
 	};
 	///////////////////////////////////////////////////////
-	Q.version = "1.3.80";
+	Q.version = "1.4.00";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;

@@ -15,11 +15,13 @@
 	var isNull = Q.isNull,
 		isFun = Q.isFun,
 		each = Q.each,
-		isPlainObject = Q.isPlainObject;
+		isPlainObject = Q.isPlainObject,
+		_delete = _in._delete;
 	/** 设置节点的加载成功方法 */
 	function setLoad(node, fun) {
 		node.onreadystatechange = node.onload = node.onDOMContentLoaded = fun
 	}
+	
 	Q.ready = fn.ready = function(fun, context) {
 		var node = context || this[0] || doc,
 			state;
@@ -31,7 +33,8 @@
 				each(node.$$handls, function(i, val) {
 					val(Q);
 				});
-				delete node.$$handls
+				_delete(node, "$$handls");
+				//delete node.$$handls
 			}
 		}
 		if (readyRE.test(node.readyState)) {
@@ -64,7 +67,8 @@
 					fun: dom['on' + name],
 					param: []
 				});
-				delete dom['on' + name];
+				_delete(dom, 'on'+name)
+				//delete dom['on' + name];
 			}
 			SE() ? dom.addEventListener(name, handle, !1) : dom["on" + name] = handle
 		}
@@ -82,8 +86,10 @@
 			for (; i >= 0; i--)
 				h[i].fun == fun && h.splice(i, 1)
 		} else {
-			SE() ? dom.removeEventListener(name, handle, !1) : delete dom["on" + name];
-			delete s[name]
+			//SE() ? dom.removeEventListener(name, handle, !1) : delete dom["on" + name];
+			//delete s[name]
+			SE() ? dom.removeEventListener(name, handle, !1) : _delete(dom, "on" + name);
+			_delete(s, name)
 		}
 	}
 
