@@ -7,12 +7,13 @@
 	var win = this,
 		doc = win.document || {},
 		nav = win.navigator || {}, //
+		con = console,
 		UA = nav.appVersion || nav.userAgent,
 		loc = win.location;
 	var encode = encodeURIComponent,
 		decode = decodeURIComponent,
 		slice = [].slice, //
-		baseURL = loc.protocol + "//" + loc.hostname + (loc.port ? ":" + loc.port : ""), //
+		baseURL = loc.protocol + "//" + loc.host, //
 		config = {
 			context: "/" //工程上下文目录
 		};
@@ -223,6 +224,10 @@
 	function _delete(object, name){
 		try{delete object[name]}catch(e){object[name]=null}
 	}
+	function log(type, args){
+		var vs = slice.call(args);
+		con[type](type+":", vs);
+	}
 	//////////Delay class, function 实现setTimeout的功能
 	function Delay(fun, time, params) {
 		var me = this;
@@ -398,10 +403,16 @@
 				return new Cycle(fun, cycleTime, ttl, slice.call(arguments, 3));
 			},
 			log: function() {
-				var args = arguments;
-				if (config.debug || isError(args[0])) {
-					try{console.log.apply(Q, args)}catch(e){Q.each(args,function(i,v){console.log(v)})};
-				}
+				//con.log("log:", arguments)
+				log("log", arguments);
+			},
+			warn: function(){
+				//con.warn("warn:", arguments)
+				log("warn", arguments);
+			},
+			error: function(){
+				//con.error("error:", arguments)
+				log("error", arguments);
 			},
 			isIphone: function() {
 				return /iPhone OS/.test(UA)
@@ -496,7 +507,7 @@
 					return text
 				}
 				if(!/^\s*\w+\s*(\[.*\])?\s*$/.test(tag)){
-					console.log("tag is lllegal:",tag);
+					Q.error("tag is lllegal:",tag);
 					return ""
 				}
 				var tagName = (tag.match(/^[^\[]+/)||[""])[0];
@@ -525,7 +536,7 @@
 				try {
 					fun.apply(fun, args||[]);
 				} catch (e) {
-					Q.log(e, e.stack);
+					Q.log(e, e.stack, fun, args);
 					error && error(e);
 				} 
 			}

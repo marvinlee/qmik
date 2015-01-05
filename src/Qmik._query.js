@@ -431,7 +431,7 @@
 			return this
 		},
 		show : function() {
-			css(this, 'display', '');
+			css(this, 'display', 'initial');
 			return this
 		},
 		hide : function() {
@@ -515,20 +515,20 @@
 			*/
 			return q.length > 0 ? q : parents(selector, me, !1)
 		},
-		parents : function(selector) {// 查找所有的匹配的父(祖父)节点
+		parents: function(selector) {// 查找所有的匹配的父(祖父)节点
 			return parents(selector, this, !0)
 		},
-		parent : function(selector) {// 查找匹配的父节点
+		parent: function(selector) {// 查找匹配的父节点
 			return parents(selector, this, !0, !0)
 		},
-		children : function(selector) {//查找直接子节点
+		children: function(selector) {//查找直接子节点
 			var r = new Query();
 			var me = this;
 			var isNullSelector = isNull(selector);
 			me.each(function(i, dom) {
 				//var childs = dom.childNodes;
-				var childs = dom.children;
-				var j = 0,
+				var childs = dom.children||dom.childNodes,
+					j = 0,
 					tdom;
 				while (j < childs.length) {
 					tdom = childs[j++];
