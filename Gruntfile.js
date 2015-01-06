@@ -79,8 +79,8 @@ module.exports = function(grunt) {
 					'assets/Qmik.task.js' : [
 						'src/Qmik.task.js'
 					],
-					'assets/module/mvc.js' : [
-						'src/module/mvc.js'
+					'assets/modules/mvc.js' : [
+						'src/modules/mvc.js'
 					]
 				}
 			}

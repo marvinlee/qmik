@@ -19,9 +19,14 @@
 </head>
 <body name="${name}" go="${n1}+${name}" style="display:none;">
     ${name} + ${n1} + {{degree}}
+    root name=<input name="name">
+    <div q-ctrl="ctrlAbc" style="background:green;">
+       [${addr}]name=<input name="name" />
+       <input type="text"/>
+    </div>
   <div>
-    <input type="text" name="degree">
-  	<form q-ctrl="subdent"  q-submit="subccess()">
+   degree=<input type="text" name="degree">
+  	<form q-ctrl="subdent"  q-submit="subccess()" style="background:red;">
   		<input name="name" value="aaa" type="text" />
       <input id="n1" name="n1" value="n1" type="text" />
       <input id="n2" name="n2" value="n2" type="hidden" />
@@ -35,7 +40,7 @@
         <option value="2" select>2</option>
         <option value="1" >1</option>
         <option value="3" >3</option>
-        <option value="3" >3</option>
+        <option value="" >none</option>
         <option value="3" >3</option>
       </select>
       <textarea name="textarea"></textarea>
@@ -51,52 +56,25 @@
       <br/>
   		showName:${showName} name:{{name}}  n1:${n1}  select:${select}  mselect:<${mselect}>
       textarea:${textarea}  cbk:${cbk}  ra:${ra}
-      <ul q-for="item in list">
+      <p> degree: {{degree}}  gg:{{gg}} </p>
+      <ul q-for=" item  in  list " style="background:green;">
           <li name="${name}">  ${item.name} -- age:  ${ item.age } </li>
       </ul>
-      <div q-ctrl="ctrlAbc">
-         ${addr}
-      </div>
+      
   	</form>
   	${n12}
-  	<form q-ctrl="subdent1">
+  	<form q-ctrl="subdent1" style="background:#abcfcf;">
        ctrl:subdent1: name=${name}
   	</form>
     ${n3} ${name}
 
   </div>
-  <div>
-    <li>a<${name}>c</li>
-  </div>
-  <div>
-    <li>a<${name}>c</li>
-  </div>
-  <div>
-    <li>a<${name}>c</li>
-  </div>
-  <div>
-    <li>a<${name}>c</li>
-  </div>
-  <div>
-    <li>a<${name}>c</li>
-  </div>
-  <div>
-    <li>a<${name}>c</li>
-  </div>
-  <div>
-    <li>a<${name}>c</li>
-  </div>
-  <div>
-    <li>a<${name}>c</li>
-  </div>
-  <div>
-    <li>a<${name}>c</li>
-  </div>
-  
+
 
   ${n4} ${name}
   <script type="text/javascript">
     $(function(){
+      
       var app = $.app({
         name:'leo'
       });
@@ -104,9 +82,8 @@
         "subdent": function(scope){     
             scope.showName = scope.name;
             scope.watch("name", function(value){
-              value = value.replace(/xxoo/g, "**oo");
-              scope.showName = value;
             });
+            console.log(scope);
             scope.list= [{
               name: "k1"
             },{
@@ -125,11 +102,25 @@
               name: "k2",
               age: 16
             }];
-            $.delay(function(){
-                scope.list = [{
-                  name:"mmn"
-                }];
-            }, 1000);
+            var t=0;
+            function add(){
+              $.delay(function(){
+                if(t>2100){
+                  return;
+                }
+                t+=100;
+                scope.list = [];
+                for(var i=0;i<100;i++){
+                  scope.list.push({
+                    name: "name "+i,
+                    age: i
+                  });
+                }
+                scope.apply();
+                add();
+              }, 100);
+            }
+            add();
         },
         "subdent1": function(scope){
           scope.name="gogoxxoo";

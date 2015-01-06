@@ -226,7 +226,7 @@
 	}
 	function log(type, args){
 		var vs = slice.call(args);
-		con[type](type+":", vs);
+		con[type].apply ? con[type].apply(con, vs) : con[type](type+":", vs);	
 	}
 	//////////Delay class, function 实现setTimeout的功能
 	function Delay(fun, time, params) {
