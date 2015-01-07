@@ -190,8 +190,6 @@ $.sun.config({
             success,function(data){},
             error:function(){}
         });
-        render: function(struct) //不推荐使用了,在未来版本(很快推出)里要删除,1.4版本开始会提供mvc功能,自带模板能力,就不需要这个方法了 
-        
         series:function(tasks, callback)//串行执行任务列队,如果有输出参数,则前一个任务输出参数给下一个任务
                 //例子,tasks:任务方法数组,callback:执行完任务后,回调
                 $.series([
