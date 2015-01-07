@@ -12,9 +12,6 @@ Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库�
 
 简化了dom查询,事件,ajax通讯等的使用,
 
-html[局部渲染](https://github.com/leochen36/qmik/wiki/$.render-%E5%B1%80%E9%83%A8%E6%B8%B2%E6%9F%93)
-内核($.render)
-
 任务队列处理内核(
 [$.series](https://github.com/leochen36/qmik/wiki/$.series-%E4%B8%B2%E8%A1%8C%E4%BB%BB%E5%8A%A1%E5%A4%84%E7%90%86),
 [$.parallel](https://github.com/leochen36/qmik/wiki/$.parallel-%E5%B9%B6%E8%A1%8C%E4%BB%BB%E5%8A%A1%E5%A4%84%E7%90%86))
@@ -201,29 +198,7 @@ $.sun.config({
             success,function(data){},
             error:function(){}
         });
-        render: function(struct [,data]), 
-            //参数说明:
-            struct:{
-                tag:'div[name="testdiv" class="show" time="${time}"]',
-                text:'显示的文件',//如果<div>显示的文件</div>
-                data:{
-                    time:'haha'
-                }, //这个参数在htmljson里通过  ${time} 来引用
-                child:[//子节点,tag:是用来描述标签及属性的(如果有子节点child,则一定要有tag,text:输出innerText文本的)
-                    {
-                        tag:'p[name="title"]',
-                        text:'title',
-                        child:[
-                            {
-                                tag:'span[class='remark']',
-                                text:'remark'
-                            },{
-                                text:' xxxxxx'
-                            }
-                        ]
-                    }
-                ]
-            }
+        render: function(struct) //不推荐使用了,在未来版本(很快推出)里要删除,1.4版本开始会提供mvc功能,自带模板能力,就不需要这个方法了 
         
         series:function(tasks, callback)//串行执行任务列队,如果有输出参数,则前一个任务输出参数给下一个任务
                 //例子,tasks:任务方法数组,callback:执行完任务后,回调
