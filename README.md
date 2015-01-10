@@ -49,7 +49,6 @@ Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库�
 1.3.70 版本, 
 1.优化sun模块的异常调试日志,
 2.重构事件模块 
-3.增强render功能
 
 [增加1.3.62版本:](https://github.com/leochen36/qmik/tree/master/builds)
 1.3.62 版本, 
@@ -71,11 +70,7 @@ Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库�
     添加fn.appendTo,fn.afterTo,fn.beforeTo;
 
 
-增加1.3.20版本, 此版本优化的局部渲染机制 $.render 的使用,
-1.取消tag必须为 div[]的格式限制,tag:选填,有填必须符合正则(^\s*\w+\s*(\[.*\])?\s*$),
-2.取消text对输入< >符号的转换(这种代码安全的检验应该在数据输入时就做了,,放开后的好处是更加方便节点的拼装,
-原先只能输入innerText类内容,现在可以输入任意的内容,如果:<div><span>hello</span></div> 这样更加容易生成节点)
-3.增加模块加载定义时对return的支持:如:
+1.增加模块加载定义时对return的支持:如:
 ```
 $.define("demo",function(require, exports, module){
     module.exports = {name:"exports"};
@@ -96,7 +91,6 @@ $.sun.config({
 
 
 增加1.3.01大版本, 
-    增加html局部渲染功能$.render(htmljson, data),
     任务进度处理模块$.task,有$.series(串行执行), $.parallel(并行执行),
     方法执行,不抛出异常:$.execCatch(fun,args,error);
     废弃不推荐的方法$.fn.animate,$.fn.hover;
@@ -361,48 +355,6 @@ c.实现Home业务模块功能
                 });
             })(Qmik);
         </script>
-
-
-## [模板渲染例子:](https://github.com/leochen36/qmik/wiki/$.render-%E5%B1%80%E9%83%A8%E6%B8%B2%E6%9F%93)
-内核($.render)
-````
-var list=[
-    {id:'a3',title:'ww',price:100},
-    {id:'a4',title:'nn',price:178}
-];
-$({
-    tag:'div[class="bg"]',
-    data:{
-        price:96
-    },
-    child:[
-        {
-            tag:'span[class="tm" style="display:inline-block; padding:5px"]',
-            text:'价格price: ${price}  '
-        },{
-            tag:'span[class="tm" style="display:inline-block padding:5px"]',
-            text:'18很小呀 price: {{price}} 这个变量取法在1.6.1里开始支持'
-        },{
-            tag:'span[class="tm" style="display:inline-block padding:5px"]',
-            text:'24'
-        }
-    ],
-    exec: function(){
-      var me = this;
-        $.each(list, function(i, item){
-            me.add({
-                tag:'i[]',
-                text:'价格:${price}'
-            }, item);
-        });
-    }
-}).on({
-    click:function(e){
-        console.log(e.target);
-    }
-}).appendTo($("body"))
-````
-
 
 
 ## 下载源码,自定义构建(构建时,只能选择src目录下的文件合并成一个Qmik.js,不能包含plugins等其它目录)
