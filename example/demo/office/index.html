@@ -1,0 +1,81 @@
+ <!DOCTYPE >
+ <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta charset="utf8" /> 
+  <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport" /> 
+  <meta name="-webkit-tap-highlight" content="no" /> 
+  <meta content="IE=10" http-equiv="x-ua-compatible" /> 
+  <title>qmik官网-帮助页面-${title}</title> 
+  <script type="text/javascript" src="../../../assets/qmik-debug.all.js"></script>
+  <link rel="stylesheet" type="text/css" href="./css/style.css"/>
+</head>
+<body>
+  <div>
+      <div class="nav" q-ctrl="nav">
+          <!-- 核心 -->
+          <a class="nav_title">
+            Core
+          </a>
+          <ul class="nav_section" q-for="item in cores" q-onclick="tclick">
+            <li>
+              <a href="#${item.name}" >${item.name}</a>
+            </li>
+          </ul>
+          <!-- 模块化 -->
+          <a class="nav_title">
+            sun
+          </a>
+          <ul class="nav_section" q-for="item in modules">
+            <li>
+              <a href="#${item.name}">${item.name}</a>
+            </li>
+          </ul>
+          <!-- mvc -->
+          <a class="nav_title">
+            MVC
+          </a>
+          <ul class="nav_section" q-for="item in mvcs">
+            <li>
+              <a href="#${item.name}">${item.name}</a>
+            </li>
+          </ul>
+          <!-- 查询 -->
+          <a class="nav_title">
+            Query
+          </a>
+          <ul class="nav_section" q-for="item in querys">
+            <li>
+              <a href="#${item.name}">${item.name}</a>
+            </li>
+          </ul>
+          <!-- ajax通信 -->
+          <a class="nav_title">
+            Ajax
+          </a>
+          <ul class="nav_section" q-for="item in ajaxs">
+            <li>
+              <a href="#${item.name}">${item.name}</a>
+            </li>
+          </ul>
+          <!-- 事件 -->
+          <a class="nav_title">
+            Event
+          </a>
+          <ul class="nav_section" q-for="item in events">
+            <li>
+              <a href="#${item.name}">${item.name}</a>
+            </li>
+          </ul>
+      </div>
+      <div class="main" q-ctrl="main">
+          <p>${title}</p>
+          <ul q-for="item in cores"><li id="${item.name}" class=""></li></ul>
+          <ul q-for="item in modules"><li id="${item.name}" class=""></li></ul>
+          <ul q-for="item in mvcs"><li id="${item.name}" class=""></li></ul>
+          <ul q-for="item in querys"><li id="${item.name}" class=""></li></ul>
+          <ul q-for="item in ajaxs"><li id="${item.name}" class=""></li></ul>
+          <ul q-for="item in events"><li id="${item.name}" class=""></li></ul>
+      </div>
+  </div>
+  <script type="text/javascript" src="js/index.js"></script>
+ </body>

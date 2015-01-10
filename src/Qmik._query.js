@@ -479,6 +479,24 @@
 			css(this, 'display', 'none');
 			return this
 		},
+		animate: function(style, time, easing, callback){
+			var me = this;
+			Q.delay(function(){
+				style.transition = style.transition || " ease-in "+(time||1)+"ms";
+				css(me, Q.cssPrefix(style));
+				function transitionEnd(e){
+					css(me, Q.cssPrefix({transition:0}));
+					callback && callback(e);
+				}
+				me.once({
+					webkitTransitionEnd: transitionEnd,
+					msTransitionEnd: transitionEnd,
+					oTransitionEnd: transitionEnd,
+					transitionend: transitionEnd
+				})
+			}, 10);
+			return me;
+		},
 		toggle: function() {
 			each(this, function(i, v) {
 				css(v, 'display') == 'none' ? Q(v).show() : Q(v).hide()

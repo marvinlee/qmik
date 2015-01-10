@@ -1,0 +1,148 @@
+ <!DOCTYPE >
+ <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta charset="utf8" /> 
+  <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport" /> 
+  <meta name="-webkit-tap-highlight" content="no" /> 
+  <meta content="IE=10" http-equiv="x-ua-compatible" /> 
+  <title>mvc例子</title> 
+  <script type="text/javascript" src="../../../assets/qmik-debug.all.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <div>
+    <div class="box">      
+      <p class="ftitle" q-onclick="abc()"> 全局控制(用户信息) </p>
+      <ul>
+        <li class=" q-hide">
+          <span class="lt">用户名: </span><input name="userName" type="text" value="leo"/>
+          <span class="lt">动态绑定:</span>[<span class="bind">${userName}</span>]
+        </li>
+        <li>
+          <span class="lt">email:</span><input name="email" type="text" value="qmik@qmik.org"/>
+          <span class="lt">动态绑定:</span>[<span class="bind">${email}</span>]
+        </li>
+        <li>
+          <span class="lt">密码: </span><input name="password" type="text"/>
+          <span class="lt">动态绑定:</span>[<span class="bind">{{password}}</span>]
+        </li>
+      </ul>
+    </div>
+    <div class="box" q-ctrl="shopping">
+        <p class="ftitle"> 控制器: [shopping]购物信息</p>
+        <ul>
+          <li>
+            <x>
+              <span class="lt">购买人:</span>[<span class="bind">${userName}</span>]&nbsp;
+            </x>
+            <x><span class="lt">过滤关键词: </span>[<span class="bind">${vUserName}</span>]</x>
+          </li>
+          <li>
+            <span class="lt">物品名: </span><input name="shopName" type="text" value="qmik"/>
+            <span class="lt">动态绑定:</span>[<span class="bind">${shopName}</span>]
+          </li>
+          <li>
+            <span class="lt">价格: </span><input name="price" type="text" value="999"/>
+            <span class="lt">动态绑定:</span>[<span class="bind">${price}</span>]
+          </li>
+          <li>
+            <span class="lt">库存: </span><input name="stock" type="text" value="11"/>
+            <span class="lt">动态绑定:</span>[<span class="bind">{{stock}}</span>]
+          </li>
+        </ul>
+    </div>
+
+    <div class="box" q-ctrl="lazy">
+        <p class="ftitle"> 控制器: [lazy] 
+          <span style="display:${cssDisplay}">
+            加载数据: ${time} 
+            <span class="loading"></span>
+            ${userName}
+          </span>          
+        </p>
+        <ul>
+          <li>
+            <x>
+              <span class="lt">购买人:</span>[<span class="bind">${userName}</span>]&nbsp;
+            </x>
+          </li>
+          <li>
+            <x>
+              <span class="lt">商品名:</span>[<span class="bind">${goodsName}</span>]&nbsp;
+            </x>
+          </li>
+          <li>
+              <span class="lt">商品价格:</span>[<span class="bind">${price}</span>]&nbsp;
+          </li>
+          <li>
+              <span class="lt">商品介绍:</span>[<span class="bind">${desc}</span>]&nbsp;
+          </li>
+          <li>
+              <x>
+                <span class="lt">商品品牌: </span><input name="brand" type="text" value="qmik"/>
+                <span class="lt">动态绑定:</span>[<span class="bind">${brand}</span>&nbsp;]
+              </x>
+              <x>
+                <span class="lt">商品品牌:</span>[<span class="bind">${brand}</span>]&nbsp;
+              </x>
+          </li>
+          <li>
+              <span class="lt">商品产地:</span>[<span class="bind">${addr}</span>]&nbsp;
+          </li>
+        </ul>
+    </div>
+    <div class="box" q-ctrl="search">
+        <p class="ftitle"> 控制器: [search]搜索</p>
+        <ul>
+          <li>
+            <x>
+              <span class="lt">关键词: </span><input name="q" type="text" value="qmik"/>
+              <span class="lt">动态绑定:</span>[<span class="bind">${q}</span>]
+            </x>
+            <x>
+              <span class="lt">结果: </span>[<span class="bind">${vq}</span>]
+            </x>
+          </li>
+        </ul>
+    </div>
+  </div>
+  <script type="text/javascript">
+    //$.app() 编译并生成应用,$.app().ctrl()定义控制器
+    $.app().ctrl({
+      shopping: function(scope){//购物
+        scope.vUserName = scope.parentScope.userName;//界面上用到的变量,没有输出相应的input标签,需要预定义
+        scope.parentScope.watch("userName", function(v){
+          scope.vUserName ="(xo to *o)>"+ v.replace(/xo/g,"*o");
+          scope.apply("vUserName");
+        });
+      },search: function(scope){//搜索
+        scope.vq = "reqult="+scope.q;
+        scope.watch("q", function(val){
+            scope.vq = "reqult="+val;
+            scope.apply("vq");
+        });
+      },
+      lazy: function(scope){//控制器 lazyLoad, 延迟加载数据(用于通过ajax从远程加载数据,在显示到页面上,通过 scope.apply()方法来显示)
+          var ttl = 5000;
+          scope.vUserName = scope.parentScope.userName;//
+          scope.cssDisplay="";//初始化的值需要事先声明
+          scope.time = parseInt(ttl/1000);
+          var startTime = $.now() + ttl;
+          $.cycle(function(){
+            var t = startTime - $.now();
+            scope.time = parseInt(t/1000);
+            scope.apply("time");//局部更新
+          }, 900, ttl);
+          $.delay(function(){
+              scope.cssDisplay = "none";
+              scope.goodsName ="衣服";
+              scope.brand ="七挫狼";
+              scope.addr ="福建福鼎";
+              scope.price = 98.8;
+              scope.desc="源自纯天然xxx";
+              scope.apply();//更新页面显示数据
+          }, ttl);
+      }
+    });
+  </script>
+ </body>

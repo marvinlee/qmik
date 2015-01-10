@@ -1,9 +1,11 @@
  <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta charset="utf8" /> 
   <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport" /> 
   <meta name="-webkit-tap-highlight" content="no" /> 
+  <meta content="IE=9" http-equiv="x-ua-compatible" /> 
   <title>测试sun模块开发</title> 
-  <script type="text/javascript" src="../../assets/qmik-debug.js"></script>
+  <script type="text/javascript" src="../../assets/qmik-debug.all.js"></script>
   <style type="text/css">
   	#result{
   		position: fixed;
@@ -15,18 +17,26 @@
   		padding:3px;
   		overflow-y:scroll;
   	}
+    input[type=text],select,textarea{
+      margin: 2px;
+      padding: 1px;
+      text-shadow: none;
+      box-shadow: 0px 0px 0px #fff;
+      border: 1px solid #cfcfcf;
+    }
   </style>
 </head>
-<body name="${name}" go="${n1}+${name}" style="display:none;">
-    ${name} + ${n1} + {{degree}}
-    root name=<input name="name">
-    <div q-ctrl="ctrlAbc" style="background:green;">
-       [${addr}]name=<input name="name" />
-       <input type="text"/>
-    </div>
+<body name="${name}" go="${n1}+${name}">
+  ${name} + ${n1} + {{degree}}
+  root name=<input type="text" name="name">
+  <div q-ctrl="ctrlAbc" style="background:;">
+     addr=[${addr}]<br/>
+     addr=<input name="addr" type="text"/><br/>
+     name=<input name="name" />
+  </div>
   <div>
-   degree=<input type="text" name="degree">
-  	<form q-ctrl="subdent"  q-submit="subccess()" style="background:red;">
+   degree=<input type="text" name="degree" required>
+  	<form q-ctrl="subdent"  q-submit="subccess()" style="background:;">
   		<input name="name" value="aaa" type="text" />
       <input id="n1" name="n1" value="n1" type="text" />
       <input id="n2" name="n2" value="n2" type="hidden" />
@@ -74,16 +84,12 @@
   ${n4} ${name}
   <script type="text/javascript">
     $(function(){
-      
-      var app = $.app({
-        name:'leo'
-      });
+      var app = $.app();
       app.ctrl({
         "subdent": function(scope){     
             scope.showName = scope.name;
             scope.watch("name", function(value){
             });
-            console.log(scope);
             scope.list= [{
               name: "k1"
             },{
@@ -103,13 +109,7 @@
               age: 16
             }];
             var t=0;
-            function add(){
-              $.delay(function(){
-                if(t>2100){
-                  return;
-                }
-                t+=100;
-                scope.list = [];
+           /* $.delay(function(){
                 for(var i=0;i<100;i++){
                   scope.list.push({
                     name: "name "+i,
@@ -117,10 +117,8 @@
                   });
                 }
                 scope.apply();
-                add();
-              }, 100);
-            }
-            add();
+            },2500);*/
+            window.scope = scope;
         },
         "subdent1": function(scope){
           scope.name="gogoxxoo";

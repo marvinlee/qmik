@@ -193,12 +193,13 @@
 		},
 		live: function(name, callback) {
 			var me = this;
-			mapEvent(name, callback, function(key, callback){
-				var fun = me.__lives[getLiveName(key, callback)] = function(e){
+			mapEvent(name, callback, function(key, callback) {
+				var fun = me.__lives[getLiveName(key, callback)] = function(e) {
 					var target = e.target,
-						qtar = Q(target);
-					each(me, function(i, dom){
-						contains(dom, target) && callback.call(me, e)
+						qtar = Q(target),
+						sel = Q.isString(me.selector) ? Q(me.selector, me.context) : me;
+					each(sel, function(i, dom) {
+						contains(dom, target) && callback.call(target, e)
 					});
 				}
 				Q("body").on(key, fun)
