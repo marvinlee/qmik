@@ -242,14 +242,11 @@
 		switch (node.nodeType) {
 			case 1://正常节点
 				var attrs = node.attributes || [],
-					i = 0,
-					attr,
-					attrName,
-					value;
+					i = 0;
 				for (; i < attrs.length; i++) {
-					attr = attrs[i];
-					attrName = attr.name.trim();//属性名
-					value = space.attr[attrName] = space.attr[attrName] || (attr.value || "").trim().replace(/(\s){2,}/g, " ");
+					var attr = attrs[i],
+						attrName = attr.name.trim(),//属性名
+						value = space.attr[attrName] = space.attr[attrName] || (attr.value || "").trim().replace(/(\s){2,}/g, " ");
 					if ("q-ctrl" === attrName) {//控制器
 						if (value != "") {
 							scope = new Scope(node, scope);
@@ -273,14 +270,15 @@
 						node.innerHTML = htmls.join("");
 						compile(node, scope);
 					} else if(/^q-on/.test(attrName)){//事件绑定
-						var name = attrName.replace(/^q-on/,""),
-							value = value.replace(/\(.*\)$/,"");
+						var onName = attrName,
+							name = attrName.replace(/^q-on/,""),
+							funName = value.replace(/\(.*\)$/,"");
 						if(!space.event[name]){
 							space.event[name] = true;
 							var handle = function(e){
-								var evTarget = Q(node).closest("["+attrName+"]")[0];
+								var evTarget = Q(node).closest("["+onName+"]")[0];
 								if(evTarget == node){
-									scope[value] && scope[value](e);
+									scope[funName] && scope[funName](e);
 								}else{
 									Q(scope.__context).off(name, handle)
 								}							

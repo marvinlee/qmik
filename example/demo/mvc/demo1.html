@@ -12,7 +12,7 @@
 <body>
   <div>
     <div class="box">      
-      <p class="ftitle" q-onclick="abc()"> 全局控制(用户信息) </p>
+      <p class="ftitle" > 全局控制(用户信息) </p>
       <ul>
         <li class=" q-hide">
           <span class="lt">用户名: </span><input name="userName" type="text" value="leo"/>
@@ -29,7 +29,11 @@
       </ul>
     </div>
     <div class="box" q-ctrl="shopping">
-        <p class="ftitle"> 控制器: [shopping]购物信息</p>
+        <p class="ftitle"> 控制器: [shopping]购物信息 
+          <a q-onclick="clickme" href="javascript:">&nbsp;  <span>点我吧(事件)
+            <span style="color:red;">${msg}</span>
+          </a>
+        </p>
         <ul>
           <li>
             <x>
@@ -108,9 +112,16 @@
   </div>
   <script type="text/javascript">
     //$.app() 编译并生成应用,$.app().ctrl()定义控制器
-    $.app().ctrl({
+    $.app(function(scope){ //全局控制器的写法
+
+    }).ctrl({
       shopping: function(scope){//购物
         scope.vUserName = scope.parentScope.userName;//界面上用到的变量,没有输出相应的input标签,需要预定义
+        scope.msg = "";
+        scope.clickme = function(e){
+            scope.msg = "我变了 "+ parseInt($.now()/1000)+'';
+            scope.apply();
+        }
         scope.parentScope.watch("userName", function(v){
           scope.vUserName ="(xo to *o)>"+ v.replace(/xo/g,"*o");
           scope.apply("vUserName");
