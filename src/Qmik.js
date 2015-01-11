@@ -376,6 +376,14 @@
 			});
 			return h.join('&')
 		},
+		/** 是否是父或祖父节点 */
+		contains: function(parent, child){
+			return isDom(child) &&( parent == doc || (parent.contains(child)) )
+			/*function contains(grandfather, child) {
+				//return isDom(child) && (grandfather === child.parentNode ? !0 : contains(grandfather, child.parentNode))
+				return isDom(child) &&( grandfather===doc || (grandfather.contains(child)))
+			}*/
+		},
 		/**
 		 * 当前时间
 		 */

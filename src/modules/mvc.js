@@ -7,7 +7,8 @@
 		isNull = Q.isNull,
 		isPlainObject = Q.isPlainObject,
 		extend = Q.extend,
-		each = Q.each;
+		each = Q.each,
+		execCatch = Q.execCatch;
 
 	var scopeParentScope ="parentScope";
 
@@ -17,7 +18,8 @@
 	var namespace = "qmik-mvc-space",
 		namespaceScope = "qmik-mvc-space-scope",
 		scopeWathcs = "__watchs",
-		nameRoot = "html";
+		nameRoot = "html",
+		nameContext = "__context";
 	/** 应用 */
 	function App(fun) {
 		var me = this;
@@ -97,7 +99,7 @@
 	function Scope(context, parentScope) {
 		var me = this;
 		me[scopeWathcs] = {}; //监听器集合
-		me.__context = context = context || Q(nameRoot)[0]; //上文dom节点
+		me[nameContext] = context = context || Q(nameRoot)[0]; //上文dom节点
 		me.__name = Q(context).attr("q-ctrl") || "root"; //控制器名
 		me.__map = {}; //变量映射节点集合
 		me.__cmd = {};
@@ -142,14 +144,14 @@
 			var me = this;
 			if(isExecApply == false){
 				isExecApply = true;
-				Q.execCatch(function(){
+				execCatch(function(){
 					if (names) {
 						names = Q.isArray(names) ? names : [names];
 						each(names, function(i, name) {
 							compileVarName(name, me)
 						});
 					} else {
-						compile(me.__context, me)
+						compile(me[nameContext], me)
 					}
 				});				
 				isExecApply = false;
@@ -250,7 +252,7 @@
 					if ("q-ctrl" === attrName) {//控制器
 						if (value != "") {
 							scope = new Scope(node, scope);
-							Q.execCatch(function() {
+							execCatch(function() {
 								Q.isFun(ctrls[value]) ? ctrls[value](scope) : Q.warn("q-ctrl:[" + value + "]is not define");
 							});
 						}
@@ -276,14 +278,14 @@
 						if(!space.event[name]){
 							space.event[name] = true;
 							var handle = function(e){
-								var evTarget = Q(node).closest("["+onName+"]")[0];
-								if(evTarget == node){
+								if(!Q.contains(scope[nameContext], node)){
+									return Q(scope[nameContext]).off(name, handle);
+								}
+								if( Q.contains(node, e.target) ){//判断是否是当前节点的子节点触发的事件
 									scope[funName] && scope[funName](e);
-								}else{
-									Q(scope.__context).off(name, handle)
-								}							
+								}			
 							}
-							Q(scope.__context).on(name, handle);
+							Q(scope[nameContext]).on(name, handle);
 						}						
 					} else if (REG_B.test(value)) {//变量
 						value = value.replace(REG_B, function(name) {
@@ -327,6 +329,5 @@
 		}
 		return _app;
 	}
-	Q("body").css("opacity","0").animate({"opacity":"1"}, 1000);
 	Q.app = app;
 })(Qmik);

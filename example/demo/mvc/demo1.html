@@ -4,7 +4,7 @@
   <meta charset="utf8" /> 
   <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport" /> 
   <meta name="-webkit-tap-highlight" content="no" /> 
-  <meta content="IE=10" http-equiv="x-ua-compatible" /> 
+  <meta content="IE=9" http-equiv="x-ua-compatible" /> 
   <title>mvc例子</title> 
   <script type="text/javascript" src="../../../assets/qmik-debug.all.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css">
@@ -119,8 +119,9 @@
         scope.vUserName = scope.parentScope.userName;//界面上用到的变量,没有输出相应的input标签,需要预定义
         scope.msg = "";
         scope.clickme = function(e){
-            scope.msg = "我变了 "+ parseInt($.now()/1000)+'';
-            scope.apply();
+            scope.msg = "我变了 "+ parseInt($.now()/1000+Math.random()*100)+'';
+            scope.apply("msg"); //这种写法,性能比较好,保更新 msg 对应的节点信息
+            //scope.apply();//这种写法性能比较差,会更新整个控制器的所有节点信息, 
         }
         scope.parentScope.watch("userName", function(v){
           scope.vUserName ="(xo to *o)>"+ v.replace(/xo/g,"*o");
@@ -142,7 +143,7 @@
           $.cycle(function(){
             var t = startTime - $.now();
             scope.time = parseInt(t/1000);
-            scope.apply("time");//局部更新
+            scope.apply();//局部更新
           }, 900, ttl);
           $.delay(function(){
               scope.cssDisplay = "none";

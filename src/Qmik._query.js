@@ -268,12 +268,6 @@
 		}
 	}
 
-	/** 是否是父或祖父节点 */
-	/*function contains(grandfather, child) {
-		//return isDom(child) && (grandfather === child.parentNode ? !0 : contains(grandfather, child.parentNode))
-		return isDom(child) &&( grandfather===doc || (grandfather.contains(child)))
-	}*/
-
 	function GN(dom, type) {
 		if (dom) {
 			dom = type == "prev" ? dom.previousSibling : dom.nextSibling;
