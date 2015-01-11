@@ -136,9 +136,11 @@
 			});			
 			return me;
 		},
-		//验证,验证会调用指令器来检测数据,最终所有数据都符合条件才会返回true,否则返回false
-		check: function() {
-			var me = this;
+		/** 
+			查询节点,在控制器下的范围内查询
+		*/
+		find: function(sclector) {
+			return Q(sclector, this[nameContext]);
 		},
 		apply: function(names) { //应用会话信息的变更,同时刷新局部页面
 			var me = this;
@@ -183,10 +185,11 @@
 	/** 解析页面 */
 	function compile(node, scope, isAdd) {
 		(function deal(node, ctrlScope) {
-			if (!node || node === win) return;
-			each(node.childNodes, function(i, node) {
-				replaceNodeVar(node, ctrlScope, isAdd, deal);
-			})
+			if(node && node != win){
+				each(node.childNodes, function(i, node) {
+					replaceNodeVar(node, ctrlScope, isAdd, deal);
+				})
+			}
 		})(node, scope);
 	}
 	//取得变量名

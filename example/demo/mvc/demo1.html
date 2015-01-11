@@ -1,10 +1,10 @@
- <!DOCTYPE >
+ <!DOCTYPE html>
  <head> 
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta charset="utf8" /> 
   <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport" /> 
   <meta name="-webkit-tap-highlight" content="no" /> 
-  <meta content="IE=9" http-equiv="x-ua-compatible" /> 
+  <meta content="IE=10" http-equiv="x-ua-compatible" /> 
   <title>mvc例子</title> 
   <script type="text/javascript" src="../../../assets/qmik-debug.all.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css">
@@ -30,7 +30,7 @@
     </div>
     <div class="box" q-ctrl="shopping">
         <p class="ftitle"> 控制器: [shopping]购物信息 
-          <a q-onclick="clickme" href="javascript:">&nbsp;  <span>点我吧(事件)
+          <a q-onclick="clickme" href="javascript:">&nbsp; <span>点我吧(事件)</span>
             <span style="color:red;">${msg}</span>
           </a>
         </p>
@@ -58,9 +58,9 @@
 
     <div class="box" q-ctrl="lazy">
         <p class="ftitle"> 控制器: [lazy] 
-          <span style="display:${cssDisplay}">
+          <span class="load" style="font-weight:700;" ng="a">
             加载数据: ${time} 
-            <span class="loading"></span>
+            <span class="loading" ng="b"></span>
             ${userName}
           </span>          
         </p>
@@ -137,7 +137,7 @@
       lazy: function(scope){//控制器 lazyLoad, 延迟加载数据(用于通过ajax从远程加载数据,在显示到页面上,通过 scope.apply()方法来显示)
           var ttl = 5000;
           scope.vUserName = scope.parentScope.userName;//
-          scope.cssDisplay="";//初始化的值需要事先声明
+          scope.cssDisplay="xxx";//初始化的值需要事先声明
           scope.time = parseInt(ttl/1000);
           var startTime = $.now() + ttl;
           $.cycle(function(){
@@ -146,6 +146,7 @@
             scope.apply();//局部更新
           }, 900, ttl);
           $.delay(function(){
+              scope.find(".load").hide();
               scope.cssDisplay = "none";
               scope.goodsName ="衣服";
               scope.brand ="七挫狼";

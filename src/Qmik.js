@@ -7,7 +7,7 @@
 	var win = this,
 		doc = win.document || {},
 		nav = win.navigator || {}, //
-		con = console,
+		con = win.console,
 		UA = nav.appVersion || nav.userAgent,
 		loc = win.location;
 	var encode = encodeURIComponent,
@@ -226,7 +226,9 @@
 	}
 	function log(type, args){
 		var vs = slice.call(args);
-		con[type].apply ? con[type].apply(con, vs) : con[type](type+":", vs);	
+		if(con){
+			con[type].apply ? con[type].apply(con, vs) : con[type](type+":", vs);
+		}			
 	}
 	//////////Delay class, function 实现setTimeout的功能
 	function Delay(fun, time, params) {
