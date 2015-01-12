@@ -7,7 +7,7 @@
 (function(Q) {
 	var isFun = Q.isFun,
 		execCatch = Q.execCatch,
-		win = window,
+		win = Q.global,
 		NULL = null;
 	var config = {
 		alias: {}, //别名系统

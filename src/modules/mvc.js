@@ -10,16 +10,16 @@
 		each = Q.each,
 		execCatch = Q.execCatch;
 
-	var scopeParentScope ="parentScope";
-
 	var ctrls = {}, //控制器存储
 		scopes = {},
+		keywords = {scopes:1,context:1,rootScope:1,cmd:1,get:1,set:1,app:1},//关键词,用户不能定义的变量名
 		isExecApply = true; 
-	var namespace = "qmik-mvc-space",
+	var nameRootScope ="rootScope",
+		namespace = "qmik-mvc-space",
 		namespaceScope = "qmik-mvc-space-scope",
-		scopeWathcs = "__watchs",
+		fieldWatchs = "__watchs",
 		nameRoot = "html",
-		nameContext = "__context";
+		nameContext = "context";
 	/** 应用 */
 	function App(fun) {
 		var me = this;
@@ -29,8 +29,8 @@
 	}
 	extend(App.prototype, {
 		__init: function(fun) {
-			var me = this;
-			var scope = new Scope();
+			var me = this,
+				scope = new Scope();
 			me.scope =Q(nameRoot)[0][namespace] = scope;
 			fun && fun(scope);
 			compile(Q(nameRoot)[0], scope, true);//编译页面
@@ -41,8 +41,8 @@
 					tagName = target.tagName,
 					scope = getCtrlNode(target)[namespaceScope] || scope;
 				if (tagName == "INPUT" || tagName == "SELECT" || tagName == "TEXTAREA") {
-					scope[name] = getInputValue(target, scope);
-					each(scope[scopeWathcs][name], function(i, watch) {
+					scope[name] = getInputValue(target);
+					each(scope[fieldWatchs][name], function(i, watch) {
 						watch && watch(getVarValue(scope, name));
 					});
 					compileVarName(name, scope);
@@ -96,26 +96,30 @@
 		}
 	});
 /** 会话 */
-	function Scope(context, parentScope) {
+	function Scope(context, rootScope) {
 		var me = this;
-		me[scopeWathcs] = {}; //监听器集合
+		me[fieldWatchs] = {}; //监听器集合
 		me[nameContext] = context = context || Q(nameRoot)[0]; //上文dom节点
+		me.scopes = scopes;
 		me.__name = Q(context).attr("q-ctrl") || "root"; //控制器名
 		me.__map = {}; //变量映射节点集合
 		me.__cmd = {};
 		me.__input = {};
-		me.scopes = scopes;
 		scopes[me.__name] = me;
 		context[namespaceScope] = me;
-		me[scopeParentScope] = parentScope; //父scope
+		me[nameRootScope] = rootScope; //父scope
 		$("input,select,textarea", context).each(function(i, dom) {
 			var name = dom.name, isSet=true;
-			if(name && name != scopeParentScope){
+			if(name){
+				if(Scope.prototype[name] || /^__/.test(name) || keywords[name]){
+					Q.warn("set scope name["+name+"] is illegal");
+					return;
+				}
 				if(me.__name == "root" && Q(dom).parents("[q-ctrl]").length>0){
 					isSet = false;
 				}
 				if(isSet){
-					me[name] = getInputValue(dom, me);
+					me[name] = getInputValue(dom);
 					me.__input[name] = dom;
 				}
 			}
@@ -131,15 +135,15 @@
 				map[name] = callback;
 			}
 			each(map, function(name, value){
-				me[scopeWathcs][name] = me[scopeWathcs][name] || [];
-				me[scopeWathcs][name].push(value);
+				me[fieldWatchs][name] = me[fieldWatchs][name] || [];
+				me[fieldWatchs][name].push(value);
 			});			
 			return me;
 		},
 		/** 
 			查询节点,在控制器下的范围内查询
 		*/
-		find: function(sclector) {
+		'$': function(sclector) {
 			return Q(sclector, this[nameContext]);
 		},
 		apply: function(names) { //应用会话信息的变更,同时刷新局部页面
@@ -161,7 +165,7 @@
 		}
 	});
 	/** 取界面上input输入标签的初始化值 */
-	function getInputValue(node, scope) {
+	function getInputValue(node) {
 		var name = node.name,
 			type = node.type,
 			vals = [];
@@ -180,7 +184,7 @@
 		}
 		return vals.join(",")
 	}
-	var REG_B = /(\$\{\s*[\w\._-]*\s*\})|(\{\{\s*[\w\._-]*\s*\}\})/g;
+	var REG_VAR_NAME = /(\$\{\s*[\w\._-]*\s*\})|(\{\{\s*[\w\._-]*\s*\}\})/g;
 
 	/** 解析页面 */
 	function compile(node, scope, isAdd) {
@@ -199,14 +203,15 @@
 	function getValue(object, name){
 		var ns = name.split(".");
 		for(var i=0;i<ns.length;i++){
-			if(isNull(object))return "";
-			object = object[ns[i]]
+			if(!isNull(object)){
+				object = object[ns[i]]
+			}
 		}
 		return object;
 	}
 	//取变量对应的值
 	function getVarValue(scope, name) {
-		var useScope = isNull(scope[name]) ? scope[scopeParentScope] : scope,
+		var useScope = isNull(scope[name]) ? scope[nameRootScope] : scope,
 			//val = (useScope || {})[name];
 			val = getValue(useScope, name);
 		return isNull(val) ? "" : val;
@@ -218,7 +223,7 @@
 
 	//添加变量映射节点
 	function addMapNode(scope, name, node) {
-		var useScope = isNull(scope[name]) ? scope[scopeParentScope] : scope;
+		var useScope = isNull(scope[name]) ? scope[nameRootScope] : scope;
 		if (useScope) {
 			useScope.__map[name] = useScope.__map[name] || [];
 			useScope.__map[name].push(node);
@@ -246,11 +251,8 @@
 		var space = getSpace(node);
 		switch (node.nodeType) {
 			case 1://正常节点
-				var attrs = node.attributes || [],
-					i = 0;
-				for (; i < attrs.length; i++) {
-					var attr = attrs[i],
-						attrName = attr.name.trim(),//属性名
+				each(node.attributes, function(i, attr){
+					var attrName = attr.name,//属性名
 						value = space.attr[attrName] = space.attr[attrName] || (attr.value || "").trim().replace(/(\s){2,}/g, " ");
 					if ("q-ctrl" === attrName) {//控制器
 						if (value != "") {
@@ -264,7 +266,7 @@
 							template = space.html = space.html || node.innerHTML,
 							htmls = [];
 						each(getVarValue(scope, vs[2]) || [], function(i, item) {
-							var html = template.replace(REG_B, function(varName) {
+							var html = template.replace(REG_VAR_NAME, function(varName) {
 								var reg = new RegExp("^" + vs[0] + "\."),
 									name = getVarName(varName).replace(reg, ""),
 									val = getValue(item, name);
@@ -290,8 +292,8 @@
 							}
 							Q(scope[nameContext]).on(name, handle);
 						}						
-					} else if (REG_B.test(value)) {//变量
-						value = value.replace(REG_B, function(name) {
+					} else if (REG_VAR_NAME.test(value)) {//变量
+						attr.value = value.replace(REG_VAR_NAME, function(name) {
 							name = getVarName(name);
 							space.vars.push(name);
 							var val = getVarValue(scope, name);
@@ -300,14 +302,69 @@
 						});
 						attr.value = value;
 					}
-				}
+				});
+				/*var attrs = node.attributes || [],
+					i = 0;
+				for (; i < attrs.length; i++) {
+					var attr = attrs[i],
+						attrName = attr.name.trim(),//属性名
+						value = space.attr[attrName] = space.attr[attrName] || (attr.value || "").trim().replace(/(\s){2,}/g, " ");
+					if ("q-ctrl" === attrName) {//控制器
+						if (value != "") {
+							scope = new Scope(node, scope);
+							execCatch(function() {
+								Q.isFun(ctrls[value]) ? ctrls[value](scope) : Q.warn("q-ctrl:[" + value + "]is not define");
+							});
+						}
+					} else if ("q-for" === attrName) { //for
+						var vs = value.split(" "),
+							template = space.html = space.html || node.innerHTML,
+							htmls = [];
+						each(getVarValue(scope, vs[2]) || [], function(i, item) {
+							var html = template.replace(REG_VAR_NAME, function(varName) {
+								var reg = new RegExp("^" + vs[0] + "\."),
+									name = getVarName(varName).replace(reg, ""),
+									val = getValue(item, name);
+								return val || "";
+							});
+							htmls.push(html);
+						});
+						node.innerHTML = htmls.join("");
+						compile(node, scope);
+					} else if(/^q-on/.test(attrName)){//事件绑定
+						var onName = attrName,
+							name = attrName.replace(/^q-on/,""),
+							funName = value.replace(/\(.*\)$/,"");
+						if(!space.event[name]){
+							space.event[name] = true;
+							var handle = function(e){
+								if(!Q.contains(scope[nameContext], node)){
+									return Q(scope[nameContext]).off(name, handle);
+								}
+								if( Q.contains(node, e.target) ){//判断是否是当前节点的子节点触发的事件
+									scope[funName] && scope[funName](e);
+								}			
+							}
+							Q(scope[nameContext]).on(name, handle);
+						}						
+					} else if (REG_VAR_NAME.test(value)) {//变量
+						attr.value = value.replace(REG_VAR_NAME, function(name) {
+							name = getVarName(name);
+							space.vars.push(name);
+							var val = getVarValue(scope, name);
+							isAdd && addMapNode(scope, name, node);							
+							return val;
+						});
+						attr.value = value;
+					}
+				}*/
 				break;
 			case 3://文本节点
 				var val = space.text;
 				val = isNull(val) ? node.textContent : val;
-				if (REG_B.test(val)) {
+				if (REG_VAR_NAME.test(val)) {
 					space.text = val;
-					node.textContent = val.replace(REG_B, function(name) {
+					node.textContent = val.replace(REG_VAR_NAME, function(name) {
 						name = getVarName(name);
 						space.vars.push(name);
 						var val = getVarValue(scope, name);
@@ -324,13 +381,9 @@
 		callback && callback(node, scope);
 	}
 
-	var _app;
-
-	function app(fun) {
-		if (!_app) {
-			_app = new App(fun);
-		}
-		return _app;
-	}
-	Q.app = app;
+	var app;
+	Q.app = function(rootCtrlFun){
+		return app = app || new App(rootCtrlFun);
+	};
+	//
 })(Qmik);

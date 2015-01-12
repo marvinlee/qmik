@@ -13,9 +13,9 @@
 	var encode = encodeURIComponent,
 		decode = decodeURIComponent,
 		slice = [].slice, //
-		baseURL = loc.protocol + "//" + loc.host, //
+		baseURL = loc.protocol + "//" + loc.hostname, //
 		config = {
-			context: "/" //工程上下文目录
+			base: baseURL=="file://" ? baseURL+loc.pathname.replace(/[^\/]*$/,"") : "/" //工程上下文目录
 		};
 	//var readyRE = /complete|loaded|interactive/i;
 	// define qmik object
@@ -79,11 +79,10 @@
 	function isArray(v) {
 		return v instanceof Array
 	}
-
 	function likeArray(v) { // like Array
-		return !isString(v) && (isArray(v) || (Q.isQmik && Q.isQmik(v)) || (function() {
+		return !isString(v) && (isArray(v) || (Q.isQmik && Q.isQmik(v)) || (function() {		
 			v += "";
-			return v == "[object Arguments]" || v == "[object NodeList]" || v == "[object HTMLCollection]" || v == "[object StaticNodeList]"
+			return v == "[object Arguments]" || v == "[object NodeList]" || v == "[object HTMLCollection]" || v == "[object StaticNodeList]" || v == "[object NamedNodeMap]"
 		})())
 	}
 	// isFunction
@@ -154,14 +153,6 @@
 	/*	function isGrandfather(grandfather, child) {
 			return isDom(child) && (grandfather === child.parentNode ? !0 : isGrandfather(grandfather, child.parentNode))
 		}*/
-	// 合并url,参数个数不限
-	function concactUrl() {
-		return Q.map(arguments, function(i, url) {
-			return isArray(url) ? url.join("") : url
-		}).join("/").replace(/(^\w+:\/\/)|([\/]{2,})/g, function(v) {
-			return !/^\w+:\/\//.test(v) ? "/" : v
-		})
-	}
 
 	function loadResource(type, url, success, error) {
 		url = Q.url(url);
@@ -470,7 +461,7 @@
 		 * 合并url,if 参数 _url为空,则
 		 */
 		url: function(_url) {
-			return arguments.length < 1 ? baseURL : !/^[a-zA-Z0-9]+:\/\//.test(_url) ? concactUrl(baseURL, (/^\//.test(_url) ? "" : config.context || "/") + "/" + _url) : _url
+			return (/^[a-zA-Z0-9]+:\/\//.test(_url) ? _url : (config.base+"/"+(_url||""))).replace(/\/{2,}/g,'/');
 		},
 		cssPrefix: function(style) {
 			var ret = {};
