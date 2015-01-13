@@ -1,3 +1,4 @@
+
 /**
  * mvc模块
  * @author leoche
@@ -12,9 +13,9 @@
 
 	var ctrls = {}, //控制器存储
 		scopes = {},
-		keywords = {scopes:1,context:1,rootScope:1,cmd:1,get:1,set:1,app:1},//关键词,用户不能定义的变量名
+		keywords = {scopes:1,context:1,parent:1,cmd:1,get:1,set:1,app:1},//关键词,用户不能定义的变量名
 		isExecApply = true; 
-	var nameRootScope ="rootScope",
+	var nameRootScope ="parent",
 		namespace = "qmik-mvc-space",
 		namespaceScope = "qmik-mvc-space-scope",
 		fieldWatchs = "__watchs",
@@ -37,11 +38,13 @@
 			isExecApply = false;
 			function change(e) {
 				var target = e.target,
-					name = target.name,
+					fields = split(target.name||""),
+					name = fields[0],
 					tagName = target.tagName,
 					scope = getCtrlNode(target)[namespaceScope] || scope;
 				if (tagName == "INPUT" || tagName == "SELECT" || tagName == "TEXTAREA") {
-					scope[name] = getInputValue(target);
+					//scope[name] = getInputValue(target);
+					getValue(scope, fields, getInputValue(target));
 					each(scope[fieldWatchs][name], function(i, watch) {
 						watch && watch(getVarValue(scope, name));
 					});
@@ -119,7 +122,7 @@
 					isSet = false;
 				}
 				if(isSet){
-					me[name] = getInputValue(dom);
+					getValue(me, name, getInputValue(dom));
 					me.__input[name] = dom;
 				}
 			}
@@ -200,19 +203,26 @@
 	function getVarName(name) {
 		return (name || "").replace(/\s*((^(\$|\{)\{)|(\}?\}$))\s*/g, "");
 	}
-	function getValue(object, name){
-		var ns = name.split(".");
-		for(var i=0;i<ns.length;i++){
-			if(!isNull(object)){
-				object = object[ns[i]]
+	function split(name){
+		return name.split(".")
+	}
+	function getValue(object, names, val){
+		var ns = Q.isArray(names) ? names : split(names), 
+			field = ns[0];
+		if(ns.length < 2){
+			if(!isNull(val)){
+				object[field] = val;
 			}
+			return object[field];
 		}
-		return object;
+		object[field] = object[field] || {};
+		ns.shift();
+		return getValue(object[field], ns, val);
 	}
 	//取变量对应的值
 	function getVarValue(scope, name) {
-		var useScope = isNull(scope[name]) ? scope[nameRootScope] : scope,
-			//val = (useScope || {})[name];
+		var field = split(name)[0];
+		var useScope = isNull(scope[field]) ? scope[nameRootScope] || scope : scope,
 			val = getValue(useScope, name);
 		return isNull(val) ? "" : val;
 	}
@@ -223,13 +233,18 @@
 
 	//添加变量映射节点
 	function addMapNode(scope, name, node) {
-		var useScope = isNull(scope[name]) ? scope[nameRootScope] : scope;
+		var ns = Q.isArray(name) ? name : split(name);
+		var useScope = isNull(scope[ns[0]]) ? scope[nameRootScope] : scope;
 		if (useScope) {
-			useScope.__map[name] = useScope.__map[name] || [];
-			useScope.__map[name].push(node);
+			addMapPush(useScope, name, node);
+			var ns = split(name);
+			addMapPush(useScope, ns[0], node);
 		}
 	}
-
+	function addMapPush(scope, name, node){
+		scope.__map[name] = scope.__map[name] || [];
+		scope.__map[name].push(node);
+	}
 	function compileVarName(key, scope) {
 		each(scope.__map[key], function(i, dom) {
 			replaceNodeVar(dom, scope);
@@ -266,6 +281,7 @@
 							template = space.html = space.html || node.innerHTML,
 							htmls = [];
 						each(getVarValue(scope, vs[2]) || [], function(i, item) {
+							item.index = i + 1;
 							var html = template.replace(REG_VAR_NAME, function(varName) {
 								var reg = new RegExp("^" + vs[0] + "\."),
 									name = getVarName(varName).replace(reg, ""),
@@ -275,7 +291,9 @@
 							htmls.push(html);
 						});
 						node.innerHTML = htmls.join("");
-						compile(node, scope);
+						Q.delay(function(){
+							compile(node, scope);
+						}, 1000);
 					} else if(/^q-on/.test(attrName)){//事件绑定
 						var onName = attrName,
 							name = attrName.replace(/^q-on/,""),
@@ -303,61 +321,6 @@
 						attr.value = value;
 					}
 				});
-				/*var attrs = node.attributes || [],
-					i = 0;
-				for (; i < attrs.length; i++) {
-					var attr = attrs[i],
-						attrName = attr.name.trim(),//属性名
-						value = space.attr[attrName] = space.attr[attrName] || (attr.value || "").trim().replace(/(\s){2,}/g, " ");
-					if ("q-ctrl" === attrName) {//控制器
-						if (value != "") {
-							scope = new Scope(node, scope);
-							execCatch(function() {
-								Q.isFun(ctrls[value]) ? ctrls[value](scope) : Q.warn("q-ctrl:[" + value + "]is not define");
-							});
-						}
-					} else if ("q-for" === attrName) { //for
-						var vs = value.split(" "),
-							template = space.html = space.html || node.innerHTML,
-							htmls = [];
-						each(getVarValue(scope, vs[2]) || [], function(i, item) {
-							var html = template.replace(REG_VAR_NAME, function(varName) {
-								var reg = new RegExp("^" + vs[0] + "\."),
-									name = getVarName(varName).replace(reg, ""),
-									val = getValue(item, name);
-								return val || "";
-							});
-							htmls.push(html);
-						});
-						node.innerHTML = htmls.join("");
-						compile(node, scope);
-					} else if(/^q-on/.test(attrName)){//事件绑定
-						var onName = attrName,
-							name = attrName.replace(/^q-on/,""),
-							funName = value.replace(/\(.*\)$/,"");
-						if(!space.event[name]){
-							space.event[name] = true;
-							var handle = function(e){
-								if(!Q.contains(scope[nameContext], node)){
-									return Q(scope[nameContext]).off(name, handle);
-								}
-								if( Q.contains(node, e.target) ){//判断是否是当前节点的子节点触发的事件
-									scope[funName] && scope[funName](e);
-								}			
-							}
-							Q(scope[nameContext]).on(name, handle);
-						}						
-					} else if (REG_VAR_NAME.test(value)) {//变量
-						attr.value = value.replace(REG_VAR_NAME, function(name) {
-							name = getVarName(name);
-							space.vars.push(name);
-							var val = getVarValue(scope, name);
-							isAdd && addMapNode(scope, name, node);							
-							return val;
-						});
-						attr.value = value;
-					}
-				}*/
 				break;
 			case 3://文本节点
 				var val = space.text;
@@ -369,7 +332,7 @@
 						space.vars.push(name);
 						var val = getVarValue(scope, name);
 						isAdd && addMapNode(scope, name, node);
-						if(scope.__input[name] && scope.__input[name].value!=val){
+						if(scope.__input[name] && scope.__input[name].value != val){
 							scope.__input[name].value = val;
 						}
 						return val;

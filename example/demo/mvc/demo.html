@@ -1,0 +1,38 @@
+ <!DOCTYPE html>
+ <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta charset="utf8" /> 
+  <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport" /> 
+  <meta name="-webkit-tap-highlight" content="no" /> 
+  <meta content="IE=10" http-equiv="x-ua-compatible" /> 
+  <title>mvc例子</title> 
+  <script type="text/javascript" src="../../../assets/qmik-debug.all.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <div>
+    <div class="box" q-ctrl="shopping">
+        <p class="ftitle"> demo
+        </p>
+        <ul>
+          <li>
+            <span class="lt">名: </span><input name="user.shop.info.shopName" type="text" value="qmik"/>
+            <span class="lt">动态绑定:</span>[<span class="bind">${user.shop.info.shopName}</span>]
+          </li>
+          <li>
+            <span class="lt">价: </span><input name="price" type="text" value="999"/>
+            <span class="lt">动态绑定:</span>[<span class="bind">${price}</span>]
+          </li>
+        </ul>
+    </div>
+
+  <script type="text/javascript">
+    //$.app() 编译并生成应用,$.app().ctrl()定义控制器
+    $.app().ctrl({
+      shopping: function(scope){//购物
+
+      }
+    });
+    //
+  </script>
+ </body>

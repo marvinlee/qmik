@@ -49,7 +49,9 @@
 		toLower: strtype.toLowerCase,
 		toUpper: strtype.toUpperCase
 	});
-
+	Array.prototype.each = function(callback){
+		callback && each(this, callback);
+	};
 	function grep(array, callback) {
 		var ret = [];
 		each(array, function(i, v) {

@@ -15,16 +15,18 @@
       <p class="ftitle" > 全局控制(用户信息) </p>
       <ul>
         <li class=" q-hide">
-          <span class="lt">用户名: </span><input name="userName" type="text" value="leo"/>
-          <span class="lt">动态绑定:</span>[<span class="bind">${userName}</span>]
+          <span class="lt">用户名: </span><input name="user.userName" type="text" value="leo"/>
+          <input name="scopes" type="text" value="leo"/>
+          <input name="watch" type="text" value="leo"/>
+          <span class="lt">动态绑定:</span>[<span class="bind">${user.userName}</span>]
         </li>
         <li>
-          <span class="lt">email:</span><input name="email" type="text" value="qmik@qmik.org"/>
-          <span class="lt">动态绑定:</span>[<span class="bind">${email}</span>]
+          <span class="lt">email:</span><input name="user.email" type="text" value="qmik@qmik.org"/>
+          <span class="lt">动态绑定:</span>[<span class="bind">${user.email}</span>]
         </li>
         <li>
-          <span class="lt">密码: </span><input name="password" type="text"/>
-          <span class="lt">动态绑定:</span>[<span class="bind">{{password}}</span>]
+          <span class="lt">密码: </span><input name="user.password" type="text"/>
+          <span class="lt">动态绑定:</span>[<span class="bind">{{user.password}}</span>]
         </li>
       </ul>
     </div>
@@ -34,24 +36,24 @@
             <span style="color:red;">${msg}</span>
           </a>
         </p>
-        <ul>
+        <ul q-ctrl="cc">
           <li>
             <x>
-              <span class="lt">购买人:</span>[<span class="bind">${userName}</span>]&nbsp;
+              <span class="lt">购买人:</span>[<span class="bind">${user.userName}</span>]&nbsp;
             </x>
-            <x><span class="lt">过滤关键词: </span>[<span class="bind">${vUserName}</span>]</x>
+            <x><span class="lt">过滤关键词: xo>*o</span>[<span class="bind">${vUserName}</span>]</x>
           </li>
           <li>
-            <span class="lt">物品名: </span><input name="shopName" type="text" value="qmik"/>
-            <span class="lt">动态绑定:</span>[<span class="bind">${shopName}</span>]
+            <span class="lt">物品名: </span><input name="shop.shopName" type="text" value="qmik"/>
+            <span class="lt">动态绑定:</span>[<span class="bind">${shop.shopName}</span>]
           </li>
           <li>
-            <span class="lt">价格: </span><input name="price" type="text" value="999"/>
-            <span class="lt">动态绑定:</span>[<span class="bind">${price}</span>]
+            <span class="lt">价格: </span><input name="shop.price" type="text" value="999"/>
+            <span class="lt">动态绑定:</span>[<span class="bind">${shop.price}</span>]
           </li>
           <li>
-            <span class="lt">库存: </span><input name="stock" type="text" value="11"/>
-            <span class="lt">动态绑定:</span>[<span class="bind">{{stock}}</span>]
+            <span class="lt">库存: </span><input name="shop.stock" type="text" value="11"/>
+            <span class="lt">动态绑定:</span>[<span class="bind">{{shop.stock}}</span>]
           </li>
         </ul>
     </div>
@@ -61,13 +63,13 @@
           <span class="load" style="font-weight:700;" ng="a">
             加载数据: ${time} 
             <span class="loading" ng="b"></span>
-            ${userName}
+            ${user.userName}
           </span>          
         </p>
         <ul>
           <li>
             <x>
-              <span class="lt">购买人:</span>[<span class="bind">${userName}</span>]&nbsp;
+              <span class="lt">购买人:</span>[<span class="bind">${user.userName}</span>]&nbsp;
             </x>
           </li>
           <li>
@@ -116,15 +118,16 @@
 
     }).ctrl({
       shopping: function(scope){//购物
-        scope.vUserName = scope.parentScope.userName;//界面上用到的变量,没有输出相应的input标签,需要预定义
+        scope.vUserName = scope.parent.userName;//界面上用到的变量,没有输出相应的input标签,需要预定义
         scope.msg = "";
+        window.scope = scope;
         scope.clickme = function(e){
             scope.msg = "我变了 "+ parseInt($.now()/1000+Math.random()*100)+'';
             scope.apply("msg"); //这种写法,性能比较好,保更新 msg 对应的节点信息
             //scope.apply();//这种写法性能比较差,会更新整个控制器的所有节点信息, 
         }
-        scope.parentScope.watch("userName", function(v){
-          scope.vUserName ="(xo to *o)>"+ v.replace(/xo/g,"*o");
+        scope.parent.watch("user.userName", function(v){
+          scope.vUserName = v.replace(/xo/g,"*o");
           scope.apply("vUserName");
         });
       },search: function(scope){//搜索
@@ -135,8 +138,8 @@
         });
       },
       lazy: function(scope){//控制器 lazyLoad, 延迟加载数据(用于通过ajax从远程加载数据,在显示到页面上,通过 scope.apply()方法来显示)
-          var ttl = 5000;
-          scope.vUserName = scope.parentScope.userName;//
+          var ttl = 1000;
+          scope.vUserName = scope.parent.userName;//
           scope.cssDisplay="xxx";//初始化的值需要事先声明
           scope.time = parseInt(ttl/1000);
           var startTime = $.now() + ttl;
@@ -146,7 +149,7 @@
             scope.apply();//局部更新
           }, 900, ttl);
           $.delay(function(){
-              scope.find(".load").hide();
+              scope.$(".load").hide();
               scope.cssDisplay = "none";
               scope.goodsName ="衣服";
               scope.brand ="七挫狼";
