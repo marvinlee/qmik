@@ -11,6 +11,7 @@
   <style type="text/css">
     ul,li{list-style-type:none;}
     .tb-service .service-bd{padding:0 9px 9px 9px;}
+    .cat-list li{height:29px;line-height:29px;}
   </style>
   <script type="text/javascript" src="../../../../assets/Qmik-debug.all.js"></script> 
  </head> 
@@ -526,9 +527,7 @@
       <div class="cat-bd "> 
        <div class="cat-list"> 
         <div q-for="item in cata1.type1" class="list-item  list-item-first"> 
-        
           <li class="${item.class}"><a href="${item.href}">${item.title}</a></li> 
-          
         </div> 
         <div q-for="item in cata1.type2" class="list-item list-item-sec"> 
          <li class="${item.class}"><a href="${item.href}">${item.title}</a></li> 
@@ -547,84 +546,34 @@
      </div> 
      <div class="J_cat_2 cat-wrap   cat-wrap-purple cat-b-wrapper" > 
       <div class="cat-hd"> 
-       <h3><a href="http://xie.taobao.com/">鞋靴</a><span class="point">&middot;</span><a href="http://www.taobao.com/market/nvbao/shouye.php">箱包</a></h3> 
+       <h3>
+        <a href="${cata2.header.index1.href}">${cata2.header.index1.title}</a>
+        <span class="point">&middot;</span>
+        <a href="${cata2.header.index2.href}">${cata2.header.index2.title}</a>
+       </h3> 
        <div class="activity act-arrow"> 
         <em></em> 
         <div class="activity-bg"></div> 
-        <a href="http://www.taobao.com/market/nvxie/citiao/index.php">过年穿新鞋</a> 
+        <a href="${cata2.header.index3.href}">${cata2.header.index3.title}</a> 
        </div> 
        <div class="cat-tags"> 
-        <a href="http://www.taobao.com/market/nanxie/citiao/index.php">品牌男鞋</a> 
+        <a href="${cata2.header.index4.href}">${cata2.header.index4.title}</a> 
         <span>|</span> 
-        <a href="http://www.taobao.com/market/nanbao/shouye.php">潮包推荐</a> 
+        <a href="${cata2.header.index5.href}">${cata2.header.index5.title}</a> 
        </div> 
       </div> 
       <div class="cat-bd "> 
        <div class="cat-list"> 
-        <div class="list-item  "> 
-         <ul> 
-          <li class="item-header"><a href="http://www.taobao.com/market/nvxie/citiao/index.php">女鞋</a></li> 
-          <li> <a href="http://www.taobao.com/market/nvxie/xinpin.php" class="em">冬新款</a> </li> 
-          <li> <a href="http://www.taobao.com/market/nvxie/xuezi.php">靴子</a> </li> 
-          <li> <a href="http://www.taobao.com/market/nvxie/gaobangnvxie.php">高帮</a> </li> 
-          <li> <a href="http://www.taobao.com/market/nvxie/citiao/fanbuxie.php">帆布鞋</a> </li> 
-          <li> <a href="http://www.taobao.com/market/nvxie/zhengpi.php" class="em">真皮女鞋</a> </li> 
-         </ul> 
-         <ul> 
-          <li class="item-header"><a href="http://s.taobao.com/list?q=%B6%CC%D1%A5&amp;style=grid&amp;seller_type=taobao&amp;spm=a219r.lm893.1000187.1&amp;cps=yes&amp;s=0&amp;cat=50029742" class="em">短靴</a></li> 
-          <li> <a href="http://s.taobao.com/list?q=%D1%A9%B5%D8%D1%A5&amp;style=grid&amp;seller_type=taobao&amp;spm=a217o.7288001.1000187.1&amp;cps=yes&amp;s=0&amp;cat=50031712">雪地靴</a> </li> 
-          <li> <a href="http://s.taobao.com/list?nofestival=0&amp;q=%C6%BD%B8%FA&amp;bcoffset=&amp;tab=all&amp;loc=&amp;sort=&amp;source=&amp;style=grid&amp;bucket_id=&amp;filter=&amp;cat=50334022&amp;sortn=&amp;sort2=&amp;fs=1&amp;seller_type=taobao&amp;nocombo=&amp;spm=a219r.lm893&amp;cps=yes&amp;rsclick=&amp;stats_click=&amp;auction_tag%5B%5D=4806">平跟</a> </li> 
-          <li> <a href="http://s.taobao.com/list?nofestival=0&amp;q=%D6%D0%B8%FA&amp;bcoffset=&amp;tab=all&amp;loc=&amp;sort=&amp;source=&amp;style=grid&amp;bucket_id=&amp;filter=&amp;cat=50012028&amp;sortn=&amp;sort2=&amp;fs=1&amp;seller_type=taobao&amp;nocombo=&amp;spm=a219r.lm893&amp;cps=yes&amp;rsclick=&amp;stats_click=&amp;auction_tag%5B%5D=4806">中跟</a> </li> 
-          <li> <a href="http://s.taobao.com/list?nofestival=0&amp;q=%B8%DF%B8%FA+%D1%A5%D7%D3&amp;bcoffset=&amp;tab=all&amp;loc=&amp;sort=&amp;source=&amp;style=grid&amp;bucket_id=&amp;filter=&amp;cat=50012028&amp;sortn=&amp;sort2=&amp;fs=1&amp;seller_type=taobao&amp;nocombo=&amp;spm=a219r.lm893&amp;cps=yes&amp;rsclick=&amp;stats_click=&amp;auction_tag%5B%5D=4806">高跟</a> </li> 
-          <li> <a href="http://s.taobao.com/list?nofestival=0&amp;q=%C6%C2%B8%FA+%D1%A5%D7%D3&amp;bcoffset=&amp;tab=all&amp;loc=&amp;sort=&amp;source=&amp;style=grid&amp;bucket_id=&amp;filter=&amp;cat=50012028&amp;sortn=&amp;sort2=&amp;fs=1&amp;seller_type=taobao&amp;nocombo=&amp;spm=a219r.lm893&amp;cps=yes&amp;rsclick=&amp;stats_click=&amp;auction_tag%5B%5D=4806">坡跟</a> </li> 
-          <li> <a href="http://www.taobao.com/market/nvxie/citiao/danxie.php">单鞋</a> </li> 
-         </ul> 
-         <ul> 
-          <li class="item-header"><a href="http://www.taobao.com/market/nanxie/citiao/index.php">男鞋</a></li> 
-          <li> <a href="http://www.taobao.com/market/nanxie/citiao/xiuxian.php">休闲</a> </li> 
-          <li> <a href="http://www.taobao.com/market/nanxie/citiao/shangwu.php">商务</a> </li> 
-          <li> <a href="http://www.taobao.com/market/nanxie/citiao/chaoliu.php">潮流</a> </li> 
-          <li> <a href="http://s.taobao.com/list?q=%C2%ED%B6%A1%D1%A5&amp;style=grid&amp;seller_type=taobao&amp;spm=a219r.lm896.1000187.1&amp;cps=yes&amp;s=0&amp;cat=50016862" class="em">马丁靴</a> </li> 
-          <li> <a href="http://s.taobao.com/list?spm=a217n.7287937.a214d66-static.2.cFAdQA&amp;cat=50016853&amp;style=grid&amp;seller_type=taobao&amp;cps=yes&amp;s=0&amp;cat=50034269">高帮鞋</a> </li> 
-         </ul> 
-         <ul> 
-          <li class="item-header"><a href="http://s.taobao.com/list?q=%BC%D3%C8%DE&amp;style=grid&amp;seller_type=taobao&amp;spm=a219r.lm896&amp;cps=yes&amp;s=0&amp;cat=50016853&amp;ppath=413:800000751">加绒保暖</a></li> 
-          <li> <a href="http://www.taobao.com/market/nvxie/citiao/pinpai.php" class="em">品牌折扣</a> </li> 
-          <li> <a href="http://s.taobao.com/list?nofestival=0&amp;q=%D6%D0%C0%CF%C4%EA&amp;tab=all&amp;style=grid&amp;filter=reserve_price%5B50%2C%5D&amp;cat=50006843&amp;fs=0&amp;seller_type=taobao&amp;spm=a219r.lm893&amp;spm=a230r.1.1997074097.d4917629">爸妈鞋</a> </li> 
-          <li> <a href="http://s.taobao.com/list?q=%C3%DE%D0%AC&amp;abver=new&amp;input_query=mianxie&amp;suggest_offset=4&amp;from=suggest&amp;style=grid&amp;seller_type=taobao&amp;spm=a219r.lm896.1000187.1&amp;s=0&amp;cps=yes&amp;s=0&amp;cat=50034269&amp;ppath=413:800000751">棉鞋</a> </li> 
-          <li> <a href="http://s.taobao.com/list?q=%B5%CD%B0%EF&amp;cat=50016853&amp;style=grid&amp;seller_type=taobao&amp;spm=a219r.lm896.1000187.1">低帮</a> </li> 
-          <li> <a href="http://s.taobao.com/list?nofestival=0&amp;q=&amp;bcoffset=&amp;tab=all&amp;loc=&amp;sort=&amp;source=&amp;style=grid&amp;bucket_id=&amp;filter=&amp;cat=50016860&amp;sortn=&amp;sort2=&amp;fs=1&amp;seller_type=taobao&amp;ppath=413%3A800000753&amp;spm=a219r.lm896&amp;cps=yes&amp;rsclick=&amp;stats_click=&amp;auction_tag%5B%5D=4806&amp;olu=yes">豆豆鞋</a> </li> 
-         </ul> 
+        <div q-for="item in cata2.type1" class="list-item  list-item-first"> 
+          <li class="${item.class}"><a href="${item.href}">${item.title}</a></li> 
         </div> 
-        <div class="list-item "> 
-         <ul> 
-          <li class="item-header"><a href="http://www.taobao.com/market/nvbao/shouye.php" class="em">女包</a></li> 
-          <li> <a href="http://www.taobao.com/market/nvbao/new2.php?spm=a219r.lm894.a214d6o.3.3VivyF" class="em">冬新款</a> </li> 
-          <li> <a href="http://www.taobao.com/market/nvbao/stb.php">手提包</a> </li> 
-          <li> <a href="http://www.taobao.com/market/nvbao/citiao/xkb.php">斜挎包</a> </li> 
-          <li> <a href="http://www.taobao.com/market/nvbao/dapaixiangbao.php">大牌</a> </li> 
-          <li> <a href="http://www.taobao.com/market/nvbao/citiao/zhenpi.php">真皮</a> </li> 
-         </ul> 
-         <ul> 
-          <li class="item-header"><a href="http://www.taobao.com/market/nanbao/shouye.php">男包</a></li> 
-          <li> <a href="http://www.taobao.com/market/nanbao/citiao/cl.php" class="em">潮包</a> </li> 
-          <li> <a href="http://www.taobao.com/market/nanbao/citiao/sw.php?spm=a217p.7287769.a214d6o-static.10.qtL9EL">商务包</a> </li> 
-          <li> <a href="http://www.taobao.com/market/nvbao/shuangjianbao.php?spm=a217p.1095290.a214d6o-static.19.2Sbpwv">双肩包</a> </li> 
-          <li> <a href="http://www.taobao.com/market/nvbao/lvxingxiang.php?spm=5711.1279143.a214d6o-static.30.URzydl">拉杆箱</a> </li> 
-          <li> <a href="http://www.taobao.com/market/nvbao/citiao/qianbao2.php">钱包</a> </li> 
-         </ul> 
-         <ul> 
-          <li class="item-header"><a href="http://www.taobao.com/market/fspj/index.php">服饰配件</a></li> 
-          <li> <a href="http://www.taobao.com/market/fspj/sjg.php?spm=5693.1278928.a214uak-static.1.58DT7V">围巾</a> </li> 
-          <li> <a href="http://www.taobao.com/market/fspj/mzg.php">帽子</a> </li> 
-          <li> <a href="http://www.taobao.com/market/fspj/yaodai.php">皮带</a> </li> 
-          <li> <a href="http://www.taobao.com/market/fspj/shoutao.php?spm=5693.1253255.a214uak-static.27.kIGtfj" class="em">手套</a> </li> 
-          <li> <a href="http://s.taobao.com/list?q=%CE%A7%B2%B1&amp;style=grid&amp;seller_type=taobao&amp;spm=5693.1278929.1000187.1&amp;s=0&amp;cps=yes&amp;s=0&amp;cat=54888004&amp;ppath=1627194:46277">围脖</a> </li> 
-          <li> <a href="http://s.taobao.com/list?q=%C3%AB%C1%EC&amp;cat=50010404&amp;style=grid&amp;seller_type=taobao&amp;spm=a219r.lm5693.1000187.1">毛领</a> </li> 
-         </ul> 
+        <div q-for="item in cata2.type2" class="list-item list-item-sec"> 
+         <li class="${item.class}"><a href="${item.href}">${item.title}</a></li> 
         </div> 
         <ul class="hot-world-list"> 
-         <li class="J_tui_words" data-id="1" data-spm-ab="2"> <a href="http://s.taobao.com/list?q=热销男包&amp;cat=50006842,50072686,50072688&amp;style=grid&amp;seller_type=taobao&amp;bcat=50006842&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000002" title="热销男包" class="guess ">热销男包</a> <a href="http://s.taobao.com/list?q=拉杆箱&amp;cat=50006842,50072686,50072688&amp;style=grid&amp;seller_type=taobao&amp;bcat=50012019&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000002" title="拉杆箱" class="em">拉杆箱</a> <a href="http://s.taobao.com/list?q=凉鞋&amp;cat=50026637&amp;style=grid&amp;seller_type=taobao&amp;bcat=50011745&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000002" title="凉鞋" class="">凉鞋</a> <a href="http://s.taobao.com/list?q=帽子&amp;cat=50010404&amp;style=grid&amp;seller_type=taobao&amp;bcat=302910&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000002" title="帽子" class="em">帽子</a> <a href="http://s.taobao.com/list?q=新品女靴&amp;cat=50006843&amp;style=grid&amp;seller_type=taobao&amp;bcat=50006843&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000000" title="新品女靴" class="">新品女靴</a> <a href="http://s.taobao.com/list?q=包包&amp;cat=50006842,50072686,50072688&amp;style=grid&amp;seller_type=taobao&amp;bcat=50012010&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000000" title="包包" class="">包包</a> <a href="http://s.taobao.com/list?q=运动鞋&amp;cat=50006843&amp;style=grid&amp;seller_type=taobao&amp;bcat=50012027&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000000" title="运动鞋" class="">运动鞋</a> <a href="http://s.taobao.com/list?q=丝巾&amp;cat=50010404&amp;style=grid&amp;seller_type=taobao&amp;bcat=50007003&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000000" title="丝巾" class="">丝巾</a> <a href="http://s.taobao.com/list?q=皮鞋&amp;cat=50026637&amp;style=grid&amp;seller_type=taobao&amp;bcat=50012906&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000000" title="皮鞋" class="">皮鞋</a> </li> 
+          <li q-for="item in cata2.type3" class="J_tui_words" > 
+            <a href="${item.href}" class="${item.class} ">${item.title}</a> 
+          </li> 
         </ul> 
        </div> 
        <div class="cat-img-tui" data-ignore="" data-id="1" data-spm-ab="4"> 
@@ -1797,7 +1746,7 @@
       
     },
     cata: function(scope){
-      $.use("data.js", function(data){
+      $.use("cata.js", function(data){
           var catas = data.catas;
           scope.catas = catas;
           $.each(catas, function(key, data){
