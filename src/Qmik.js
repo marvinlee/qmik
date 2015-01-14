@@ -13,9 +13,9 @@
 	var encode = encodeURIComponent,
 		decode = decodeURIComponent,
 		slice = [].slice, //
-		baseURL = loc.protocol + "//" + loc.hostname, //
+		baseURL = loc.protocol + "//" + loc.host, //
 		config = {
-			base: baseURL=="file://" ? baseURL+loc.pathname.replace(/[^\/]*$/,"") : "/" //工程上下文目录
+			base: "" //工程上下文目录
 		};
 	//var readyRE = /complete|loaded|interactive/i;
 	// define qmik object
@@ -463,7 +463,15 @@
 		 * 合并url,if 参数 _url为空,则
 		 */
 		url: function(_url) {
-			return (/^[a-zA-Z0-9]+:\/\//.test(_url) ? _url : (config.base+"/"+(_url||""))).replace(/\/{2,}/g,'/');
+			_url = Q.trim(_url);
+			var regProtol = /^\s*[a-zA-Z0-9]+:\/\//, base = config.base;
+			if(!regProtol.test(_url)){
+				if(!regProtol.test(base)){
+					base = (base || loc.pathname.replace(/\/[^\/]*$/,""));
+				}
+				_url = base + "/" + _url.replace(/\/{2,}/g,"/");
+			} 
+			return _url;
 		},
 		cssPrefix: function(style) {
 			var ret = {};

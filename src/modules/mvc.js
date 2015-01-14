@@ -15,12 +15,61 @@
 		scopes = {},
 		keywords = {scopes:1,context:1,parent:1,cmd:1,get:1,set:1,app:1},//关键词,用户不能定义的变量名
 		isExecApply = true; 
-	var nameRootScope ="parent",
+	var nameParentScope ="parent",
 		namespace = "qmik-mvc-space",
 		namespaceScope = "qmik-mvc-space-scope",
 		fieldWatchs = "__watchs",
 		nameRoot = "html",
 		nameContext = "context";
+
+	/********* 当节点在显示视口时触发 start *******/
+	var g_viewports = {};
+	//高度
+	function getHeight() {
+		return win.innerHeight || screen.availHeight;
+	}
+	function getMax() {
+		return window.pageYOffset + getHeight() * 1;
+	}
+	//判断是否在视口里
+	function inViewport(dom) {
+		var min = win.pageYOffset - getHeight() / 2;
+		var max = getMax();
+		var qdom = Q(dom);
+		var elTop = qdom.offset().top;
+		min = min < 0 ? 0 : min;
+		return elTop > 0 && qdom.height() > 0 && elTop >= min && elTop <= max;
+	}
+	var prevTime = Q.now();
+	function handle(e){
+		var curTime = Q.now();
+		if (curTime - prevTime < 200) {
+			return;
+		}
+		prevTime = curTime;
+		for(var key in g_viewports){
+			var map = g_viewports[key];
+			var scope = map.scope,
+				node = scope.context;
+			var Qme = Q(node);
+			if (Qme.offset().top > getMax()) {
+				break;
+			}
+			if (inViewport(Qme)) {
+				delete g_viewports[key];
+				map.callback && map.callback(scope);
+			}
+		}
+	}
+	Q(win).on({
+		scroll: handle
+	});
+	Q.delay(function() {
+		scroll(0,win.pageYOffset+1);
+	}, 300);
+	/********* 当节点在显示视口时触发 end *******/
+
+
 	/** 应用 */
 	function App(fun) {
 		var me = this;
@@ -110,7 +159,7 @@
 		me.__input = {};
 		scopes[me.__name] = me;
 		context[namespaceScope] = me;
-		me[nameRootScope] = rootScope; //父scope
+		me[nameParentScope] = rootScope; //父scope
 		$("input,select,textarea", context).each(function(i, dom) {
 			var name = dom.name, isSet=true;
 			if(name){
@@ -222,7 +271,7 @@
 	//取变量对应的值
 	function getVarValue(scope, name) {
 		var field = split(name)[0];
-		var useScope = isNull(scope[field]) ? scope[nameRootScope] || scope : scope,
+		var useScope = isNull(scope[field]) ? scope[nameParentScope] || scope : scope,
 			val = getValue(useScope, name);
 		return isNull(val) ? "" : val;
 	}
@@ -234,7 +283,7 @@
 	//添加变量映射节点
 	function addMapNode(scope, name, node) {
 		var ns = Q.isArray(name) ? name : split(name);
-		var useScope = isNull(scope[ns[0]]) ? scope[nameRootScope] : scope;
+		var useScope = isNull(scope[ns[0]]) ? scope[nameParentScope] : scope;
 		if (useScope) {
 			addMapPush(useScope, name, node);
 			var ns = split(name);
@@ -272,15 +321,23 @@
 					if ("q-ctrl" === attrName) {//控制器
 						if (value != "") {
 							scope = new Scope(node, scope);
-							execCatch(function() {
+							if(Q.isFun(ctrls[value])){
+								g_viewports[value] = {
+									scope: scope,
+									callback: ctrls[value]
+								}
+							}else{
+								Q.warn("q-ctrl:[" + value + "]is not define")
+							}
+							/*execCatch(function() {
 								Q.isFun(ctrls[value]) ? ctrls[value](scope) : Q.warn("q-ctrl:[" + value + "]is not define");
-							});
+							});*/
 						}
 					} else if ("q-for" === attrName) { //for
 						var vs = value.split(" "),
 							template = space.html = space.html || node.innerHTML,
 							htmls = [];
-						each(getVarValue(scope, vs[2]) || [], function(i, item) {
+						vs.length !=3 ? Q.warn("q-for[",value,"] is error") : each(getVarValue(scope, vs[2]) || [], function(i, item) {
 							item.index = i + 1;
 							var html = template.replace(REG_VAR_NAME, function(varName) {
 								var reg = new RegExp("^" + vs[0] + "\."),
@@ -293,7 +350,7 @@
 						node.innerHTML = htmls.join("");
 						Q.delay(function(){
 							compile(node, scope);
-						}, 1000);
+						}, 100);
 					} else if(/^q-on/.test(attrName)){//事件绑定
 						var onName = attrName,
 							name = attrName.replace(/^q-on/,""),
