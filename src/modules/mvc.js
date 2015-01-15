@@ -29,7 +29,7 @@
 		return win.innerHeight || screen.availHeight;
 	}
 	function getMax() {
-		return window.pageYOffset + getHeight() * 1;
+		return window.pageYOffset + getHeight() + 120;
 	}
 	//判断是否在视口里
 	function inViewport(dom) {
@@ -42,30 +42,34 @@
 	}
 	var prevTime = Q.now();
 	function handle(e){
-		var curTime = Q.now();
+		var curTime = Q.now(), timeout = 10;
 		if (curTime - prevTime < 200) {
 			return;
 		}
 		prevTime = curTime;
-		for(var key in g_viewports){
-			var map = g_viewports[key];
+		each(g_viewports, function(key, map){
 			var scope = map.scope,
 				node = scope.context;
 			var Qme = Q(node);
 			if (Qme.offset().top > getMax()) {
-				break;
+				return;
 			}
 			if (inViewport(Qme)) {
 				delete g_viewports[key];
-				map.callback && map.callback(scope);
+				Q.delay(map.callback, timeout, scope);
+				timeout += 100;
+				//map.callback && map.callback(scope);
 			}
-		}
+		});
 	}
 	Q(win).on({
-		scroll: handle
-	});
+		scroll: handle,
+		touchstart: handle
+	}).trigger("scroll");
+	
 	Q.delay(function() {
-		scroll(0,win.pageYOffset+1);
+		var y = win.pageYOffset;
+		scroll(0,y+1);
 	}, 300);
 	/********* 当节点在显示视口时触发 end *******/
 
