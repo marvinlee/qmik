@@ -88,6 +88,7 @@
 			me.scope =Q(nameRoot)[0][namespace] = scope;
 			fun && fun(scope);
 			compile(Q(nameRoot)[0], scope, true);//编译页面
+			Q("body").css("visibility","visible");
 			isExecApply = false;
 			function change(e) {
 				var target = e.target,
@@ -129,7 +130,7 @@
 				change: change,
 				keyup: change
 			});
-			Q(document).on({
+			Q(win).on({
 				//DOMSubtreeModified: function(e){},
 				DOMNodeInserted: function(e){//节点增加
 					Q.delay(function(){
@@ -306,14 +307,13 @@
 	/** 取存放到节点上的对象空间 */
 	function getSpace(node){
 		var ctrl = getCtrlNode(node);
-		node[namespace] = node[namespace] || {
+		return node[namespace] || {
 			attr: {},
 			vars: [],
 			ctrl: ctrl,
 			event: {},
 			scope: ctrl.scope
-		};
-		return node[namespace];
+		}
 	}
 	function replaceNodeVar(node, scope, isAdd, callback) {
 		var space = getSpace(node);
@@ -352,6 +352,7 @@
 							htmls.push(html);
 						});
 						node.innerHTML = htmls.join("");
+						node[namespace] = space;
 						Q.delay(function(){
 							compile(node, scope);
 						}, 100);
@@ -373,13 +374,13 @@
 						}						
 					} else if (REG_VAR_NAME.test(value)) {//变量
 						attr.value = value.replace(REG_VAR_NAME, function(name) {
+							node[namespace] = space;
 							name = getVarName(name);
 							space.vars.push(name);
 							var val = getVarValue(scope, name);
 							isAdd && addMapNode(scope, name, node);							
 							return val;
 						});
-						attr.value = value;
 					}
 				});
 				break;
@@ -387,6 +388,7 @@
 				var val = space.text;
 				val = isNull(val) ? node.textContent : val;
 				if (REG_VAR_NAME.test(val)) {
+					node[namespace] = space;
 					space.text = val;
 					node.textContent = val.replace(REG_VAR_NAME, function(name) {
 						name = getVarName(name);
