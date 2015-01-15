@@ -87,8 +87,8 @@
 				scope = new Scope();
 			me.scope =Q(nameRoot)[0][namespace] = scope;
 			fun && fun(scope);
-			compile(Q(nameRoot)[0], scope, true);//编译页面
 			Q("body").css("visibility","visible");
+			compile(Q(nameRoot)[0], scope, true);//编译页面
 			isExecApply = false;
 			function change(e) {
 				var target = e.target,

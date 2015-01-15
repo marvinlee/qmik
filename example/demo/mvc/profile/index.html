@@ -155,10 +155,13 @@
     </ul> 
    </div> 
   </div> 
+
+
   <div class="wrap"> 
    <div class="screen-hd row"> 
     <div class="head"> 
      <div class="head-wrap"> 
+
       <div q-ctrl="search" class="search"> 
        <div class="search-wrap"> 
         <div class="search-hd"> 
@@ -210,23 +213,9 @@
         </div> 
         <div id="J_SearchFt" class="search-ft"> 
          <div class="J_TbSearchContent J_HotWord"> 
-          <div class="search-hots"> 
-           <a href="//s.taobao.com/search?q=%C5%AE%B0%FC&amp;refpid=420460_1006&amp;source=tbsy&amp;style=grid&amp;tab=all">时尚女包</a> 
-           <a href="//s.taobao.com/search?q=%D3%F0%C8%DE%B7%FE&amp;refpid=420461_1006&amp;source=tbsy&amp;style=grid&amp;tab=all">羽绒服</a> 
-           <a href="//s.taobao.com/search?q=%D1%A9%B5%D8%D1%A5&amp;refpid=420462_1006&amp;source=tbsy&amp;style=grid&amp;tab=all" class="h">雪地靴</a> 
-           <a href="//s.taobao.com/search?q=%C3%AB%C4%D8%CD%E2%CC%D7&amp;refpid=420463_1006&amp;source=tbsy&amp;style=grid&amp;tab=all">毛呢外套</a> 
-           <a href="//s.taobao.com/search?q=%C4%D0%D0%AC&amp;refpid=420464_1006&amp;source=tbsy&amp;style=grid&amp;tab=all">男鞋</a> 
-           <a href="//s.taobao.com/search?q=%B1%A3%CE%C2%B1%AD&amp;refpid=420465_1006&amp;source=tbsy&amp;style=grid&amp;tab=all">时尚保温杯</a> 
-           <a href="//s.taobao.com/search?q=%BD%F8%BF%DA%C1%E3%CA%B3&amp;refpid=420466_1006&amp;source=tbsy&amp;style=grid&amp;tab=all">进口零食</a> 
-           <a href="//s.taobao.com/search?q=%C3%DE%D2%C2+%C5%AE&amp;refpid=420467_1006&amp;source=tbsy&amp;style=grid&amp;tab=all">新款棉衣</a> 
-           <a href="//s.taobao.com/search?q=%CB%C4%BC%FE%CC%D7&amp;refpid=430144_1006&amp;source=tbsy&amp;style=grid&amp;tab=all">秋冬四件套</a> 
-           <a href="//s.taobao.com/search?q=%CD%AF%D7%B0&amp;refpid=430145_1006&amp;source=tbsy&amp;style=grid&amp;tab=all">秋冬童装</a> 
-           <a href="//s.taobao.com/search?q=%C6%A4%D2%C2&amp;refpid=430146_1006&amp;source=tbsy&amp;style=grid&amp;tab=all">皮衣</a> 
-           <a href="//s.taobao.com/search?q=%C3%AB%D2%C2&amp;refpid=430147_1006&amp;source=tbsy&amp;style=grid&amp;tab=all">新款毛衣</a> 
-           <a href="//s.taobao.com/search?q=%B4%F2%B5%D7%BF%E3&amp;refpid=430148_1006&amp;source=tbsy&amp;style=grid&amp;tab=all">打底裤</a> 
-           <a href="//s.taobao.com/search?q=%CB%AF%D2%C2&amp;refpid=430149_1006&amp;source=tbsy&amp;style=grid&amp;tab=all">睡衣</a> 
-           <a href="//s.taobao.com/search?q=%C9%B3%B7%A2%B5%E6&amp;refpid=430150_1006&amp;source=tbsy&amp;style=grid&amp;tab=all">秋冬沙发垫</a> 
-           <a class="more more-with-border" href="http://top.taobao.com/index.php?from=tbsy">更多<i><em></em><span></span></i></a> 
+          <div q-for="item in search.hots" class="search-hots"> 
+           <a href="${item.href}">${item.title}</a> 
+           
           </div> 
          </div> 
          <div class="J_TmallSearchContent J_HotWord J_TmallHotWord tmall-hot-word"></div> 
@@ -2932,7 +2921,6 @@
             });
             scope.apply();
         });
-        
       },
       cata1: function(scope){
         initCata(scope, "cata1");
@@ -2981,6 +2969,8 @@
       },
       cata16: function(scope){
         initCata(scope, "cata16");
+      },
+      shops: function(scope){
       }
     });
 //
