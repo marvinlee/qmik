@@ -507,7 +507,7 @@
 				itemid:""
 			}
 		*/
-		render: function(struct, data) { //不推荐的方法,在未来的版本里,将会被删除,请尽量不要使用
+		render: function(struct, data) { //不推荐的方法,在下个版本里,将会被删除,请尽量不要使用
 			var h = [],
 				tag = (struct.tag || "").trim(),
 				text = struct.text;

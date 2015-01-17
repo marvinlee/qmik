@@ -87,7 +87,7 @@
 				scope = new Scope();
 			me.scope =Q(nameRoot)[0][namespace] = scope;
 			fun && fun(scope);
-			Q("body").css("visibility","visible");
+			Q("[q-ctrl]").css("visibility","visible");
 			compile(Q(nameRoot)[0], scope, true);//编译页面
 			isExecApply = false;
 			function change(e) {
@@ -296,8 +296,8 @@
 		}
 	}
 	function addMapPush(scope, name, node){
-		scope.__map[name] = scope.__map[name] || [];
-		scope.__map[name].push(node);
+		var list = scope.__map[name] = scope.__map[name] || [];
+		list.indexOf(node)<0 && list.push(node);
 	}
 	function compileVarName(key, scope) {
 		each(scope.__map[key], function(i, dom) {
@@ -312,7 +312,7 @@
 			vars: [],
 			ctrl: ctrl,
 			event: {},
-			scope: ctrl.scope
+			scope: ctrl[namespaceScope]
 		}
 	}
 	function replaceNodeVar(node, scope, isAdd, callback) {

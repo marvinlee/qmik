@@ -475,11 +475,16 @@
 		},
 		animate: function(style, time, easing, callback){
 			var me = this;
+			var initStyle = {transition: 0}, startStype = Q.extend({}, initStyle);
+			each(style, function(key, val){
+				startStype[key] = parseFloat(css(me, key))||0;
+			});
+			css(me, startStype);
 			Q.delay(function(){
-				style.transition = style.transition || " ease-in "+(time||1)+"ms";
+				style.transition = " ease-in-out " + (time || 1) + "ms";
 				css(me, Q.cssPrefix(style));
-				function transitionEnd(e){
-					css(me, Q.cssPrefix({transition:0}));
+				function transitionEnd(e) {
+					css(me, initStyle);
 					callback && callback(e);
 				}
 				me.once({
@@ -487,7 +492,7 @@
 					msTransitionEnd: transitionEnd,
 					oTransitionEnd: transitionEnd,
 					transitionend: transitionEnd
-				})
+				});
 			}, 10);
 			return me;
 		},
