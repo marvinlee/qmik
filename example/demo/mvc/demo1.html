@@ -16,8 +16,6 @@
       <ul>
         <li class=" q-hide">
           <span class="lt">用户名: </span><input name="user.userName" type="text" value="leo"/>
-          <input name="scopes" type="text" value="leo"/>
-          <input name="watch" type="text" value="leo"/>
           <span class="lt">动态绑定:</span>[<span class="bind">${user.userName}</span>]
         </li>
         <li>
@@ -36,7 +34,7 @@
             <span style="color:red;">${msg}</span>
           </a>
         </p>
-        <ul q-ctrl="cc">
+        <ul>
           <li>
             <x>
               <span class="lt">购买人:</span>[<span class="bind">${user.userName}</span>]&nbsp;
@@ -115,7 +113,10 @@
   <script type="text/javascript">
     //$.app() 编译并生成应用,$.app().ctrl()定义控制器
     $.app(function(scope){ //全局控制器的写法
-
+        $.delay(function(){
+          scope.user.userName="leochen";
+          scope.apply("user");
+        }, 3000);
     }).ctrl({
       shopping: function(scope){//购物
         scope.vUserName = scope.parent.userName;//界面上用到的变量,没有输出相应的input标签,需要预定义
@@ -138,16 +139,18 @@
         });
       },
       lazy: function(scope){//控制器 lazyLoad, 延迟加载数据(用于通过ajax从远程加载数据,在显示到页面上,通过 scope.apply()方法来显示)
-          var ttl = 1000;
+          var ttl = 5000;
           scope.vUserName = scope.parent.userName;//
           scope.cssDisplay="xxx";//初始化的值需要事先声明
           scope.time = parseInt(ttl/1000);
           var startTime = $.now() + ttl;
+          scope.apply("time");
           $.cycle(function(){
             var t = startTime - $.now();
             scope.time = parseInt(t/1000);
-            scope.apply();//局部更新
+            scope.apply("time");//局部更新
           }, 900, ttl);
+          console.log(scope);
           $.delay(function(){
               scope.$(".load").hide();
               scope.cssDisplay = "none";

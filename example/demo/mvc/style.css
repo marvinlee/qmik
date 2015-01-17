@@ -15,6 +15,9 @@ a{
   font-size: 20px;
   font-weight: 500;
 }
+.border1{
+  border: 1px solid #00ccaa;
+}
 .q-hide{
   
 }
@@ -53,6 +56,9 @@ li .lt{
   text-align: right;
   padding-right: 10px;
 }
+.bh{
+  min-height: 120px;
+}
 input[type=text],select,textarea{
   margin: 2px;
   padding: 1px;
@@ -66,10 +72,10 @@ input[type=text]{
   width: 100px;
 }
 .box{
-  border: 1 solid #cfcfcf;
+  border: 1px solid #cfcfcf;
   padding: 4px 10px 0 10px;
   margin: 10px;
 }
 .box:nth-child(even){
-  border: 1 solid #E90F66;
+  border: 1px solid #E90F66;
 }

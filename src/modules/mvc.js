@@ -9,12 +9,12 @@
 		isPlainObject = Q.isPlainObject,
 		extend = Q.extend,
 		each = Q.each,
+		delay = Q.delay,
 		execCatch = Q.execCatch;
 
 	var ctrls = {}, //控制器存储
 		scopes = {},
-		keywords = {scopes:1,context:1,parent:1,cmd:1,get:1,set:1,app:1},//关键词,用户不能定义的变量名
-		isExecApply = true; 
+		keywords = {scopes:1,context:1,parent:1,cmd:1,get:1,set:1,app:1};//关键词,用户不能定义的变量名
 	var nameParentScope ="parent",
 		namespace = "qmik-mvc-space",
 		namespaceScope = "qmik-mvc-space-scope",
@@ -32,10 +32,9 @@
 		return window.pageYOffset + getHeight() + 120;
 	}
 	//判断是否在视口里
-	function inViewport(dom) {
+	function inViewport(qdom) {
 		var min = win.pageYOffset - getHeight() / 2;
 		var max = getMax();
-		var qdom = Q(dom);
 		var elTop = qdom.offset().top;
 		min = min < 0 ? 0 : min;
 		return elTop > 0 && qdom.height() > 0 && elTop >= min && elTop <= max;
@@ -43,34 +42,30 @@
 	var prevTime = Q.now();
 	function handle(e){
 		var curTime = Q.now(), timeout = 10;
-		if (curTime - prevTime < 200) {
+		if (curTime - prevTime < 100) {
 			return;
 		}
 		prevTime = curTime;
 		each(g_viewports, function(key, map){
-			var scope = map.scope,
-				node = scope.context;
-			var Qme = Q(node);
-			if (Qme.offset().top > getMax()) {
+			var node = map.scope.context,
+				qdom = Q(node);
+			if (qdom.offset().top > getMax()) {
 				return;
 			}
-			if (inViewport(Qme)) {
+			if (inViewport(qdom)) {
 				delete g_viewports[key];
-				Q.delay(map.callback, timeout, scope);
-				timeout += 100;
-				//map.callback && map.callback(scope);
+				map.callback && execCatch(map.callback);
+				qdom.trigger("viewport");
 			}
 		});
 	}
 	Q(win).on({
 		scroll: handle,
 		touchstart: handle
-	}).trigger("scroll");
-	
-	Q.delay(function() {
-		var y = win.pageYOffset;
-		scroll(0,y+1);
-	}, 300);
+	});
+	function trigger(){
+		Q(win).trigger("scroll");
+	}
 	/********* 当节点在显示视口时触发 end *******/
 
 
@@ -89,7 +84,7 @@
 			fun && fun(scope);
 			Q("[q-ctrl]").css("visibility","visible");
 			compile(Q(nameRoot)[0], scope, true);//编译页面
-			isExecApply = false;
+			trigger();
 			function change(e) {
 				var target = e.target,
 					fields = split(target.name||""),
@@ -133,7 +128,7 @@
 			Q(win).on({
 				//DOMSubtreeModified: function(e){},
 				DOMNodeInserted: function(e){//节点增加
-					Q.delay(function(){
+					delay(function(){
 						var target = e.target,
 						space = getSpace(target);
 						compile(target, space.scope);
@@ -205,9 +200,9 @@
 		},
 		apply: function(names) { //应用会话信息的变更,同时刷新局部页面
 			var me = this;
-			if(isExecApply == false){
-				isExecApply = true;
-				execCatch(function(){
+			g_viewports[me.__name] = {
+				scope: me,
+				callback: function(){
 					if (names) {
 						names = Q.isArray(names) ? names : [names];
 						each(names, function(i, name) {
@@ -216,9 +211,9 @@
 					} else {
 						compile(me[nameContext], me)
 					}
-				});				
-				isExecApply = false;
-			}
+				}
+			};
+			delay(trigger, 150);
 		}
 	});
 	/** 取界面上input输入标签的初始化值 */
@@ -324,18 +319,22 @@
 						value = space.attr[attrName] = space.attr[attrName] || (attr.value || "").trim().replace(/(\s){2,}/g, " ");
 					if ("q-ctrl" === attrName) {//控制器
 						if (value != "") {
+							if(Q(node).closest("[q-ctrl]").length > 1){
+								Q.warn("q-ctrl[",scope.__name,"] can't have child q-ctrl[", value,"]");
+								return;
+							}
 							scope = new Scope(node, scope);
-							if(Q.isFun(ctrls[value])){
+							/*if(Q.isFun(ctrls[value])){
 								g_viewports[value] = {
 									scope: scope,
 									callback: ctrls[value]
 								}
 							}else{
 								Q.warn("q-ctrl:[" + value + "]is not define")
-							}
-							/*execCatch(function() {
+							}*/
+							execCatch(function() {
 								Q.isFun(ctrls[value]) ? ctrls[value](scope) : Q.warn("q-ctrl:[" + value + "]is not define");
-							});*/
+							});
 						}
 					} else if ("q-for" === attrName) { //for
 						var vs = value.split(" "),
@@ -353,7 +352,7 @@
 						});
 						node.innerHTML = htmls.join("");
 						node[namespace] = space;
-						Q.delay(function(){
+						delay(function(){
 							compile(node, scope);
 						}, 100);
 					} else if(/^q-on/.test(attrName)){//事件绑定
