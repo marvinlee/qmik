@@ -349,7 +349,7 @@
 							space.fors[node] && space.fors[node].stop();//停止之前的进度
 							space.fors[node] = Q.cycle(function(){
 								if(start>=list.length){
-									return thread.stop();
+									return space.fors[node].stop();
 								}
 								htmls = [];
 								each(list.slice(start, start+24), function(i, item) {
