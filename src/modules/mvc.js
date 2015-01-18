@@ -94,7 +94,7 @@
 				if (isInput(target)) {
 					getValue(scope, name, getInputValue(target));
 					var value = getVarValue(scope, name);
-					each(getWatchs(scope[fieldWatchs], name), function(i, watch) {
+					each(getBatList(scope[fieldWatchs], name), function(i, watch) {
 						 execCatch(watch,[value]);
 					});
 					compileVarName(name, scope);
@@ -204,23 +204,36 @@
 		once: function(name, handle){
 			Q(this[nameContext]).once(name, handle)
 		},
-		apply: function(callback) { //应用会话信息的变更,同时刷新局部页面
+		apply: function(names, callback) { //应用会话信息的变更,同时刷新局部页面
 			var me = this;
+			if(Q.isFun(names)){
+				callback = names;
+				names = [];
+			}else{
+				names = Q.isArray(names) ? names : [];
+			}
 			g_viewports[me.__name] = {
 				scope: me,
 				callback: function(){
-					compile(me[nameContext], me);
+					if(names.length > 0){
+						var nodes = [];
+						each(names, function(i, name){
+							compileVarName(name, me)
+						});
+					}else{
+						compile(me[nameContext], me);
+					}
 					Q.isFun(callback) && callback();
 				}
 			};
 			delay(trigger, execInterval + 10);
 		}
 	});
-	function getWatchs(watchs, name){
+	function getBatList(map, name){
 		if(name=="")return;
 		var retWatchs = [];
 		for(var i=0,end=split(name).length;i<end;i++){
-			var watch = watchs[name];
+			var watch = map[name];
 			if(watch){
 				retWatchs = watch.concat(retWatchs);
 			}
@@ -286,10 +299,12 @@
 	}
 	//取变量对应的值
 	function getVarValue(scope, name) {
-		var field = split(name)[0];
-		var useScope = isNull(scope[field]) ? scope[nameParentScope] || scope : scope,
-			val = getValue(useScope, name);
+		var val = getValue(getUseSpaceScope(scope, name), name);
 		return isNull(val) ? "" : val;
+	}
+	function getUseSpaceScope(scope, name){
+		var field = split(name)[0];
+		return isNull(scope[field]) && !isNull(scope[nameParentScope][field]) ? scope[nameParentScope] : scope
 	}
 	/** 取控制器节点 */
 	function getCtrlNode(node) {
@@ -298,17 +313,21 @@
 
 	//添加变量映射节点
 	function addMapNode(scope, name, node) {
-		var ns = Q.isArray(name) ? name : split(name);
-		var useScope = isNull(scope[ns[0]]) ? scope[nameParentScope] : scope;
-		if (useScope) {
-			addMapPush(useScope, name, node);
-			var ns = split(name);
-			addMapPush(useScope, ns[0], node);
+		scope = getUseSpaceScope(scope, name);
+		if (scope) {
+			addMapPush(scope, name, node)
 		}
 	}
 	function addMapPush(scope, name, node){
-		var list = scope.__map[name] = scope.__map[name] || [];
-		list.indexOf(node)<0 && list.push(node);
+		//var list = scope.__map[name] = scope.__map[name] || [];
+		//list.indexOf(node)<0 && list.push(node);
+		var retWatchs = [];
+		for(var i=0,end=split(name).length;i<end;i++){
+			var list = scope.__map[name] = scope.__map[name] || [];
+			list.indexOf(node)<0 && list.push(node);
+			name = name.replace(/\.?[^\.]*$/,"");
+		}
+ 		return retWatchs;
 	}
 	function compileVarName(key, scope) {
 		each(scope.__map[key], function(i, dom) {
