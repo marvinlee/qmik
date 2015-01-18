@@ -89,13 +89,13 @@
 			trigger();
 			function change(e) {
 				var target = e.target,
-					fields = split(target.name||""),
-					name = fields[0],
+					name = target.name||"",
 					scope = getCtrlNode(target)[namespaceScope] || scope;
 				if (isInput(target)) {
-					getValue(scope, fields, getInputValue(target));
-					each(scope[fieldWatchs][name], function(i, watch) {
-						watch && watch(getVarValue(scope, name));
+					getValue(scope, name, getInputValue(target));
+					var value = getVarValue(scope, name);
+					each(getWatchs(scope[fieldWatchs], name), function(i, watch) {
+						 execCatch(watch,[value]);
 					});
 					compileVarName(name, scope);
 				}
@@ -216,6 +216,18 @@
 			delay(trigger, execInterval + 10);
 		}
 	});
+	function getWatchs(watchs, name){
+		if(name=="")return;
+		var retWatchs = [];
+		for(var i=0,end=split(name).length;i<end;i++){
+			var watch = watchs[name];
+			if(watch){
+				retWatchs = watch.concat(retWatchs);
+			}
+			name = name.replace(/\.?[^\.]*$/,"");
+		}
+ 		return retWatchs;
+	}
 	function isInput(dom){
 		var name = dom.tagName;
 		return name == "INPUT" || name == "SELECT" || name == "TEXTAREA"

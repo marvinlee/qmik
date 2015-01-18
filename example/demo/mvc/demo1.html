@@ -119,6 +119,10 @@
           scope.apply();
           console.log(scope)
         }, 3000);
+        
+        scope.watch("user", function(v){
+          console.log("watch user,", v);
+        });
     }).ctrl({
       shopping: function(scope){//购物
         scope.vUserName = scope.parent.userName;//界面上用到的变量,没有输出相应的input标签,需要预定义
@@ -129,7 +133,7 @@
             scope.apply(); //这种写法,性能比较好,保更新 msg 对应的节点信息
             //scope.apply();//这种写法性能比较差,会更新整个控制器的所有节点信息, 
         }
-        scope.parent.watch("user", function(v){
+        scope.parent.watch("user.userName", function(v){
           scope.vUserName = v.replace(/xo/g,"*o");
           scope.apply();
         });
