@@ -116,7 +116,8 @@
     $.app(function(scope){ //全局控制器的写法
         $.delay(function(){
           scope.user.userName="leochen";
-          scope.apply("user");
+          scope.apply();
+          console.log(scope)
         }, 3000);
     }).ctrl({
       shopping: function(scope){//购物
@@ -125,18 +126,18 @@
         window.scope = scope;
         scope.clickme = function(e){
             scope.msg = "我变了 "+ parseInt($.now()/1000+Math.random()*100)+'';
-            scope.apply("msg"); //这种写法,性能比较好,保更新 msg 对应的节点信息
+            scope.apply(); //这种写法,性能比较好,保更新 msg 对应的节点信息
             //scope.apply();//这种写法性能比较差,会更新整个控制器的所有节点信息, 
         }
-        scope.parent.watch("user.userName", function(v){
+        scope.parent.watch("user", function(v){
           scope.vUserName = v.replace(/xo/g,"*o");
-          scope.apply("vUserName");
+          scope.apply();
         });
       },search: function(scope){//搜索
         scope.vq = "reqult="+scope.q;
         scope.watch("q", function(val){
             scope.vq = "reqult="+val;
-            scope.apply("vq");
+            scope.apply();
         });
       },
       lazy: function(scope){//控制器 lazyLoad, 延迟加载数据(用于通过ajax从远程加载数据,在显示到页面上,通过 scope.apply()方法来显示)
@@ -145,9 +146,13 @@
           scope.cssDisplay="xxx";//初始化的值需要事先声明
           scope.time = parseInt(ttl/1000);
           var startTime = $.now() + ttl;
+          scope.once("viewport", function(e){
+            console.log("vp");
+          });
           $.cycle(function(){
             var t = startTime - $.now();
             scope.time = parseInt(t/1000);
+            scope.apply();
           }, 900, ttl);
           $.delay(function(){
               scope.$(".load").hide();

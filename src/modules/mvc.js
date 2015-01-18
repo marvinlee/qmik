@@ -14,7 +14,7 @@
 
 	var ctrls = {}, //控制器存储
 		scopes = {},
-		keywords = "scopes context parent cmd get set on off app";//关键词,用户不能定义到scope上的变量名
+		keywords = "scopes context parent cmd get set on off once app";//关键词,用户不能定义到scope上的变量名
 	var nameParentScope ="parent",
 		namespace = "qmik-mvc-space",
 		namespaceScope = "qmik-mvc-space-scope",
@@ -47,7 +47,8 @@
 			return;
 		}
 		prevTime = curTime;
-		each(g_viewports, function(key, map){
+		var map = extend({}, g_viewports);
+		each(map, function(key, map){
 			var node = map.scope.context,
 				qdom = Q(node);
 			if (qdom.offset().top > getMax()) {
@@ -56,7 +57,7 @@
 			if (inViewport(qdom)) {
 				delete g_viewports[key];
 				map.callback && execCatch(map.callback);
-				//qdom.trigger("viewport");
+				qdom.trigger("viewport");
 			}
 		});
 	}
@@ -200,6 +201,9 @@
 		off: function(name, handle){
 			Q(this[nameContext]).off(name, handle)
 		},
+		once: function(name, handle){
+			Q(this[nameContext]).once(name, handle)
+		},
 		apply: function(callback) { //应用会话信息的变更,同时刷新局部页面
 			var me = this;
 			g_viewports[me.__name] = {
@@ -209,7 +213,7 @@
 					Q.isFun(callback) && callback();
 				}
 			};
-			delay(trigger, execInterval + 50);
+			delay(trigger, execInterval + 10);
 		}
 	});
 	function isInput(dom){
@@ -307,6 +311,7 @@
 			vars: [],
 			ctrl: ctrl,
 			event: {},
+			fors: {},
 			scope: ctrl[namespaceScope]
 		}
 	}
@@ -316,23 +321,56 @@
 			case 1://正常节点
 				each(node.attributes, function(i, attr){
 					var attrName = attr.name,//属性名
-						value = space.attr[attrName] = space.attr[attrName] || (attr.value || "").trim().replace(/(\s){2,}/g, " ");
+						value = space.attr[attrName] = space.attr[attrName] || (attr.value || "").trim();
 					if ("q-ctrl" === attrName) {//控制器
 						if (value != "") {
 							if(Q(node).parents("[q-ctrl]").length > 0){
 								Q.warn("q-ctrl[",scope.__name,"] can't have child q-ctrl[", value,"]");
 								return;
 							}
-							scope = new Scope(node, scope);
-							execCatch(function() {
-								Q.isFun(ctrls[value]) ? ctrls[value](scope) : Q.warn("q-ctrl:[" + value + "]is not define");
-							});
+							if(scopes[value]){
+								scope = scopes[value];
+							}else{
+								scope = new Scope(node, scope);
+								execCatch(function() {
+									Q.isFun(ctrls[value]) ? ctrls[value](scope) : Q.warn("q-ctrl:[" + value + "]is not define");
+								});
+							}
 						}
 					} else if ("q-for" === attrName) { //for
-						var vs = value.split(" "),
+						var vs = value.replace(/(\s){2,}/g, " ").split(" "),
 							template = space.html = space.html || node.innerHTML,
-							htmls = [];
-						vs.length !=3 ? Q.warn("q-for[",value,"] is error") : each(getVarValue(scope, vs[2]) || [], function(i, item) {
+							htmls = [],
+							list = getVarValue(scope, vs[2]) || [],
+							start = 0,
+							qIndex = 0;
+						if(vs.length == 3){
+							Q(node).html("");
+							space.fors[node] && space.fors[node].stop();//停止之前的进度
+							space.fors[node] = Q.cycle(function(){
+								if(start>=list.length){
+									return thread.stop();
+								}
+								htmls = [];
+								each(list.slice(start, start+24), function(i, item) {
+									item.index = (qIndex++) + 1;
+									var html = template.replace(REG_VAR_NAME, function(varName) {
+										var reg = new RegExp("^" + vs[0] + "\."),
+											name = getVarName(varName).replace(reg, ""),
+											val = getValue(item, name);
+										return val || "";
+									});
+									htmls.push(html);
+								});
+								start+=24;
+								node.innerHTML += htmls.join("");
+								compile(node, scope);
+							},200);
+							node[namespace] = space;
+						}else{
+							Q.warn("q-for[",value,"] is error");
+						}
+						/*vs.length !=3 ? Q.warn("q-for[",value,"] is error") : each(getVarValue(scope, vs[2]) || [], function(i, item) {
 							item.index = i + 1;
 							var html = template.replace(REG_VAR_NAME, function(varName) {
 								var reg = new RegExp("^" + vs[0] + "\."),
@@ -346,7 +384,7 @@
 						node[namespace] = space;
 						delay(function(){
 							compile(node, scope);
-						}, 100);
+						}, 100);*/
 					} else if(/^q-on/.test(attrName)){//事件绑定
 						var onName = attrName,
 							name = attrName.replace(/^q-on/,""),
