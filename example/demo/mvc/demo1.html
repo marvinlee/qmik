@@ -137,6 +137,7 @@
           scope.vUserName = v.replace(/xo/g,"*o");
           scope.apply();
         });
+        console.log(scope);
       },search: function(scope){//搜索
         scope.vq = "reqult="+scope.q;
         scope.watch("q", function(val){
@@ -168,6 +169,7 @@
               scope.desc="源自纯天然xxx";
               scope.apply();//更新页面显示数据
           }, ttl);
+          console.log(scope);
       }
     });
   </script>
