@@ -207,13 +207,6 @@
 			return val || "";
 		})
 	}
-	/* 为每个渲染模块注入此方法 */
-	function addRenderChild(struct, item){
-		this.child = this.child || [];
-		this.child.push({
-			text:Q.render(struct, item)
-		});
-	}
 	function _delete(object, name){
 		try{delete object[name]}catch(e){object[name]=null}
 	}
@@ -469,7 +462,10 @@
 				if(!regProtol.test(base)){
 					base = (base || loc.pathname.replace(/\/[^\/]*$/,""));
 				}
-				_url = base + "/" + _url.replace(/\/{2,}/g,"/");
+				if(!/^\//.test(_url)){
+					_url = ("/"+_url).replace(/\/{2,}/g,"/");
+					_url =  base + _url.replace(/\/{2,}/g,"/");
+				}			
 			} 
 			return _url;
 		},
@@ -484,58 +480,6 @@
 				})
 			}
 			return ret
-		},
-		/** 局部页面渲染引擎 
-			struct:数据结构:{
-				tag:'div[id="${id}" name="${name}"  itemid="${itemid}"]',
-				text:'显示文本',
-				child:[//子节点
-					{
-						tag:'p[class="title"]',
-						text:'显示内容'
-					},
-					{
-						tag:'p[class="remark"]',
-						text:'显示内容'
-					}
-				]
-			},
-			item://数据
-			{
-				id:"",
-				name:"",
-				itemid:""
-			}
-		*/
-		render: function(struct, data) { //不推荐的方法,在下个版本里,将会被删除,请尽量不要使用
-			var h = [],
-				tag = (struct.tag || "").trim(),
-				text = struct.text;
-			data = struct.data || data;
-			text = replaceVar(text, data);
-			struct.add = addRenderChild;
-			if ( tag=="" && !isNull(text)) {
-				return text
-			}
-			if(!/^\s*\w+\s*(\[.*\])?\s*$/.test(tag)){
-				Q.error("tag is lllegal:",tag);
-				return ""
-			}
-			var tagName = (tag.match(/^[^\[]+/)||[""])[0];
-			var attr = (tag.match(/\[.*$/) || [""])[0].replace(/(^\s*\[)|(\s*\]\s*$)/g, "");
-			h.push('<' + tagName + " ");
-			attr = replaceVar(attr, data);
-			h.push(attr);
-			h.push('>');
-			isNull(text) || h.push(text);
-			struct.exec && Q.execCatch(function(){
-				struct.exec()
-			});
-			isArray(struct.child) && each(struct.child, function(i, ch) {
-				ch && h.push(Q.render(ch, data));
-			});				
-			h.push('</' + tagName + '>');
-			return h.join("");
 		},
 		/**
 			执行方法并捕获异常,不向外抛出异常,try{}catch(e){} 影响方法的美观性
