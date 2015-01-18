@@ -52,13 +52,12 @@
 		var params = code.replace(/^\s*function\s*\w*\s*/, "").match(/^\([\w ,]*\)/)[0].replace("\(", "").replace("\)", "");
 		var match = [],
 			idx = params.indexOf(",");
-		if (idx >= 0) {
-			var require = params.substring(0, idx),
-				pattern = new RegExp(require + "\s*[(]\s*[\"']([^\"'\)]+)[\"']\s*[)]", "g");
-			match = Q.map(code.match(pattern), function(i, v) {
-				return v.replace(new RegExp("^" + require + "\s*[(]\s*[\"']"), "").replace(/\s*[\"']\s*[)]$/, "")
-			})
-		}
+		var require = params.substring(0, idx>0 ? idx : params.length),
+			pattern = new RegExp(require + "\s*[(]\s*[\"']([^\"'\)]+)[\"']\s*[)]", "g");
+		match = Q.map(code.match(pattern), function(i, v) {
+			return v.replace(new RegExp("^" + require + "\s*[(]\s*[\"']"), "").replace(/\s*[\"']\s*[)]$/, "")
+		});
+		
 		return match
 	}
 

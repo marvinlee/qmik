@@ -14,14 +14,15 @@
 
 	var ctrls = {}, //控制器存储
 		scopes = {},
-		keywords = {scopes:1,context:1,parent:1,cmd:1,get:1,set:1,app:1};//关键词,用户不能定义的变量名
+		keywords = "scopes context parent cmd get set on off app";//关键词,用户不能定义到scope上的变量名
 	var nameParentScope ="parent",
 		namespace = "qmik-mvc-space",
 		namespaceScope = "qmik-mvc-space-scope",
 		fieldWatchs = "__watchs",
 		nameRoot = "html",
-		nameContext = "context";
-
+		nameContext = "context",
+		nameInput = "__input",
+		execInterval = 120;//scroll触发间隔
 	/********* 当节点在显示视口时触发 start *******/
 	var g_viewports = {};
 	//高度
@@ -37,12 +38,12 @@
 		var max = getMax();
 		var elTop = qdom.offset().top;
 		min = min < 0 ? 0 : min;
-		return elTop > 0 && qdom.height() > 0 && elTop >= min && elTop <= max;
+		return elTop >= 0 && qdom.height() > 0 && elTop >= min && elTop <= max;
 	}
 	var prevTime = Q.now();
 	function handle(e){
 		var curTime = Q.now(), timeout = 10;
-		if (curTime - prevTime < 100) {
+		if (curTime - prevTime < execInterval) {//触发频率
 			return;
 		}
 		prevTime = curTime;
@@ -55,7 +56,7 @@
 			if (inViewport(qdom)) {
 				delete g_viewports[key];
 				map.callback && execCatch(map.callback);
-				qdom.trigger("viewport");
+				//qdom.trigger("viewport");
 			}
 		});
 	}
@@ -82,17 +83,15 @@
 				scope = new Scope();
 			me.scope =Q(nameRoot)[0][namespace] = scope;
 			fun && fun(scope);
-			Q("[q-ctrl]").css("visibility","visible");
+			Q("[q-ctrl]").css("visibility","visible");//置为可见
 			compile(Q(nameRoot)[0], scope, true);//编译页面
 			trigger();
 			function change(e) {
 				var target = e.target,
 					fields = split(target.name||""),
 					name = fields[0],
-					tagName = target.tagName,
 					scope = getCtrlNode(target)[namespaceScope] || scope;
-				if (tagName == "INPUT" || tagName == "SELECT" || tagName == "TEXTAREA") {
-					//scope[name] = getInputValue(target);
+				if (isInput(target)) {
 					getValue(scope, fields, getInputValue(target));
 					each(scope[fieldWatchs][name], function(i, watch) {
 						watch && watch(getVarValue(scope, name));
@@ -103,12 +102,12 @@
 			function remove(e){
 				var target = e.target,
 					name = target.name,
-					isInput = target.tagName == "INPUT",
+					isInputDom = isInput(target),
 					space = getSpace(target),
 					scope = space.scope = space.scope;
 				each(space.vars, function(i, _name) {
 					var newmaps = [];
-					if (isInput && name == _name) {
+					if (isInputDom && name == _name) {
 						return;
 					}
 					each(scope.__map[_name], function(i, dom) {
@@ -116,9 +115,9 @@
 					});
 					scope.__map[_name] = newmaps;
 				});
-				if(isInput){
+				if(isInputDom){
 					delete scope.__map[name];
-					delete scope.__input[name];
+					delete scope[nameInput][name];
 				}
 			}
 			Q("body").on({
@@ -128,11 +127,9 @@
 			Q(win).on({
 				//DOMSubtreeModified: function(e){},
 				DOMNodeInserted: function(e){//节点增加
-					delay(function(){
-						var target = e.target,
-						space = getSpace(target);
-						compile(target, space.scope);
-					}, 100);					
+					var target = e.target,
+					space = getSpace(target);
+					compile(target, space.scope);
 				},
 				DOMNodeRemoved: remove //删除节点
 			});
@@ -155,24 +152,23 @@
 		me.scopes = scopes;
 		me.__name = Q(context).attr("q-ctrl") || "root"; //控制器名
 		me.__map = {}; //变量映射节点集合
-		me.__cmd = {};
-		me.__input = {};
+		me.__cmd = {}; //预留
+		me[nameInput] = {}; //input映射节点
 		scopes[me.__name] = me;
 		context[namespaceScope] = me;
 		me[nameParentScope] = rootScope; //父scope
 		$("input,select,textarea", context).each(function(i, dom) {
 			var name = dom.name, isSet=true;
 			if(name){
-				if(Scope.prototype[name] || /^__/.test(name) || keywords[name]){
-					Q.warn("set scope name["+name+"] is illegal");
-					return;
+				if(Scope.prototype[name] || /^__/.test(name) || new RegExp(name).test(keywords)){
+					return Q.error("set scope["+me.__name+"] name["+name+"] is illegal");
 				}
 				if(me.__name == "root" && Q(dom).parents("[q-ctrl]").length>0){
 					isSet = false;
 				}
 				if(isSet){
 					getValue(me, name, getInputValue(dom));
-					me.__input[name] = dom;
+					me[nameInput][name] = dom;
 				}
 			}
 		});
@@ -198,24 +194,28 @@
 		'$': function(sclector) {
 			return Q(sclector, this[nameContext]);
 		},
-		apply: function(names) { //应用会话信息的变更,同时刷新局部页面
+		on: function(name, handle){
+			Q(this[nameContext]).on(name, handle)
+		},
+		off: function(name, handle){
+			Q(this[nameContext]).off(name, handle)
+		},
+		apply: function(callback) { //应用会话信息的变更,同时刷新局部页面
 			var me = this;
 			g_viewports[me.__name] = {
 				scope: me,
 				callback: function(){
-					if (names) {
-						names = Q.isArray(names) ? names : [names];
-						each(names, function(i, name) {
-							compileVarName(name, me)
-						});
-					} else {
-						compile(me[nameContext], me)
-					}
+					compile(me[nameContext], me);
+					Q.isFun(callback) && callback();
 				}
 			};
-			delay(trigger, 150);
+			delay(trigger, execInterval + 50);
 		}
 	});
+	function isInput(dom){
+		var name = dom.tagName;
+		return name == "INPUT" || name == "SELECT" || name == "TEXTAREA"
+	}
 	/** 取界面上input输入标签的初始化值 */
 	function getInputValue(node) {
 		var name = node.name,
@@ -319,19 +319,11 @@
 						value = space.attr[attrName] = space.attr[attrName] || (attr.value || "").trim().replace(/(\s){2,}/g, " ");
 					if ("q-ctrl" === attrName) {//控制器
 						if (value != "") {
-							if(Q(node).closest("[q-ctrl]").length > 1){
+							if(Q(node).parents("[q-ctrl]").length > 0){
 								Q.warn("q-ctrl[",scope.__name,"] can't have child q-ctrl[", value,"]");
 								return;
 							}
 							scope = new Scope(node, scope);
-							/*if(Q.isFun(ctrls[value])){
-								g_viewports[value] = {
-									scope: scope,
-									callback: ctrls[value]
-								}
-							}else{
-								Q.warn("q-ctrl:[" + value + "]is not define")
-							}*/
 							execCatch(function() {
 								Q.isFun(ctrls[value]) ? ctrls[value](scope) : Q.warn("q-ctrl:[" + value + "]is not define");
 							});
@@ -392,10 +384,11 @@
 					node.textContent = val.replace(REG_VAR_NAME, function(name) {
 						name = getVarName(name);
 						space.vars.push(name);
-						var val = getVarValue(scope, name);
+						var val = getVarValue(scope, name),
+							inputNode = scope[nameInput][name];
 						isAdd && addMapNode(scope, name, node);
-						if(scope.__input[name] && scope.__input[name].value != val){
-							scope.__input[name].value = val;
+						if(inputNode && inputNode.tagName == "INPUT" && inputNode.value != val){
+							scope[nameInput][name].value = val;
 						}
 						return val;
 					});

@@ -1647,10 +1647,15 @@
     $.app(function(scope){
       $.use("data.js", function(data){
           var user = data.user;
+          //scope.scopes.nav.user = user;
           scope.user = user;
-          scope.apply('user');
+          //console.log( scope.scopes.nav)
+          scope.scopes.nav.apply();
       });
     }).ctrl({
+      nav: function(scope){
+        scope.apply();
+      },
       search: function(scope){
         $.use("data.js", function(data){
             scope.search = data.search;
@@ -1664,16 +1669,16 @@
             scope.teshes = teshe.teshe;
             scope.youhuis = teshe.youhui;
             scope.tools = teshe.tool;
-            scope.themes.each(function(i,item){
+            $.each(scope.themes,function(i,item){
               item.class='c-'+(i%3+1);
             });
-            scope.teshes.each(function(i,item){
+            $.each(scope.teshes, function(i,item){
               item.class='c-'+(i%3+1);
             });
-            scope.youhuis.each(function(i,item){
+            $.each(scope.youhuis, function(i,item){
               item.class='c-'+(i%3+1);
             });
-            scope.tools.each(function(i,item){
+            $.each(scope.tools, function(i,item){
               item.class='c-'+(i%3+1);
             });
             scope.apply();
@@ -1686,7 +1691,7 @@
             scope.tmalls = main.tmall;
             scope.bianMins = main.bianMin;
             
-            scope.promos.each(function(i,item){
+            $.each(scope.promos, function(i,item){
               item.class='c-'+(i%3+1);
             });
             scope.apply();

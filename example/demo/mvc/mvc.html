@@ -46,7 +46,7 @@
         <option value="2" select>2</option>
         <option value="1" >1</option>
       </select>
-      <select name="mselect" multiple>
+      <select name="mselect" multiple size="2">
         <option value="2" select>2</option>
         <option value="1" >1</option>
         <option value="3" >3</option>
@@ -80,7 +80,9 @@
 
   </div>
 
-
+  <div q-ctrl="list" q-for="item in list">
+    <li> ${item.title}</li>
+  </div>
   ${n4} ${name}
   <script type="text/javascript">
     $(function(){
@@ -122,6 +124,13 @@
         },
         "subdent1": function(scope){
           scope.name="gogoxxoo";
+        },
+        list: function(scope){
+          scope.list = [{
+            title:"leo"
+          }, {
+            title: "小李"
+          }];
         }
       });
     })
