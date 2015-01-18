@@ -248,8 +248,8 @@
 					"action": "https://github.com/leochen36/qmik",
 					"cata": "家装",
 					"desc": "越砍越优惠",
-					"image": "htQmiktp://gtms02.alicdn.com/tps/i2/TB1aOt7HXXXXXaiapXXNx3t4VXX-120-120.jpg",
-					"name": "家装"
+					"image": "http://gtms02.alicdn.com/tps/i2/TB1aOt7HXXXXXaiapXXNx3t4VXX-120-120.jpg",
+					"name": "家装Qmik"
 				}, {
 					"action": "https://github.com/leochen36/qmik",
 					"cata": "大家电",

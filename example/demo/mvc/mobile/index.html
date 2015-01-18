@@ -7,18 +7,17 @@
   <meta http-equiv="x-ua-compatible" content="IE=10" /> 
   <meta name="keywords" content="qmik" /> 
   <meta http-equiv="Cache-Control" content="max-age=60" /> 
-  <meta name="x5-fullscreen" content="true" /> 
-  <meta name="full-screen" content="yes" /> 
   <meta name="layoutmode" content="fitscreen/standard" /> 
   <meta name="nightmode" content="disable" /> 
   <meta name="imagemode" content="force" /> 
   <meta name="apple-mobile-web-app-capable" content="yes" /> 
   <meta name="format-detection" content="telephone=no" /> 
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=2.0,user-scalable=no" /> 
+  <!--<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=2.0,user-scalable=no" /> -->
+  <meta name="viewport" content="width=device-width,initial-scale=${scale},minimum-scale=${scale},maximum-scale=2.0,user-scalable=no" />
   <meta content="yes" name="apple-mobile-web-app-capable" /> 
   <meta content="telephone=no" name="format-detection" /> 
-  <script src="../../../../assets/Qmik-debug.all.js"></script> 
   <link rel="stylesheet" type="text/css" href="index.css" /> 
+  <script src="../../../../assets/Qmik-debug.all.js"></script> 
   <style>
 </style> 
  </head> 
@@ -130,50 +129,7 @@
         </div>
       </div>
    </div> 
-
   </div> 
-  <script type="text/javascript">
-                window.pageVersion = 1421550360269;//页面版本号,每次生成页面时, 更新版本号
-          window.gWapDataVersion = 'wap_1.0.0_1024x768_200000';
-      
-                    (function(Q){
-           
-              function getRealWidth(){
-                  var width = window.innerWidth;
-                  width = Math.min(width, Q("body").width());
-                  width = Math.max(320,width);
-                  width = Math.min(640,width);
-                  return width;
-              }
-              function getScale(){
-              var realWidth = getRealWidth();
-                var scale = realWidth/320;
-                return scale >2?2:scale;
-              }
-              function scale(){
-              var scal = getScale();
-
-                var css = {
-                  "transform":"scale("+scal+","+scal+") translate(0, 0px)",
-                  "-webkit-transform":"scale("+scal+","+scal+") translate(0, 0px)",
-                  "-mz-transform":"scale("+scal+","+scal+") translate(0, 0px)"
-                };
-                Q("#wrap").css(css);
-              }
-              Q().ready(function(){
-                scale();
-              });
-              Q(window).on({
-                resize: function(e){
-                  scale();
-                }
-              });
-          })(Qmik);
-    </script> 
-      
-    </script>  
-  <script type="text/javascript" src="index.js">
-
-</script> 
+  <script type="text/javascript" src="index.js"></script> 
  </body>
 </html>

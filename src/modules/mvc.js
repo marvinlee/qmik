@@ -22,6 +22,7 @@
 		nameRoot = "html",
 		nameContext = "context",
 		nameInput = "__input",
+		nameMap = "__map",
 		execInterval = 120;//scroll触发间隔
 	/********* 当节点在显示视口时触发 start *******/
 	var g_viewports = {};
@@ -84,8 +85,8 @@
 				scope = new Scope();
 			me.scope =Q(nameRoot)[0][namespace] = scope;
 			fun && fun(scope);
-			Q("[q-ctrl]").css("visibility","visible");//置为可见
 			compile(Q(nameRoot)[0], scope, true);//编译页面
+			Q("[q-ctrl]").css("visibility","visible");//置为可见
 			trigger();
 			function change(e) {
 				var target = e.target,
@@ -111,13 +112,13 @@
 					if (isInputDom && name == _name) {
 						return;
 					}
-					each(scope.__map[_name], function(i, dom) {
+					each(scope[nameMap][_name], function(i, dom) {
 						dom != target && newmaps.push(dom);
 					});
-					scope.__map[_name] = newmaps;
+					scope[nameMap][_name] = newmaps;
 				});
 				if(isInputDom){
-					delete scope.__map[name];
+					delete scope[nameMap][name];
 					delete scope[nameInput][name];
 				}
 			}
@@ -152,7 +153,7 @@
 		me[nameContext] = context = context || Q(nameRoot)[0]; //上文dom节点
 		me.scopes = scopes;
 		me.__name = Q(context).attr("q-ctrl") || "root"; //控制器名
-		me.__map = {}; //变量映射节点集合
+		me[nameMap] = {}; //变量映射节点集合
 		me.__cmd = {}; //预留
 		me[nameInput] = {}; //input映射节点
 		scopes[me.__name] = me;
@@ -319,18 +320,16 @@
 		}
 	}
 	function addMapPush(scope, name, node){
-		//var list = scope.__map[name] = scope.__map[name] || [];
-		//list.indexOf(node)<0 && list.push(node);
 		var retWatchs = [];
 		for(var i=0,end=split(name).length;i<end;i++){
-			var list = scope.__map[name] = scope.__map[name] || [];
+			var list = scope[nameMap][name] = scope[nameMap][name] || [];
 			list.indexOf(node)<0 && list.push(node);
 			name = name.replace(/\.?[^\.]*$/,"");
 		}
  		return retWatchs;
 	}
 	function compileVarName(key, scope) {
-		each(scope.__map[key], function(i, dom) {
+		each(scope[nameMap][key], function(i, dom) {
 			replaceNodeVar(dom, scope);
 		});
 	}
@@ -401,21 +400,6 @@
 						}else{
 							Q.warn("q-for[",value,"] is error");
 						}
-						/*vs.length !=3 ? Q.warn("q-for[",value,"] is error") : each(getVarValue(scope, vs[2]) || [], function(i, item) {
-							item.index = i + 1;
-							var html = template.replace(REG_VAR_NAME, function(varName) {
-								var reg = new RegExp("^" + vs[0] + "\."),
-									name = getVarName(varName).replace(reg, ""),
-									val = getValue(item, name);
-								return val || "";
-							});
-							htmls.push(html);
-						});
-						node.innerHTML = htmls.join("");
-						node[namespace] = space;
-						delay(function(){
-							compile(node, scope);
-						}, 100);*/
 					} else if(/^q-on/.test(attrName)){//事件绑定
 						var onName = attrName,
 							name = attrName.replace(/^q-on/,""),
