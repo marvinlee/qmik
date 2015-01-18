@@ -14,7 +14,10 @@
 
 	var ctrls = {}, //控制器存储
 		scopes = {},
-		keywords = "scopes context parent cmd get set on off once app";//关键词,用户不能定义到scope上的变量名
+		g_config = {
+			section: 24//q-for分隔大小
+		},
+		keywords = "scopes context parent get set on off once app";//关键词,用户不能定义到scope上的变量名
 	var nameParentScope ="parent",
 		namespace = "qmik-mvc-space",
 		namespaceScope = "qmik-mvc-space-scope",
@@ -31,15 +34,17 @@
 		return win.innerHeight || screen.availHeight;
 	}
 	function getMax() {
-		return window.pageYOffset + getHeight() + 120;
+		return win.pageYOffset + getHeight() + 120;
 	}
 	//判断是否在视口里
 	function inViewport(qdom) {
-		var min = win.pageYOffset - getHeight() / 2;
-		var max = getMax();
-		var elTop = qdom.offset().top;
+		var elTop = qdom.offset().top,
+			elDown = elTop + qdom.height(),
+			min = win.pageYOffset,
+			max = getMax();
 		min = min < 0 ? 0 : min;
-		return elTop >= 0 && qdom.height() > 0 && elTop >= min && elTop <= max;
+		//return elTop >= 0 && elTop >= min && elTop <= max;
+		return elTop >=0 && elTop <= max && elDown >= min
 	}
 	var prevTime = Q.now();
 	function handle(e){
@@ -135,6 +140,10 @@
 				},
 				DOMNodeRemoved: remove //删除节点
 			});
+		},
+		config: function(map){
+			extend(g_config, map);
+			return this;
 		},
 		//控制器
 		ctrl: function(name, callback) {
@@ -373,8 +382,9 @@
 							htmls = [],
 							list = getVarValue(scope, vs[2]) || [],
 							start = 0,
-							qIndex = 0;
-						if(vs.length == 3){
+							qIndex = 0,
+							section = g_config.section||24;
+						if(vs.length == 3 && vs[1]=="in"){
 							Q(node).html("");
 							space.fors[node] && space.fors[node].stop();//停止之前的进度
 							space.fors[node] = Q.cycle(function(){
@@ -382,7 +392,7 @@
 									return space.fors[node].stop();
 								}
 								htmls = [];
-								each(list.slice(start, start+24), function(i, item) {
+								each(list.slice(start, start+section), function(i, item) {
 									item.index = (qIndex++) + 1;
 									var html = template.replace(REG_VAR_NAME, function(varName) {
 										var reg = new RegExp("^" + vs[0] + "\."),
@@ -392,11 +402,12 @@
 									});
 									htmls.push(html);
 								});
-								start+=24;
+								start+=section;
 								node.innerHTML += htmls.join("");
 								compile(node, scope);
 							},200);
 							node[namespace] = space;
+							isAdd && addMapNode(scope, vs[2], node);	
 						}else{
 							Q.warn("q-for[",value,"] is error");
 						}
