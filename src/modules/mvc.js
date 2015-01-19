@@ -1,7 +1,7 @@
 
 /**
  * mvc模块
- * @author leoche
+ * @author leochen
  */
 (function(Q) {
 	var win = Q.global,
@@ -44,7 +44,7 @@
 			max = getMax();
 		min = min < 0 ? 0 : min;
 		//return elTop >= 0 && elTop >= min && elTop <= max;
-		return elTop >=0 && elTop <= max && elDown >= min
+		return elTop >=0 && elTop <= max && elDown >= min	
 	}
 	var prevTime = Q.now();
 	function handle(e){
@@ -98,7 +98,7 @@
 					name = target.name||"",
 					scope = getCtrlNode(target)[namespaceScope] || scope;
 				if (isInput(target)) {
-					getValue(scope, name, getInputValue(target));
+					fieldValue(scope, name, getInputValue(target));
 					var value = getVarValue(scope, name);
 					each(getBatList(scope[fieldWatchs], name), function(i, watch) {
 						 execCatch(watch,[value]);
@@ -178,7 +178,7 @@
 					isSet = false;
 				}
 				if(isSet){
-					getValue(me, name, getInputValue(dom));
+					fieldValue(me, name, getInputValue(dom));
 					me[nameInput][name] = dom;
 				}
 			}
@@ -252,7 +252,7 @@
  		return retWatchs;
 	}
 	function isInput(dom){
-		var name = dom.tagName;
+		var name = dom ? dom.tagName : "";
 		return name == "INPUT" || name == "SELECT" || name == "TEXTAREA"
 	}
 	/** 取界面上input输入标签的初始化值 */
@@ -294,7 +294,7 @@
 	function split(name){
 		return name.split(".")
 	}
-	function getValue(object, names, val){
+	function fieldValue(object, names, val){
 		var ns = Q.isArray(names) ? names : split(names), 
 			field = ns[0];
 		if(ns.length < 2){
@@ -305,16 +305,16 @@
 		}
 		object[field] = object[field] || {};
 		ns.shift();
-		return getValue(object[field], ns, val);
+		return fieldValue(object[field], ns, val);
 	}
 	//取变量对应的值
 	function getVarValue(scope, name) {
-		var val = getValue(getUseSpaceScope(scope, name), name);
+		var val = fieldValue(getUseSpaceScope(scope, name), name);
 		return isNull(val) ? "" : val;
 	}
 	function getUseSpaceScope(scope, name){
 		var field = split(name)[0];
-		return isNull(scope[field]) && !isNull(scope[nameParentScope][field]) ? scope[nameParentScope] : scope
+		return isNull(scope[field]) && scope[nameParentScope] && !isNull(scope[nameParentScope][field]) ? scope[nameParentScope] : scope
 	}
 	/** 取控制器节点 */
 	function getCtrlNode(node) {
@@ -397,7 +397,7 @@
 									var html = template.replace(REG_VAR_NAME, function(varName) {
 										var reg = new RegExp("^" + vs[0] + "\."),
 											name = getVarName(varName).replace(reg, ""),
-											val = getValue(item, name);
+											val = fieldValue(item, name);
 										return val || "";
 									});
 									htmls.push(html);
@@ -451,9 +451,12 @@
 						var val = getVarValue(scope, name),
 							inputNode = scope[nameInput][name];
 						isAdd && addMapNode(scope, name, node);
-						if(inputNode && inputNode.tagName == "INPUT" && inputNode.value != val){
-							scope[nameInput][name].value = val;
+						if(inputNode && isInput(inputNode) && inputNode.value != val){
+							if(inputNode.type !="checkbox" && inputNode.type != "select-multiple"){
+								scope[nameInput][name].value = val;
+							}
 						}
+						
 						return val;
 					});
 				}

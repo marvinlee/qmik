@@ -5,7 +5,9 @@
   <meta name="-webkit-tap-highlight" content="no" /> 
   <meta content="IE=9" http-equiv="x-ua-compatible" /> 
   <title>测试sun模块开发</title> 
+  <link rel="stylesheet" type="text/css" href="style.css">
   <script type="text/javascript" src="../../../assets/qmik-debug.all.js"></script>
+
   <style type="text/css">
   	#result{
   		position: fixed;
@@ -110,6 +112,7 @@
               name: "k2",
               age: 16
             }];
+            scope.textarea="kenny test";
             var t=0;
            /* $.delay(function(){
                 for(var i=0;i<100;i++){
@@ -121,6 +124,8 @@
                 scope.apply();
             },2500);*/
             window.scope = scope;
+            console.log(scope);
+            scope.apply();
         },
         "subdent1": function(scope){
           scope.name="gogoxxoo";

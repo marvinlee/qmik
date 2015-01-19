@@ -1645,11 +1645,11 @@
       });
     }
     $.app(function(scope){
+      scope.user = {};//全局界面需要预告定义,否则此变量的存储空间会变更为使用的所在控制器上
       $.use("data.js", function(data){
           var user = data.user;
           //scope.scopes.nav.user = user;
           scope.user = user;
-          //console.log( scope.scopes.nav)
           scope.scopes.nav.apply();
       });
     }).ctrl({

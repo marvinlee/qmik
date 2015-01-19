@@ -21,6 +21,7 @@ a{
 .q-hide{
   
 }
+[q-ctrl]{visibility: hidden;}
 .bind{
   color:#aa00ad;
   word-break: break-word;
