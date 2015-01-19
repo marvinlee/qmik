@@ -57,9 +57,11 @@
       </select>
       <textarea name="textarea"></textarea>
       <br/>
-      cbk1 <input type="checkbox" name="cbk" value="cbk1">
-      cbk1 <input type="checkbox" name="cbk" value="cbk2">
-      cbk1 <input type="checkbox" name="cbk" value="cbk3">
+
+      <!-- q-for checkboxs -->
+      <div q-for="item in checkboxs" class="box">
+        cbk${item.value} <input type="checkbox" name="cbk" value="cbk${item.value}"> &nbsp;
+      </div>
       <br/>
       <br/>
       ra1 <input type="radio" name="ra" value="ra1">
@@ -94,6 +96,13 @@
             scope.showName = scope.name;
             scope.watch("name", function(value){
             });
+            scope.checkboxs = [{
+              value:"1"
+            },{
+              value:"2"
+            },{
+              value:"3"
+            }];
             scope.list= [{
               name: "k1"
             },{
@@ -102,30 +111,17 @@
             },{
               name: "k2",
               age: 16
-            },{
-              name: "k2",
-              age: 16
-            },{
-              name: "k2",
-              age: 16
-            },{
-              name: "k2",
-              age: 16
             }];
-            scope.textarea="kenny test";
-            var t=0;
-           /* $.delay(function(){
-                for(var i=0;i<100;i++){
-                  scope.list.push({
-                    name: "name "+i,
-                    age: i
-                  });
-                }
-                scope.apply();
-            },2500);*/
             window.scope = scope;
             console.log(scope);
             scope.apply();
+
+            $.delay(function(){
+              scope.checkboxs.push({
+                value:"mon"
+              });
+              scope.apply("checkboxs");
+            }, 3000);
         },
         "subdent1": function(scope){
           scope.name="gogoxxoo";

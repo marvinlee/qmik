@@ -26,7 +26,7 @@
 		nameContext = "context",
 		nameInput = "__input",
 		nameMap = "__map",
-		execInterval = 120;//scroll触发间隔
+		execInterval = 30;//scroll触发间隔
 	/********* 当节点在显示视口时触发 start *******/
 	var g_viewports = {};
 	//高度
@@ -69,7 +69,8 @@
 	}
 	Q(win).on({
 		scroll: handle,
-		touchstart: handle
+		touchstart: handle,
+		touchmove: handle
 	});
 	function trigger(){
 		Q(win).trigger("scroll");
@@ -220,7 +221,7 @@
 				callback = names;
 				names = [];
 			}else{
-				names = Q.isArray(names) ? names : [];
+				names = Q.isArray(names) ? names : Q.isString(names) ? [names] : [];
 			}
 			g_viewports[me.__name] = {
 				scope: me,
@@ -383,7 +384,7 @@
 							list = getVarValue(scope, vs[2]) || [],
 							start = 0,
 							qIndex = 0,
-							section = g_config.section||24;
+							section = parseInt(g_config.section) || 24;
 						if(vs.length == 3 && vs[1]=="in"){
 							Q(node).html("");
 							space.fors[node] && space.fors[node].stop();//停止之前的进度
@@ -405,7 +406,7 @@
 								start+=section;
 								node.innerHTML += htmls.join("");
 								compile(node, scope);
-							},200);
+							},50);
 							node[namespace] = space;
 							isAdd && addMapNode(scope, vs[2], node);	
 						}else{

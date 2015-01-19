@@ -76,6 +76,7 @@ input[type=text]{
   border: 1px solid #cfcfcf;
   padding: 4px 10px 0 10px;
   margin: 10px;
+  min-height: 20px;
 }
 .box:nth-child(even){
   border: 1px solid #E90F66;

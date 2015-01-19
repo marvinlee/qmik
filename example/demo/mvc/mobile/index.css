@@ -22,12 +22,12 @@ div{backface-visibility: hidden;-webkit-backface-visibility: hidden;-ms-backface
 
 /** 界面样式 */
 body,.wrap{background-color:#eeeeee;}
-.wrap{width:320px;min-width:320px;max-width:480px;margin:0 auto;margin-bottom:30px;-webkit-transform-origin: 50% 0;-moz-transform-origin: 50% 0;-o-transform-origin: 50% 0;-ms-transform-origin: 50% 0;transform-origin: 50% 0;overflow:hidden;position:relative;}
-/*@media screen and (min-width: 360px) {.wrap {transform:scale(1.120);-webkit-transform:scale(1.120);}}
+.wrap{width:320px;min-width:320px;max-width:640px;margin:0 auto;margin-bottom:30px;-webkit-transform-origin: 50% 0;-moz-transform-origin: 50% 0;-o-transform-origin: 50% 0;-ms-transform-origin: 50% 0;transform-origin: 50% 0;overflow:hidden;position:relative;}
+@media screen and (min-width: 360px) {.wrap {transform:scale(1.120);-webkit-transform:scale(1.120);}}
 @media screen and (min-width: 420px) {.wrap {transform:scale(1.3125);-webkit-transform:scale(1.3125);}}
 @media screen and (min-width: 480px) {.wrap {transform:scale(1.5);-webkit-transform:scale(1.5);}}
 @media screen and (min-width: 600px) {.wrap {transform:scale(1.875);-webkit-transform:scale(1.875);}}
-@media screen and (min-width: 640px) {.wrap {transform:scale(2);-webkit-transform:scale(2);}}*/
+@media screen and (min-width: 640px) {.wrap {transform:scale(2);-webkit-transform:scale(2);}}
 
 .wrap .banner .s_remind{bottom:0px;}
 .wrap .wap_block_style17 .s_view li, .wrap .wap_block_style17 .s_view li img{max-width:320px;}

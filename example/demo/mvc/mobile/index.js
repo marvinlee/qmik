@@ -1,19 +1,16 @@
 (function($) {
 	//$.app();生成全局页面app,并编译页面,全局唯一 
 	$.app(function(scope) { //全局控制器声明方式
-		scope.scale = 1;
-		$(function() {
-			scope.scale = getScale();
-			scope.apply(["scale"]);//应用并更新界面,控制器处在可见的视口上才会触发
-			//$('html meta[name="viewport"]').attr("content", '');
-		});
+		scope.scale = getScale();
+		scope.apply(["scale"]); //应用并更新界面,控制器处在可见的视口上才会触发
+		//$('html meta[name="viewport"]').attr("content", '');
 	}).ctrl({
 		model2002122: function(scope) { //局部控制器
 			getData(function(data) {
 				var model = data.content.model2002122;
 				scope.model = model;
 				scope.list = model.itemList;
-				scope.apply();//应用并更新界面,控制器处在可见的视口上才会触发
+				scope.apply(); //应用并更新界面,控制器处在可见的视口上才会触发
 			});
 		},
 		model2002119: function(scope) { //局部控制器
@@ -49,7 +46,7 @@
 					scope.apply(["model.h1", "model.h2", "model.m1", "model.m2", "model.s1", "model.s2"]);
 				}, 1000);
 
-				scope.apply();//应用并更新界面,控制器处在可见的视口上才会触发
+				scope.apply(); //应用并更新界面,控制器处在可见的视口上才会触发
 			});
 		},
 		model2002112: function(scope) { //局部控制器
@@ -122,13 +119,13 @@
 		return scale > 2 ? 2 : scale;
 	}
 
-	function scale() {
-		var scal = getScale();
-		$("#wrap").css($.cssPrefix({
-			"transform": "scale(" + scal + "," + scal + ") translate(0, 0px)"
-		}));
-	}
-	if( !($.isIphone() || $.isWP() || $.isAndroid()) ) {//不是移动,就放大页面
+	//if (!($.isIphone() || $.isWP() || $.isAndroid())) { //不是移动,就放大页面
+		function scale() {
+			var scal = getScale();
+			$("#wrap").css($.cssPrefix({
+				"transform": "scale(" + scal + "," + scal + ") translate(0, 0px)"
+			}));
+		}
 		$(function() {
 			scale();
 		});
@@ -137,6 +134,6 @@
 				scale();
 			}
 		});
-	}
+	//}
 
 })(Qmik);
