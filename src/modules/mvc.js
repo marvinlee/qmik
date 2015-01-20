@@ -102,7 +102,7 @@
 					fieldValue(scope, name, getInputValue(target));
 					var value = getVarValue(scope, name);
 					each(getBatList(scope[fieldWatchs], name), function(i, watch) {
-						 execCatch(watch,[value]);
+						 execCatch(watch,[{name:name, vlaue:value, source: scope[split(name)[0]]}]);
 					});
 					compileVarName(name, scope);
 				}
