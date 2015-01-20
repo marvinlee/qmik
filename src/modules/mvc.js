@@ -223,8 +223,11 @@
 			}else{
 				names = Q.isArray(names) ? names : Q.isString(names) ? [names] : [];
 			}
+			//合并之前的更新 名册
+			names = uniqueArray(names, (g_viewports[me.__name]||{}).names);
 			g_viewports[me.__name] = {
 				scope: me,
+				names: names,
 				callback: function(){
 					if(names.length > 0){
 						var nodes = [];
@@ -240,6 +243,21 @@
 			delay(trigger, execInterval + 10);
 		}
 	});
+	function uniqueArray(list1, list2){
+		if(list1.length<1)return [];
+		var list = list1.concat(list2 || []).sort(),
+			result = [];
+		for(var i=0,j;i<list.length;i++){
+			for(j=i+1;j<list.length;j++){
+				if(new RegExp("^"+list[i]).test(list[j])){
+					list.splice(j,1);
+					j--;
+				}
+			}
+			result[i] = list[i];
+		}
+		return result;
+	}
 	function getBatList(map, name){
 		if(name=="")return;
 		var retWatchs = [];
