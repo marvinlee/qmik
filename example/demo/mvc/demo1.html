@@ -123,6 +123,11 @@
         scope.watch("user", function(v){
           console.log("watch user,", v);
         });
+        scope.watch({
+          user: function(val){
+            console.log("haha watch user,", val);
+          }
+        });
     }).ctrl({
       shopping: function(scope){//购物
         scope.vUserName = scope.parent.userName;//界面上用到的变量,没有输出相应的input标签,需要预定义

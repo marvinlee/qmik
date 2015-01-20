@@ -502,11 +502,6 @@
 			});
 			return this
 		},
-		toggleClass: function(className) {
-			this.each(function(i, dom) {
-				hasClass(dom, className) ? Q(dom).rmClass(className) : Q(dom).addClass(className)
-			})
-		},
 		map: function(callback) {
 			return Q.map(this, callback)
 		},

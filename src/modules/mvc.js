@@ -111,22 +111,24 @@
 				var target = e.target,
 					name = target.name,
 					isInputDom = isInput(target),
-					space = getSpace(target),
-					scope = space.scope = space.scope;
-				each(space.vars, function(i, _name) {
-					var newmaps = [];
-					if (isInputDom && name == _name) {
-						return;
-					}
-					each(scope[nameMap][_name], function(i, dom) {
-						dom != target && newmaps.push(dom);
+					space = getSpace(target);
+				if(space){
+					var scope = space.scope;
+					each(space.vars, function(i, _name) {
+						var newmaps = [];
+						if (isInputDom && name == _name) {
+							return;
+						}
+						each(scope[nameMap][_name], function(i, dom) {
+							dom != target && newmaps.push(dom);
+						});
+						scope[nameMap][_name] = newmaps;
 					});
-					scope[nameMap][_name] = newmaps;
-				});
-				if(isInputDom){
-					delete scope[nameMap][name];
-					delete scope[nameInput][name];
-				}
+					if(isInputDom){
+						delete scope[nameMap][name];
+						delete scope[nameInput][name];
+					}
+				}		
 			}
 			Q("body").on({
 				change: change,
@@ -137,7 +139,7 @@
 				DOMNodeInserted: function(e){//节点增加
 					var target = e.target,
 					space = getSpace(target);
-					compile(target, space.scope);
+					space && compile(target, space.scope);
 				},
 				DOMNodeRemoved: remove //删除节点
 			});
@@ -364,17 +366,20 @@
 	/** 取存放到节点上的对象空间 */
 	function getSpace(node){
 		var ctrl = getCtrlNode(node);
-		return node[namespace] || {
-			attr: {},
-			vars: [],
-			ctrl: ctrl,
-			event: {},
-			fors: {},
-			scope: ctrl[namespaceScope]
+		if(ctrl){
+			return node[namespace] || {
+				attr: {},
+				vars: [],
+				ctrl: ctrl,
+				event: {},
+				fors: {},
+				scope: ctrl[namespaceScope]
+			}
 		}
 	}
 	function replaceNodeVar(node, scope, isAdd, callback) {
 		var space = getSpace(node);
+		if(!space)return;
 		switch (node.nodeType) {
 			case 1://正常节点
 				each(node.attributes, function(i, attr){
@@ -486,8 +491,20 @@
 	}
 
 	var app;
-	Q.app = function(rootCtrlFun){
-		return app = app || new App(rootCtrlFun);
+	Q.app = function(ctrls, rootCtrlFun){
+		if(Q.isFun(ctrls)){
+			rootCtrlFun = ctrls;
+			ctrls = [];
+		}else if(Q.isString(ctrls)){
+			ctrls = [ctrls];
+		}else{
+			ctrls = [];
+		}
+		if(app){
+
+		}else{
+			app = new App(rootCtrlFun);
+		}
 	};
 	//
 })(Qmik);

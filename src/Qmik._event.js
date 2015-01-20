@@ -169,7 +169,7 @@
 			});
 			return this
 		},
-		un: function(name, callback) {
+		off: function(name, callback) {
 			each(this, function(k, v) {
 				Erm(v, name, callback)
 			});
@@ -179,13 +179,13 @@
 			var me = this, ents={};
 			mapEvent(name, callback, function(key, fun){
 				ents[key] = function(e){
-					me.un(key, ents[key]);
+					me.off(key, ents[key]);
 					fun(e);
 				}
 			});
 			return me.on(ents);
 		},
-		emit: function(name) {
+		emit: function(name) {//手动触发事件
 			each(this, function(k, v) {
 				Etrig(v, name)
 			});
@@ -215,8 +215,7 @@
 	});
 	fn.extend({
 		bind: fn.on,
-		unbind: fn.un,
-		off: fn.un,
+		unbind: fn.off,
 		trigger: fn.emit
 	});
 	/**

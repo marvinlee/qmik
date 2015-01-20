@@ -11,6 +11,38 @@
 </head>
 <body>
   <div>
+    <div q-ctrl="user">xx
+        <input name="user.name" type="text" value="leo"/>
+        <input name="user.age" type="text" value="22"/>
+        <p>
+            倒计时:${time}
+        </p>
+        <p>
+          输出: ${user.name} - ${user.age}
+        </p>
+    </div>
+    <script type="text/javascript">
+        (function($){
+          //$.app() 编译页面页面,只会编译一次,后面再次调用,不会生成新值 
+          //$.app().ctrl();//定义控制器
+          $.app().ctrl({
+            user: function(scope){//控制器user,对应 q-ctrl="user"
+                scope.time = 5;
+                $.cycle(function(){
+                    scope.time--;
+                    scope.apply("time");//更新time所在的节点值
+                }, 1000);
+                $.delay(function(){
+                    scope.user = {
+                      name: 'leochen',
+                      age: 99
+                    };
+                    scope.apply(["user"]);
+                }, 3000);
+            }
+          });
+        })(Qmik);
+    </script>
     <div class="box border1 bh" q-ctrl="list">
         <ul q-for="item in list1">
           <li> ${item.name} - ${item.age} </li>

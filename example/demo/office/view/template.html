@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+  <meta charset="utf-8" /> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+  <meta name="description" content="Qmik 是一个移动优先的前端基础框架。" /> 
+  <meta name="keywords" content="HTML, HTML5, CSS, CSS3, JS, JavaScript, framework, Qmik,  web development, 前端框架, 开源, Web Components" /> 
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" /> 
+  <title>Qmik</title> 
+  <meta name="renderer" content="webkit" /> 
+  <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+  <meta name="apple-mobile-web-app-title" content="Qmik" /> 
+  <meta name="apple-mobile-web-app-capable" content="yes" /> 
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" /> 
+  <link rel="alternate icon" type="image/png" href="http://a.static.amazeui.org/assets/2.x/i/favicon.png" /> 
+  <link rel="apple-touch-icon-precomposed" href="http://a.static.amazeui.org/assets/2.x/i/app-icon72x72@2x.png" /> 
+  <link rel="stylesheet" href="../css/amazeui.css?v=i4unzuke" /> 
+  <link rel="stylesheet" href="../css/amaze.css?v=i4unzuke" /> 
+  <link rel="stylesheet" type="text/css" href="../css/style.css" /> 
+  <script type="text/javascript" src="../js/Qmik.all.1.4.00.js"></script> 
+ </head> 
+ <body> 
+  <header id="amz-header"> 
+   <div class="amz-container am-cf"> 
+    <h1> <a href="https://github.com/leochen36/qmik">Qmik</a> <span class="am-badge am-badge-danger">2.0</span> </h1> 
+    <nav> 
+     <ul class="amz-header-nav am-collapse"> 
+      <li><a href="http://amazeui.org/getting-started">开始使用</a></li> 
+      <li><a href="http://amazeui.org/javascript">JS 插件</a></li> 
+      <li><a href="http://amazeui.org/donate">捐助</a></li> 
+     </ul> 
+    </nav> 
+   </div> 
+  </header> 
+  <section class="" id="amz-main" data-tag="css"> 
+   <div class="am-g am-g-fixed"> 
+    <div q-ctrl="leftNav" class="col-md-3 am-u-md-3"> 
+     <div class="am-sticky-placeholder" style="height: 996px; margin: 0px;"> 
+      <div id="amz-offcanvas" class="am-offcanvas doc-offcanvas" style="margin: 0px;"> 
+       <section class="amz-sidebar am-offcanvas-bar" style=""> 
+        <ul q-for="item in model.list" class="am-nav"> 
+         <li class="${item.class}"> <a href="${item.url}">${item.name} <span class="am-nav-en">${item.desc}</span> </a> </li> 
+        </ul> 
+       </section> 
+      </div> 
+     </div> 
+    </div> 
+    <div class="col-md-9 am-u-md-9 doc-content"> 
+     <h2 id="css-概述">CSS 概述 <a href="http://amazeui.org/css/#css-%E6%A6%82%E8%BF%B0" title="Heading anchor" class="doc-anchor"></a></h2> 
+     <p>Qmik CSS 大致分为四部分。</p> 
+     <div class="am-g"> 
+      <div class="am-u-md-6"> 
+       <div class="am-panel am-panel-default"> 
+        <div class="am-panel-hd">
+          基础（默认）样式 
+        </div> 
+        <div class="am-panel-bd">
+          使用 normalize.css 统一浏览器差异， 以及一些基础的元素样式。 
+        </div> 
+       </div> 
+      </div> 
+      <div class="am-u-md-6"> 
+       <div class="am-panel am-panel-default"> 
+        <div class="am-panel-hd">
+          布局样式 
+        </div> 
+        <div class="am-panel-bd">
+          包含用于布局的 Grid、AVG Grid，以及一些辅助 Class。 
+        </div> 
+       </div> 
+      </div> 
+      <div class="am-u-md-6"> 
+       <div class="am-panel am-panel-default"> 
+        <div class="am-panel-hd">
+          元素样式 
+        </div> 
+        <div class="am-panel-bd">
+          对 
+         <code>code</code>、 
+         <code>form</code>、 
+         <code>table</code> 等 HTML 元素定义更多的样式。 
+        </div> 
+       </div> 
+      </div> 
+      <div class="am-u-md-6"> 
+       <div class="am-panel am-panel-default"> 
+        <div class="am-panel-hd">
+          页面组件 
+        </div> 
+        <div class="am-panel-bd">
+          定义网页中常用的、多个元素组合在一起的组件样式，如分页、面包屑导航等。 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <h3 id="浏览器前缀">浏览器前缀 <a href="http://amazeui.org/css/#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%89%8D%E7%BC%80" title="Heading anchor" class="doc-anchor"></a></h3> 
+     <p>Qmik 2.0 开始移除了所有标准属性的浏览器前缀，构建时通过 <a href="https://github.com/postcss/autoprefixer" class="external-link" target="_blank">AutoPrefixer</a> 自动添加。</p> 
+     <p>当前的 AutoPrefixer 浏览器支持设置为：</p> 
+     <div class="doc-actions"> 
+      <div class="doc-act-inner"> 
+       <span class="doc-act-clip am-icon-copy"> Copy</span> 
+      </div> 
+     </div> 
+     <div class="doc-code demo-highlight"> 
+      <pre class=""><code class="javascript">[
+  <span class="hljs-string">'ie &gt;= 8'</span>,
+  <span class="hljs-string">'ie_mob &gt;= 10'</span>,
+  <span class="hljs-string">'ff &gt;= 30'</span>,
+  <span class="hljs-string">'chrome &gt;= 34'</span>,
+  <span class="hljs-string">'safari &gt;= 7'</span>,
+  <span class="hljs-string">'opera &gt;= 23'</span>,
+  <span class="hljs-string">'ios &gt;= 7'</span>,
+  <span class="hljs-string">'android &gt;= 2.3'</span>,
+  <span class="hljs-string">'bb &gt;= 10'</span>
+]
+</code></pre> 
+     </div> 
+     <h2 id="响应式断点">响应式断点 <a href="http://amazeui.org/css/#%E5%93%8D%E5%BA%94%E5%BC%8F%E6%96%AD%E7%82%B9" title="Heading anchor" class="doc-anchor"></a></h2> 
+     <table class="am-table am-table-bd am-table-striped"> 
+      <thead> 
+       <tr> 
+        <th>尺寸</th> 
+        <th class="am-text-nowrap">class 简写</th> 
+        <th>断点区间</th> 
+        <th>描述</th> 
+       </tr> 
+      </thead> 
+      <tbody> 
+       <tr> 
+        <td>small</td> 
+        <td><code>sm</code></td> 
+        <td>0 - 640px</td> 
+        <td>处理绝大数手机的横竖屏模式（<a href="http://viewportsizes.com/?filter=Galaxy%20Note%20N7" target="_blank" class="external-link">Galaxy Note 2 的视口为 360 * 640</a>）</td> 
+       </tr> 
+       <tr> 
+        <td>medium</td> 
+        <td><code>md</code></td> 
+        <td>641px - 1024px</td> 
+        <td>平板的横竖屏模式</td> 
+       </tr> 
+       <tr> 
+        <td>large</td> 
+        <td><code>lg</code></td> 
+        <td>1025px +</td> 
+        <td>桌面设备</td> 
+       </tr> 
+      </tbody> 
+     </table> 
+     <p>目前 Qmik 对大于 1025px 的屏幕并没有做划分，虽然现在大屏显示器越来越多，但是设计一个过宽的网页对用户来说并不友好，用户眼睛左右移动的区间太大，浏览起来比较累。当然，一些特殊类型（购物、视频等）的网站例外。</p> 
+     <p>LESS 变量中定义了一些 Media Query 变量，使用 LESS 的用户可以引入该文件，直接使用这些变量。</p> 
+     <div class="doc-actions"> 
+      <div class="doc-act-inner"> 
+       <span class="doc-act-clip am-icon-copy"> Copy</span> 
+      </div> 
+     </div> 
+     <div class="doc-code demo-highlight"> 
+      <pre class=""><code class="css"><span class="hljs-at_rule">@<span class="hljs-keyword">screen:</span>        ~<span class="hljs-string">&quot;only screen&quot;</span></span>;
+
+<span class="hljs-at_rule">@<span class="hljs-keyword">landscape:</span>     ~<span class="hljs-string">&quot;@{screen} and (orientation: landscape)&quot;</span></span>;
+<span class="hljs-at_rule">@<span class="hljs-keyword">portrait:</span>      ~<span class="hljs-string">&quot;@{screen} and (orientation: portrait)&quot;</span></span>;
+
+<span class="hljs-at_rule">@<span class="hljs-keyword">small-up:</span>      ~<span class="hljs-string">&quot;@{screen}&quot;</span></span>;
+<span class="hljs-at_rule">@<span class="hljs-keyword">small-only:</span>    ~<span class="hljs-string">&quot;@{screen} and (max-width: @{breakpoint-small-max})&quot;</span></span>;
+
+<span class="hljs-at_rule">@<span class="hljs-keyword">medium-up:</span>     ~<span class="hljs-string">&quot;@{screen} and (min-width:@{breakpoint-medium-min})&quot;</span></span>;
+<span class="hljs-at_rule">@<span class="hljs-keyword">medium-only:</span>   ~<span class="hljs-string">&quot;@{screen} and (min-width:@{breakpoint-medium-min}) and (max-width:@{breakpoint-medium-max})&quot;</span></span>;
+
+<span class="hljs-at_rule">@<span class="hljs-keyword">large-up:</span>      ~<span class="hljs-string">&quot;@{screen} and (min-width:@{breakpoint-large-min})&quot;</span></span>;
+<span class="hljs-at_rule">@<span class="hljs-keyword">large-only:</span>    ~<span class="hljs-string">&quot;@{screen} and (min-width:@{breakpoint-large-min}) and (max-width:@{breakpoint-large-max})&quot;</span></span>;
+</code></pre> 
+     </div> 
+    </div> 
+   </div> 
+  </section> 
+  
+  <footer class="amz-footer"> 
+     <div class="am-g am-g-fixed"> 
+      <div class="col-md-4 col-md-push-8 am-u-md-4 am-u-md-push-8"> 
+       <ul class="amz-social"> 
+        <li><a href="javascript: void(0)" data-am-popover="{content: 'Qmik 交流 Q 群：374946651'}" title="Qmik 用户交流群" target="_blank"><span class="am-icon-qq"></span></a></li> 
+        <li><a href="http://weibo.com/allmobilize" title="云适配微博" target="_blank"><span class="am-icon-weibo"></span></a></li> 
+        <li><a href="http://amazeui.org/css/#am-wechat" title="云适配微信" data-am-modal=""><span class="am-icon-wechat"></span></a></li> 
+        <li><a class="new-issue" href="https://github.com/leochen36/qmik" target="_blank" title="Bug 反馈"><span class="am-icon-paper-plane"></span></a></li> 
+       </ul> 
+      </div> 
+      <div class="col-md-8 col-md-pull-4 am-u-md-8 am-u-md-pull-4"> 
+       <h2 class="amz-fd"><a>云适配</a></h2> 
+       <ul class="amz-links"> 
+        <li><a href="http://amazeui.org/about/wantu" class="am-icon-heart">&nbsp;妹子招亲</a> | <a href="http://amazeui.org/about/contact">联系我们</a> | <a href="http://amazeui.org/about/resources">品牌相关</a></li> 
+       </ul> 
+       <p class="amz-cp">&copy; 2015 AllMobilize, Inc. Licensed under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a>. Developed with <a href="http://www.jetbrains.com/webstorm/" target="_blank">WebStorm</a>.</p> 
+      </div> 
+     </div> 
+  </footer> 
+
+  <script type="text/javascript" src="../js/index.js"></script>  
+ </body>
+</html>
