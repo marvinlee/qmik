@@ -492,19 +492,7 @@
 
 	var app;
 	Q.app = function(ctrls, rootCtrlFun){
-		if(Q.isFun(ctrls)){
-			rootCtrlFun = ctrls;
-			ctrls = [];
-		}else if(Q.isString(ctrls)){
-			ctrls = [ctrls];
-		}else{
-			ctrls = [];
-		}
-		if(app){
-
-		}else{
-			app = new App(rootCtrlFun);
-		}
+		return app = app || new App(rootCtrlFun);
 	};
 	//
 })(Qmik);
