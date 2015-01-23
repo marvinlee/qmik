@@ -58,7 +58,7 @@
     </div>
 
     <div class="box" q-ctrl="lazy">
-        <p class="ftitle"> 控制器: [lazy] 
+        <p class="ftitle"> 控制器: [lazy] ${time} 
           <span class="load" style="font-weight:700;" ng="a">
             加载数据: ${time} 
             <span class="loading" ng="b"></span>
@@ -155,16 +155,19 @@
           var ttl = 5000;
           scope.vUserName = scope.parent.userName;//
           scope.cssDisplay="xxx";//初始化的值需要事先声明
+          
           scope.time = parseInt(ttl/1000);
           var startTime = $.now() + ttl;
-          scope.once("viewport", function(e){
-            console.log("vp");
-          });
           $.cycle(function(){
             var t = startTime - $.now();
             scope.time = parseInt(t/1000);
             scope.apply();
           }, 900, ttl);
+
+          scope.once("viewport", function(e){
+            console.log("vp");
+          });
+          
           $.delay(function(){
               scope.$(".load").hide();
               scope.cssDisplay = "none";
