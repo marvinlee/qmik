@@ -139,8 +139,11 @@
 				//DOMSubtreeModified: function(e){},
 				DOMNodeInserted: function(e){//节点增加
 					var target = e.target,
-					space = getSpace(target);
-					space && compile(target, space.scope);
+						space = getSpace(target);
+					if(space){
+						addScopeInput(target, space.scope);
+						compile(target, space.scope);
+					}
 				},
 				DOMNodeRemoved: remove //删除节点
 			});
@@ -173,19 +176,7 @@
 		context[namespaceScope] = me;
 		me[nameParentScope] = rootScope; //父scope
 		$("input,select,textarea", context).each(function(i, dom) {
-			var name = dom.name, isSet=true;
-			if(name){
-				if(Scope.prototype[name] || /^__/.test(name) || new RegExp(name).test(keywords)){
-					return Q.error("set scope["+me.__name+"] name["+name+"] is illegal");
-				}
-				if(me.__name == "root" && Q(dom).parents("[q-ctrl]").length>0){
-					isSet = false;
-				}
-				if(isSet){
-					fieldValue(me, name, getInputValue(dom));
-					me[nameInput][name] = dom;
-				}
-			}
+			addScopeInput(dom, me);
 		});
 	}
 	extend(Scope.prototype, {
@@ -246,6 +237,21 @@
 			delay(trigger, execInterval + 10);
 		}
 	});
+	function addScopeInput(dom, scope){
+		var name = dom.name, isSet=true;
+		if(name){
+			if(Scope.prototype[name] || /^__/.test(name) || new RegExp(name).test(keywords)){
+				return Q.error("set scope["+scope.__name+"] name["+name+"] is illegal");
+			}
+			if(scope.__name == "root" && Q(dom).parents("[q-ctrl]").length>0){
+				isSet = false;
+			}
+			if(isSet){
+				fieldValue(scope, name, getInputValue(dom));
+				scope[nameInput][name] = dom;
+			}
+		}
+	}
 	function uniqueArray(list1, list2){
 		if(list1.length<1)return [];
 		var list = list1.concat(list2 || []).sort(),
@@ -301,7 +307,7 @@
 
 	/** 解析页面 */
 	function compile(node, scope, isAdd) {
-		compileChilds(node, scope, isAdd);
+		replaceNodeVar(node, scope, isAdd, compileChilds);
 	}
 	function compileChilds(node, scope, isAdd){
 		if(node && node != win){
