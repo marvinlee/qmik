@@ -1,6 +1,31 @@
-<p>$.encode(str) 函数可把字符串作为 URI 组件进行编码。使用: encodeURIComponent实现</p> 
+
+<p>Qmik.inherit()函数用于类继承。</p> 
+<p>
+	Qmik.inherit(subClass, superClass);
+</p>
+<table class="am-table am-table-bd am-table-striped"> 
+  <thead> 
+   <tr> 
+    <th>参数</th> 
+    <th>描述</th> 
+   </tr> 
+  </thead> 
+  <tbody> 
+   <tr> 
+    <td>subClass</td> 
+    <td>子类</td>
+   </tr> 
+   <tr> 
+    <td>superClass</td> 
+    <td>父类</td> 
+   </tr>
+  </tbody> 
+</table> 
 <div class="doc-code demo-highlight"> 
   <pre class=""><code class="javascript">
-      $.encode("/test/view?name=leo&age=22");
+  	var array = Qmik.grep( [1,2,3], function(i, val){
+  		return val % 2 ==0;
+  	});
   </code></pre> 
 </div> 
+

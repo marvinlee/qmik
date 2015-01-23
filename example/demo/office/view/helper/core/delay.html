@@ -1,1 +1,33 @@
-delay
+
+<p> Qmik.delay() 函数,延迟运行函数,内部采用setTimeout实现</p> 
+
+<p>
+	Qmik.delay(function, delay);
+</p>
+<table class="am-table am-table-bd am-table-striped"> 
+  <thead> 
+   <tr> 
+    <th>参数</th> 
+    <th>描述</th> 
+   </tr> 
+  </thead> 
+  <tbody> 
+   <tr> 
+	    <td>function</td> 
+	    <td>执行方法</td>
+   </tr>
+   <tr> 
+	    <td>delay</td> 
+	    <td>延迟执行时间间隔,单位毫秒</td>
+   </tr>
+  </tbody> 
+</table> 
+<div class="doc-code demo-highlight"> 
+  <pre class=""><code class="javascript">
+  	//间隔一秒,总共执行到10秒(这个时间从调用cycle开始计算)
+  	Qmik.delay(function(){
+  		Qmik.log("test delay ", Qmik.now());
+  	}, 1000);
+  </code></pre> 
+</div> 
+

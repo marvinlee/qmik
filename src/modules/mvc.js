@@ -88,10 +88,12 @@
 	extend(App.prototype, {
 		__init: function(fun) {
 			var me = this,
-				scope = new Scope();
-			me.scope =Q(nameRoot)[0][namespace] = scope;
+				scope = new Scope(),
+				root = Q(nameRoot)[0];
+			me.scope = scope;
+			root[namespace] = getSpace(root);
 			fun && fun(scope);
-			compile(Q(nameRoot)[0], scope, true);//编译页面
+			compile(root, scope, true);//编译页面
 			Q("[q-ctrl]").css("visibility","visible");//置为可见
 			trigger();
 			function change(e) {
@@ -125,7 +127,6 @@
 						scope[nameMap][_name] = newmaps;
 					});
 					if(isInputDom){
-						delete scope[nameMap][name];
 						delete scope[nameInput][name];
 					}
 				}		
@@ -294,19 +295,20 @@
 		}else {
 			vals.push(node.value)
 		}
-		return vals.join(",")
+		return vals.join("&")
 	}
 	var REG_VAR_NAME = /(\$\{\s*[\w\._-]*\s*\})|(\{\{\s*[\w\._-]*\s*\}\})/g;
 
 	/** 解析页面 */
 	function compile(node, scope, isAdd) {
-		(function deal(node, ctrlScope) {
-			if(node && node != win){
-				each(node.childNodes, function(i, node) {
-					replaceNodeVar(node, ctrlScope, isAdd, deal);
-				})
-			}
-		})(node, scope);
+		compileChilds(node, scope, isAdd);
+	}
+	function compileChilds(node, scope, isAdd){
+		if(node && node != win){
+			each(node.childNodes, function(i, node) {
+				replaceNodeVar(node, scope, isAdd, compileChilds);
+			})
+		}
 	}
 	//取得变量名
 	function getVarName(name) {
@@ -428,7 +430,8 @@
 								});
 								start+=section;
 								node.innerHTML += htmls.join("");
-								compile(node, scope);
+
+								compileChilds(node, scope, isAdd);//编译
 							},50);
 							node[namespace] = space;
 							isAdd && addMapNode(scope, vs[2], node);	
@@ -487,7 +490,7 @@
 				break;
 		}
 		space.scope = scope;
-		callback && callback(node, scope);
+		callback && callback(node, scope, isAdd);
 	}
 
 	var app;

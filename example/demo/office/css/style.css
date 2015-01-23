@@ -13,8 +13,8 @@ a{
   color: #000;
 }
 [q-ctrl]{visibility: hidden;}
-.leftNav{min-height: 300px;max-height: 500px;overflow: hidden;}
-.am-nav{max-height: 500px;}
+.leftNav{min-height: 300px;max-height: 580px;overflow: hidden;}
+.am-nav{max-height: 580px;}
 .doc-content{min-height: 400px;}
 .c-desc{min-height: 200px;}
 #ds-thread #ds-reset .ds-meta {

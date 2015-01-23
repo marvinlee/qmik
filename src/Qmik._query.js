@@ -532,7 +532,7 @@
 			each(me, function(i, u) {
 				u.value = execObject(v)
 			});
-			me.trigger("change");
+			me.emit("change");
 			return me
 		},
 		next: function(s) {

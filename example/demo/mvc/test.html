@@ -12,8 +12,12 @@
 <body>
   <div>
     <div q-ctrl="user">xx
-        <input name="user.name" type="text" value="leo"/>
-        <input name="user.age" type="text" value="22"/>
+        <input name="time" type="text"/>
+        user.info.name:<input name="user.info.name" type="text" value="leo"/>
+        user.info.addr:<input name="user.info.addr" type="text" value="leo"/><br/>
+        user.age<input name="user.age" type="text" value="22"/>
+        user.email<input name="user.email" type="text" value="22"/><br/>
+        str:<input name="str" type="text" value="22"/>
         <p>
             倒计时:${time}
         </p>
@@ -27,11 +31,21 @@
           //$.app().ctrl();//定义控制器
           $.app().ctrl({
             user: function(scope){//控制器user,对应 q-ctrl="user"
-                scope.time = 5;
+                scope.time = 999;
+                scope.watch({
+                  user: function(map){
+                    console.log(map);
+                  },
+                  str: function(map){
+                    console.log(map);
+                  }
+                });
+
+                
                 $.cycle(function(){
                     scope.time--;
                     scope.apply("time");//更新time所在的节点值
-                }, 1000);
+                }, 100000);
                 $.delay(function(){
                     scope.user = {
                       name: 'leochen',

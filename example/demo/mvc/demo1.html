@@ -138,7 +138,8 @@
             scope.apply(); //这种写法,性能比较好,保更新 msg 对应的节点信息
             //scope.apply();//这种写法性能比较差,会更新整个控制器的所有节点信息, 
         }
-        scope.parent.watch("user.userName", function(v){
+        scope.parent.watch("user.userName", function(map){
+          var v = map.value;
           scope.vUserName = v.replace(/xo/g,"*o");
           scope.apply();
         });

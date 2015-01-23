@@ -1,6 +1,9 @@
 (function() {
 
 	$.app().ctrl({
+		header: function(scope){
+
+		},
 		//左边导航控制器
 		leftNav: function(scope){
 			ctrlLeftNav(scope);
@@ -8,6 +11,10 @@
 		//右边desc控制器
 		desc: function(scope){
 			ctrlDesc(scope)
+		},
+		helper: function(scope){
+			scope.version = "2.0.00";
+			scope.name = "该函数属于全局对象Qmik";
 		}
 	});
 	//左边导航控制器
@@ -55,7 +62,12 @@
 		});
 	}
 	function dealHtml(html){
-		return html.replace(/\$\s*\{/g, "$ {");
+		return html.replace(/\$\s*\{/g, "$ {").replace(/\s{2,}/g, function(val){
+			if(/\r|\n/.test(val)){
+				return val;
+			}
+			return " ";
+		});
 	}
 	///
 })();

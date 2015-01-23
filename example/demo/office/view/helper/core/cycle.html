@@ -1,1 +1,37 @@
-cycle
+
+<p> Qmik.cycle() 函数,循环运行方法,内部采用setTimeout实现</p> 
+
+<p>
+	Qmik.cycle(function, interval [, ttl]);
+</p>
+<table class="am-table am-table-bd am-table-striped"> 
+  <thead> 
+   <tr> 
+    <th>参数</th> 
+    <th>描述</th> 
+   </tr> 
+  </thead> 
+  <tbody> 
+   <tr> 
+	    <td>function</td> 
+	    <td>执行方法</td>
+   </tr>
+   <tr> 
+	    <td>interval</td> 
+	    <td>执行间隔时间,单位毫秒</td>
+   </tr>
+   <tr> 
+	    <td>ttl</td> 
+	    <td>总的要执行时间(单位毫秒),到时间后,停止执行</td>
+   </tr>
+  </tbody> 
+</table> 
+<div class="doc-code demo-highlight"> 
+  <pre class=""><code class="javascript">
+  	//间隔一秒,总共执行到10秒(这个时间从调用cycle开始计算)
+  	Qmik.cycle(function(){
+  		Qmik.log("test cycle ", Qmik.now());
+  	}, 1000, 10000);
+  </code></pre> 
+</div> 
+

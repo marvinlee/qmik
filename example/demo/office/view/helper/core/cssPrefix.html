@@ -1,1 +1,31 @@
-cssPrefix
+
+<p> Qmik.cssPrefix() 函数,取得css的浏览器自定义前辍</p> 
+
+<p>
+	Qmik.cssPrefix(style);
+</p>
+<table class="am-table am-table-bd am-table-striped"> 
+  <thead> 
+   <tr> 
+    <th>参数</th> 
+    <th>描述</th> 
+   </tr> 
+  </thead> 
+  <tbody> 
+   <tr> 
+	    <td>style</td> 
+	    <td>
+	    	map对象,如:{transform: "translate(0,0)"}
+	    	返回 {transform: "translate(0,0)","-xxx-transform": "translate(0,0)"}
+	    </td>
+   </tr>
+  </tbody> 
+</table> 
+<div class="doc-code demo-highlight"> 
+  <pre class=""><code class="javascript">
+  	Qmik.cssPrefix({
+  		transform: "translate(0,0)"
+  	});
+  </code></pre> 
+</div> 
+

@@ -1,6 +1,12 @@
-<p>$.encode(str) 函数可把字符串作为 URI 组件进行编码。使用: encodeURIComponent实现</p> 
+
+<p>Qmik.isFunction() 对象是否是函数。</p> 
+<p>
+	Qmik.isFunction(fun);
+</p>
 <div class="doc-code demo-highlight"> 
   <pre class=""><code class="javascript">
-      $.encode("/test/view?name=leo&age=22");
+  	var m = function(){Qmik.log("haha")};
+  	Qmik.isFunction(m);
   </code></pre> 
 </div> 
+
