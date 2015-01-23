@@ -63,7 +63,7 @@
 			if (inViewport(qdom)) {
 				delete g_viewports[key];
 				map.callback && execCatch(map.callback);
-				qdom.trigger("viewport");
+				qdom.emit("viewport");
 			}
 		});
 	}
@@ -73,7 +73,7 @@
 		touchmove: handle
 	});
 	function trigger(){
-		Q(win).trigger("scroll");
+		Q(win).emit("scroll");
 	}
 	/********* 当节点在显示视口时触发 end *******/
 
