@@ -1,0 +1,1752 @@
+<!DOCTYPE html>
+<html class="ks-webkit537 ks-webkit ks-chrome33 ks-chrome">
+ <head> 
+  <meta charset="utf-8" /> 
+  <title>qmik 性能测试</title> 
+  <meta name="data-spm" content="1" /> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /> 
+  <link href="http://gtms03.alicdn.com/tps/i3/T1OjaVFl4dXXa.JOZB-114-114.png" rel="apple-touch-icon-precomposed" /> 
+  <link rel="stylesheet" href="global.css" /> 
+  <link rel="stylesheet" href="index.css" /> 
+  <style type="text/css">
+    ul,li{list-style-type:none;}
+    .tb-service .service-bd{padding:0 9px 9px 9px;}
+    .cat-list li{height:29px;line-height:29px;}
+    [q-ctrl]{visibility: hidden;}
+    .cat-wrap{
+      position: relative;
+    }
+  </style> 
+  <script type="text/javascript" src="../../../Qmik.all.js"></script> 
+ </head> 
+ <body style=""> 
+  <div q-ctrl="nav" class="site-nav"> 
+   <div class="site-nav-bd"> 
+    <ul class="site-nav-bd-l"> 
+     <li class="J_Menu menu login-info" data-fn-name="fn-login-info"> 
+      <div class="menu-hd"> 
+       <a href="https://github.com/leochen36/qmik" target="_top">${user.nick}</a> 
+       <span class="arrow-icon-wrapper"><span class="g-icon arrow-icon"></span></span> 
+      </div> 
+      <div class="menu-bd"> 
+       <div class="menu-bd-panel"> 
+        <a href="//i.taobao.com/my_taobao.htm?ad_id=&amp;am_id=&amp;cm_id=&amp;pm_id=1501036000a02c5c3739" target="_top" id="J_UserAvatar" class="user-avatar"><img src="//assets.alicdn.com/g/s.gif" data-lazy="//wwc.taobaocdn.com/avatar/getAvatar.do?userNick=${user.nick}&amp;width=80&amp;height=80&amp;type=sns" width="80" height="80" alt="${user.nick}的头像" /></a> 
+        <div class="user-info"> 
+         <p class="user-operate"><a href="//member1.taobao.com/member/fresh/account_security.htm" target="_top">账号管理</a><span class="site-nav-pipe">|</span><a href="//login.taobao.com/member/logout.jhtml?f=top&amp;out=true&amp;redirectURL=http%3A%2F%2Fwww.taobao.com%2F" target="_top">退出</a></p> 
+         <p><a href="//login.taobao.com/aso/logintowb?target=//weibo.com" target="_top" id="J_WeiboBindIcon" class="weibo-bind-icon"></a></p> 
+         <p><a href="//vip.taobao.com/growth_info.htm" target="_top"><strong>查看我的会员特权</strong></a></p> 
+         <p><a href="//vip.taobao.com/growth_info.htm" target="_top">我的成长</a></p> 
+        </div> 
+        <div id="J_UserMedal" class="user-medal site-nav-loading"> 
+         <div class="user-medal-bd"> 
+          <div id="J_UserMedalCont" class="user-medal-cont"></div> 
+         </div> 
+         <div id="J_UserMedalFt" class="user-medal-ft"> 
+          <a href="javascript:;" target="_top" id="J_ArrowL" class="arrow-l"><em></em><span></span></a> 
+          <a href="javascript:;" target="_top" id="J_ArrowR" class="arrow-r"><em></em><span></span></a> 
+         </div> 
+        </div> 
+       </div> 
+      </div></li> 
+     <li id="J_Tmsg" class="tmsg"> 
+      <div class="J_Menu menu" data-fn-name="fn-tmsg"> 
+       <div class="menu-hd J_Tmsg_Basic tmsg_basic"> 
+        <span class="J_Tmsg_Logo tmsg_logo_area tmsg_logo_active" style="zoom:1;"><span class="J_Tmsg_Logo_Loading tmsg_logo_loading" style="display: none;"></span> <span class="J_Tmsg_Logo_Icon tmsg_logo_icon g-icon" style=""></span> <span class="J_Tmsg_Logo_Text tmsg_logo_text">消息</span> <span class="J_Tmsg_Logo_Unread tmsg_logo_unread">${user.msgCount}</span></span> 
+        <span class="arrow-icon-wrapper"><span class="g-icon arrow-icon"></span></span> 
+       </div> 
+       <div class="menu-bd"> 
+        <div class="J_Tmsg_Panel_Apps tmsg_panel_apps"> 
+         <div class="J_Tmsg_Panel_Head tmsg_panel_head"> 
+          <h2 class="J_Tmsg_Panel_Title tmsg_panel_title">未读新消息</h2> 
+          <a class="J_Tmsg_Button_ReadAll tmsg_button_read-all" data-tip="ignoreAll" title="忽略所有消息" href="#">全部设为已读</a> 
+         </div> 
+         <div class="J_Tmsg_Panel_AppsBody tmsg_panel_body"> 
+         </div> 
+         <div class="J_Tmsg_Panel_Foot tmsg_panel_foot"> 
+          <a class="J_Tmsg_Button_Setting tmsg_button_setting" data-tips="setting" title="消息设置" href="#">设置</a> 
+          <a class="J_Tmsg_Button_Feedback tmsg_button_feedback" data-tips="feedback" title="意见反馈" href="http://ur.taobao.com/survey/view.htm?spm=1.6659421.0.0.Nmaw77&amp;id=1990&amp;scm=1229.325.1.1" target="_blank">反馈</a> 
+          <span class="J_Tmsg_Button_CheckAll_Wrap tmsg_button_check-all_wrap"> <a class="J_Tmsg_Button_CheckAll tmsg_button_check-all" href="#" target="_blank">查看全部</a> </span> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+      <div class="J_Tmsg_Panels tmsg_panels"> 
+       <div class="J_Tmsg_Panel_Detail tmsg_panel_detail"></div> 
+       <div class="J_Tmsg_Panel_history tmsg_panel_history"></div> 
+       <div class="J_Tmsg_Panel_Strong tmsg_panel_strong"></div> 
+       <div class="J_Tmsg_Panel_Setting tmsg_panel_setting"></div> 
+      </div></li> 
+     <li class="menu mobile"> 
+      <div class="menu-hd"> 
+       <a href="http://www.taobao.com/m" target="_top">手机逛宝宝</a> 
+      </div></li> 
+     <li id="J_Weekend" class="menu weekend"></li> 
+    </ul> 
+    <ul id="J_SiteNavBdR" class="site-nav-bd-r"> 
+     <li class="menu home"> 
+      <div class="menu-hd"> 
+       <a href="http://www.taobao.com/" target="_top" class="h">宝宝网首页</a> 
+      </div></li> 
+     <li class="J_Menu menu my-taobao"> 
+      <div class="menu-hd J_MenuMyTaobao"> 
+       <a href="http://i.taobao.com/my_taobao.htm" target="_top">我的宝宝</a> 
+       <span class="arrow-icon-wrapper"><span class="g-icon arrow-icon"></span></span> 
+      </div> 
+      <div class="menu-bd menu-list"> 
+       <div class="menu-bd-panel"> 
+        <a href="http://trade.taobao.com/trade/itemlist/list_bought_items.htm" target="_top">已买到的宝贝</a> 
+        <a href="http://lu.taobao.com/newMyPath.htm" target="_top">我的足迹</a> 
+        <a href="http://dongtai.taobao.com/hub/new_arrival.htm?scm=1046.1.7.1" target="_top">我的上新</a> 
+        <a href="http://guang.taobao.com/?scm=2022.1.1.1" target="_top">爱逛街 <em class="J_GuangCount guang-count"></em></a> 
+        <a href="http://daren.taobao.com/" target="_top">宝宝达人</a> 
+        <a href="http://love.taobao.com/" target="_top">新欢</a> 
+       </div> 
+      </div></li> 
+     <li id="J_MiniCart" class="J_Menu menu mini-cart" data-fn-name="fn-mini-cart"> 
+      <div class="menu-hd"> 
+       <a href="http://cart.taobao.com/cart.htm?from=mini&amp;ad_id=&amp;am_id=&amp;cm_id=&amp;pm_id=1501036000a02c5c3739" target="_top" id="mc-menu-hd"><span class="g-icon"></span><span>购物车</span><strong id="J_MiniCartNum" class="h">${user.shoppingCount}</strong></a> 
+       <span class="arrow-icon-wrapper"><span class="g-icon arrow-icon"></span></span> 
+      </div> 
+      <div class="menu-bd"> 
+       <div class="menu-bd-panel mini-cart-ready"> 
+        <div class="mini-cart-ft"> 
+         <p><a target="_top" href="http://ju.atpanel.com/?url=http://cart.taobao.com/my_cart.htm?from=mini&amp;ad_id=&amp;am_id=&amp;cm_id=&amp;pm_id=150042785330be233161" class="site-nav-btn">查看我的购物车</a></p> 
+        </div> 
+       </div> 
+      </div></li> 
+     <li class="J_Menu menu favorite"> 
+      <div class="menu-hd"> 
+       <a href="http://shoucang.taobao.com/shop_collect_list.htm" target="_top"><span class="g-icon"></span><span>收藏夹</span></a> 
+       <span class="arrow-icon-wrapper"><span class="g-icon arrow-icon"></span></span> 
+      </div> 
+      <div class="menu-bd menu-list"> 
+       <div class="menu-bd-panel"> 
+        <a href="http://shoucang.taobao.com/item_collect.htm" target="_top">收藏的宝贝</a> 
+        <a href="http://shoucang.taobao.com/shop_collect_list.htm" target="_top">收藏的店铺</a> 
+       </div> 
+      </div></li> 
+     <li class="menu guide"> 
+      <div class="menu-hd"> 
+       <a href="http://list.taobao.com/browse/cat-0.htm?taobao_from=6" target="_top">商品分类</a> 
+      </div></li> 
+     <li class="site-nav-pipe">|</li> 
+     <li class="J_Menu menu seller-center"> 
+      <div class="menu-hd"> 
+       <a href="http://mai.taobao.com/seller_admin.htm" target="_top">卖家中心</a> 
+       <span class="arrow-icon-wrapper"><span class="g-icon arrow-icon"></span></span> 
+      </div> 
+      <div class="menu-bd menu-list"> 
+       <div class="menu-bd-panel"> 
+        <a href="http://mai.taobao.com/seller_admin.htm" target="_top">免费开店</a> 
+        <a href="http://trade.taobao.com/trade/itemlist/list_sold_items.htm" target="_top">已卖出的宝贝</a> 
+        <a href="http://sell.taobao.com/auction/goods/goods_on_sale.htm" target="_top">出售中的宝贝</a> 
+        <a href="http://fuwu.taobao.com/?tracelog=tbdd" target="_top">卖家服务市场</a> 
+        <a href="http://daxue.taobao.com" target="_top">卖家培训中心</a> 
+       </div> 
+      </div></li> 
+     <li class="menu service"> 
+      <div class="menu-hd"> 
+       <a href="http://service.taobao.com/support/main/service_center.htm" target="_top">联系客服</a> 
+      </div></li> 
+     <li id="J_SiteMap" class="J_Menu menu site-map" data-fn-name="fn-site-map"> 
+      <div class="menu-hd"> 
+       <a href="http://www.taobao.com/sitemap.php?id=sitemap2" target="_top"><span class="g-icon"></span><span>网站导航</span></a> 
+       <span class="arrow-icon-wrapper"><span class="g-icon arrow-icon"></span></span> 
+      </div> 
+      <div class="menu-bd"> 
+       <div id="J_SiteMapBd" class="menu-bd-panel"></div> 
+      </div></li> 
+    </ul> 
+   </div> 
+  </div> 
+
+
+  <div class="wrap"> 
+   <div class="screen-hd row"> 
+    <div class="head"> 
+     <div class="head-wrap"> 
+
+      <div q-ctrl="search" class="search"> 
+       <div class="search-wrap"> 
+        <div class="search-hd"> 
+         <div class="search-tips"> 
+          <a href="//list.taobao.com/browse/ad_search.htm"> 高级<br />搜索 </a> 
+         </div> 
+        </div> 
+        <div class="search-bd"> 
+         <div class="search-triggers search-tab-header"> 
+          <ul class="ks-switchable-nav"> 
+           <li class="J_SearchTab selected goods-search-tab" data-searchtype="item" data-defaultpage="nogo" data-spm-click="gostr=/tbindex;locaid=d10;name=宝贝">宝贝</li> 
+           <li class="J_SearchTab tmall-search-tab" data-searchtype="mall" data-tmall="true" data-spm-click="gostr=/tbindex;locaid=d11;name=猫" data-action="http://list.tmall.com/search_product.htm">猫</li> 
+           <li class="J_SearchTab shop-search-tab" data-searchtype="shop" data-spm-click="gostr=/tbindex;locaid=d12;name=店铺" data-action="http://shopsearch.taobao.com/browse/shop_search.htm">店铺</li> 
+          </ul> 
+          <div class="search-tab-icon"> 
+           <i><em></em><span></span></i> 
+          </div> 
+         </div> 
+         <div class="search-panel search-hp-panel ks-switchable-content J_SearchPanel"> 
+          <form target="_top" action="http://s.taobao.com/search" name="search" id="J_TSearchForm" class=""> 
+           <div class="search-button"> 
+            <button class="btn-search" type="submit" data-spm-click="gostr=/tbindex;locaid=d13"></button> 
+           </div> 
+           <div class="search-panel-fields search-hp-fields search-common-panel"> 
+            <div class="J_TbSearchContent J_TbPlaceholder J_Placeholder" style=""> 
+             <label for="q" data-searchtype-shop="">${search.q}</label> 
+            </div> 
+            <div class="hidden J_TmallSearchContent J_Placeholder J_TmallPlaceholder" style="display: none;"> 
+             <label for="q"></label> 
+            </div> 
+            <div class="search-combobox" id="ks-component215"> 
+             <div class="search-combobox-input-wrap"> 
+              <input id="q" name="q" aria-label="请输入搜索文字" accesskey="s" autofocus="true" autocomplete="off" aria-haspopup="true" aria-combobox="list" role="combobox" class="search-combobox-input" x-webkit-grammar="builtin:translate" /> 
+             </div> 
+            </div> 
+            <i class="tb-fp-iconfont" id="J_SearchIcon"></i> 
+           </div> 
+           <input type="hidden" name="commend" value="all" /> 
+           <input type="hidden" name="ssid" value="s5-e" autocomplete="off" /> 
+           <input type="hidden" name="search_type" value="item" autocomplete="off" /> 
+           <input type="hidden" name="sourceId" value="tb.index" /> 
+           <input type="hidden" name="spm" value="1.7274553.1997520841.1" /> 
+           <input type="hidden" name="initiative_id" value="tbindexz_20150113" /> 
+           <!--[if lt IE 9]>
+          <s class="search-fix search-fix-panellt"></s><s class="search-fix search-fix-panellb"></s>
+          <![endif]--> 
+          </form> 
+         </div> 
+        </div> 
+        <div id="J_SearchFt" class="search-ft"> 
+         <div class="J_TbSearchContent J_HotWord"> 
+          <div q-for="item in search.hots" class="search-hots"> 
+           <a href="${item.href}">${item.title}</a> 
+           
+          </div> 
+         </div> 
+         <div class="J_TmallSearchContent J_HotWord J_TmallHotWord tmall-hot-word"></div> 
+        </div> 
+       </div> 
+      </div> 
+      <div class="logo s-logo"> 
+       <h1 class="J_Ald J_Ald_544" data-ald="544"><a href="//www.taobao.com" target="_self" class="logo-bd">宝宝网</a></h1> 
+       <h2><a href="//www.taobao.com" target="_self">宝宝网</a></h2> 
+      </div> 
+      <div id="J_Qr" class="qr" style="display:none;"> 
+       <a href="http://www.taobao.com/m?spm=1.6723761.a2147az.1" class="qr-bd"> <span class="h">手机逛宝宝</span> <img src="http://gtms01.alicdn.com/tps/i1/TB1h3IXGFXXXXXsXFXXDANtWXXX-175-175.png" alt="手机逛宝宝" /> </a> 
+       <a href="javascript:;" target="_self" id="J_QrFt" class="qr-ft"> 
+        <s class="fpicon s-s-close"></s></a> 
+      </div> 
+     </div> 
+    </div> 
+    <div q-ctrl="main" class="cont"> 
+     <div class="main"> 
+      <div id="J_Nav" class="nav"> 
+       <ul class="nav-hd"> 
+        <li><a href="http://www.tmall.com/?spm=1.7281509.a214dau.1">猫</a></li> 
+        <li><a href="http://ju.taobao.com/?spm=1.7281509.a214dau.2">聚划算</a></li> 
+        <li><a href="http://chaoshi.tmall.com/?spm=1.7281509.a214dau.3">超市</a></li> 
+       </ul> 
+       <ul class="nav-bd"> 
+        <li class="pipe">|</li> 
+        <li><a href="http://trip.taobao.com/?spm=1.7281509.a214dau.4">阿里旅行</a></li> 
+        <li><a href="http://sf.taobao.com/?spm=1.7281509.a214dau.5">司法拍卖</a></li> 
+        <li><a href="http://www.etao.com/?spm=1.7281509.a214dau.6&amp;tb_lm_id=t_zdh">一淘</a></li> 
+        <li><a href="http://3c.tmall.com/?spm=1.7281509.a214dau.7">电器城</a></li> 
+        <li class="J_Ald J_Ald_30080" data-ald="30080"><a href="http://www.taobao.com/go/chn/hitao/top.php?spm=1.7281509.a214dau.8">美妆闪购</a></li> 
+        <li><a href="http://yun.taobao.com/?spm=1.7281509.a214dau.9">云智能</a></li> 
+        <li><a href="http://china.chi.taobao.com/?spm=1.7281509.a214dau.10">特色中国</a></li> 
+       </ul> 
+       <ul class="nav-ft"> 
+        <li id="J_NavGift" class="nav-gift" data-img="http://gtms01.alicdn.com/tps/i1/TB1a4N4HXXXXXaQaXXXare4IVXX-80-30.gif" data-url="http://www.taobao.com/market/promo/story/index.php" data-gift-img="http://gtms01.alicdn.com/tps/i1/T12vKuFsFmXXb0fcHr-88-28.gif" data-gift-url="http://new.taobao.com/?ad_id=&amp;am_id=1301066374b3da59cda2&amp;cm_id=&amp;pm_id="><a href="http://www.taobao.com/market/promo/story/index.php"><img src="http://gtms01.alicdn.com/tps/i1/TB1a4N4HXXXXXaQaXXXare4IVXX-80-30.gif" /></a></li> 
+        <li class="nav-ft-text"><a href="http://www.taobao.com/go/act/315/xb_20100707.php?spm=1.7281509.a214dau.11&amp;&amp;TBG=42685.203542.2&amp;ad_id=&amp;am_id=1300268931aef04f0cdc&amp;cm_id=&amp;pm_id=#rushi">消费者保障</a></li> 
+       </ul> 
+      </div> 
+      <div class="main-l"> 
+       <div class="main-l-wrap"> 
+        <div class="promo"> 
+         <div class="promo-bd" style="width: 520px; overflow: hidden; height: 280px;"> 
+          <div q-for="item in promos"> 
+           <div class="J_TBDP mod" style="float: left; overflow: hidden; width: 520px; display: block;"> 
+            <a href="${item.href}"><img src="${item.url}" /></a> 
+           </div> 
+          </div> 
+         </div> 
+         <div class="promo-ft"> 
+          <div id="J_PromoOpt" class="promo-opt" style="display: none;"> 
+           <a href="javascript:;" class="J_Prev prev"> <i class="s-prev"></i> </a> 
+           <a href="javascript:;" class="J_Next next"> <i class="s-next"></i> </a> 
+          </div> 
+          <ul q-for="item in promos" class="promo-nav"> 
+           <li class=""><a href="javascript:void(0);">${item.index}</a></li> 
+          </ul> 
+         </div> 
+        </div> 
+        <div id="J_Tmall" class="tmall"> 
+         <div class="tmall-bd" style="width: 520px; overflow: hidden; height: 200px;"> 
+          <style type="text/css">
+            body .tmall .tanx-wrapper ins{display:inline-block;padding:0;margin:0;width:260px;height:200px;}
+            body .tmall .tanx-wrapper ins> div{display:inline-block;position:relative;width:260px;height:200px;*display:inline;*zoom:1;font:12px/1.5 tahoma,'Hiragino Sans GB','microsoft yahei',sans-serif;}
+          </style> 
+          <div q-for="item in tmalls" style="position: absolute; overflow: hidden;left: 0px;"> 
+           <div class="mod column-2 J_TanxWrapper tanx-wrapper" style="float: left; overflow: hidden; width: 520px; display: block;"> 
+            <ins> 
+             <div> 
+              <a href="${item.href}" target="_blank"><img border="0" src="${item.url}" width="260px" height="200px" /></a> 
+             </div> 
+            </ins> 
+            <a class="hide J_TanxAd"></a> 
+            <ins> 
+             <div> 
+              <a href="${item.href}" target="_blank"><img border="0" src="${item.url}" width="260px" height="200px" /></a> 
+             </div> 
+            </ins> 
+            <a id="tanx-a-mm_12852562_1778064_22198795" class="hide J_TanxAd"></a> 
+           </div> 
+          </div> 
+         </div> 
+         <div class="tmall-ft"> 
+          <div id="J_TmallOpt" class="tmall-opt"> 
+           <a href="javascript:;" class="J_Prev prev"> <i class="s-prev"></i> </a> 
+           <a href="javascript:;" class="J_Next next"> <i class="s-next"></i> </a> 
+          </div> 
+          <ul q-for="item in tmalls" class="tmall-nav"> 
+           <li class=""><a href="javascript:void(0);">${item.index}</a></li> 
+          </ul> 
+         </div> 
+         <s class="fpicon s-tmall-logo"></s> 
+        </div> 
+       </div> 
+      </div> 
+      <div class="main-c"> 
+       <div class="main-c-wrap"> 
+        <div class="main-c-hd"> 
+         <ins style="display:inline-block;padding:0;margin:0;width:170px;height:280px;*zoom:1;*display:inline" id="tanxssp-outer-conmm_33231655_8000000_22196529"> 
+          <div id="tanxssp_con_mm_33231655_8000000_22196529" style="display:inline-block;position:relative;width:170px;height:280px;*display:inline;*zoom:1;font:12px/1.5 tahoma,'Hiragino Sans GB','microsoft yahei',sans-serif;"> 
+           <a href="http://click.tanx.com/cc?e=%2fsyoBR5T0htdzizngoRg%2fFXYOylJn4WtsWF1FWvVEZ4f2GKNFhDlUJ9dUp%2f4aqqrPlFiSahLp35zbaKgcdo%2fJRPqxOCyRuxGulwAue1jfOw19ixJ08w9Vz5PAFnCBR4FWUGrQ5Vc1J4%2bZJkPoyWwbI%2b1cRFz9vyeVPUERyoAMOqLVhZVfXpCUei3YdVi5WOy&amp;u=http%3a%2f%2fmm.taobao.com%2fguide%2facquisition_list.htm%3fcol_album_id%3d10000255764%26ad_id%3d%26am_id%3d1301305921836283fe25%26cm_id%3d%26pm_id%3d&amp;k=193" target="_blank"><img border="0" src="http://gtms04.alicdn.com/tps/i4/TB1qml9HXXXXXcgXpXXvWhATXXX-170-280.png" width="170px" height="280px" /></a> 
+          </div> 
+         </ins> 
+         <a id="tanx-a-mm_33231655_8000000_22196529" class="hide J_TanxAd"></a> 
+        </div> 
+        <div class="main-c-ft"> 
+         <ins style="display:inline-block;padding:0;margin:0;width:170px;height:200px;*zoom:1;*display:inline" id="tanxssp-outer-conmm_12852562_1778064_22160926"> 
+          <div id="tanxssp_con_mm_12852562_1778064_22160926" style="display:inline-block;position:relative;width:170px;height:200px;*display:inline;*zoom:1;font:12px/1.5 tahoma,'Hiragino Sans GB','microsoft yahei',sans-serif;"> 
+           <a href="http://click.mz.simba.taobao.com/ecpm?e=qohB32ZRGQywEGVJgs0NRVXYOylJn4WtuHHMHItJMGPFN%2FV6zxAGth1i3QPYhx5rNrYq6A7WMEBVoYzmPrJyDPhlfwkWj9vWUK7RDtIZydUyXElRAMLwozAwbX0xgpgValZAU6%2Bjw9o1aQjR%2BGdt8bKBj7mcAKh%2FohSPIKXeYTm7C0d%2Bk6P%2BZ4LXFxfkpnYPDqLoJ3ApLIh5joozrC9tahYuIqdFGx7n&amp;u=http%3A%2F%2Fwww.taobao.com%2Fmarket%2Ftry%2Fjyxs3m.php&amp;k=225" target="_blank"><img border="0" src="http://i.mmcdn.cn/simba/img/TB1znp7HXXXXXaDaXXXSutbFXXX.jpg" width="170px" height="200px" /></a> 
+          </div> 
+         </ins> 
+         <a id="tanx-a-mm_12852562_1778064_22160926" class="hide J_TanxAd"></a> 
+        </div> 
+       </div> 
+      </div> 
+      <div id="J_HdMainR" class="main-r"> 
+       <div class="main-r-bd"> 
+        <div id="J_Notice" class="notice"> 
+         <div class="notice-hd"> 
+          <ul> 
+           <li class="selected"> <a href="//bbs.taobao.com/catalog/438501.htm">公告</a> </li> 
+           <li> <a href="http://rule.taobao.com/index.htm">规则</a> </li> 
+           <li> <a href="//bbs.taobao.com">论坛</a> </li> 
+           <li> <a href="//110.taobao.com/home/index.htm">安全</a> </li> 
+           <li> <a href="//gongyi.taobao.com">公益</a> </li> 
+          </ul> 
+         </div> 
+         <div class="notice-bd"> 
+          <div class="mod J_NoticeMod" style="display: block;"> 
+           <ul> 
+            <li><a href="//bbs.taobao.com/catalog/thread/508895-311384356.htm" class="h">一个被宝宝改变的村庄</a></li> 
+            <li><a href="//bbs.taobao.com/catalog/thread/508895-311091305.htm">百川500万风投等你拿</a></li> 
+            <li><a href="//bbs.taobao.com/catalog/thread/508895-312182640.htm">兰蔻独家入驻猫开店</a></li> 
+            <li><a href="//bbs.taobao.com/catalog/thread/508895-312169466.htm">百万年货，只送不卖！</a></li> 
+           </ul> 
+          </div> 
+          <div class="mod" data-id="rule-jsonp" data-callback="RULE" style="display: none;"></div> 
+          <div class="mod" data-id="bbs-jsonp" data-callback="BBS" style="display: none;"></div> 
+          <div class="mod" data-id="guarantee-jsonp" data-callback="GUARANTEE" style="display: none;"></div> 
+          <div class="mod" data-id="public-jsonp" data-callback="PUBLIC" style="display: none;"></div> 
+         </div> 
+        </div> 
+        <div id="J_Member" class="member"> 
+         <div class="member-bd"> 
+          <a id="J_MemberHome" href="//ju.mmstat.com/?url=http://i.taobao.com/my_taobao.htm?ad_id=&amp;am_id=&amp;cm_id=&amp;pm_id=1501036000a02c5c3739" target="_self"> Hi! <strong id="J_MemberNick">${user.nick}</strong> </a> 
+          <a id="J_MemberVip" tabindex="-1" class="vip-icon" href="javascript:;" target="_self"></a> 
+          <p> <a id="J_MemberPunch" href="//taojinbi.taobao.com/vip_home.htm" class="btn-punch"><i class="s-money"></i>领淘金币抵钱</a> <a id="J_MemberClub" href="//vip.taobao.com">会员俱乐部</a> </p> 
+         </div> 
+         <div class="member-ft"> 
+          <div id="J_MemberLogout" class="member-logout"> 
+           <a href="//login.taobao.com/member/login.jhtml?f=top&amp;redirectURL=http%3A%2F%2Fwww.taobao.com%2F" class="btn-login"><i class="tb-fp-iconfont"></i>登录</a> 
+           <a href="//reg.taobao.com/member/new_register.jhtml?from=index&amp;ex_info=&amp;ex_sign=">免费注册</a> 
+           <a href="//mai.taobao.com/welcome.htm">免费开店</a> 
+          </div> 
+          <div id="J_MemberLogin" class="member-login"></div> 
+         </div> 
+        </div> 
+        <div class="conve" id="J_conve"> 
+         <div class="conve-hd"> 
+          <h3 class="s-conve-header">便民服务</h3> 
+          <span class="conve-hd-p"> 杭州 <span class="conve-hd-arrow"> <span class="conve-hd-arrow-i"> <em></em> <span></span> </span> </span> </span> 
+         </div> 
+         <div class="conve-bd"> 
+          <div class="conve-bd-wrap"> 
+           <div q-for="item in bianMins" class="conve-bd-inner conve-pc"> 
+            <a href="${item.href}" class="mod J_mod" data-name="phone"> <i class="tb-fp-iconfont">${item.icon}</i> <p>${item.title}</p> <span class="mod-arrow"> <em></em> <span></span> </span> </a> 
+           </div> 
+          </div> 
+          <div class="conve-bd-box" tabindex="-1"> 
+           <a href="javascript:;" target="_self" class="conve-bd-box-close J_conveClose">关闭</a> 
+          </div> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+    <div q-ctrl="teshe" class="side service-side"> 
+     <div class="tb-service"> 
+      <h2> 
+       <s class="fpicon s-service-head">
+         宝宝特色服务 
+       </s></h2> 
+      <dl class="service-bd"> 
+       <dt> 
+        <s class="fpicon s-service-theme"></s>主题市场 
+       </dt> 
+       <dd q-for="item in themes"> 
+        <a href="${item.href}" class="${item.class}">${item.title}</a> 
+       </dd> 
+       <dt> 
+        <s class="fpicon s-service-special"></s>特色购物 
+       </dt> 
+       <dd q-for="item in teshes"> 
+        <a href="${item.href}" class="${item.class}">${item.title}</a> 
+       </dd> 
+       <dt> 
+        <s class="fpicon s-service-favourable"></s>优惠促销 
+       </dt> 
+       <dd q-for="item in youhuis"> 
+        <a href="${item.href}" class="${item.class}">${item.title}</a> 
+       </dd> 
+       <dt> 
+        <s class="fpicon s-service-tool"></s>工具 
+       </dt> 
+       <dd q-for="item in tools" class="last-dd"> 
+        <a href="${item.href}" class="${item.class}">${item.title}</a> 
+       </dd> 
+      </dl> 
+      <a class="more more-with-border J_CatMore" href="#hot-point" target="_self">更多<i><em></em><span></span></i></a> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="hot-point"> 
+    <div class="hot-point-title"> 
+     <h4>当前热点</h4> 
+     <div class="arrow"> 
+      <em></em> 
+      <span></span> 
+     </div> 
+    </div> 
+    <div class="hot-point-content point0"> 
+     <a href="http://s.taobao.com/list?spm=1.7275253.a214d81.1&amp;q=%D6%C7%C4%DC%CA%D6%BB%B7&amp;cat=11%2C1101%2C1201%2C14%2C1512%2C20%2C50008090%2C50012164%2C50018222%2C50018264%2C50019780%2C50076292&amp;style=grid&amp;seller_type=taobao">智能穿戴 <i class="gif-new"></i></a> 
+     <a href="http://trip.taobao.com/dujia/?spm=1.7275253.a214d81.2">1元北京 </a> 
+     <a href="http://www.taobao.com/market/peishi/pywqdl.php?spm=1.7275253.a214d81.3&amp;ad_id=&amp;am_id=1301305309b710a7a956&amp;cm_id=&amp;pm_id=&amp;scm=1007.10891.3147.100200300000002">羊年开运 <i class="gif-hot"></i> </a> 
+     <a href="http://www.taobao.com/market/nvzhuang/rmyr.php?spm=1.7275253.a214d81.4">热卖羽绒 </a> 
+     <a href="http://www.taobao.com/market/gmall/overseas/index.php?spm=1.7275253.a214d81.5">全球扫货 </a> 
+     <a href="http://www.taobao.com/market/baobao/tongzhuangindex.php?spm=1.7275253.a214d81.6">新年新衣 </a> 
+    </div> 
+    <div class="hot-point-title"> 
+     <h4>精彩推荐</h4> 
+     <div class="arrow"> 
+      <em></em> 
+      <span></span> 
+     </div> 
+    </div> 
+    <div class="hot-point-content point1"> 
+     <a href="http://fang.taobao.com/?spm=1.7275253.a214d81.7">租房买房 </a> 
+     <a href="http://miiee.taobao.com/?spm=1.7275253.a214d81.8">闺蜜淘货 </a> 
+     <a href="http://www.tmall.hk">猫国际 </a> 
+     <a href="http://www.tmall.com/go/market/shuma/yituan.php?spm=1.7275253.a214d81.10">家电亿团 </a> 
+     <a href="https://financeprod.alipay.com/fund/index.htm">余额宝 </a> 
+     <a href="http://ju.taobao.com/tg/point_list.htm?spm=1.7275253.a214d81.11">整点秒杀 </a> 
+    </div> 
+    <div class="hot-point-title"> 
+     <a href="http://paimai.taobao.com/?spm=1.7275253.a214d81.12"><h4>拍卖专区</h4></a> 
+     <div class="arrow"> 
+      <em></em> 
+      <span></span> 
+     </div> 
+    </div> 
+    <div class="hot-point-content point2"> 
+     <a href="http://www.taobao.com/market/paimai/paimai_pzp.php?spm=1.7275253.a214d81.13">奢品玉翠 </a> 
+     <a href="http://www.taobao.com/market/paimai/paimai_ysp.php?spm=1.7275253.a214d81.14">艺术品 </a> 
+     <a href="http://zc.paimai.taobao.com/?spm=1.7275253.a214d81.15">资产甩卖 </a> 
+     <a href="http://www.taobao.com/market/paimai/paimai_cf.php?spm=1.7275253.a214d81.16">拍车房 </a> 
+    </div> 
+    <div class="hot-point-banner hot-small-border"> 
+     <div class="cat-gg J_TBDP J_DP_20140506003"> 
+      <a href="http://www.taobao.com/market/try/jyxs2015.php?acm=20140506003.1003.2.173516&amp;uuid=qxUXFeSN_bI4YDTmxvBQCAXFR5HJIwmYD&amp;scm=1003.2.20140506003.OTHER_1421424163280_173516&amp;pos=1"><img src="http://gtms03.alicdn.com/tps/i3/TB1yTtLHXXXXXXRXXXXfFpb.XXX-120-55.png" /></a> 
+     </div> 
+    </div> 
+    <div class="hot-point-banner w990-hidden"> 
+     <div class="cat-gg J_TBDP J_DP_20140506004"> 
+      <a href="http://www.taobao.com/market/promo/zuitaobao.php?acm=20140506004.1003.2.174751&amp;uuid=qxUXFeSN_bI4YDTmxvBQCAXFR5HJIwmYD&amp;scm=1003.2.20140506004.OTHER_1421336746252_174751&amp;pos=1"><img src="http://gtms01.alicdn.com/tps/i1/TB1kUmXHXXXXXahXVXXOtkGLXXX-300-70.jpg" /></a> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="screen-bd row-full"> 
+    <div id="J_BdMain" class="main"> 
+     <div q-ctrl="cata1" class="J_cat_1 cat-wrap cat-wrap-pink cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3> <a href="${header.index1.href}">${header.index1.title}</a> <span class="point">&middot;</span> <a href="${header.index2.href}">${header.index2.title}</a> </h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="${header.index3.href}">${header.index3.title}</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="${header.index4.href}">${header.index4.title}</a> 
+        <span>|</span> 
+        <a href="${header.index5.href}">${header.index5.title}</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd "> 
+       <div class="cat-list"> 
+        <div q-for="item in type1" class="list-item  list-item-first"> 
+         <li class="${item.class}"><a href="${item.href}">${item.title}</a></li> 
+        </div> 
+        <div q-for="item in type2" class="list-item list-item-sec"> 
+         <li class="${item.class}"><a href="${item.href}">${item.title}</a></li> 
+        </div> 
+        <ul class="hot-world-list"> 
+         <li q-for="item in type3" class="J_tui_words"> <a href="${item.href}" class="${item.class} ">${item.title}</a> </li> 
+        </ul> 
+       </div> 
+       <div class="cat-img-tui" data-ignore="" data-id="0" data-spm-ab="4"> 
+        <a href="http://www.taobao.com/market/nvzhuang/aqfenge.php?scm=1007.10891.3147.100200300000002" class="cat-banner-image img-tui-0" title="纯色PA斑斓派" style="background: url(http://gtms01.alicdn.com/tps/i1/TB1QsxGHXXXXXXJXpXX7whd.pXX-90-100.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://gtms01.alicdn.com/tps/i1/TB1QsxGHXXXXXXJXpXX7whd.pXX-90-100.jpg) 1x, url(http://gtms02.alicdn.com/tps/i2/TB1ll4AHXXXXXbEXVXXgnMHYXXX-180-200.jpg) 2x);"> <span class="banner-title">纯色PA斑斓派</span> </a> 
+        <a href="http://www.taobao.com/market/nanzhuang/swss.php?scm=1007.10891.3147.100200300000002" class="cat-banner-image img-tui-1" title="商务绅士男装" style="background: url(http://gtms04.alicdn.com/tps/i4/TB1GBbNGVXXXXXyXpXX7whd.pXX-90-100.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://gtms04.alicdn.com/tps/i4/TB1GBbNGVXXXXXyXpXX7whd.pXX-90-100.jpg) 1x, url(http://gtms01.alicdn.com/tps/i1/TB1vTHMGVXXXXb9XpXXgnMHYXXX-180-200.jpg) 2x);"> <span class="banner-title">商务绅士男装</span> </a> 
+       </div> 
+      </div> 
+     </div> 
+     <div q-ctrl="cata2" class="J_cat_2 cat-wrap cat-wrap-purple cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3> <a href="${header.index1.href}">${header.index1.title}</a> <span class="point">&middot;</span> <a href="${header.index2.href}">${header.index2.title}</a> </h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="${header.index3.href}">${header.index3.title}</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="${header.index4.href}">${header.index4.title}</a> 
+        <span>|</span> 
+        <a href="${header.index5.href}">${header.index5.title}</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd "> 
+       <div class="cat-list"> 
+        <div q-for="item in type1" class="list-item  list-item-first"> 
+         <li class="${item.class}"><a href="${item.href}">${item.title}</a></li> 
+        </div> 
+        <div q-for="item in type2" class="list-item list-item-sec"> 
+         <li class="${item.class}"><a href="${item.href}">${item.title}</a></li> 
+        </div> 
+        <ul class="hot-world-list"> 
+         <li q-for="item in type3" class="J_tui_words"> <a href="${item.href}" class="${item.class} ">${item.title}</a> </li> 
+        </ul> 
+       </div> 
+       <div class="cat-img-tui" data-ignore="" data-id="1" data-spm-ab="4"> 
+        <a href="http://www.taobao.com/market/lu/findgoods.php?md=5621&amp;id=42019023684&amp;scm=1007.10891.3147.100200300000008&amp;pvid=f4f73d00-d664-4f29-89e2-7512d444a521" class="cat-banner-image img-tui-0" title="时尚女鞋" style="background: url(http://img03.taobaocdn.com/bao/uploaded/i3/TB1YtiQGFXXXXXnapXXXXXXXXXX_!!0-item_pic.jpg_90x90.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://img03.taobaocdn.com/bao/uploaded/i3/TB1YtiQGFXXXXXnapXXXXXXXXXX_!!0-item_pic.jpg_90x90.jpg) 1x, url(http://img03.taobaocdn.com/bao/uploaded/i3/TB1YtiQGFXXXXXnapXXXXXXXXXX_!!0-item_pic.jpg_180x180.jpg) 2x);"> <span class="banner-title">时尚女鞋</span> </a> 
+        <a href="http://www.taobao.com/market/lu/findgoods.php?md=5620&amp;id=40940872547&amp;scm=1007.10891.3147.100200300000008&amp;pvid=f4f73d00-d664-4f29-89e2-7512d444a521" class="cat-banner-image img-tui-1" title="流行男鞋" style="background: url(http://img04.taobaocdn.com/bao/uploaded/i4/TB1zS_sGFXXXXX1XXXXXXXXXXXX_!!0-item_pic.jpg_90x90.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://img04.taobaocdn.com/bao/uploaded/i4/TB1zS_sGFXXXXX1XXXXXXXXXXXX_!!0-item_pic.jpg_90x90.jpg) 1x, url(http://img04.taobaocdn.com/bao/uploaded/i4/TB1zS_sGFXXXXX1XXXXXXXXXXXX_!!0-item_pic.jpg_180x180.jpg) 2x);"> <span class="banner-title">流行男鞋</span> </a> 
+       </div> 
+      </div> 
+     </div> 
+     <div q-ctrl="cata3" class="J_cat_3 cat-wrap small-cat-wrapper cat-wrap-green cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3><a href="${header.index1.href}">${header.index1.title}</a></h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="${header.index2.href}">${header.index2.title}</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="${header.index3.href}">${header.index3.title}</a> 
+        <span>|</span> 
+        <a href="${header.index4.href}">${header.index4.title}</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd "> 
+       <div class="cat-list"> 
+        <div q-for="item in type1" class="list-item  "> 
+         <li class="item-header"> <a href="${item.href}" class="${item.class}">${item.title}</a> </li> 
+        </div> 
+        <ul class="hot-world-list"> 
+         <li q-for="item in type3" class="J_tui_words" data-id="2" data-spm-ab="2"> <a href="${item.href}" class="${item.class} ">${item.title}</a> </li> 
+        </ul> 
+       </div> 
+       <div class="cat-img-tui" data-ignore="true" data-id="2" data-spm-ab="3"> 
+        <a href="http://www.taobao.com/market/huwai/citiao/huwaijianshen.php?#guid-14202786121910" class="cat-banner-image img-tui-0" title="我就是军迷控" style="background: url(http://gtms04.alicdn.com/tps/i4/TB1Y641HXXXXXctaXXXezUPJpXX-90-90.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://gtms04.alicdn.com/tps/i4/TB1Y641HXXXXXctaXXXezUPJpXX-90-90.jpg) 1x, url(http://gtms01.alicdn.com/tps/i1/TB1Uht3HXXXXXXvaXXXQAsJYXXX-180-180.jpg) 2x);"> <span class="banner-title">我就是军迷控</span> </a> 
+        <a href="http://s.taobao.com/list?q=%BB%AC%D1%A9%B7%FE&amp;cat=50468016%2C2203%2C50010728%2C50484015%2C50482014%2C54418001&amp;style=grid&amp;seller_type=taobao&amp;spm=a219r.lm944.1000187.1" class="cat-banner-image img-tui-1" title="滑雪装备2折起" style="background: url(http://gtms03.alicdn.com/tps/i3/TB1..T3GVXXXXXKXVXXezUPJpXX-90-90.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://gtms03.alicdn.com/tps/i3/TB1..T3GVXXXXXKXVXXezUPJpXX-90-90.jpg) 1x, url(http://gtms02.alicdn.com/tps/i2/TB1NJj3GVXXXXapXVXXQAsJYXXX-180-180.jpg) 2x);"> <span class="banner-title">滑雪装备2折起</span> </a> 
+       </div> 
+      </div> 
+     </div> 
+     <div q-ctrl="cata4" class="J_cat_4 cat-wrap  small-cat-wrapper  cat-wrap-pink cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3><a href="${header.index1.href}">${header.index1.title}</a></h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="${header.index2.href}">${header.index2.title}</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="${header.index3.href}">${header.index3.title}</a> 
+        <span>|</span> 
+        <a href="${header.index4.href}">${header.index4.title}</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd "> 
+       <div class="cat-list"> 
+        <div q-for="item in type1" class="list-item  "> 
+         <li class="${item.class}"> <a href="${item.href}">${item.title}</a> </li> 
+        </div> 
+        <ul class="hot-world-list"> 
+         <li q-for="item in type3" class="J_tui_words" data-id="3" data-spm-ab="2"> <a href="${item.href}" class="${item.class}">${item.title}</a> </li> 
+        </ul> 
+       </div> 
+       <div class="cat-img-tui" data-ignore="" data-id="3" data-spm-ab="4"> 
+        <a href="http://www.taobao.com/market/peishi/zmsp.php?ad_id=&amp;am_id=1301295015574f0d9fc8&amp;cm_id=&amp;pm_id=&amp;scm=1007.10891.3147.100200300000002" class="cat-banner-image img-tui-0" title="情人节必送！" style="background: url(http://gtms04.alicdn.com/tps/i4/TB1RMJ_HXXXXXXGXpXXUAkPJpXX-90-90.png) center center no-repeat;background-image: -webkit-image-set(url(http://gtms04.alicdn.com/tps/i4/TB1RMJ_HXXXXXXGXpXXUAkPJpXX-90-90.png) 1x, url(http://gtms02.alicdn.com/tps/i2/TB1SmGbHXXXXXaZXXXXuAZJYXXX-180-180.png) 2x);"> <span class="banner-title">情人节必送！</span> </a> 
+        <a href="http://www.taobao.com/market/peishi/sytqsy.php?ad_id=&amp;am_id=13013062692075ad388f&amp;cm_id=&amp;pm_id=&amp;scm=1007.10891.3147.100200300000002" class="cat-banner-image img-tui-1" title="羊年开运配饰" style="background: url(http://gtms01.alicdn.com/tps/i1/TB1yWh7HXXXXXa2XFXXUAkPJpXX-90-90.png) center center no-repeat;background-image: -webkit-image-set(url(http://gtms01.alicdn.com/tps/i1/TB1yWh7HXXXXXa2XFXXUAkPJpXX-90-90.png) 1x, url(http://gtms03.alicdn.com/tps/i3/TB1Epd8HXXXXXaxXFXXuAZJYXXX-180-180.png) 2x);"> <span class="banner-title">羊年开运配饰</span> </a> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="cat-gg J_CatTanxGG"> 
+      <div class="J_CatTanxAd hidden" style="display: block;"> 
+       <a id="tanx-a-mm_12852562_1778064_23036232" class="hide J_lazy_TanxAd J_TanxAd"></a> 
+      </div> 
+     </div> 
+     <div q-ctrl="cata5" class="J_cat_5 cat-wrap  small-cat-wrapper  cat-wrap-sky cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3> <a href="${header.index1.href}">${header.index1.title}</a> </h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="${header.index2.href}">${header.index2.title}</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="${header.index3.href}">${header.index3.title}</a> 
+        <span>|</span> 
+        <a href="${header.index4.href}">${header.index4.title}</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd "> 
+       <div class="cat-list"> 
+        <div q-for="item in type1" class="list-item  "> 
+         <li class=""> <a href="${item.href}" class="${item.class}">${item.title}</a> </li> 
+        </div> 
+        <ul class="hot-world-list"> 
+         <li class="J_tui_words" data-id="4" data-spm-ab="2"> <a href="http://s.taobao.com/list?q=数码配件&amp;cat=50008090&amp;style=grid&amp;seller_type=taobao&amp;bcat=50008090&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000000" title="数码配件" class="guess ">数码配件</a> <a href="http://s.taobao.com/list?q=手机热销&amp;cat=1512&amp;style=grid&amp;seller_type=taobao&amp;bcat=1512&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000002" title="手机热销" class="">手机热销</a> <a href="http://s.taobao.com/list?q=手机壳&amp;cat=50008090&amp;style=grid&amp;seller_type=taobao&amp;bcat=150704&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000000" title="手机壳" class="em">手机壳</a> <a href="http://s.taobao.com/list?q=苹果保护套&amp;cat=50008090&amp;style=grid&amp;seller_type=taobao&amp;bcat=50018599&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000000" title="苹果保护套" class="">苹果保护套</a> <a href="http://s.taobao.com/list?q=移动电源&amp;cat=50008090&amp;style=grid&amp;seller_type=taobao&amp;bcat=50009211&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000000" title="移动电源" class="">移动电源</a> <a href="http://s.taobao.com/list?q=贴膜&amp;cat=50008090&amp;style=grid&amp;seller_type=taobao&amp;bcat=50018607&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000000" title="贴膜" class="">贴膜</a> <a href="http://s.taobao.com/list?q=手机膜&amp;cat=50008090&amp;style=grid&amp;seller_type=taobao&amp;bcat=50012587&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000000" title="手机膜" class="">手机膜</a> <a href="http://s.taobao.com/list?q=耳机&amp;cat=50018908&amp;style=grid&amp;seller_type=taobao&amp;bcat=1205&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000000" title="耳机" class="">耳机</a> <a href="http://s.taobao.com/list?q=平板电脑&amp;cat=50047310&amp;style=grid&amp;seller_type=taobao&amp;bcat=50019780&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000000" title="平板电脑" class="">平板电脑</a> <a href="http://s.taobao.com/list?q=总成&amp;cat=50008090&amp;style=grid&amp;seller_type=taobao&amp;bcat=50010614&amp;pvid=667dd603-13bf-44ca-9367-935606cd350a&amp;scm=1007.10890.3868.100200300000000" title="总成" class="">总成</a> </li> 
+        </ul> 
+       </div> 
+       <div class="cat-img-tui" data-ignore="" data-id="4" data-spm-ab="4"> 
+        <a href="http://cdj.taobao.com/?scm=1007.10891.3147.100200300000002" class="cat-banner-image img-tui-0" title="潮流新生活" style="background: url(http://gtms03.alicdn.com/tps/i3/TB1Sld2HXXXXXcZaXXXwu0bFXXX.png) center center no-repeat;background-image: -webkit-image-set(url(http://gtms03.alicdn.com/tps/i3/TB1Sld2HXXXXXcZaXXXwu0bFXXX.png) 1x, url(http://gtms03.alicdn.com/tps/i3/TB1s4h4HXXXXXa5XVXXwu0bFXXX.png) 2x);"> <span class="banner-title">潮流新生活</span> </a> 
+        <a href="http://2.taobao.com/recycle/3c/?spm=2007.1000261.10.4.lvPQeh&amp;scm=1007.10891.3147.100200300000002" class="cat-banner-image img-tui-1" title="手机回收折现" style="background: url(http://gtms03.alicdn.com/tps/i3/TB1jmh8HXXXXXXzaXXXwu0bFXXX.png) center center no-repeat;background-image: -webkit-image-set(url(http://gtms03.alicdn.com/tps/i3/TB1jmh8HXXXXXXzaXXXwu0bFXXX.png) 1x, url(http://gtms01.alicdn.com/tps/i1/TB1WIecHXXXXXa.XFXXwu0bFXXX.png) 2x);"> <span class="banner-title">手机回收折现</span> </a> 
+       </div> 
+      </div> 
+     </div> 
+     <div q-ctrl="cata6" class="J_cat_6 cat-wrap  small-cat-wrapper  cat-wrap-blue cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3><a href="${header.index1.href}">${header.index1.title}</a></h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="${header.index2.href}">${header.index2.title}</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="${header.index3.href}">${header.index3.title}</a> 
+        <span>|</span> 
+        <a href="${header.index4.href}">${header.index4.title}</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd "> 
+       <div class="cat-list"> 
+        <div q-for="item in type1" class="list-item  "> 
+         <li><a href="${item.href}" class="${item.class}">${item.title}</a></li> 
+        </div> 
+        <ul class="hot-world-list"> 
+         <li q-for="item in type3" class="J_tui_words"> <a href="${item.href}" class="${item.class}">${item.title}</a> </li> 
+        </ul> 
+       </div> 
+       <div class="cat-img-tui" data-ignore="" data-id="5" data-spm-ab="4"> 
+        <a href="http://cdj.taobao.com/?scm=1007.10891.3147.100200300000002" class="cat-banner-image img-tui-0" title="潮流电器清单" style="background: url(http://gtms04.alicdn.com/tps/i4/TB16Rh.HXXXXXcLXpXXSutbFXXX.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://gtms04.alicdn.com/tps/i4/TB16Rh.HXXXXXcLXpXXSutbFXXX.jpg) 1x, url(http://gtms01.alicdn.com/tps/i1/TB106AlGVXXXXXFapXXSutbFXXX.jpg) 2x);"> <span class="banner-title">潮流电器清单</span> </a> 
+        <a href="http://www.taobao.com/market/lu/findgoods.php?md=5617&amp;id=9461027394&amp;scm=1007.10891.3147.100200300000008&amp;pvid=f4f73d00-d664-4f29-89e2-7512d444a521" class="cat-banner-image img-tui-1" title="厨房电器" style="background: url(http://img02.taobaocdn.com/bao/uploaded/i2/TB1MNnjGVXXXXa_apXXXXXXXXXX_!!0-item_pic.jpg_90x90.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://img02.taobaocdn.com/bao/uploaded/i2/TB1MNnjGVXXXXa_apXXXXXXXXXX_!!0-item_pic.jpg_90x90.jpg) 1x, url(http://img02.taobaocdn.com/bao/uploaded/i2/TB1MNnjGVXXXXa_apXXXXXXXXXX_!!0-item_pic.jpg_180x180.jpg) 2x);"> <span class="banner-title">厨房电器</span> </a> 
+       </div> 
+      </div> 
+     </div> 
+     <div q-ctrl="cata7" class="J_cat_7 cat-wrap  small-cat-wrapper  cat-wrap-purple cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3><a href="${header.index1.href}">${header.index1.title}</a></h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="${header.index1.href}">${header.index1.title}</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="${header.index1.href}">${header.index1.title}</a> 
+        <span>|</span> 
+        <a href="${header.index1.href}">${header.index1.title}</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd "> 
+       <div class="cat-list"> 
+        <div q-for="item in type1" class="list-item  "> 
+         <li><a href="${item.href}" class="${item.class}">${item.title}</a></li> 
+        </div> 
+        <ul class="hot-world-list"> 
+         <li q-for="item in type3" class="J_tui_words"> <a href="${item.href}" class="${item.class}">${item.title}</a> </li> 
+        </ul> 
+       </div> 
+       <div class="cat-img-tui" data-ignore="" data-id="6" data-spm-ab="4"> 
+        <a href="http://www.taobao.com/market/mei/2014phb.php?scm=1007.10891.3147.100200300000002" class="cat-banner-image img-tui-0" title="美妆年度TOP" style="background: url(http://gtms02.alicdn.com/tps/i2/TB1iZl3HXXXXXc3XVXXUAkPJpXX-90-90.png) center center no-repeat;"> <span class="banner-title">美妆年度TOP</span> </a> 
+        <a href="http://miiee.taobao.com/themes/theme_412.htm?spm=a217i.7269965.a214ufg.10.WNprRp&amp;banner=meizhuang_2014&amp;scm=1007.10891.3147.100200300000002" class="cat-banner-image img-tui-1" title="好运从头开始" style="background: url(http://gtms01.alicdn.com/tps/i1/TB1YwJyHXXXXXcHaXXXezUPJpXX-90-90.jpg) center center no-repeat;"> <span class="banner-title">好运从头开始</span> </a> 
+       </div> 
+      </div> 
+     </div> 
+     <div q-ctrl="cata8" class="J_cat_8 cat-wrap  small-cat-wrapper  cat-wrap-pink cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3><a href="${header.index1.href}">${header.index1.title}</a></h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="${header.index2.href}">${header.index2.title}</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="${header.index3.href}">${header.index3.title}</a> 
+        <span>|</span> 
+        <a href="${header.index4.href}">${header.index4.title}</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd "> 
+       <div class="cat-list"> 
+        <div q-for="item in type1" class="list-item  "> 
+         <li> <a href="${item.href}" class="${item.class}">${item.title}</a> </li> 
+        </div> 
+        <div class="cat-img-tui" data-ignore="" data-id="7" data-spm-ab="4"> 
+         <a href="http://www.taobao.com/market/baobao/happynewyear.php?scm=1007.10891.3147.100200300000002" class="cat-banner-image img-tui-0" title="妈咪迎新囤货" style="background: url(http://gtms04.alicdn.com/tps/i4/TB1_UlAHXXXXXbjXFXXezUPJpXX-90-90.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://gtms04.alicdn.com/tps/i4/TB1_UlAHXXXXXbjXFXXezUPJpXX-90-90.jpg) 1x, url(http://gtms04.alicdn.com/tps/i4/TB1qzJwHXXXXXbLXVXXQAsJYXXX-180-180.jpg) 2x);"> <span class="banner-title">妈咪迎新囤货</span> </a> 
+         <a href="http://www.taobao.com/market/acg/shileng.php?scm=1007.10891.3147.100200300000002" class="cat-banner-image img-tui-1" title="十万个冷笑话" style="background: url(http://gtms01.alicdn.com/tps/i1/TB1T1xIHXXXXXasXXXXUAkPJpXX-90-90.png) center center no-repeat;background-image: -webkit-image-set(url(http://gtms01.alicdn.com/tps/i1/TB1T1xIHXXXXXasXXXXUAkPJpXX-90-90.png) 1x, url(http://gtms03.alicdn.com/tps/i3/TB1G0BuHXXXXXacaXXXuAZJYXXX-180-180.png) 2x);"> <span class="banner-title">十万个冷笑话</span> </a> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="cat-gg J_TBDP J_DP_20140506008"> 
+      <a href="http://www.taobao.com/market/dapei/dadiku.php"><img src="http://gtms01.alicdn.com/tps/i1/TB1Dxd4HXXXXXcAXVXXnLSnFXXX-880-70.png" /></a> 
+     </div> 
+     <div q-ctrl="cata9" class="J_cat_9 cat-wrap  small-cat-wrapper  cat-wrap-brown cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3> <a href="${header.index1.href}">${header.index1.title}</a> </h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="${header.index2.href}">${header.index2.title}</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="${header.index3.href}">${header.index3.title}</a> 
+        <span>|</span> 
+        <a href="${header.index4.href}">${header.index4.title}</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd "> 
+       <div class="cat-list"> 
+        <div q-for="item in type1" class="list-item"> 
+         <li><a href="${item.href}" class="${item.class}">${item.title}</a></li> 
+        </div> 
+        <ul class="hot-world-list"> 
+         <li q-for="item in type3" class="J_tui_words"> <a href="${item.href}" class="${item.class}">${item.title}</a> </li> 
+        </ul> 
+       </div> 
+       <div class="cat-img-tui" data-ignore="" data-id="8" data-spm-ab="3"> 
+        <a href="http://www.taobao.com/market/home/diy1.php" class="cat-banner-image img-tui-0" title="DIY家具" style="background: url(http://gtms01.alicdn.com/tps/i1/TB1v543HXXXXXXXaXXXSutbFXXX.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://gtms01.alicdn.com/tps/i1/TB1v543HXXXXXXXaXXXSutbFXXX.jpg) 1x, url(http://gtms02.alicdn.com/tps/i2/TB1PqGcHXXXXXaNXXXXSutbFXXX.jpg) 2x);"> <span class="banner-title">DIY家具</span> </a> 
+        <a href="http://www.taobao.com/market/home/qingcang.php?spm=1.7274553.1997522473.1.JKek0q&amp;acm=20140506008.1003.2.173554&amp;ad_id=&amp;cm_id=&amp;pm_id=&amp;am_id=13013059658ed09f9a84&amp;uuid=H912kh1d_g9WJDIU%200BMCASp4SpQ9zSrN&amp;scm=1003.2.20140506008.OTHER_1419907912664_173554&amp;pos=1" class="cat-banner-image img-tui-1" title="清仓扫货节" style="background: url(http://gtms04.alicdn.com/tps/i4/TB1Y59aHXXXXXbDXXXXezUPJpXX-90-90.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://gtms04.alicdn.com/tps/i4/TB1Y59aHXXXXXbDXXXXezUPJpXX-90-90.jpg) 1x, url(http://gtms01.alicdn.com/tps/i1/TB17XV4HXXXXXb0XVXXwu0bFXXX.png) 2x);"> <span class="banner-title">清仓扫货节</span> </a> 
+       </div> 
+      </div> 
+     </div> 
+     <div q-ctrl="cata10" class="J_cat_10 cat-wrap  small-cat-wrapper  cat-wrap-brown cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3><a href="${header.index1.href}">${header.index1.title}</a></h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="${header.index1.href}">${header.index1.title}</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="${header.index1.href}">${header.index1.title}</a> 
+        <span>|</span> 
+        <a href="${header.index1.href}">${header.index1.title}</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd "> 
+       <div class="cat-list"> 
+        <div q-for="item in type1" class="list-item  "> 
+         <li><a href="${item.href}" class="${item.class}">${item.title}</a></li> 
+        </div> 
+        <ul class="hot-world-list"> 
+         <li q-for="item in type3" class="J_tui_words" data-id="9" data-spm-ab="2"> <a href="${item.href}" class="${item.class}">${item.title}</a> </li> 
+        </ul> 
+       </div> 
+       <div class="cat-img-tui" data-ignore="" data-id="9" data-spm-ab="3"> 
+        <a href="http://jia.taobao.com" class="cat-banner-image img-tui-0" title="家装全知道" style="background: url(http://gtms02.alicdn.com/tps/i2/TB1dN6RGVXXXXaOXFXXUAkPJpXX-90-90.png) center center no-repeat;background-image: -webkit-image-set(url(http://gtms02.alicdn.com/tps/i2/TB1dN6RGVXXXXaOXFXXUAkPJpXX-90-90.png) 1x, url(http://gtms01.alicdn.com/tps/i1/TB11qn0GVXXXXbCXXXXuAZJYXXX-180-180.png) 2x);"> <span class="banner-title">家装全知道</span> </a> 
+        <a href="http://www.taobao.com/market/act/top30.php" class="cat-banner-image img-tui-1" title="装修TOP30榜单" style="background: url(http://gtms01.alicdn.com/tps/i1/TB1wDMvGVXXXXa0XFXXUAkPJpXX-90-90.png) center center no-repeat;background-image: -webkit-image-set(url(http://gtms01.alicdn.com/tps/i1/TB1wDMvGVXXXXa0XFXXUAkPJpXX-90-90.png) 1x, url(http://gtms04.alicdn.com/tps/i4/TB1EUcwGVXXXXXfXFXXuAZJYXXX-180-180.png) 2x);"> <span class="banner-title">装修TOP30榜单</span> </a> 
+       </div> 
+      </div> 
+     </div> 
+     <div q-ctrl="cata11" class="J_cat_11 cat-wrap  small-cat-wrapper  middle-cat-wrapper cat-wrap-green cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3><a href="http://chi.taobao.com/">汇吃美食</a></h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="http://www.taobao.com/market/chi/eatingalong.php?spm=a219e.1200316.1998044076.2.JCTCGY">告别随便一人食！</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="http://china.chi.taobao.com/">地方美食</a> 
+        <span>|</span> 
+        <a href="http://world.chi.taobao.com/">全球美食</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd"> 
+       <div class="cat-food-list"> 
+        <div class="food-item"> 
+         <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50002766%2C50035978%2C50008825%2C50042258%2C50103282%2C50103280%2C50106154%2C50108542&amp;user_type=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;atype=b&amp;style=grid&amp;q=%E7%BA%A2%E7%B3%96&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8" class="cat-food-image" title="红糖" style="background: url(http://gtms03.alicdn.com/tps/i3/TB1oPsIGVXXXXaHXXXXKPOY1pXX-108-220.png) 0 0 no-repeat;"></a> 
+         <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50002766%2C50035978%2C50008825%2C50042258%2C50103282%2C50103280%2C50106154%2C50108542&amp;user_type=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;atype=b&amp;style=grid&amp;q=%E4%B8%B8%E5%AD%90&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8" class="cat-food-image" title="丸子" style="background: url(http://gtms01.alicdn.com/tps/i1/TB18PpbHXXXXXXTXXXXKPOY1pXX-108-220.png) 0 0 no-repeat;"></a> 
+         <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50002766%2C50035978%2C50008825%2C50042258%2C50103282%2C50103280%2C50106154%2C50108542&amp;user_type=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;atype=b&amp;style=grid&amp;q=%E6%9D%BE%E5%AD%90&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8" class="cat-food-image" title="松子" style="background: url(http://gtms02.alicdn.com/tps/i2/TB1fNo_GVXXXXbRXpXXKPOY1pXX-108-220.png) 0 0 no-repeat;"></a> 
+         <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50002766%2C50035978%2C50008825%2C50042258%2C50103282%2C50103280%2C50106154%2C50108542&amp;user_type=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;atype=b&amp;style=grid&amp;q=%E5%86%AC%E7%AC%8B&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8" class="cat-food-image" title="冬笋" style="background: url(http://gtms04.alicdn.com/tps/i4/TB10CQ4GVXXXXaVXVXXKPOY1pXX-108-220.png) 0 0 no-repeat;"></a> 
+        </div> 
+        <div class="list-double-item cat-list"> 
+         <ul> 
+          <li class="item-header"><a href="http://guoshu.chi.taobao.com/?cat=50386025%2C50392024%2C50376023%2C50038092%2C50010566%2C50600015%2C50390004%2C50384002%2C50372017%2C50370003%2C50376004%2C50380005%2C50388005%2C50376005%2C50374008%2C50386007%2C50390005%2C50532044%2C50534060%2C50546046%2C50536049%2C50023560%2C50720002%2C50726001&amp;user_type=0&amp;sd=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;spm=a219e.1200316.1998049214.1.VNltal&amp;atype=b&amp;style=grid&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8">鲜果肉禽</a></li> 
+          <li> <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50108542&amp;sort=biz30day&amp;user_type=0&amp;at=45634&amp;as=1&amp;viewIndex=1&amp;atype=b&amp;style=grid&amp;q=%E8%BD%A6%E5%8E%98%E5%AD%90&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8" class="em">车厘子</a> </li> 
+          <li> <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50546046&amp;sort=biz30day&amp;user_type=0&amp;sd=1&amp;at=45634&amp;as=1&amp;viewIndex=1&amp;atype=b&amp;style=grid&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8">橙子</a> </li> 
+          <li> <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50380005&amp;sort=biz30day&amp;user_type=0&amp;sd=0&amp;at=45634&amp;as=1&amp;viewIndex=1&amp;atype=b&amp;style=grid&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8">苹果</a> </li> 
+          <li> <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50002766%2C50035978%2C50008825%2C50042258%2C50103282%2C50103280%2C50106154%2C50108542&amp;user_type=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;atype=b&amp;style=grid&amp;q=%E4%B8%89%E6%96%87%E9%B1%BC&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8">三文鱼</a> </li> 
+          <li> <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50002766%2C50035978%2C50008825%2C50042258%2C50103282%2C50103280%2C50106154%2C50108542&amp;user_type=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;atype=b&amp;style=grid&amp;q=%E5%9C%9F%E9%B8%A1%E8%9B%8B&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8">土鸡蛋</a> </li> 
+         </ul> 
+         <ul> 
+          <li class="item-header"><a href="http://lingshi.chi.taobao.com/?spm=a219e.1200316.1998046928.1.rpSiSr">零食酒水</a></li> 
+          <li> <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50002766%2C50035978%2C50008825%2C50042258%2C50103282%2C50103280%2C50106154%2C50108542&amp;user_type=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;atype=b&amp;style=grid&amp;q=%E5%B7%A7%E5%85%8B%E5%8A%9B&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8">巧克力</a> </li> 
+          <li> <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50002766%2C50035978%2C50008825%2C50042258%2C50103282%2C50103280%2C50106154%2C50108542&amp;user_type=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;atype=b&amp;style=grid&amp;q=%E7%BA%A2%E9%85%92&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8">红酒</a> </li> 
+          <li> <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50002766%2C50035978%2C50008825%2C50042258%2C50103282%2C50103280%2C50106154%2C50108542&amp;user_type=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;atype=b&amp;style=grid&amp;q=%E7%99%BD%E9%85%92&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8" class="em">白酒</a> </li> 
+          <li> <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50002766%2C50035978%2C50008825%2C50042258%2C50103282%2C50103280%2C50106154%2C50108542&amp;user_type=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;atype=b&amp;style=grid&amp;q=%E7%89%9B%E5%A5%B6&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8">牛奶</a> </li> 
+         </ul> 
+         <ul> 
+          <li class="item-header"><a href="http://liangy.chi.taobao.com/?spm=a219e.1200316.1998046932.1.CUe0aj">粮油滋补</a></li> 
+          <li> <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50002766%2C50035978%2C50008825%2C50042258%2C50103282%2C50103280%2C50106154%2C50108542&amp;user_type=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;atype=b&amp;style=grid&amp;q=%E5%A4%A7%E7%B1%B3&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8" class="em">大米</a> </li> 
+          <li> <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50002766%2C50035978%2C50008825%2C50042258%2C50103282%2C50103280%2C50106154%2C50108542&amp;user_type=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;atype=b&amp;style=grid&amp;q=%E6%99%AE%E6%B4%B1&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8">普洱</a> </li> 
+          <li> <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50002766%2C50035978%2C50008825%2C50042258%2C50103282%2C50103280%2C50106154%2C50108542&amp;user_type=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;atype=b&amp;style=grid&amp;q=%E6%9E%B8%E6%9D%9E&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8">枸杞</a> </li> 
+          <li> <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50002766%2C50035978%2C50008825%2C50042258%2C50103282%2C50103280%2C50106154%2C50108542&amp;user_type=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;atype=b&amp;style=grid&amp;q=%E4%BA%BA%E5%8F%82&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8">人参</a> </li> 
+          <li> <a href="http://chi.taobao.com/itemlist/huichi2014.htm?cat=50002766%2C50035978%2C50008825%2C50042258%2C50103282%2C50103280%2C50106154%2C50108542&amp;user_type=0&amp;at=45634&amp;viewIndex=1&amp;as=0&amp;atype=b&amp;style=grid&amp;q=%E9%BB%84%E6%B2%B9&amp;same_info=1&amp;tid=0&amp;isnew=2&amp;_input_charset=utf-8">黄油</a> </li> 
+         </ul> 
+         <ul> 
+          <li class="item-header"><a href="http://china.chi.taobao.com/?spm=a219e.1200316.a214tzt.510.CUe0aj">特色中国</a></li> 
+          <li> <a href="http://anhui.china.taobao.com/?spm=a219e.1178892.1998048465.1.StR6QD&amp;ad_id=&amp;am_id=13010665887088527c9c&amp;cm_id=&amp;pm_id=">安徽</a> </li> 
+          <li> <a href="http://shanxi.china.taobao.com/p/rd283016.htm?qq-pf-to=pcqq.c2c">山西</a> </li> 
+          <li> <a href="http://yantai.china.taobao.com/p/map.htm">烟台</a> </li> 
+          <li> <a href="http://tw.china.taobao.com/index.htm?spm=a219e.1178892.1998049630.1.kMu4cI&amp;scm=1220.11.5.2&amp;md=5221&amp;ad_id=&amp;am_id=13010718209c71b65f62&amp;cm_id=&amp;pm_id=">台湾</a> </li> 
+          <li> <a href="http://xinjiang.china.taobao.com/?spm=a219e.1178892.1998078905.1.StR6QD&amp;ad_id=&amp;am_id=1301066585c5110d0972&amp;cm_id=&amp;pm_id=">新疆</a> </li> 
+         </ul> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div q-ctrl="cata12" class="J_cat_12 cat-wrap  small-cat-wrapper  middle-cat-wrapper cat-wrap-brown cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3><a href="http://baihuo.taobao.com/">百货市场</a></h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="http://www.taobao.com/market/home/qingcang.php?spm=1.7274553.1997517397.2.Dw9KFe&amp;acm=20140506001.1003.2.173398&amp;ad_id=&amp;cm_id=&amp;pm_id=&amp;am_id=13013059658ed09f9a84&amp;uuid=hK1YbkUE_lLQeDWAfBCoCASp4SmA9hXu3&amp;scm=1003.2.20140506001.OTHER_1420551160203_173398&amp;pos=1#7">清仓啦！1件不留</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="http://www.taobao.com/market/baihuo/xihubeauty.php?spm=a217u.7383845.a214d5z.12.WlSIuF">洗护纸品</a> 
+        <span>|</span> 
+        <a href="http://www.taobao.com/market/baihuo/zlsn.php?spm=a217u.7383845.a214d5z.13.TQ7tB2">收纳整理</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd"> 
+       <div class="cat-list cat-baihuo-list"> 
+        <div class="list-item  "> 
+         <ul> 
+          <li class="item-header"><a href="http://www.taobao.com/market/baihuo/newintimebaihuo.php?spm=a217u.7383845.a214d5z-static.1.KLNty3">居家保暖</a></li> 
+          <li> <a href="http://s.taobao.com/list?&amp;cat=50105475&amp;style=grid&amp;seller_type=taobao&amp;auction_tag[]=12034" class="em">保暖品</a> </li> 
+          <li> <a href="http://www.taobao.com/market/baihuo/citiao/2014/index/san.php">天堂伞</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50026572&amp;style=grid&amp;q=%E5%8F%A3%E7%BD%A9&amp;seller_type=taobao&amp;auction_tag[]=12034">口罩</a> </li> 
+          <li> <a href="http://s.taobao.com/list?q=%C8%C8%CB%AE%B4%FC&amp;style=grid&amp;seller_type=taobao&amp;spm=a219r.lm990.1000187.1&amp;cps=yes&amp;s=0&amp;cat=21&amp;auction_tag[]=12034" class="em">热水袋</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50106649&amp;style=grid&amp;seller_type=taobao&amp;auction_tag[]=12034" class="em">棉拖鞋</a> </li> 
+         </ul> 
+         <ul> 
+          <li class="item-header"><a href="http://www.taobao.com/market/baihuo/womencookingclub.php?spm=a217u.7383845.a214d5z.11.fOCOWU" class="em">厨房餐饮</a></li> 
+          <li> <a href="http://www.taobao.com/market/baihuo/citiao/bolibei.php">玻璃杯</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50096791&amp;style=grid&amp;seller_type=taobao&amp;auction_tag[]=12034">保温杯</a> </li> 
+          <li> <a href="http://www.taobao.com/market/baihuo/citiao/2014/index/chajutaozu.php" class="em">茶具</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50002804&amp;style=grid&amp;seller_type=taobao&amp;auction_tag[]=12034">炒锅</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50067112&amp;style=grid&amp;seller_type=taobao&amp;auction_tag[]=12034">餐具</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50052048&amp;style=grid&amp;seller_type=taobao&amp;auction_tag[]=12034">碗</a> </li> 
+         </ul> 
+         <ul> 
+          <li class="item-header"><a href="http://www.taobao.com/market/baihuo/xihubeauty.php?spm=a217u.1186545.a214d5z.12.SOROpE">洗护纸品</a></li> 
+          <li> <a href="http://s.taobao.com/list?cat=50052090&amp;style=list&amp;seller_type=taobao&amp;auction_tag[]=12034">牙膏</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50046062&amp;style=grid&amp;q=%E6%B4%97%E5%8F%91%E6%B0%B4&amp;seller_type=taobao&amp;auction_tag[]=12034" class="em">洗发水</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50052104&amp;style=grid&amp;q=%E5%8D%AB%E7%94%9F%E5%B7%BE&amp;seller_type=taobao&amp;auction_tag[]=12034">卫生巾</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50046063&amp;style=grid&amp;q=%E6%B2%90%E6%B5%B4%E9%9C%B2&amp;seller_type=taobao&amp;auction_tag[]=12034">沐浴液</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50043564&amp;style=grid&amp;q=%E6%B4%97%E8%A1%A3%E6%B6%B2&amp;seller_type=taobao&amp;auction_tag[]=12034" class="em">洗衣液</a> </li> 
+         </ul> 
+         <ul> 
+          <li class="item-header"><a href="http://www.taobao.com/market/baihuo/newintimebaihuo.php?spm=a217u.7383845.a214d5z-static.1.SPVQdP">居家日用</a></li> 
+          <li> <a href="http://www.taobao.com/market/baihuo/citiao/2014/index/chuangyilipin.php" class="em">创意品</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50105473&amp;style=grid&amp;q=%E7%B3%96%E7%9B%92&amp;seller_type=taobao&amp;auction_tag[]=12034">喜糖盒</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50026581&amp;style=grid&amp;seller_type=taobao&amp;auction_tag[]=12034" class="em">眼罩</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=21&amp;style=grid&amp;q=%E7%BC%9D%E7%BA%AB%E6%9C%BA&amp;seller_type=taobao&amp;auction_tag[]=12034">缝纫机</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=21&amp;style=grid&amp;q=%E7%9B%B8%E5%86%8C&amp;seller_type=taobao&amp;auction_tag[]=12034">相册</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50008275&amp;style=list&amp;seller_type=taobao&amp;auction_tag[]=12034">时钟</a> </li> 
+         </ul> 
+         <ul> 
+          <li class="item-header"><a href="http://www.taobao.com/market/baihuo/zlsn.php?spm=a217u.1188590.a214d5z.13.egXXVm">整理收纳</a></li> 
+          <li> <a href="http://s.taobao.com/list?cat=50101775&amp;style=grid&amp;q=%E6%94%B6%E7%BA%B3%E7%AE%B1&amp;seller_type=taobao&amp;auction_tag[]=12034&amp;auction_tag%5B%5D=2882" class="em">收纳箱</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50006126&amp;style=grid&amp;q=%E6%99%BE%E8%A1%A3%E6%9E%B6&amp;seller_type=taobao&amp;auction_tag[]=12034&amp;auction_tag%5B%5D=2882">晾衣架</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50101800&amp;style=grid&amp;q=%E9%9E%8B%E6%9F%9C&amp;seller_type=taobao&amp;auction_tag[]=12034&amp;auction_tag%5B%5D=2882">鞋柜</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50042212&amp;style=grid&amp;q=%E5%8E%8B%E7%BC%A9%E8%A2%8B&amp;seller_type=taobao&amp;auction_tag[]=12034&amp;auction_tag%5B%5D=2882">压缩袋</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50101803&amp;style=list&amp;seller_type=taobao&amp;auction_tag[]=12034&amp;auction_tag%5B%5D=2882">收纳盒</a> </li> 
+         </ul> 
+         <ul> 
+          <li class="item-header"><a href="http://www.taobao.com/market/baihuo/jiatingqingjie/2014.php?spm=a217u.1185306.a214d5z.14.DtLpFP">家庭清洁</a></li> 
+          <li> <a href="http://s.taobao.com/list?cat=50035898&amp;style=grid&amp;q=%E6%97%8B%E8%BD%AC%E6%8B%96%E6%8A%8A&amp;seller_type=taobao&amp;auction_tag[]=12034" class="em">拖把</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50044743&amp;style=grid&amp;q=%E5%9E%83%E5%9C%BE%E7%AD%92&amp;seller_type=taobao&amp;auction_tag[]=12034">垃圾桶</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50100761&amp;style=grid&amp;q=%E6%B4%97%E8%84%B8%E5%88%B7&amp;seller_type=taobao&amp;auction_tag[]=12034">洗脸刷</a> </li> 
+          <li> <a href="http://s.taobao.com/list?cat=50100756&amp;style=grid&amp;q=%E5%B9%B2%E5%8F%91%E5%B8%BD&amp;seller_type=taobao&amp;auction_tag[]=12034">干发</a> </li> 
+         </ul> 
+         <ul> 
+          <li class="item-header"><a href="http://www.taobao.com/market/baihuo/festivalwedding2014.php?spm=a217u.1177927.a214d5z.15.YxKOFJ">节庆用品</a></li> 
+          <li> <a href="http://s.taobao.com/list?q=%C7%E9%C8%CB&amp;cat=50035458%2C50051688%2C21%2C50035867&amp;style=grid&amp;seller_type=taobao&amp;spm=a217u.1191015.1000187.1">情人节</a> </li> 
+          <li> <a href="http://www.taobao.com/market/baihuo/festivalwedding2014.php?spm=a217u.7383845.a214d5z.15.OEoQWj">结婚吧</a> </li> 
+          <li> <a href="http://s.taobao.com/list?q=%CB%CD%C0%F1&amp;cat=50035458%2C50051688%2C21%2C50035867&amp;style=grid&amp;seller_type=taobao&amp;spm=a219r.lm990.1000187.1">送礼</a> </li> 
+         </ul> 
+        </div> 
+       </div> 
+       <div class="item-img"> 
+        <a href="http://www.taobao.com/market/baihuo/citiao/2014/index/baowenbei.php?spm=a217u.1186545.a214d5z-static.11.NNhoUR" class="cat-baihuo-image" title="保温杯" style="background: url(http://gtms03.alicdn.com/tps/i3/TB1zWYYGVXXXXa_aXXXSutbFXXX.jpg) 0 0 no-repeat;background-image: -webkit-image-set(url(http://gtms03.alicdn.com/tps/i3/TB1zWYYGVXXXXa_aXXXSutbFXXX.jpg) 1x, url(http://gtms04.alicdn.com/tps/i4/TB1mQh7HXXXXXaiXVXXSutbFXXX.jpg) 2x);"> <span class="baihuo-title">保温杯</span> </a> 
+        <a href="http://list.taobao.com/itemlist/default.htm?cat=50106649&amp;viewIndex=1&amp;as=0&amp;spm=a2106.2206569.0.0.Y5c4ob&amp;atype=b&amp;style=grid&amp;same_info=1&amp;isnew=2&amp;tid=0&amp;_input_charset=utf-8" class="cat-baihuo-image" title="情侣拖" style="background: url(http://gtms02.alicdn.com/tps/i2/TB1OPecHXXXXXXQXpXXSutbFXXX.jpg) 0 0 no-repeat;background-image: -webkit-image-set(url(http://gtms02.alicdn.com/tps/i2/TB1OPecHXXXXXXQXpXXSutbFXXX.jpg) 1x, url(http://gtms04.alicdn.com/tps/i4/TB1NUt3HXXXXXb1aXXXSutbFXXX.jpg) 2x);"> <span class="baihuo-title">情侣拖</span> </a> 
+        <a href="http://www.taobao.com/market/baihuo/jiatingqingjie/2014.php?spm=a217u.1185306.a214d5z.14.wEg0oJ" class="cat-baihuo-image" title="冬季必备" style="background: url(http://img03.taobaocdn.com/imgextra/i3/100008692/TB22mgMbXXXXXajXXXXXXXXXXXX_!!100008692.jpg) 0 0 no-repeat;background-image: -webkit-image-set(url(http://img03.taobaocdn.com/imgextra/i3/100008692/TB22mgMbXXXXXajXXXXXXXXXXXX_!!100008692.jpg) 1x, url(http://img01.taobaocdn.com/imgextra/i1/100008692/TB2NHgDbXXXXXXaXpXXXXXXXXXX_!!100008692.jpg) 2x);"> <span class="baihuo-title">冬季必备</span> </a> 
+        <a href="http://www.taobao.com/market/baihuo/zlsn.php?spm=a217u.7383845.a214d5z.13.BCNrqq" class="cat-baihuo-image" title="收纳控" style="background: url(http://img02.taobaocdn.com/imgextra/i2/1903025445/TB2zTGxbFXXXXXMXpXXXXXXXXXX_!!1903025445.jpg) 0 0 no-repeat;background-image: -webkit-image-set(url(http://img02.taobaocdn.com/imgextra/i2/1903025445/TB2zTGxbFXXXXXMXpXXXXXXXXXX_!!1903025445.jpg) 1x, url(http://gtms03.alicdn.com/tps/i3/TB1d7uMGVXXXXbUXVXXSutbFXXX.jpg) 2x);"> <span class="baihuo-title">收纳控</span> </a> 
+       </div> 
+       <div class="foot-banner"> 
+        <a href="http://www.taobao.com/market/baihuo/baihuo2014.php" class="cat-baihuo-foot-image" title="榜单热卖" style="background: url(http://gtms02.alicdn.com/tps/i2/TB1OQIGGVXXXXbcXFXXAqx0TXXX-200-50.jpeg) 0 0 no-repeat;background-image: -webkit-image-set(url(http://gtms02.alicdn.com/tps/i2/TB1OQIGGVXXXXbcXFXXAqx0TXXX-200-50.jpeg) 1x, url(http://gtms03.alicdn.com/tps/i3/TB1tVOnGVXXXXbRXVXXSutbFXXX.jpg) 2x);"></a> 
+        <a href="http://s.taobao.com/list?spm=a219r.lm990.8.2.A4ik00&amp;sort=renqi-desc&amp;cat=50035458%2C50051688%2C21%2C50035867&amp;seller_type=taobao&amp;tab=all&amp;q=%C7%E9%C2%C2%B1%AD&amp;app=list&amp;style=grid#mainsrp-related" class="cat-baihuo-foot-image" title="精品杯子" style="background: url(http://gtms04.alicdn.com/tps/i4/TB12209HXXXXXcCXVXXJMXgHXXX-200-50.jpg) 0 0 no-repeat;background-image: -webkit-image-set(url(http://gtms04.alicdn.com/tps/i4/TB12209HXXXXXcCXVXXJMXgHXXX-200-50.jpg) 1x, url(http://img02.taobaocdn.com/imgextra/i2/56396268/TB2zgOGbFXXXXaPXXXXXXXXXXXX_!!56396268.jpg) 2x);"></a> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="cat-gg J_TBDP J_DP_20140506009"> 
+      <a href="http://tiaoshi.taobao.com/?acm=20140506009.1003.2.175036&amp;uuid=qxUXFeSN_bI4YDTmxvBQCAXFR5HJIwmYD&amp;scm=1003.2.20140506009.OTHER_1419647838336_175036&amp;pos=1"><img src="http://gtms01.alicdn.com/tps/i1/TB10f9cHXXXXXXkXpXXnLSnFXXX-880-70.png" /></a> 
+     </div> 
+     <div q-ctrl="cata13" class="J_cat_13 cat-wrap  small-cat-wrapper  cat-wrap-blue cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3><a href="${header.index1.href}">${header.index1.title}</a></h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="${header.index2.href}">${header.index2.title}</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="${header.index3.href}">${header.index3.title}</a> 
+        <span>|</span> 
+        <a href="${header.index4.href}">${header.index4.title}</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd "> 
+       <div class="cat-list"> 
+        <div q-for="item in type1" class="list-item  "> 
+         <li><a href="${item.href}" class="${item.class}">${item.title}</a></li> 
+        </div> 
+        <ul class="hot-world-list"> 
+         <li q-for="item in type3" class="J_tui_words" data-id="12" data-spm-ab="2"> <a href="${item.href}" class="${item.class}">${item.title}</a> </li> 
+        </ul> 
+       </div> 
+       <div class="cat-img-tui" data-ignore="" data-id="12" data-spm-ab="3"> 
+        <a href="http://s.taobao.com/list?q=%C6%FB%B3%B5%B9%D2%BC%FE+%D1%F2&amp;cat=26%2C50108583%2C50316001&amp;style=grid&amp;seller_type=taobao&amp;spm=a2181.1118429.1000187.1" class="cat-banner-image img-tui-0" title="羊年汽车挂件" style="background: url(http://gtms03.alicdn.com/tps/i3/TB1aoh7HXXXXXblXFXXezUPJpXX-90-90.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://gtms03.alicdn.com/tps/i3/TB1aoh7HXXXXXblXFXXezUPJpXX-90-90.jpg) 1x, url(http://gtms02.alicdn.com/tps/i2/TB10SWbHXXXXXcEXXXXQAsJYXXX-180-180.jpg) 2x);"> <span class="banner-title">羊年汽车挂件</span> </a> 
+        <a href="http://www.taobao.com/market/car/chedong.php?spm=a2181.1118429.1998013461-A.3.9gGNcj&amp;ad_id=&amp;am_id=1301305553031f877e0a&amp;cm_id=&amp;pm_id=#floor3" class="cat-banner-image img-tui-1" title="防追尾激光灯" style="background: url(http://gtms01.alicdn.com/tps/i1/TB1aMV8HXXXXXa7XFXXezUPJpXX-90-90.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://gtms01.alicdn.com/tps/i1/TB1aMV8HXXXXXa7XFXXezUPJpXX-90-90.jpg) 1x, url(http://gtms04.alicdn.com/tps/i4/TB1K.d7HXXXXXbRXFXXQAsJYXXX-180-180.jpg) 2x);"> <span class="banner-title">防追尾激光灯</span> </a> 
+       </div> 
+      </div> 
+     </div> 
+     <div q-ctrl="cata14" class="J_cat_14 cat-wrap  small-cat-wrapper  cat-wrap-green cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3><a href="${header.index1.href}">${header.index1.title}</a></h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="${header.index2.href}">${header.index2.title}</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="${header.index3.href}">${header.index3.title}</a> 
+        <span>|</span> 
+        <a href="${header.index4.href}">${header.index4.title}</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd "> 
+       <div class="cat-list"> 
+        <div q-for="item in type1" class="list-item  "> 
+         <li><a href="${item.href}" class="${item.class}">${item.title}</a></li> 
+        </div> 
+        <ul class="hot-world-list"> 
+         <li q-for="item in type3" class="J_tui_words" data-id="13" data-spm-ab="2"> <a href="${item.href}" class="${item.class}">${item.title}</a> </li> 
+        </ul> 
+       </div> 
+       <div class="cat-img-tui" data-ignore="" data-id="13" data-spm-ab="3"> 
+        <a href="http://www.taobao.com/market/home/qingcang.php?spm=1.7274553.1997517397.2.lF5bsH&amp;acm=20140506001.1003.2.173398&amp;ad_id=&amp;cm_id=&amp;pm_id=&amp;am_id=13013059658ed09f9a84&amp;uuid=A9JoeX1n_l8EiDdYsoAICASp4SmNkdXdn&amp;scm=1003.2.20140506001.OTHER_1420551160203_173398&amp;pos=1#8" class="cat-banner-image img-tui-0" title="年底大清仓" style="background: url(http://gtms01.alicdn.com/tps/i1/TB1jMb9GVXXXXaRXXXXUAkPJpXX-90-90.png) center center no-repeat;background-image: -webkit-image-set(url(http://gtms01.alicdn.com/tps/i1/TB1jMb9GVXXXXaRXXXXUAkPJpXX-90-90.png) 1x, url(http://gtms03.alicdn.com/tps/i3/TB14Sb4GVXXXXbwXFXXuAZJYXXX-180-180.png) 2x);"> <span class="banner-title">年底大清仓</span> </a> 
+        <a href="http://www.taobao.com/market/xianhua/xinnianhd.php?spm=1.7274553.1997517397.6.mkAuwy&amp;acm=20140506002.1003.2.170580&amp;ad_id=&amp;cm_id=&amp;pm_id=&amp;am_id=1301305867c00a9edf6a&amp;uuid=AqWZ5NuA_ANUnDVy0O1gCASp4SlueRYzI&amp;scm=1003.2.20140506002.OTHER_1421774226482_170580&amp;pos=1" class="cat-banner-image img-tui-1" title="新年绿植盆栽" style="background: url(http://gtms03.alicdn.com/tps/i3/TB1phVcHXXXXXaXXVXXezUPJpXX-90-90.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://gtms03.alicdn.com/tps/i3/TB1phVcHXXXXXaXXVXXezUPJpXX-90-90.jpg) 1x, url(http://gtms04.alicdn.com/tps/i4/TB1kwpfHXXXXXaEXpXXQAsJYXXX-180-180.jpg) 2x);"> <span class="banner-title">新年绿植盆栽</span> </a> 
+       </div> 
+      </div> 
+     </div> 
+     <div q-ctrl="cata15" class="J_cat_15 cat-wrap  small-cat-wrapper  cat-wrap-green cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3><a href="${header.index1.href}">${header.index1.title}</a></h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="${header.index2.href}">${header.index2.title}</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="${header.index3.href}">${header.index3.title}</a> 
+        <span>|</span> 
+        <a href="${header.index4.href}">${header.index4.title}</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd "> 
+       <div class="cat-list"> 
+        <div q-for="item in type1" class="list-item  "> 
+         <li><a href="${item.href}" class="${item.class}">${item.title}</a></li> 
+        </div> 
+        <ul class="hot-world-list"> 
+         <li q-for="item in type3" class="J_tui_words" data-id="14" data-spm-ab="2"> <a href="${item.href}" class="${item.class}">${item.title}</a> </li> 
+        </ul> 
+       </div> 
+       <div class="cat-img-tui" data-ignore="" data-id="14" data-spm-ab="3"> 
+        <a href="http://s.taobao.com/list?q=%B7%A8%C2%C9%D7%C9%D1%AF&amp;cat=50097750" class="cat-banner-image img-tui-0" title="全年法律服务" style="background: url(http://gtms04.alicdn.com/tps/i4/TB1OI0DHXXXXXaMXpXXezUPJpXX-90-90.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://gtms04.alicdn.com/tps/i4/TB1OI0DHXXXXXaMXpXXezUPJpXX-90-90.jpg) 1x, url(http://gtms02.alicdn.com/tps/i2/TB1XxVsHXXXXXX1apXXQAsJYXXX-180-180.jpg) 2x);"> <span class="banner-title">全年法律服务</span> </a> 
+        <a href="http://xue.taobao.com/market/xue/dzfs.php?spm=a2174.7346861.1997795725.16.V0DREa" class="cat-banner-image img-tui-1" title="家居风水" style="background: url(http://gtms03.alicdn.com/tps/i3/TB1H18ZHXXXXXaoXpXXezUPJpXX-90-90.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://gtms03.alicdn.com/tps/i3/TB1H18ZHXXXXXaoXpXXezUPJpXX-90-90.jpg) 1x, url(http://gtms02.alicdn.com/tps/i2/TB1u4lOHXXXXXcHaXXXQAsJYXXX-180-180.jpg) 2x);"> <span class="banner-title">家居风水</span> </a> 
+       </div> 
+      </div> 
+     </div> 
+     <div q-ctrl="cata16" class="J_cat_16 cat-wrap  small-cat-wrapper  cat-wrap-sky cat-b-wrapper"> 
+      <div class="cat-hd"> 
+       <h3>更多服务</h3> 
+       <div class="activity act-arrow"> 
+        <em></em> 
+        <div class="activity-bg"></div> 
+        <a href="${header.index1.href}">${header.index1.title}</a> 
+       </div> 
+       <div class="cat-tags"> 
+        <a href="${header.index2.href}">${header.index2.title}</a> 
+        <span>|</span> 
+        <a href="${header.index3.href}">${header.index3.title}</a> 
+       </div> 
+      </div> 
+      <div class="cat-bd "> 
+       <div class="cat-list"> 
+        <div q-for="item in type1" class="list-item  "> 
+         <li><a href="${item.href}">${item.title}</a></li> 
+        </div> 
+        <ul class="hot-world-list"> 
+         <li q-for="item in type3" class="J_tui_words" data-id="15" data-spm-ab="1"> <a href="${item.href}" class="${item.class}">${item.title}</a> </li> 
+        </ul> 
+       </div> 
+       <div class="cat-img-tui" data-ignore="" data-id="15" data-spm-ab="3"> 
+        <a href="http://www.taobao.com/go/act/caipiao/daletou2015.php" class="cat-banner-image img-tui-0" title="大乐透10亿奖池" style="background: url(http://gtms03.alicdn.com/tps/i3/TB1gvpQHXXXXXX4XVXXezUPJpXX-90-90.jpg) center center no-repeat;background-image: -webkit-image-set(url(http://gtms03.alicdn.com/tps/i3/TB1gvpQHXXXXXX4XVXXezUPJpXX-90-90.jpg) 1x, url(http://gtms01.alicdn.com/tps/i1/TB1qiP3FVXXXXXIaXXXuAZJYXXX-180-180.png) 2x);"> <span class="banner-title">大乐透10亿奖池</span> </a> 
+        <a href="http://www.taobao.com/market/car/usedcar.php?spm=1.7274553.212-3.2.5XBpF3" class="cat-banner-image img-tui-1" title="二手车估价" style="background: url(http://gtms01.alicdn.com/tps/i1/TB1GhSoGVXXXXbKXVXXUAkPJpXX-90-90.png) center center no-repeat;background-image: -webkit-image-set(url(http://gtms01.alicdn.com/tps/i1/TB1GhSoGVXXXXbKXVXXUAkPJpXX-90-90.png) 1x, url(http://gtms04.alicdn.com/tps/i4/TB1s2evGVXXXXXOXFXXuAZJYXXX-180-180.png) 2x);"> <span class="banner-title">二手车估价</span> </a> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="cat-gg J_TBDP J_DP_2014050610 last-gg"> 
+      <a href="http://www.taobao.com/market/tejia/tttj_byczg.php?acm=2014050610.1003.2.173550&amp;uuid=qxUXFeSN_bI4YDTmxvBQCAXFR5HJIwmYD&amp;scm=1003.2.2014050610.OTHER_1420899137686_173550&amp;pos=1"><img src="http://gtms02.alicdn.com/tps/i2/TB1NppWHXXXXXaIXXXXnLSnFXXX-880-70.png" /></a> 
+     </div> 
+    </div> 
+    <div id="J_BdSide" class="side"> 
+     <dl class="discover"> 
+      <dt> 
+       <s class="fpicon s-good-goods">
+         发现好货 
+       </s> 
+      </dt> 
+      <dd id="J_DiscoverGoods" class="content-wrapper goods-content" data-spm="1997522421" style="overflow: visible; height: 1206px;"> 
+       <div class="discover-item J_DiscoverItem J_DItem"> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=40034843398&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" title="Galanz/格兰仕 KWS1530X-H7R电烤箱家用30L旋转烤叉K3全温发酵"> <img src="http://gtms04.alicdn.com/tps/i2/TB16T8jHXXXXXaEXFXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" /> 
+         <div class="item-desc"> 
+          <h4>Galanz/格兰仕 KWS1530X-H7R电烤箱家用30L旋转烤叉K3全温发酵</h4> 
+          <div class="item-comment">
+            根据你最近&quot;浏览&quot;的&quot;电烤箱&quot;推荐 
+          </div> 
+          <div class="item-sell-count">
+            已售65件 
+          </div> 
+         </div> </a> 
+        <div class="preference-trigger-wrapper"> 
+         <ul> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d13" data-id="40034843398" data-category="50002894" href="http://favorite.taobao.com/popup/add_collection.htm?id=40034843398&amp;_tb_token_=3bbeee5ee6f36&amp;itemtype=1" class="J_TDialogTrigger">收藏</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d14" href="" data-id="40034843398" data-category="50002894" class="J_DelDiscoverItem">不喜欢</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d15" href="" class="J_ShowPreference show-preference">我要自定义</a> </li> 
+         </ul> 
+         <div class="bottom-border"></div> 
+        </div> 
+       </div> 
+       <div class="discover-item J_DiscoverItem J_DItem"> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=18962979415&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" title="快乐一叮DDZ-901 隔水电炖盅 陶瓷一锅三胆 煲汤煮粥电炖锅电蒸"> <img src="http://gtms01.alicdn.com/tps/i4/TB1g6.sGVXXXXckXFXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" /> 
+         <div class="item-desc"> 
+          <h4>快乐一叮DDZ-901 隔水电炖盅 陶瓷一锅三胆 煲汤煮粥电炖锅电蒸</h4> 
+          <div class="item-comment">
+            根据你&quot;浏览&quot;过的&quot;电炖&quot;推荐 
+          </div> 
+          <div class="item-sell-count">
+            已售19件 
+          </div> 
+         </div> </a> 
+        <div class="preference-trigger-wrapper"> 
+         <ul> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d13" data-id="18962979415" data-category="50013011" href="http://favorite.taobao.com/popup/add_collection.htm?id=18962979415&amp;_tb_token_=3bbeee5ee6f36&amp;itemtype=1" class="J_TDialogTrigger">收藏</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d14" href="" data-id="18962979415" data-category="50013011" class="J_DelDiscoverItem">不喜欢</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d15" href="" class="J_ShowPreference show-preference">我要自定义</a> </li> 
+         </ul> 
+         <div class="bottom-border"></div> 
+        </div> 
+       </div> 
+       <div class="discover-item J_DiscoverItem J_DItem"> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=42444968249&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" title="Galanz/格兰仕 KWS1538J-F5M/F5N电烤箱38L烤箱家用特价正品包邮"> <img src="http://gtms01.alicdn.com/tps/i1/TB1r5LuGVXXXXXXaXXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" /> 
+         <div class="item-desc"> 
+          <h4>Galanz/格兰仕 KWS1538J-F5M/F5N电烤箱38L烤箱家用特价正品包邮</h4> 
+          <div class="item-comment">
+            根据你最近&quot;浏览&quot;的&quot;电烤箱&quot;推荐 
+          </div> 
+          <div class="item-sell-count">
+            已售15件 
+          </div> 
+         </div> </a> 
+        <div class="preference-trigger-wrapper"> 
+         <ul> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d13" data-id="42444968249" data-category="50002894" href="http://favorite.taobao.com/popup/add_collection.htm?id=42444968249&amp;_tb_token_=3bbeee5ee6f36&amp;itemtype=1" class="J_TDialogTrigger">收藏</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d14" href="" data-id="42444968249" data-category="50002894" class="J_DelDiscoverItem">不喜欢</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d15" href="" class="J_ShowPreference show-preference">我要自定义</a> </li> 
+         </ul> 
+         <div class="bottom-border"></div> 
+        </div> 
+       </div> 
+       <div class="discover-item J_DiscoverItem J_DItem"> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=40818535654&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" title="益美YM-S07陶瓷内胆隔水电炖盅 白瓷电炖锅 0.75L bb煲"> <img src="http://gtms01.alicdn.com/tps/i4/TB1SuBkFVXXXXccXXXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" /> 
+         <div class="item-desc"> 
+          <h4>益美YM-S07陶瓷内胆隔水电炖盅 白瓷电炖锅 0.75L bb煲</h4> 
+          <div class="item-comment">
+            根据你&quot;浏览&quot;过的&quot;电炖&quot;推荐 
+          </div> 
+          <div class="item-sell-count">
+            已售1件 
+          </div> 
+         </div> </a> 
+        <div class="preference-trigger-wrapper"> 
+         <ul> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d13" data-id="40818535654" data-category="50013011" href="http://favorite.taobao.com/popup/add_collection.htm?id=40818535654&amp;_tb_token_=3bbeee5ee6f36&amp;itemtype=1" class="J_TDialogTrigger">收藏</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d14" href="" data-id="40818535654" data-category="50013011" class="J_DelDiscoverItem">不喜欢</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d15" href="" class="J_ShowPreference show-preference">我要自定义</a> </li> 
+         </ul> 
+         <div class="bottom-border"></div> 
+        </div> 
+       </div> 
+       <div class="discover-item J_DiscoverItem J_DItem"> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=42938983306&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" title="女童装冬季亲子皮草外套儿童中长款毛衣外套宝宝加厚毛绒连帽大衣"> <img src="http://gtms04.alicdn.com/tps/i4/TB1zJkBGVXXXXcuXVXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" /> 
+         <div class="item-desc"> 
+          <h4>女童装冬季亲子皮草外套儿童中长款毛衣外套宝宝加厚毛绒连帽大衣</h4> 
+          <div class="item-comment">
+            近7天同城热销 
+          </div> 
+          <div class="item-sell-count">
+            已售419件 
+          </div> 
+         </div> </a> 
+        <div class="preference-trigger-wrapper"> 
+         <ul> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d13" data-id="42938983306" data-category="50010548" href="http://favorite.taobao.com/popup/add_collection.htm?id=42938983306&amp;_tb_token_=3bbeee5ee6f36&amp;itemtype=1" class="J_TDialogTrigger">收藏</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d14" href="" data-id="42938983306" data-category="50010548" class="J_DelDiscoverItem">不喜欢</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d15" href="" class="J_ShowPreference show-preference">我要自定义</a> </li> 
+         </ul> 
+         <div class="bottom-border"></div> 
+        </div> 
+       </div> 
+       <div class="discover-item J_DiscoverItem J_DItem"> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=41880753543&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" title="批发美国BadAir Sponge空气净化剂除甲醛装修污染异味强力型 0013"> <img src="http://gtms04.alicdn.com/tps/i4/TB1MKo4GVXXXXb1XpXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" /> 
+         <div class="item-desc"> 
+          <h4>批发美国BadAir Sponge空气净化剂除甲醛装修污染异味强力型 0013</h4> 
+          <div class="item-comment">
+            近7天同城热销 
+          </div> 
+          <div class="item-sell-count">
+            已售163件 
+          </div> 
+         </div> </a> 
+        <div class="preference-trigger-wrapper"> 
+         <ul> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d13" data-id="41880753543" data-category="50018968" href="http://favorite.taobao.com/popup/add_collection.htm?id=41880753543&amp;_tb_token_=3bbeee5ee6f36&amp;itemtype=1" class="J_TDialogTrigger">收藏</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d14" href="" data-id="41880753543" data-category="50018968" class="J_DelDiscoverItem">不喜欢</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d15" href="" class="J_ShowPreference show-preference">我要自定义</a> </li> 
+         </ul> 
+         <div class="bottom-border"></div> 
+        </div> 
+       </div> 
+       <div class="discover-item J_DiscoverItem J_DItem"> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=42440159235&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" title="pu皮棉衣女短款加厚外套羽绒棉服冬装韩版修身貉子毛领棉袄潮女装"> <img src="http://gtms01.alicdn.com/tps/i1/TB1nTeAGVXXXXczXXXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" /> 
+         <div class="item-desc"> 
+          <h4>pu皮棉衣女短款加厚外套羽绒棉服冬装韩版修身貉子毛领棉袄潮女装</h4> 
+          <div class="item-comment">
+            近7天同城热销 
+          </div> 
+          <div class="item-sell-count">
+            已售1301件 
+          </div> 
+         </div> </a> 
+        <div class="preference-trigger-wrapper"> 
+         <ul> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d13" data-id="42440159235" data-category="50008900" href="http://favorite.taobao.com/popup/add_collection.htm?id=42440159235&amp;_tb_token_=3bbeee5ee6f36&amp;itemtype=1" class="J_TDialogTrigger">收藏</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d14" href="" data-id="42440159235" data-category="50008900" class="J_DelDiscoverItem">不喜欢</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d15" href="" class="J_ShowPreference show-preference">我要自定义</a> </li> 
+         </ul> 
+         <div class="bottom-border"></div> 
+        </div> 
+       </div> 
+       <div class="discover-item J_DiscoverItem J_DItem" style="display: none;"> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=42921177903&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" title="吉普jeep棉衣男冬装外套中长款加绒加厚连帽棉袄中年加肥大码棉服"> <img src="http://gtms04.alicdn.com/tps/i3/TB1vRrBGVXXXXaaXpXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" /> 
+         <div class="item-desc"> 
+          <h4>吉普jeep棉衣男冬装外套中长款加绒加厚连帽棉袄中年加肥大码棉服</h4> 
+          <div class="item-comment">
+            近7天同城热销 
+          </div> 
+          <div class="item-sell-count">
+            已售866件 
+          </div> 
+         </div> </a> 
+        <div class="preference-trigger-wrapper"> 
+         <ul> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d13" data-id="42921177903" data-category="50011165" href="http://favorite.taobao.com/popup/add_collection.htm?id=42921177903&amp;_tb_token_=3bbeee5ee6f36&amp;itemtype=1" class="J_TDialogTrigger">收藏</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d14" href="" data-id="42921177903" data-category="50011165" class="J_DelDiscoverItem">不喜欢</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d15" href="" class="J_ShowPreference show-preference">我要自定义</a> </li> 
+         </ul> 
+         <div class="bottom-border"></div> 
+        </div> 
+       </div> 
+       <div class="discover-item J_DiscoverItem J_DItem" style="display: none;"> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=43207797991&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" title="奔跑吧兄弟同款angelababy杨颖赵丽颖同款情侣大红色新年棉服外套"> <img src="http://gtms01.alicdn.com/tps/i2/TB1BHUQGVXXXXbrXVXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" /> 
+         <div class="item-desc"> 
+          <h4>奔跑吧兄弟同款angelababy杨颖赵丽颖同款情侣大红色新年棉服外套</h4> 
+          <div class="item-comment">
+            近7天同城热销 
+          </div> 
+          <div class="item-sell-count">
+            已售1076件 
+          </div> 
+         </div> </a> 
+        <div class="preference-trigger-wrapper"> 
+         <ul> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d13" data-id="43207797991" data-category="50008900" href="http://favorite.taobao.com/popup/add_collection.htm?id=43207797991&amp;_tb_token_=3bbeee5ee6f36&amp;itemtype=1" class="J_TDialogTrigger">收藏</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d14" href="" data-id="43207797991" data-category="50008900" class="J_DelDiscoverItem">不喜欢</a> </li> 
+          <li> <a data-spm-click="gostr=/tbindex;locaid=d15" href="" class="J_ShowPreference show-preference">我要自定义</a> </li> 
+         </ul> 
+         <div class="bottom-border"></div> 
+        </div> 
+       </div> 
+       <div class="wall J_Wall"> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=42884656057&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" class="mod wall-item"> <img src="http://gtms01.alicdn.com/tps/i2/TB1q.2mGVXXXXa1XpXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="" /> 
+         <div class="wall-item-desc"> 
+          <p>林弯弯外套男日系潮牌冬装棉服新款燕尾修身中长款棉衣男韩版潮流</p> 
+          <div class="item-count">
+            ★6518 
+          </div> 
+         </div> </a> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=42798164305&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" class="mod wall-item"> <img src="http://gtms01.alicdn.com/tps/i1/TB1uTb2GVXXXXaNXXXXXXXXXXXX_!!2-item_pic.png_160x160.jpg" alt="" /> 
+         <div class="wall-item-desc"> 
+          <p>新款长靴子女冬季过膝靴侧拉链高跟高筒长靴欧美加绒粗跟大码女鞋</p> 
+          <div class="item-count">
+            ★2172 
+          </div> 
+         </div> </a> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=38366195679&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" class="mod wall-item"> <img src="http://gtms01.alicdn.com/tps/i3/T1FWOmFrpfXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="" /> 
+         <div class="wall-item-desc"> 
+          <p>包邮肚皮舞鞋女式金色软底猫爪鞋舞蹈练功鞋印度新疆瑜珈成人软革</p> 
+          <div class="item-count">
+            ★206 
+          </div> 
+         </div> </a> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=36502815399&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" class="mod wall-item"> <img src="http://gtms02.alicdn.com/tps/i1/TB1zyDZGVXXXXXqXXXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="" /> 
+         <div class="wall-item-desc"> 
+          <p>欧美修身短外套冬女款机车棉衣加厚立领棒球服女夹克棉衣PU皮棉服</p> 
+          <div class="item-count">
+            ★12184 
+          </div> 
+         </div> </a> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=40837479325&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" class="mod wall-item"> <img src="http://gtms03.alicdn.com/tps/i1/TB14GBBHXXXXXXlaXXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="" /> 
+         <div class="wall-item-desc"> 
+          <p>户外必备多功能军刀随身小直刀铝柄一体锋利水果刀正品荣誉K直刀</p> 
+          <div class="item-count">
+            ★6718 
+          </div> 
+         </div> </a> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=39039987778&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" class="mod wall-item"> <img src="http://gtms02.alicdn.com/tps/i1/TB18BlLHXXXXXXTaXXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="" /> 
+         <div class="wall-item-desc"> 
+          <p>男用壮阳延时持久增大速效口服助勃胶囊喷剂补肾早泄中药性保健品</p> 
+          <div class="item-count">
+            ★862 
+          </div> 
+         </div> </a> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=41516320873&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" class="mod wall-item"> <img src="http://gtms04.alicdn.com/tps/i2/TB1LuMzGpXXXXclXXXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="" /> 
+         <div class="wall-item-desc"> 
+          <p>韩国代购2014秋冬针织衫马甲中长款女装无袖套头学院风宽松羊毛衣</p> 
+          <div class="item-count">
+            ★8506 
+          </div> 
+         </div> </a> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=14470398305&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" class="mod wall-item"> <img src="http://gtms01.alicdn.com/tps/i2/TB1ijRFFVXXXXXxXFXXXXXXXXXX_!!2-item_pic.png_160x160.jpg" alt="" /> 
+         <div class="wall-item-desc"> 
+          <p>新款羽毛翅膀 水银灯~ cosplay道具 舞会圣诞精品 可随意造型</p> 
+          <div class="item-count">
+            ★1090 
+          </div> 
+         </div> </a> 
+        <a href="http://www.taobao.com/market/lu/findgoods_router.php?id=22503136594&amp;scm=1007.10406.4259.101200300000000&amp;pvid=49f568f4-06ba-4a2e-bfc6-db7218d33824" class="mod wall-item"> <img src="http://gtms02.alicdn.com/tps/i1/TB1OKJWFVXXXXayXXXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="" /> 
+         <div class="wall-item-desc"> 
+          <p>小鲁班男孩拼装飞机diy礼物 儿童玩具飞机模型拼装仿真 超大客机.</p> 
+          <div class="item-count">
+            ★2068 
+          </div> 
+         </div> </a> 
+       </div> 
+       <a class="preference-btn J_ShowPreference J_TopShowPreference" href="" data-spm-click="gostr=/tbindex;locaid=d16">定制我的偏好</a> 
+      </dd> 
+      <dd class="change-wrapper J_ChangeDiscover"> 
+       <s class="fpicon s-change-gray"></s>换一批试试 
+      </dd> 
+      <dt class="lu-dt J_Lu" data-spm="701" style="display: block;"> 
+       <a href="http://lu.taobao.com/newMyPath.htm" data-spm="d1"> 
+        <s class="fpicon s-lu">
+          我的足迹 
+        </s></a> 
+       <span>最近浏览宝贝</span> 
+      </dt> 
+      <dd id="J_LuList" class="content-wrapper lu-wrapper J_Lu" data-spm="701" style="display: block;"> 
+       <div class="wall "> 
+        <a href="http://item.taobao.com/item.htm?scm=1007.10325.3473.0&amp;id=41387212946" class="mod wall-item"> <img src="http://img02.taobaocdn.com/bao/uploaded/i2/TB1mywlGpXXXXXzXpXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="艺电易玩 XBOXONE 港版主机 XBOX ONE 体感游戏机 现货" /> <p class="timer">4小时前</p> 
+         <div class="wall-item-desc"> 
+          <p>艺电易玩 XBOXONE 港版主机 XBOX ONE 体感游戏机 现货</p> 
+         </div> </a> 
+        <a href="http://item.taobao.com/item.htm?scm=1007.10325.3473.0&amp;id=38979981982" class="mod wall-item"> <img src="http://img02.taobaocdn.com/bao/uploaded/i2/TB1gwseGVXXXXXyaXXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="Galanz/格兰仕 KWS1538J-F5M烘培电烤箱38L厨房家用烤箱 特价包邮" /> <p class="timer">前天</p> 
+         <div class="wall-item-desc"> 
+          <p>Galanz/格兰仕 KWS1538J-F5M烘培电烤箱38L厨房家用烤箱 特价包邮</p> 
+         </div> </a> 
+        <a href="http://item.taobao.com/item.htm?scm=1007.10325.3473.0&amp;id=39848883451" class="mod wall-item"> <img src="http://img04.taobaocdn.com/bao/uploaded/i4/TB12WDdGVXXXXXqXFXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="猫吉手工酱 香菜蒜蓉奶油抹酱 黄油蒜蓉酱 烘焙 无添加手工自制" /> <p class="timer">10天前</p> 
+         <div class="wall-item-desc"> 
+          <p>猫吉手工酱 香菜蒜蓉奶油抹酱 黄油蒜蓉酱 烘焙 无添加手工自制</p> 
+         </div> </a> 
+        <a href="http://item.taobao.com/item.htm?scm=1007.10325.3473.0&amp;id=41304844418" class="mod wall-item"> <img src="http://img02.taobaocdn.com/bao/uploaded/i2/TB1dmzfGVXXXXalXpXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="猫吉手工酱 虾干鱿鱼辣椒酱 虾酱 正宗美味熟食 拌饭酱无添加自制" /> <p class="timer">10天前</p> 
+         <div class="wall-item-desc"> 
+          <p>猫吉手工酱 虾干鱿鱼辣椒酱 虾酱 正宗美味熟食 拌饭酱无添加自制</p> 
+         </div> </a> 
+        <a href="http://item.taobao.com/item.htm?scm=1007.10325.3473.0&amp;id=39845175942" class="mod wall-item"> <img src="http://img02.taobaocdn.com/bao/uploaded/i2/TB14VTiGVXXXXbRXXXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="cat ji-jam猫吉手工酱 罗勒蒜蓉奶油酱 罗勒酱 黄油蒜蓉酱无添加" /> <p class="timer">10天前</p> 
+         <div class="wall-item-desc"> 
+          <p>cat ji-jam猫吉手工酱 罗勒蒜蓉奶油酱 罗勒酱 黄油蒜蓉酱无添加</p> 
+         </div> </a> 
+        <a href="http://item.taobao.com/item.htm?scm=1007.10325.3473.0&amp;id=40605932312" class="mod wall-item"> <img src="http://img02.taobaocdn.com/bao/uploaded/i2/TB1Qn5XHXXXXXb4XVXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="【券】堡狮龙秋冬男超保暖纯色轻型便携羽绒服外套513005120" /> <p class="timer">12天前</p> 
+         <div class="wall-item-desc"> 
+          <p>【券】堡狮龙秋冬男超保暖纯色轻型便携羽绒服外套513005120</p> 
+         </div> </a> 
+       </div> 
+      </dd> 
+      <dd class="change-wrapper J_Lu lu-more" data-spm="701" style="display: block;"> 
+       <a href="http://lu.taobao.com/newMyPath.htm" data-spm="d10">更多足迹</a> 
+      </dd> 
+      <dt class="shop-dt"> 
+       <s class="fpicon s-good-shop">
+         发现好店 
+       </s> 
+      </dt> 
+      <dd id="J_DiscoverShop" class="content-wrapper shop-content" data-spm="1997522429"> 
+       <div class="hidden J_ItemHover" style="display: block;"> 
+        <div class="shop"> 
+         <a href="http://shop33184931.taobao.com/shop/view_shop.htm?scm=2004.2.515.2" class="shop-title"> 
+          <div class="fpicon shop-logo s-discover-logo"> 
+           <img src="//g.tbcdn.cn/s.gif" style="background-image:url(http://gtms04.alicdn.com/tps//58/a8/T1prppXdxtXXartXjX.gif_60x60.jpg)" /> 
+          </div> 
+          <div class="shop-desc"> 
+           <h4>南京皇家机行，</h4> 
+           <p>主营：3C数码</p> 
+          </div> </a> 
+         <div class="shop-comment no-content"> 
+          <span>很便宜</span> 
+          <span>服务不错</span> 
+          <span>物流服务好</span> 
+         </div> 
+         <ul class="wall J_Wall"> 
+          <li class="mod wall-item"> <a href="http://item.taobao.com/item.htm?id=19069777621&amp;scm=2004.2.515.2"> <img src="http://gtms01.alicdn.com/tps/i2/13474025211019130/T1tCpGFlJaXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="万能百变蜘蛛支架 苹果iPhone 小米 HTC 三星 车载支架 趣味支架" /> 
+            <div class="wall-item-desc"> 
+             <p>万能百变蜘蛛支架 苹果iPhone 小米 HTC 三星 车载支架 趣味支架</p> 
+             <div class="item-count">
+               ★ 132 
+             </div> 
+            </div> </a> </li> 
+          <li class="mod wall-item"> <a href="http://item.taobao.com/item.htm?id=38570035617&amp;scm=2004.2.515.2"> <img src="http://gtms01.alicdn.com/tps/i4/TB1njPpFVXXXXXPXpXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="MIUI/小米 红米手机1S 原封 移动联通电信 实体现货" /> 
+            <div class="wall-item-desc"> 
+             <p>MIUI/小米 红米手机1S 原封 移动联通电信 实体现货</p> 
+             <div class="item-count">
+               ★ 124 
+             </div> 
+            </div> </a> </li> 
+          <li class="mod wall-item"> <a href="http://item.taobao.com/item.htm?id=40252468449&amp;scm=2004.2.515.2"> <img src="http://gtms04.alicdn.com/tps/i4/TB1HViCFVXXXXc9XXXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="BlackBerry/黑莓 Z3 全新港版手机 5寸屏现货超高性价比 兼容安卓" /> 
+            <div class="wall-item-desc"> 
+             <p>BlackBerry/黑莓 Z3 全新港版手机 5寸屏现货超高性价比 兼容安卓</p> 
+             <div class="item-count">
+               ★ 254 
+             </div> 
+            </div> </a> </li> 
+         </ul> 
+        </div> 
+        <div class="shop"> 
+         <a href="http://shop35060648.taobao.com/shop/view_shop.htm?scm=2004.2.515.2" class="shop-title"> 
+          <div class="fpicon shop-logo s-discover-logo"> 
+           <img src="//g.tbcdn.cn/s.gif" style="background-image:url(http://gtms04.alicdn.com/tps//ab/b3/T15YKRFk4bXXaCwpjX.png_60x60.jpg)" /> 
+          </div> 
+          <div class="shop-desc"> 
+           <h4>叮当数码手机店</h4> 
+           <p>主营：3C数码</p> 
+          </div> </a> 
+         <div class="shop-comment no-content"> 
+          <span>很便宜</span> 
+          <span>高贵</span> 
+          <span>售后不错</span> 
+         </div> 
+         <ul class="wall J_Wall"> 
+          <li class="mod wall-item"> <a href="http://item.taobao.com/item.htm?id=42322783028&amp;scm=2004.2.515.2"> <img src="http://gtms01.alicdn.com/tps/i3/TB1KxzKGXXXXXaOaXXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="华为 AM180 原装主动降噪 入耳式立体声 音乐耳机 Mate7 天生绝配" /> 
+            <div class="wall-item-desc"> 
+             <p>华为 AM180 原装主动降噪 入耳式立体声 音乐耳机 Mate7 天生绝配</p> 
+             <div class="item-count">
+               ★ 34 
+             </div> 
+            </div> </a> </li> 
+          <li class="mod wall-item"> <a href="http://item.taobao.com/item.htm?id=41685545648&amp;scm=2004.2.515.2"> <img src="http://gtms01.alicdn.com/tps/i2/TB197v.GpXXXXc3XXXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="中兴 红牛V5电池 红牛V5S电板 U9180 N9180 V9180 V9186原装电池" /> 
+            <div class="wall-item-desc"> 
+             <p>中兴 红牛V5电池 红牛V5S电板 U9180 N9180 V9180 V9186原装电池</p> 
+             <div class="item-count">
+               ★ 32 
+             </div> 
+            </div> </a> </li> 
+          <li class="mod wall-item"> <a href="http://item.taobao.com/item.htm?id=39332922382&amp;scm=2004.2.515.2"> <img src="http://gtms02.alicdn.com/tps/i3/TB13m0kGpXXXXb2XXXXXXXXXXXX_!!0-item_pic.jpg_160x160.jpg" alt="AMOI 夏新 原装正品 移动电源 充电宝12000毫安移动电源" /> 
+            <div class="wall-item-desc"> 
+             <p>AMOI 夏新 原装正品 移动电源 充电宝12000毫安移动电源</p> 
+             <div class="item-count">
+               ★ 52 
+             </div> 
+            </div> </a> </li> 
+         </ul> 
+        </div> 
+        <div class="shop"> 
+         <a href="http://shop61702268.taobao.com/shop/view_shop.htm?scm=2004.2.515.2" class="shop-title"> 
+          <div class="fpicon shop-logo s-discover-logo"> 
+           <img src="//g.tbcdn.cn/s.gif" style="background-image:url(http://gtms02.alicdn.com/tps//10/a3/T1y8FJFcxXXXb1upjX.jpg_60x60.jpg)" /> 
+          </div> 
+          <div class="shop-desc"> 
+           <h4>广州明宇数码</h4> 
+           <p>主营：3C数码</p> 
+          </div> </a> 
+         <div class="shop-comment no-content"> 
+          <span>很划算</span> 
+          <span>没有色差</span> 
+          <span>物流服务好</span> 
+         </div> 
+        </div> 
+        <div class="shop"> 
+         <a href="http://shop72299029.taobao.com/shop/view_shop.htm?scm=2004.2.515.2" class="shop-title"> 
+          <div class="fpicon shop-logo s-discover-logo"> 
+           <img src="//g.tbcdn.cn/s.gif" style="background-image:url(http://gtms04.alicdn.com/tps//e3/97/TB1fL4TGVXXXXa8XXXXtKXbFXXX.gif_60x60.jpg)" /> 
+          </div> 
+          <div class="shop-desc"> 
+           <h4>北京工厂直销店</h4> 
+           <p>主营：服饰鞋包</p> 
+          </div> </a> 
+         <div class="shop-comment no-content"> 
+          <span>前卫</span> 
+          <span>悟空</span> 
+          <span>高达</span> 
+         </div> 
+        </div> 
+       </div> 
+      </dd> 
+      <dd class="change-wrapper J_ChangeDiscover"> 
+       <s class="fpicon s-change-gray"></s>换一批试试 
+      </dd> 
+     </dl> 
+     <div class="discover-gg"> 
+      <a id="tanx-a-mm_12852562_1778064_10263209" class="hide J_lazy_TanxAd J_TanxAd"></a> 
+     </div> 
+    </div> 
+   </div> 
+   <!-- 底部频道：星店/全球购/拍卖汇/天天特价/淘女郎/宝宝旅行 --> 
+   <div class="channel loading" id="J_Channel"> 
+    <div class="channel-item" data-id="1" data-spm="1997522481"> 
+     <div class="channel-header"> 
+      <a href="http://star.taobao.com"> 
+       <s class="fpicon s-s-star">
+         星店 
+       </s> <em class="g-u">明星开店在这里</em> </a> 
+     </div> 
+     <div class="channel-main"> 
+      <a class="pic-box" href="http://star.taobao.com/?slide=1"> <img src="http://img03.taobaocdn.com/imgextra/i3/2363203880/TB2NZmCbFXXXXaZXpXXXXXXXXXX_!!2363203880.jpg" alt="音乐大师课，跟导师面对面" /> <span class="pic-desc"> <em>音乐大师课，跟导师面对面</em> <span>明星福利</span> </span> </a> 
+     </div> 
+     <div class="channel-extra"> 
+      <div class="pics"> 
+       <a class="pic-item g-u" href="http://star.taobao.com#guid-1408949741924"> <img src="http://gtms04.alicdn.com/tps/i4/TB1RpIgGVXXXXayapXX1J2J6XXX-122-121.jpg" alt="小红果刺绣连衣裙" /> 
+        <div class="pic-desc">
+          小红果刺绣连衣裙 
+        </div> </a> 
+       <a class="pic-item g-u" href="http://star.taobao.com/?slide=3"> <img src="http://gtms04.alicdn.com/tps/i4/TB1LPubHXXXXXbkXFXXyytwIpXX-70-70.jpg" alt="迷人香氛" /> 
+        <div class="pic-desc">
+          迷人香氛 
+        </div> </a> 
+      </div> 
+      <p class="channel-tag"> <a href="http://star.taobao.com/?slide=2" class="g-u">最强折扣</a> <a href="http://star.taobao.com/?slide=5" class="g-u">新年美肤</a> <a href="http://star.taobao.com#guid-1408949859693" class="g-u">星同款</a> </p> 
+      <p class="article-title"> <span class="tag g-u">[<a href="http://star.taobao.com#guid-1408957859445"> <em>0元星福利</em> </a> ]</span> <a href="http://star.taobao.com#guid-1408949741924" class="g-u">人气明星店</a> </p> 
+     </div> 
+    </div> 
+    <div class="channel-item" data-id="2" data-spm="1997522497"> 
+     <div class="channel-header"> 
+      <a href="http://g.taobao.com/?scm=1219.9.9.5"> 
+       <s class="fpicon s-s-world">
+         全球购 
+       </s> <em class="g-u">足不出户 淘遍全球</em> </a> 
+     </div> 
+     <div class="channel-main"> 
+      <a class="pic-box" href="http://www.taobao.com/market/gmall/overseas/index.php?spm=5148.1292865.a31d3.4.tocqgJ"> <img src="http://gtms04.alicdn.com/tps/i4/TB1zOiiHXXXXXcjXFXXSutbFXXX.jpg" alt="冬季也性感" /> <span class="pic-desc"> <em>冬季也性感</em> <span>国外街拍最in运动装</span> </span> </a> 
+     </div> 
+     <div class="channel-extra"> 
+      <div class="pics"> 
+       <a class="pic-item g-u" href="http://www.taobao.com/market/gmall/overseas/index.php?spm=5148.1292865.a31d3.4.tocqgJ"> <img src="http://gtms01.alicdn.com/tps/i1/TB1fzqdHXXXXXbOaXXXSutbFXXX.jpg" alt="人气美包" /> 
+        <div class="pic-desc">
+          人气美包 
+        </div> </a> 
+       <a class="pic-item g-u" href="http://www.taobao.com/market/gmall/live.php"> <img src="http://gtms04.alicdn.com/tps/i4/TB1.zfrGFXXXXbbaXXXyytwIpXX-70-70.jpg" alt="2015新首饰" /> 
+        <div class="pic-desc">
+          2015新首饰 
+        </div> </a> 
+      </div> 
+      <p class="channel-tag"> <a href="http://www.taobao.com/market/2014/1212/trade/global.php" class="g-u"><img src="http://gtms04.alicdn.com/tps/i4/T1xGzKFQ0cXXcEvVDa-20-15.jpg" /></a> <a href="http://www.taobao.com/market/2014/1212/trade/global.php" class="g-u"><img src="http://gtms04.alicdn.com/tps/i4/T1.P2LFNlbXXcEvVDa-20-15.jpg" /></a> <a href="http://www.taobao.com/market/2014/1212/trade/global.php" class="g-u"><img src="http://gtms02.alicdn.com/tps/i2/T1Kl2QFHxbXXcEvVDa-20-15.jpg" /></a> <a href="http://www.taobao.com/market/2014/1212/trade/global.php" class="g-u"><img src="http://gtms03.alicdn.com/tps/i3/T1vr_OFI8cXXcEvVDa-20-15.jpg" /></a> <a href="http://www.taobao.com/market/2014/1212/trade/global.php" class="g-u"><img src="http://gtms04.alicdn.com/tps/i4/T19jPMFKxcXXcEvVDa-20-15.jpg" /></a> </p> 
+      <p class="article-title"> <span class="tag g-u">[<a href="http://www.taobao.com/market/gmall/overseas/index.php"> <em>海外团</em> </a> ]</span> <a href="http://www.taobao.com/market/gmall/live.php" class="g-u">全球Mall折扣同步</a> </p> 
+     </div> 
+    </div> 
+    <div class="channel-item" data-id="3" data-spm="1997522505"> 
+     <div class="channel-header"> 
+      <a href="http://paimai.taobao.com/"> 
+       <s class="fpicon s-s-auction">
+         拍卖会 
+       </s> <em class="g-u">年末压轴 终极盛典</em> </a> 
+     </div> 
+     <div class="channel-main"> 
+      <a class="pic-box" href="http://sf.taobao.com/item_list.htm?spm=a213w.3064813.a214dqe.2.RjLcqN&amp;category=50025972&amp;item_id=43318415799"> <img src="http://gtms02.alicdn.com/tps/i2/TB197xSHXXXXXbcXpXXzPooUXXX-169-100.png" alt="雅阁轿车 4.9万拍" /> <span class="pic-desc"> <em>雅阁轿车 4.9万拍</em> <span>法院低价处置资产</span> </span> </a> 
+     </div> 
+     <div class="channel-extra"> 
+      <div class="pics"> 
+       <a class="pic-item g-u" href="http://s.paimai.taobao.com/pmp_list/3_53896005___1_1.htm?spm=a2129.7627300.a214x1t.3.7nfR1B#sort-bar"> <img src="http://gtms02.alicdn.com/tps/i2/TB1Q14RHXXXXXXiXXXXyytwIpXX-70-70.jpg" alt="翡翠甩拍" /> 
+        <div class="pic-desc">
+          翡翠甩拍 
+        </div> </a> 
+       <a class="pic-item g-u" href="http://zc.paimai.taobao.com/"> <img src="http://gtms01.alicdn.com/tps/i1/TB1R1rYGVXXXXaYaXXXcy0wIpXX-70-70.png" alt="买公车啦！" /> 
+        <div class="pic-desc">
+          买公车啦！ 
+        </div> </a> 
+      </div> 
+      <p class="channel-tag"> <a href="http://s.paimai.taobao.com/pmp_list/3_54016002__1_1_1.htm?spm=1.7274553.1997522505.5.ep7OZr&amp;st_price=0" class="g-u">低价房产</a> <a href="http://s.paimai.taobao.com/pmp_list/3_53848006___1_1.htm#sort-bar" class="g-u">美瓷之王</a> <a href="http://s.paimai.taobao.com/pmp_list/3_53882003___1_1.htm?#sort-bar" class="g-u">开运奢品</a> </p> 
+      <p class="article-title"> <span class="tag g-u">[<a href="http://s.paimai.taobao.com/pmp_list/3_53922004___1_1.htm?spm=a213x.7340941.1003.3.tZWkv7&amp;st_price=0#sort-bar"> <em>投资</em> </a> ]</span> <a href="http://s.paimai.taobao.com/pmp_list/3_53922004___1_1.htm?spm=a213x.7340941.1003.3.tZWkv7&amp;st_price=0#sort-bar" class="g-u">1元拍扁古今艺术品</a> </p> 
+     </div> 
+    </div> 
+    <div class="channel-item" data-id="4" data-spm="1997522813"> 
+     <div class="channel-header"> 
+      <a href="http://tejia.taobao.com"> 
+       <s class="fpicon s-s-daily">
+         天天特价 
+       </s> <em class="g-u">专享低价 包邮</em> </a> 
+     </div> 
+     <div class="channel-main"> 
+      <a class="pic-box" href="http://tejia.taobao.com/tejiaListRec.htm?spm=a3109.6190702.1997029713.1.sK4y04&amp;promotionId=1"> <img src="http://gtms04.alicdn.com/tps/i4/TB1lNyhHXXXXXafXpXX3bpXTXXX-170-100.png" alt="新品女装棉服 萌萌哒!" /> <span class="pic-desc"> <em>新品女装棉服 萌萌哒!</em> <span>绝对超值 包邮</span> </span> </a> 
+     </div> 
+     <div class="channel-extra"> 
+      <div class="pics"> 
+       <a class="pic-item g-u" href="http://www.taobao.com/market/tejia/tttj_byczg.php"> <img src="http://gtms01.alicdn.com/tps/i1/TB1UqyhHXXXXXX6XpXXcy0wIpXX-70-70.png" alt="100元封顶" /> 
+        <div class="pic-desc">
+          100元封顶 
+        </div> </a> 
+       <a class="pic-item g-u" href="http://tejia.taobao.com/ten.htm?spm=a3109.6190706.a214d9i.5.KsRvX4"> <img src="http://gtms01.alicdn.com/tps/i1/TB1p3x8HXXXXXbBaXXXcy0wIpXX-70-70.png" alt="10元惊喜" /> 
+        <div class="pic-desc">
+          10元惊喜 
+        </div> </a> 
+      </div> 
+      <p class="channel-tag"> <a href="http://zhi.taobao.com/" class="g-u">今日特卖</a> <a href="http://tejia.taobao.com/tejiaListRec.htm?spm=a3109.6190706.0.0.6Q16My&amp;promotionId=1&amp;cid=1629" class="g-u">大码女装</a> <a href="http://tejia.taobao.com/tejiaListRec.htm?spm=a3109.6190706.0.0.NpzfLP&amp;promotionId=1&amp;cid=50010850" class="g-u">连衣裙</a> </p> 
+      <p class="article-title"> <span class="tag g-u">[<a href="http://tejia.taobao.com/tejiaListRec.htm?spm=a3109.6190706.0.0.MORxUs&amp;promotionId=9"> <em>百货</em> </a> ]</span> <a href="http://tejia.taobao.com/tejiaListRec.htm?spm=a3109.6190706.0.0.MORxUs&amp;promotionId=9" class="g-u">韩版儿童羽绒服 1折起</a> </p> 
+     </div> 
+    </div> 
+    <div class="channel-item" data-id="5" data-spm="1997522817"> 
+     <div class="channel-header"> 
+      <a href="http://mm.taobao.com/"> 
+       <s class="fpicon s-s-girl">
+         淘女郎 
+       </s> <em class="g-u">美人美货美图</em> </a> 
+     </div> 
+     <div class="channel-main"> 
+      <a class="pic-box" href="http://mm.taobao.com/index.htm?spm=719.1001036.1001088.3.bUcqxK"> <img src="http://gtms04.alicdn.com/tps/i4/TB1A_49HXXXXXaEXFXX3bpXTXXX-170-100.png" alt="高品质【设计感】新年搭配" /> <span class="pic-desc"> <em>高品质【设计感】新年搭配</em> <span>新年好运出彩搭配 出街吸睛100%</span> </span> </a> 
+     </div> 
+     <div class="channel-extra"> 
+      <div class="pics"> 
+       <a class="pic-item g-u" href="http://mm.taobao.com/guide/acquisition_list.htm?spm=719.100103615.0.0.pgKRQB&amp;col_album_id=10000270588"> <img src="http://gtms01.alicdn.com/tps/i1/TB15Od3HXXXXXbyaXXXcy0wIpXX-70-70.png" alt="欧美复古" /> 
+        <div class="pic-desc">
+          欧美复古 
+        </div> </a> 
+       <a class="pic-item g-u" href="http://mm.taobao.com/guide/acquisition_list.htm?spm=719.100103615.0.0.pgKRQB&amp;col_album_id=10000269613"> <img src="http://gtms02.alicdn.com/tps/i2/TB1ha9bHXXXXXX_XpXXcy0wIpXX-70-70.png" alt="教你显瘦" /> 
+        <div class="pic-desc">
+          教你显瘦 
+        </div> </a> 
+      </div> 
+      <p class="channel-tag"> <a href="http://mm.taobao.com/guide/acquisition_list.htm?spm=719.100103615.0.0.bLZLyM&amp;col_album_id=10000261732" class="g-u">厚打底裤</a> <a href="http://mm.taobao.com/guide/acquisition_list.htm?spm=719.100103615.0.0.bLZLyM&amp;col_album_id=10000258703" class="g-u">帽子戏法</a> <a href="http://mm.taobao.com/guide/acquisition_list.htm?spm=719.100103615.0.0.bLZLyM&amp;col_album_id=301997001" class="g-u">假期出游</a> </p> 
+      <p class="article-title"> <span class="tag g-u">[<a href="http://mm.taobao.com/guide/acquisition_list.htm?spm=719.100103615.0.0.bLZLyM&amp;col_album_id=10000256599"> <em>显瘦</em> </a> ]</span> <a href="http://mm.taobao.com/guide/acquisition_list.htm?spm=719.100103615.0.0.bLZLyM&amp;col_album_id=10000256599" class="g-u">冬季拒绝臃肿 教你穿出瘦</a> </p> 
+     </div> 
+    </div> 
+    <div class="channel-item" data-id="6" data-spm="999"> 
+     <div class="channel-header"> 
+      <a href="http://trip.taobao.com?acm=tt-1097038-38022.1003.8.80049&amp;uuid=80049&amp;scm=1003.8.tt-1097038-38022.OTHER_1403385165786_80049&amp;pos=1"> 
+       <s class="fpicon s-s-travel">
+         去啊 
+       </s> <em class="g-u">世界触手可行</em> </a> 
+     </div> 
+     <div class="channel-main"> 
+      <a class="pic-box" href="http://trip.taobao.com/market/trip/act/trip2015/spring-festival.php?abbucket=&amp;acm=tt-1097038-38023.1003.8.175588&amp;ad_id=&amp;cm_id=&amp;pm_id=&amp;am_id=13013060796b3e9ca961&amp;uuid=175588&amp;abtest=&amp;scm=1003.8.tt-1097038-38023.OTHER_1419640490384_175588&amp;pos=1#gn"> <img src="http://gtms03.alicdn.com/tps/i3/T1euoIFQxcXXX0gpb4-170-100.jpg" alt="三亚5天自由行999" /> <span class="pic-desc"> <em>三亚5天自由行999</em> <span>往返机票+蜈支洲门票</span> </span> </a> 
+     </div> 
+     <div class="channel-extra"> 
+      <div class="travel-whither"> 
+       <a href="http://trip.taobao.com/market/trip/act/trip2015/spring-festival.php?abbucket=&amp;acm=tt-1097038-38024.1003.8.176208&amp;ad_id=&amp;cm_id=&amp;pm_id=&amp;am_id=13013060975cd96f88fb&amp;uuid=176208&amp;abtest=&amp;scm=1003.8.tt-1097038-38024.OTHER_1422618619540_176208&amp;pos=1#jpzq"> 
+        <div class="g-u"> 
+         <h5>香港特惠</h5> 
+         <p>往返414</p> 
+        </div> <img class="g-u" src="http://gtms02.alicdn.com/tps/i2/TB1FGYxGVXXXXbDXXXXcy0wIpXX-70-70.png" alt="香港特惠" /> </a> 
+       <s class="fpicon s-hot"></s> 
+      </div> 
+      <p class="channel-tag"> <a href="http://trip.taobao.com/market/trip/act/trip2015/spring-festival.php?abbucket=&amp;acm=tt-1097038-38025.1003.8.176197&amp;ad_id=&amp;cm_id=&amp;pm_id=&amp;am_id=13013060953f8d37ff17&amp;uuid=176197&amp;abtest=&amp;scm=1003.8.tt-1097038-38025.OTHER_1422528364719_176197&amp;pos=1#jpzq" class="g-u">血拼香港</a> <a href="http://trip.taobao.com/market/trip/act/trip2015/spring-festival.php?abbucket=&amp;acm=tt-1097038-38025.1003.8.176197&amp;ad_id=&amp;cm_id=&amp;pm_id=&amp;am_id=13013060953f8d37ff17&amp;uuid=176197&amp;abtest=&amp;scm=1003.8.tt-1097038-38025.OTHER_1420144302200_176197&amp;pos=2#gn" class="g-u">最美三亚</a> <a href="http://trip.taobao.com/market/trip/act/trip2015/spring-festival.php?abbucket=&amp;acm=tt-1097038-38025.1003.8.176197&amp;ad_id=&amp;cm_id=&amp;pm_id=&amp;am_id=13013060953f8d37ff17&amp;uuid=176197&amp;abtest=&amp;scm=1003.8.tt-1097038-38025.OTHER_1422883846185_176197&amp;pos=3#gn" class="g-u">七彩云南</a> </p> 
+      <p class="article-title"> <span class="tag g-u">[<a href="http://trip.taobao.com/market/trip/act/trip2015/spring-festival.php?abbucket=&amp;acm=tt-1097038-38026.1003.8.176201&amp;ad_id=&amp;cm_id=&amp;pm_id=&amp;am_id=1301306099ad3022114e&amp;uuid=176201&amp;abtest=&amp;scm=1003.8.tt-1097038-38026.OTHER_1420914845799_176201&amp;pos=1"> <em>发红包</em> </a> ]</span> <a href="http://trip.taobao.com/market/trip/act/trip2015/spring-festival.php?abbucket=&amp;acm=tt-1097038-38026.1003.8.176201&amp;ad_id=&amp;cm_id=&amp;pm_id=&amp;am_id=1301306099ad3022114e&amp;uuid=176201&amp;abtest=&amp;scm=1003.8.tt-1097038-38026.OTHER_1420914845799_176201&amp;pos=1" class="g-u">1分钱抢100元啦</a> </p> 
+     </div> 
+    </div> 
+   </div> 
+  </div> 
+
+
+  <script type="text/javascript">
+    console.log($("*").length);
+    function initCata(scope, name){
+      $.use("cata.js", function(data){
+          var catas = data.catas;
+          $.each(catas[name], function(key, data){
+            scope[key] = data;
+          });
+          scope.apply();
+      });
+    }
+    $.app(function(scope){
+      scope.user = {};//全局界面需要预告定义,否则此变量的存储空间会变更为使用的所在控制器上
+      $.use("data.js", function(data){
+          var user = data.user;
+          //scope.scopes.nav.user = user;
+          scope.user = user;
+          scope.scopes.nav.apply();
+      });
+    }).ctrl({
+      nav: function(scope){
+        scope.apply();
+      },
+      search: function(scope){
+        $.use("data.js", function(data){
+            scope.search = data.search;
+            scope.apply();
+        });
+      },
+      teshe: function(scope){
+        $.use("data.js", function(data){
+            var teshe = data.teshe;
+            scope.themes = teshe.theme;
+            scope.teshes = teshe.teshe;
+            scope.youhuis = teshe.youhui;
+            scope.tools = teshe.tool;
+            $.each(scope.themes,function(i,item){
+              item.class='c-'+(i%3+1);
+            });
+            $.each(scope.teshes, function(i,item){
+              item.class='c-'+(i%3+1);
+            });
+            $.each(scope.youhuis, function(i,item){
+              item.class='c-'+(i%3+1);
+            });
+            $.each(scope.tools, function(i,item){
+              item.class='c-'+(i%3+1);
+            });
+            scope.apply();
+        });
+      },
+      main: function(scope){
+        $.use("data.js", function(data){
+            var main = data.main;
+            scope.promos = main.promo;
+            scope.tmalls = main.tmall;
+            scope.bianMins = main.bianMin;
+            
+            $.each(scope.promos, function(i,item){
+              item.class='c-'+(i%3+1);
+            });
+            scope.apply();
+        });
+      },
+      cata1: function(scope){
+        initCata(scope, "cata1");
+      },
+      cata2: function(scope){
+        initCata(scope, "cata2");
+      },
+      cata3: function(scope){
+        initCata(scope, "cata3");
+      },
+      cata4: function(scope){
+        initCata(scope, "cata4");
+      },
+      cata5: function(scope){
+        initCata(scope, "cata5");
+      },
+      cata6: function(scope){
+        initCata(scope, "cata6");
+      },
+      cata7: function(scope){
+        initCata(scope, "cata7");
+      },
+      cata8: function(scope){
+        initCata(scope, "cata8");
+      },
+      cata9: function(scope){
+        initCata(scope, "cata9");
+      },
+      cata10: function(scope){
+        initCata(scope, "cata10");
+      },
+      cata11: function(scope){
+        initCata(scope, "cata11");
+      },
+      cata12: function(scope){
+        initCata(scope, "cata12");
+      },
+      cata13: function(scope){
+        initCata(scope, "cata13");
+      },
+      cata14: function(scope){
+        initCata(scope, "cata14");
+      },
+      cata15: function(scope){
+        initCata(scope, "cata15");
+      },
+      cata16: function(scope){
+        initCata(scope, "cata16");
+      }
+    });
+//
+  </script>  
+ </body>
+</html>

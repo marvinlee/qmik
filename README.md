@@ -48,7 +48,6 @@ Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库�
 2.[h5存储插件](https://github.com/leochen36/qmik-store)
 
 
-
 ## 版本记录
 [增加1.3.80版本:](https://github.com/leochen36/qmik/tree/master/builds)
 1.3.80 版本, 
@@ -77,7 +76,6 @@ Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库�
     添加fn.appendTo,fn.afterTo,fn.beforeTo;
 
 
-增加1.3.20版本, 
 1.增加模块加载定义时对return的支持:如:
 ```
 $.define("demo",function(require, exports, module){
@@ -190,6 +188,7 @@ $.sun.config({
             success,function(data){},
             error:function(){}
         });
+
         series:function(tasks, callback)//串行执行任务列队,如果有输出参数,则前一个任务输出参数给下一个任务
                 //例子,tasks:任务方法数组,callback:执行完任务后,回调
                 $.series([
@@ -361,11 +360,6 @@ c.实现Home业务模块功能
                 });
             })(Qmik);
         </script>
-
-
-
-
-
 
 ## 下载源码,自定义构建(构建时,只能选择src目录下的文件合并成一个Qmik.js,不能包含plugins等其它目录)
 

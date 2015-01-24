@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <title>qmik移动版本mvc例子</title> 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+  <meta charset="utf-8" /> 
+  <meta http-equiv="x-ua-compatible" content="IE=10" /> 
+  <meta name="keywords" content="qmik" /> 
+  <meta http-equiv="Cache-Control" content="max-age=60" /> 
+  <meta name="layoutmode" content="fitscreen/standard" /> 
+  <meta name="nightmode" content="disable" /> 
+  <meta name="imagemode" content="force" /> 
+  <meta name="apple-mobile-web-app-capable" content="yes" /> 
+  <meta name="format-detection" content="telephone=no" /> 
+  <!--<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=2.0,user-scalable=no" /> -->
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=2.0,user-scalable=no" />
+  <meta content="yes" name="apple-mobile-web-app-capable" /> 
+  <meta content="telephone=no" name="format-detection" /> 
+  <link rel="stylesheet" type="text/css" href="index.css?11" /> 
+  <script type="text/javascript" src="../../../Qmik.all.js"></script>
+ </head> 
+ <body>
+  <div class="wrap" id="wrap">
+
+   <div q-ctrl="model2002122" class="main"> 
+      <div q-for="item in list" class="wap_block_style21 wblock">
+         <a class="sitem" href="${item.action}">
+            <img src="${item.image}" />${item.name}
+         </a>      
+      </div> 
+   </div> 
+
+   <div class="main">
+    <div q-ctrl="model2002119" class="wap_block_style22 wblock">
+      <a class="s22_left" href="${itemLeft.action}">
+        <p class="s22_title">{{itemLeft.name}}</p>
+        <p class="s22_desc">{{itemLeft.desc}}</p>
+        <img class="lazy" src="{{itemLeft.image}}">
+      </a>
+      <div class="s22_right">
+        <a class="s22_right_brand" href="{{itemCenter.action}}">
+          <p class="s22_title">${itemCenter.name}</p>
+          <p class="s22_desc">${itemCenter.desc}</p>
+          <img class="lazy" src="${itemCenter.image}">
+        </a>
+        <div class="s22_right_pto">
+          <p class="s22_stitle">${brand.name}</p>
+          <div q-for="item in brand.brands">
+            <a href="${item.action}">
+              <img src="${item.image}">
+            </a>
+          </div>
+        </div></div></div>
+   </div> 
+
+   <div class="main"> 
+      <div q-ctrl="model2002111" class="wap_block_style23 wblock">
+       <a href="http://www.tmall.com/wh/tpl/tmmyy-m-wh/index" style="display:block;">
+        <div class="s23_1">
+         <p>${model.title}</p>
+         <p>${model.desc}</p>
+         <div>
+          <h2>${model.h1}</h2>
+          <h2>${model.h2}</h2>
+          <span>:</span>
+          <h2>${model.m1}</h2>
+          <h2>${model.m2}</h2>
+          <span>:</span>
+          <h2>${model.s1}</h2>
+          <h2>${model.s2}</h2>
+         </div>
+        </div>
+        <span q-for="item in model.itemList">
+          <span class="stage">
+             <div class="s23_2">
+              <img src="${item.image}"/>
+             </div>
+             <div class="s23_3">
+              <p>${item.name}</p>
+              <p>${item.desc}</p>
+             </div>
+            </span>
+        </span>
+       </a>
+      </div>
+   </div> 
+
+   <div q-ctrl="model2002112" class="main"> 
+      <div q-for="item in list" class="wap_block_style24 wblock">
+       <div class="s24_c">
+        <a href="${item.action}">
+          <h2>${item.name}</h2>
+          <h6>${item.desc}</h6>
+          <img src="${item.image}"/></a>
+       </div>
+      </div> 
+   </div>
+
+   <div q-ctrl="model2002115" class="main"> 
+        <div q-for="item in list" class="wap_block_style27 wblock">
+          <a class="s27_c" href="${item.action}">
+            <img src="${item.image}">
+          </a>
+        </div>    
+   </div> 
+
+   <div class="main"> 
+      <div q-ctrl="model2002116" class="wap_block_style28 wblock">
+         <h2>${model.title}</h2>
+         <div q-for="item in list">
+            <a class="s28_c" href="${item.action}">
+              <h2>${item.name}</h2>
+              <h6>${item.desc}</h6>
+              <img src="${item.image}" />
+            </a>
+         </div>
+      </div> 
+   </div> 
+
+   <div q-ctrl="model2002110" class="main"> 
+      <div class="wap_block_style29 wblock">
+        <div class="s29_h">
+          <h2>${model.title}</h2>
+          <!--<h4 flag="change">换一组</h4>-->
+        </div>
+        <div q-for="item in list">
+            <a class="s29_c section2" href="${item.action}">
+              <img class="pto" src="${item.image}">
+            </a>
+        </div>
+      </div>
+   </div> 
+  </div> 
+  <script type="text/javascript" src="index.js?12">
+  </script> 
+ </body>
+</html>

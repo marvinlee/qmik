@@ -1,0 +1,131 @@
+ <!DOCTYPE html>
+ <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta charset="utf8" /> 
+  <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport" /> 
+  <meta name="-webkit-tap-highlight" content="no" /> 
+  <meta content="IE=10" http-equiv="x-ua-compatible" /> 
+  <title>mvc例子</title> 
+  <script type="text/javascript" src="../../Qmik.all.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <div>
+    <div class="box border1 bh" q-ctrl="shopping">
+        <p class="ftitle"> demo
+        </p>
+        <ul>
+          <li>
+            <span class="lt">名: </span><input name="shop.shopName" type="text" value="qmik"/>
+            <span class="lt">动态绑定:</span>[<span class="bind">${shop.shopName}</span>]
+          </li>
+          <li>
+            <span class="lt">价: </span><input name="price" type="text" value="999"/>
+            <span class="lt">动态绑定:</span>[<span class="bind">${price}</span>]
+          </li>
+        </ul>
+        <div  class="box border1 bh" border1>
+          <div >
+            <p class="ftitle"> h1 </p>
+            <p>shopName:  ${shop.shopName}</p>
+            <ul>
+              <li>
+                <span class="lt">数量: </span><input name="number" type="text" value="999"/>
+                <span class="lt">动态绑定:</span>[<span class="bind">${number}</span>]
+              </li>
+            </ul>
+          </div>
+          <br/>
+          <div class="box border1 bh">
+            <p class="ftitle"> h2 </p>
+            <p>shopName:  ${shop.shopName}</p>
+            <br/>
+            <div class="box border1 bh">
+              <p class="ftitle"> h3  </p>
+              <p>shopName:  ${shop.shopName}</p>
+              <p>数量:  ${number}</p>
+
+              <div class="box border1 bh">
+                <p class="ftitle"> h4 </p>
+                <p>shopName:  ${shop.shopName}</p>
+                <br/>
+                <div class="box border1 bh">
+                  <p class="ftitle"> h5  </p>
+                  <p>shopName:  ${shop.shopName}</p>
+                  <p>数量:  ${number}</p>
+                  <div class="box border1 bh">
+                    <p class="ftitle"> h6 </p>
+                    <p>shopName:  ${shop.shopName}</p>
+                    <br/>
+                    <div class="box border1 bh">
+                      <p class="ftitle"> h7  </p>
+                      <p>shopName:  ${shop.shopName}</p>
+                      <p>数量:  ${number}</p>
+                      <div class="box border1 bh">
+                        <p class="ftitle"> h8 </p>
+                        <p>shopName:  ${shop.shopName}</p>
+                        <br/>
+                        <div class="box border1 bh">
+                          <p class="ftitle"> h9  </p>
+                          <p>shopName:  ${shop.shopName}</p>
+                          <p>数量:  ${number}</p>
+                          <div class="box border1 bh">
+                            <p class="ftitle"> h10 </p>
+                            <p>shopName:  ${shop.shopName}</p>
+                            <br/>
+                            <div class="box border1 bh">
+                              <p class="ftitle"> h11  </p>
+                              <p>shopName:  ${shop.shopName}</p>
+                              <p>数量:  ${number}</p>
+                              <div class="box border1 bh">
+                                <p class="ftitle"> h12 </p>
+                                <p>shopName:  ${shop.shopName}</p>
+                                <br/>
+                                <div class="box border1 bh">
+                                  <p class="ftitle"> h13  </p>
+                                  <p>shopName:  ${shop.shopName}</p>
+                                  <p>数量:  ${number}</p>
+                                  <div class="box border1 bh">
+                                    <p class="ftitle"> h14 </p>
+                                    <p>shopName:  ${shop.shopName}</p>
+                                    <br/>
+                                    <div class="box border1 bh">
+                                      <p class="ftitle"> h15 </p>
+                                      <p>shopName:  ${shop.shopName}</p>
+                                      <p>数量:  ${number}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+  <script type="text/javascript">
+    //$.app() 编译并生成应用,$.app().ctrl()定义控制器
+    $.app().ctrl({
+      shopping: function(scope){//购物
+        console.log("shopping:", scope);
+      },
+      level1: function(scope){
+        console.log('level1:', scope)
+      },
+      level2: function(scope){
+        console.log('level2:', scope)
+      },
+      level3: function(scope){
+        console.log('level3:', scope)
+      }
+    });
+    //
+  </script>
+ </body>

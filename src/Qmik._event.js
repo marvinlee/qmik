@@ -15,11 +15,13 @@
 	var isNull = Q.isNull,
 		isFun = Q.isFun,
 		each = Q.each,
-		isPlainObject = Q.isPlainObject;
+		isPlainObject = Q.isPlainObject,
+		_delete = _in._delete;
 	/** 设置节点的加载成功方法 */
 	function setLoad(node, fun) {
 		node.onreadystatechange = node.onload = node.onDOMContentLoaded = fun
 	}
+	
 	Q.ready = fn.ready = function(fun, context) {
 		var node = context || this[0] || doc,
 			state;
@@ -31,7 +33,8 @@
 				each(node.$$handls, function(i, val) {
 					val(Q);
 				});
-				delete node.$$handls
+				_delete(node, "$$handls");
+				//delete node.$$handls
 			}
 		}
 		if (readyRE.test(node.readyState)) {
@@ -64,7 +67,8 @@
 					fun: dom['on' + name],
 					param: []
 				});
-				delete dom['on' + name];
+				_delete(dom, 'on'+name)
+				//delete dom['on' + name];
 			}
 			SE() ? dom.addEventListener(name, handle, !1) : dom["on" + name] = handle
 		}
@@ -82,8 +86,10 @@
 			for (; i >= 0; i--)
 				h[i].fun == fun && h.splice(i, 1)
 		} else {
-			SE() ? dom.removeEventListener(name, handle, !1) : delete dom["on" + name];
-			delete s[name]
+			//SE() ? dom.removeEventListener(name, handle, !1) : delete dom["on" + name];
+			//delete s[name]
+			SE() ? dom.removeEventListener(name, handle, !1) : _delete(dom, "on" + name);
+			_delete(s, name)
 		}
 	}
 
@@ -163,7 +169,7 @@
 			});
 			return this
 		},
-		un: function(name, callback) {
+		off: function(name, callback) {
 			each(this, function(k, v) {
 				Erm(v, name, callback)
 			});
@@ -173,13 +179,13 @@
 			var me = this, ents={};
 			mapEvent(name, callback, function(key, fun){
 				ents[key] = function(e){
-					me.un(key, ents[key]);
+					me.off(key, ents[key]);
 					fun(e);
 				}
 			});
 			return me.on(ents);
 		},
-		emit: function(name) {
+		emit: function(name) {//手动触发事件
 			each(this, function(k, v) {
 				Etrig(v, name)
 			});
@@ -187,12 +193,13 @@
 		},
 		live: function(name, callback) {
 			var me = this;
-			mapEvent(name, callback, function(key, callback){
-				var fun = me.__lives[getLiveName(key, callback)] = function(e){
+			mapEvent(name, callback, function(key, callback) {
+				var fun = me.__lives[getLiveName(key, callback)] = function(e) {
 					var target = e.target,
-						qtar = Q(target);
-					each(me, function(i, dom){
-						contains(dom, target) && callback.call(me, e)
+						qtar = Q(target),
+						sel = Q.isString(me.selector) ? Q(me.selector, me.context) : me;
+					each(sel, function(i, dom) {
+						contains(dom, target) && callback.call(target, e)
 					});
 				}
 				Q("body").on(key, fun)
@@ -208,8 +215,7 @@
 	});
 	fn.extend({
 		bind: fn.on,
-		unbind: fn.un,
-		off: fn.un,
+		unbind: fn.off,
 		trigger: fn.emit
 	});
 	/**

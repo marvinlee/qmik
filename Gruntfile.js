@@ -12,7 +12,7 @@ module.exports = function(grunt) {
 		qunit : {
 			options : {
 				timeout : 5000,
-				'--cookies-file' : '**'
+				'--cookies-file' : ''
 			},
 			all : [
 				'test/**/test*.html'
@@ -27,7 +27,7 @@ module.exports = function(grunt) {
 	        }
 	    },
 		concat : {
-			dist : {
+			core : {//核心版本
 				src : [
 					'src/Qmik.js', 
 					'src/Qmik._query.js', 
@@ -38,6 +38,19 @@ module.exports = function(grunt) {
 					'src/Qmik._view.js'
 				],
 				dest : "assets/Qmik-debug.js"
+			},
+			all: {//全部合并版本
+				src : [
+					'src/Qmik.js', 
+					'src/Qmik._query.js', 
+					'src/Qmik._event.js', 
+					'src/Qmik._ajax.js', 
+					'src/Qmik.task.js',
+					'src/Qmik.sun.js', 
+					'src/Qmik._view.js', 
+					'src/modules/mvc.js'
+				],
+				dest : "assets/Qmik-debug.all.js"
 			}
 		},
 		uglify : {
@@ -47,7 +60,7 @@ module.exports = function(grunt) {
 			},
 			build : {
 				files : {
-					'assets/Qmik.js' : [
+					'assets/Qmik.js' : [//core版本
 						'src/Qmik.js',
 						'src/Qmik._query.js',
 						'src/Qmik._event.js',
@@ -55,6 +68,16 @@ module.exports = function(grunt) {
 						'src/Qmik.sun.js',
 						'src/Qmik._ajax.js',
 						'src/Qmik._view.js'
+					],
+					'assets/Qmik.all.js' : [//全部合并版本
+						'src/Qmik.js',
+						'src/Qmik._query.js',
+						'src/Qmik._event.js',
+						'src/Qmik.task.js',
+						'src/Qmik.sun.js',
+						'src/Qmik._ajax.js',
+						'src/Qmik._view.js', 
+						'src/modules/mvc.js'
 					],
 					'assets/Qmik._query.js' : [
 						'src/Qmik._query.js'
@@ -76,6 +99,9 @@ module.exports = function(grunt) {
 					],
 					'assets/Qmik.task.js' : [
 						'src/Qmik.task.js'
+					],
+					'assets/modules/mvc.js' : [
+						'src/modules/mvc.js'
 					]
 				}
 			}

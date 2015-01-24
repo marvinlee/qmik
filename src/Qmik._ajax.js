@@ -5,6 +5,7 @@
  */
 (function(Q) { /* ajax */
 	var win = Q.global, toObject = Q.parseJSON, isFun = Q.isFun, //
+	_delete = Q._in._delete,
 	regUrl = /[\w\d_$-]+\s*=\s*\?/, jsonp = 1, prefex = "qjsonp", //
 	ac = {
 		type : 'GET',
@@ -32,13 +33,13 @@
 		function err() {
 			if (isExe == 1) {
 				isExe = 0;
-				delete win[callbackName];
+				_delete(win, callbackName);
 				Q("script[jsonp='" + callbackName + "']").remove();
 				error && error()
 			}
 		}
 		win[callbackName] = function(data) {
-			delete win[callbackName];
+			_delete(win, callbackName);
 			Q("script[jsonp='" + callbackName + "']").remove();
 			thread && thread.stop();
 			isExe == 1 && success && success(data)

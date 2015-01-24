@@ -7,6 +7,7 @@
 (function(Q) {
 	var isFun = Q.isFun,
 		execCatch = Q.execCatch,
+		win = Q.global,
 		NULL = null;
 	var config = {
 		alias: {}, //别名系统
@@ -51,13 +52,12 @@
 		var params = code.replace(/^\s*function\s*\w*\s*/, "").match(/^\([\w ,]*\)/)[0].replace("\(", "").replace("\)", "");
 		var match = [],
 			idx = params.indexOf(",");
-		if (idx >= 0) {
-			var require = params.substring(0, idx),
-				pattern = new RegExp(require + "\s*[(]\s*[\"']([^\"'\)]+)[\"']\s*[)]", "g");
-			match = Q.map(code.match(pattern), function(i, v) {
-				return v.replace(new RegExp("^" + require + "\s*[(]\s*[\"']"), "").replace(/\s*[\"']\s*[)]$/, "")
-			})
-		}
+		var require = params.substring(0, idx>0 ? idx : params.length),
+			pattern = new RegExp(require + "\s*[(]\s*[\"']([^\"'\)]+)[\"']\s*[)]", "g");
+		match = Q.map(code.match(pattern), function(i, v) {
+			return v.replace(new RegExp("^" + require + "\s*[(]\s*[\"']"), "").replace(/\s*[\"']\s*[)]$/, "")
+		});
+		
 		return match
 	}
 
@@ -270,5 +270,6 @@
 	});
 	Q.sun = sun;
 	Q.define = Q.sun.define;
+	win.define = win.define || Q.define;//如果外面没有引入其它cmd框架,设置全局变量define
 	Q.use = Q.sun.use;
 })(Qmik);

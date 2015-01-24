@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+  <meta charset="utf-8" /> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+  <meta name="description" content="Qmik 是一个移动优先的前端基础框架。" /> 
+  <meta name="keywords" content="HTML, HTML5, CSS, CSS3, JS, JavaScript, framework, Qmik,  web development, 前端框架, 开源, Web Components" /> 
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" /> 
+  <title>Qmik</title> 
+  <meta name="renderer" content="webkit" /> 
+  <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+  <meta name="apple-mobile-web-app-title" content="Qmik" /> 
+  <meta name="apple-mobile-web-app-capable" content="yes" /> 
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" /> 
+  <link rel="alternate icon" type="image/png" href="http://a.static.amazeui.org/assets/2.x/i/favicon.png" /> 
+  <link rel="apple-touch-icon-precomposed" href="http://a.static.amazeui.org/assets/2.x/i/app-icon72x72@2x.png" /> 
+  <link rel="stylesheet" href="../css/amazeui.css?v=i4unzuke" /> 
+  <link rel="stylesheet" href="../css/amaze.css?v=i4unzuke" /> 
+  <link rel="stylesheet" type="text/css" href="../css/style.css" /> 
+  <script type="text/javascript" src="../../../../assets/Qmik-debug.all.js"></script>
+  <script type="text/javascript" src="../js/config.js"></script> 
+ </head> 
+ <body> 
+
+  <header q-ctrl="header" id="amz-header"> 
+   <div class="amz-container am-cf"> 
+    <h1></h1> 
+    <nav> 
+     <ul class="amz-header-nav am-collapse"> 
+      <li><a href="index.html">开始使用</a></li> 
+      <li><a href="http://amazeui.org/javascript">JS 插件</a></li> 
+      <li><a href="http://amazeui.org/donate">捐助</a></li> 
+     </ul> 
+    </nav> 
+   </div> 
+  </header> 
+
+  <section class="" id="amz-main" data-tag="css"> 
+    <div class="am-g am-g-fixed"> 
+
+        <div q-ctrl="leftNav" class="col-md-3 am-u-md-3 leftNav"> 
+           <div class="am-sticky-placeholder" style="height: 996px; margin: 0px;"> 
+            <div id="amz-offcanvas" class="am-offcanvas doc-offcanvas" style="margin: 0px;"> 
+             <section class="amz-sidebar am-offcanvas-bar" style=""> 
+              <ul q-for="item in model.list" class="am-nav"> 
+               <li class="${item.class}"> <a href="${item.url}">${item.name} <span class="am-nav-en">${item.desc}</span> </a> </li> 
+              </ul> 
+             </section> 
+            </div> 
+           </div> 
+        </div> 
+
+        <div q-ctrl="desc" class="col-md-9 am-u-md-9 doc-content"> 
+            <div class="v-desc">
+               <h2 id="css-概述">Qmik 概述</h2> 
+               <h5>支持情况:webkit内核浏览器(chrome,safari,uc,qq等),IE>=9(推荐>=IE10),火狐</h5> 
+               <p>Qmik 大致分为六大部分。</p> 
+               <div class="am-g c-desc"> 
+                  <div class="am-u-md-6"> 
+                   <div class="am-panel am-panel-default"> 
+                    <div class="am-panel-hd">
+                        核心模块
+                    </div> 
+                    <div class="am-panel-bd">
+                      提供核心的基础方法 
+                    </div> 
+                   </div> 
+                  </div> 
+                
+                  <div class="am-u-md-6"> 
+                   <div class="am-panel am-panel-default"> 
+                    <div class="am-panel-hd">
+                      <a href="#query">查询模块</a>
+                    </div> 
+                    <div class="am-panel-bd">
+                      提供dom节点检索功能,与jquery的语法一致 
+                    </div> 
+                   </div> 
+                  </div> 
+                
+                  <div class="am-u-md-6"> 
+                   <div class="am-panel am-panel-default"> 
+                    <div class="am-panel-hd">
+                      <a href="#sun">sun模块开发</a>
+                    </div> 
+                    <div class="am-panel-bd">
+                      提供模块开发功能,基本遵从cmd,amd的使用规范,与seajs使用一致,相当于简化版本,利用此功能,可以做到很好的代码管理 
+                    </div> 
+                   </div> 
+                  </div> 
+                
+                  <div class="am-u-md-6"> 
+                   <div class="am-panel am-panel-default"> 
+                    <div class="am-panel-hd">
+                      <a href="#mvc">mvc开发模式</a>
+                    </div> 
+                    <div class="am-panel-bd">
+                      使前端的各个层之间分开,让业务代码90%不用去关心页面的dom布局,提高50%的开发效率,降低50%的维护成本,完全遵从于面面数据接口编程 
+                    </div> 
+                   </div> 
+                  </div> 
+                
+                  <div class="am-u-md-6"> 
+                   <div class="am-panel am-panel-default"> 
+                    <div class="am-panel-hd">
+                      <a href="#ajax">ajax模块</a>
+                    </div> 
+                    <div class="am-panel-bd">
+                      ajax数据通信模块 
+                    </div> 
+                   </div> 
+                  </div> 
+                
+                  <div class="am-u-md-6"> 
+                   <div class="am-panel am-panel-default"> 
+                    <div class="am-panel-hd">
+                      <a href="#event">event模块</a>
+                    </div> 
+                    <div class="am-panel-bd">
+                      event事件模块 
+                    </div> 
+                   </div> 
+                  </div> 
+               </div>
+
+               <br/>
+               <h3>使用例子</h3>
+               <div class="v-use-code"></div>
+             </div>
+             
+            <div class="v-helper dis-none"></div>
+        </div> 
+    </div> 
+  </section> 
+
+  <footer class="amz-footer"> 
+     <div class="am-g am-g-fixed"> 
+      <div class="col-md-4 col-md-push-8 am-u-md-4 am-u-md-push-8"> 
+       <ul class="amz-social"> 
+       </ul> 
+      </div> 
+      <div class="col-md-8 col-md-pull-4 am-u-md-8 am-u-md-pull-4"> 
+       <ul class="amz-links"> 
+        <li>
+          <a href="https://github.com/leochen36/qmik">githup</a> 
+          | <a href="http://amazeui.org/about/contact" class="am-icon-heart">捐助</a> 
+       </ul> 
+       <p class="amz-cp">&copy; 2015 Inc. Licensed under 
+        <a href="http://opensource.org/licenses/MIT" target="_blank">BSD license</a>. Developed with 
+        <a href="http://www.jetbrains.com/webstorm/" target="_blank">WebStorm</a>.</p> 
+      </div> 
+     </div> 
+  </footer> 
+
+  <script type="text/javascript" src="../js/index.js?1"></script>  
+ </body>
+</html>
