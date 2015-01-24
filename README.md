@@ -292,12 +292,12 @@ mvc api:
         Qmik.app().ctrl(ctrls); //定义控制器
 ##mvc 例子:       
 
-<!-- 声明控制器 --> <div q-ctrl="demoCtrl">
-倒计时: <input name="time" type="text"/> ${time} 或 {{time}}
-用户名: <input name="name" type="text"/> ${name}
-</div>
+<!-- 声明控制器 --> &lt;div q-ctrl="demoCtrl"&gt;
+倒计时: &lt;input name="time" type="text"/&gt; ${time} 或 {{time}}
+用户名: &lt;input name="name" type="text"/&gt; ${name}
+&lt;/div&gt;
+&lt;script&gt;
 
-<script>
 $.app().ctrl({
   demoCtrl: function(scope){//定义控制器  scope:会话,作用空间在q-ctrl里面,不能超出
    scope.time = 999;
@@ -307,7 +307,8 @@ $.app().ctrl({
    }, 1000);
   }
 });
-</script>
+
+&lt;/script&gt;
 
 ## 按需加载例子:
 
