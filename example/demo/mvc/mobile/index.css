@@ -35,8 +35,8 @@ body,.wrap{background-color:#eeeeee;}
 #main_2002119{height:125px;}
 
 .wap_block_style21{min-height:80px;overflow: hidden;padding:7px 0;position:relative;text-align:justify;margin: 0 auto;font-size: 0;}
-.wap_block_style21 .sitem{width:25%;display:inline-block;height: 37px;line-height: 37px;position: relative;text-align:left;color:#535353;font-size:12px;white-space:nowrap;}
-@media screen and (min-width: 360px) {.wap_block_style21 .sitem {font-size:13px;}}
+.wap_block_style21 .sitem{width:74.5px;padding:0;margin:0;display:inline-block;height: 37px;line-height: 37px;position: relative;text-align:left;color:#535353;font-size:12px;white-space:nowrap;}
+@media screen and (min-width: 360px) {.wap_block_style21 .sitem {font-size:12px;}}
 .wap_block_style21 .sitem img{ width:26px;height:26px;border-radius: 8px;position: relative;top: 7px;margin-right: 3%;}
 
 .wap_block_style22{padding-top: 0px;padding-bottom: 0px;position:relative;-webkit-tap-highlight-color:rgba(255,0,0,0);tap-highlight-color:rgba(255,0,0,0);text-align:justify;height:125px;}

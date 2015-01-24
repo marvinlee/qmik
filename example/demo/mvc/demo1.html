@@ -6,7 +6,7 @@
   <meta name="-webkit-tap-highlight" content="no" /> 
   <meta content="IE=10" http-equiv="x-ua-compatible" /> 
   <title>mvc例子</title> 
-  <script type="text/javascript" src="../../../assets/qmik-debug.all.js"></script>
+  <script type="text/javascript" src="../../Qmik.all.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
@@ -146,8 +146,8 @@
         console.log(scope);
       },search: function(scope){//搜索
         scope.vq = "reqult="+scope.q;
-        scope.watch("q", function(val){
-            scope.vq = "reqult="+val;
+        scope.watch("q", function(map){
+            scope.vq = "reqult="+map.value;
             scope.apply();
         });
       },
@@ -161,7 +161,7 @@
           $.cycle(function(){
             var t = startTime - $.now();
             scope.time = parseInt(t/1000);
-            scope.apply();
+            scope.apply("time");
           }, 900, ttl);
 
           scope.once("viewport", function(e){

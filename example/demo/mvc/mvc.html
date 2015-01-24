@@ -7,7 +7,7 @@
   <meta content="IE=9" http-equiv="x-ua-compatible" /> 
   <title>测试sun模块开发</title> 
   <link rel="stylesheet" type="text/css" href="style.css">
-  <script type="text/javascript" src="../../../assets/qmik-debug.all.js"></script>
+  <script type="text/javascript" src="../../Qmik.all.js"></script>
 
   <style type="text/css">
   	#result{
@@ -57,10 +57,12 @@
         <option value="" >none</option>
         <option value="3" >3</option>
       </select>
+      <div class="ctest"></div>
       <textarea name="textarea"></textarea>
       <br/>
 
       <!-- q-for checkboxs -->
+      <h4>倒计时: ${checkboxTime}</h4>
       <div q-for="item in checkboxs" class="box">
         &nbsp; cbk${item.value}
         <input type="checkbox" name="cbk" value="cbk${item.value}">&nbsp;
@@ -71,11 +73,12 @@
       ra2 <input type="radio" name="ra" value="ra2">
       ra3 <input type="radio" name="ra" value="ra3">
       <br/>
-  		showName:${showName} name:{{name}} n1:${n1} <br/>
-      select:${select} mselect:<${mselect}>       <br/>
-      textarea:${textarea} cbk:${cbk}  ra:${ra}   <br/>
-      <p> degree: {{degree}} gg:{{gg}} </p>
+  		<h4>showName:${showName} name:{{name}} n1:${n1} </h4>
+      <h4>select:${select} mselect:<${mselect}>       </h4>
+      <h4>textarea:${textarea} cbk:${cbk}  ra:${ra}   </h4>
+      <h4> degree: {{degree}} gg:{{gg}} </h4>
 
+      
       <ul q-for=" item  in  list " style="background:green;">
           <li name="${name}">  ${item.name} -- age: ${ item.age } </li>
       </ul>
@@ -118,17 +121,21 @@
               age: 16
             }];
             window.scope = scope;
-            console.log(scope);
             scope.apply();
 
+            scope.checkboxTime = 3;
+            $.cycle(function(){
+                scope.checkboxTime--;
+                scope.apply(["checkboxTime"]);//更新界面
+            }, 1000, 4000);
+
+            var idx =0;
             $.delay(function(){
               scope.checkboxs.push({
                 value:"mon"
               });
               scope.apply("checkboxs");
-              $.delay(function(){
-                $.log(scope);
-              }, 1000);
+              scope.$(".ctest").append('<input name="name'+(idx++)+'" type="text" value="999" />');
             }, 3000);
         },
         "subdent1": function(scope){
