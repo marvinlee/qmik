@@ -1,4 +1,4 @@
-## 关于Qmik [下载压缩1.3.80](https://raw.githubusercontent.com/leochen36/qmik/master/builds/Qmik.1.3.80.js) 
+## 关于Qmik [下载压缩1.3.80](https://raw.githubusercontent.com/leochen36/qmik/master/builds/Qmik.all.1.4.00.js) 
 
 Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库大小22kb,gzip=8kb,
 
