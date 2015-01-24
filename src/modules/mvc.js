@@ -239,7 +239,7 @@
 	});
 	function addScopeInput(dom, scope){
 		var name = dom.name, isSet=true;
-		if(name){
+		if(isInput(dom) && name){
 			if(Scope.prototype[name] || /^__/.test(name) || new RegExp(name).test(keywords)){
 				return Q.error("set scope["+scope.__name+"] name["+name+"] is illegal");
 			}
