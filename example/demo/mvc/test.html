@@ -11,8 +11,9 @@
 </head>
 <body>
   <div>
-    <div q-ctrl="user">xx
-        <input name="time" type="text"/>
+    <div q-ctrl="user">
+        time: <input name="time" type="text"/>
+
         user.info.name:<input name="user.info.name" type="text" value="leo"/>
         user.info.addr:<input name="user.info.addr" type="text" value="leo"/><br/>
         user.age<input name="user.age" type="text" value="22"/>
@@ -25,38 +26,9 @@
           输出: ${user.name} - ${user.age}
         </p>
     </div>
-    <script type="text/javascript">
-        (function($){
-          //$.app() 编译页面页面,只会编译一次,后面再次调用,不会生成新值 
-          //$.app().ctrl();//定义控制器
-          $.app().ctrl({
-            user: function(scope){//控制器user,对应 q-ctrl="user"
-                scope.time = 999;
-                scope.watch({
-                  user: function(map){
-                    console.log(map);
-                  },
-                  str: function(map){
-                    console.log(map);
-                  }
-                });
 
-                
-                $.cycle(function(){
-                    scope.time--;
-                    scope.apply("time");//更新time所在的节点值
-                }, 100000);
-                $.delay(function(){
-                    scope.user = {
-                      name: 'leochen',
-                      age: 99
-                    };
-                    scope.apply(["user"]);
-                }, 3000);
-            }
-          });
-        })(Qmik);
-    </script>
+
+
     <div class="box border1 bh" q-ctrl="list">
         <ul q-for="item in list1">
           <li> ${item.name} - ${item.age} </li>
@@ -66,11 +38,31 @@
         </ul>
     </div>
   </div>
+
+
+
   <script type="text/javascript">
+    //$.app() 编译页面页面,只会编译一次,后面再次调用,不会生成新值 
     //$.app() 编译并生成应用,$.app().ctrl()定义控制器
-    $.app().config({
-      section: 8
-    }).ctrl({
+    $.app().ctrl({
+      //$.app().ctrl();//定义控制器
+      user: function(scope){//控制器user,对应 q-ctrl="user"
+          scope.time = 999;
+          console.log("33")
+          $.cycle(function(){
+            console.log(scope.time)
+              scope.time = scope.time - 1;
+              scope.apply(["time"]);//更新time所在的节点值
+          }, 1000);
+
+          $.delay(function(){
+              scope.user = {
+                name: 'leochen',
+                age: 99
+              };
+              scope.apply(["user"]);
+          }, 3000);
+      },
       list: function(scope){//购物
           var allList = getData();
           var start = 0;
