@@ -40,9 +40,6 @@
 				"name": "isError",
 				"url": "#core/isError"
 			}, {
-				"name": "isEvent",
-				"url": "#core/isEvent"
-			}, {
 				"name": "isDate",
 				"url": "#core/isDate"
 			}, {
@@ -135,127 +132,127 @@
 			class: "am-nav-header",
 			list: [{
 				"name": "find",
-				"url": "#core/find"
+				"url": "#query/find"
 			}, {
 				"name": "each",
-				"url": "#core/each"
+				"url": "#query/each"
 			}, {
 				"name": "append",
-				"url": "#core/append"
+				"url": "#query/append"
 			}, {
 				"name": "appendTo",
-				"url": "#core/appendTo"
+				"url": "#query/appendTo"
 			}, {
 				"name": "remove",
-				"url": "#core/remove"
+				"url": "#query/remove"
 			}, {
 				"name": "before",
-				"url": "#core/before"
+				"url": "#query/before"
 			}, {
 				"name": "after",
-				"url": "#core/after"
+				"url": "#query/after"
 			}, {
 				"name": "beforeTo",
-				"url": "#core/beforeTo"
+				"url": "#query/beforeTo"
 			}, {
 				"name": "afterTo",
-				"url": "#core/afterTo"
+				"url": "#query/afterTo"
 			}, {
 				"name": "html",
-				"url": "#core/html"
+				"url": "#query/html"
 			}, {
 				"name": "empty",
-				"url": "#core/empty"
+				"url": "#query/empty"
 			}, {
 				"name": "text",
-				"url": "#core/text"
+				"url": "#query/text"
 			}, {
 				"name": "addClass",
-				"url": "#core/addClass"
+				"url": "#query/addClass"
 			}, {
 				"name": "removeClass",
-				"url": "#core/rmClass"
+				"url": "#query/rmClass"
 			}, {
 				"name": "show",
-				"url": "#core/show"
+				"url": "#query/show"
 			}, {
 				"name": "hide",
-				"url": "#core/hide"
+				"url": "#query/hide"
 			}, {
 				"name": "animate",
-				"url": "#core/animate"
+				"url": "#query/animate"
 			}, {
 				"name": "toggle",
-				"url": "#core/toggle"
+				"url": "#query/toggle"
 			}, {
 				"name": "map",
-				"url": "#core/map"
+				"url": "#query/map"
 			}, {
 				"name": "css",
-				"url": "#core/css"
+				"url": "#query/css"
 			}, {
 				"name": "attr",
-				"url": "#core/attr"
+				"url": "#query/attr"
 			}, {
 				"name": "removeAttr",
-				"url": "#core/rmAttr"
+				"url": "#query/rmAttr"
 			}, {
 				"name": "data",
-				"url": "#core/data"
+				"url": "#query/data"
 			}, {
 				"name": "removeData",
-				"url": "#core/rmData"
+				"url": "#query/rmData"
 			}, {
 				"name": "val",
-				"url": "#core/val"
+				"url": "#query/val"
 			}, {
 				"name": "next",
-				"url": "#core/next"
+				"url": "#query/next"
 			}, {
 				"name": "prev",
-				"url": "#core/prev"
+				"url": "#query/prev"
 			}, {
 				"name": "clone",
-				"url": "#core/clone"
+				"url": "#query/clone"
 			}, {
 				"name": "hasClass",
-				"url": "#core/hasClass"
+				"url": "#query/hasClass"
 			}, {
 				"name": "closest",
-				"url": "#core/closest"
+				"url": "#query/closest"
 			}, {
 				"name": "parents",
-				"url": "#core/parents"
+				"url": "#query/parents"
 			}, {
 				"name": "parents",
-				"url": "#core/parents"
+				"url": "#query/parents"
 			}, {
 				"name": "children",
-				"url": "#core/children"
+				"url": "#query/children"
 			}, {
 				"name": "last",
-				"url": "#core/last"
+				"url": "#query/last"
 			}, {
 				"name": "eq",
-				"url": "#core/eq"
+				"url": "#query/eq"
 			}, {
 				"name": "first",
-				"url": "#core/first"
+				"url": "#query/first"
 			}, {
 				"name": "filter",
-				"url": "#core/filter"
+				"url": "#query/filter"
 			}, {
 				"name": "even",
-				"url": "#core/even"
+				"url": "#query/even"
 			}, {
 				"name": "odd",
-				"url": "#core/odd"
+				"url": "#query/odd"
 			}, {
 				"name": "gt",
-				"url": "#core/gt"
+				"url": "#query/gt"
 			}, {
 				"name": "lt",
-				"url": "#core/lti"
+				"url": "#query/lti"
 			}]
 		}, {
 			name: "sun",

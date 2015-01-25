@@ -1,5 +1,13 @@
 (function() {
-
+	$(function(){
+		var height = window.innerHeight - $("#amz-header").height() - $('#amz-footer').height();
+		$(".m-iframe").css({
+			height: height+"px"
+		});
+		$(".m-iframe").parent().css({
+			height: height+"px"
+		});
+	});
 	$.app().ctrl({
 		header: function(scope){
 
