@@ -1,7 +1,7 @@
 
-<p>Qmik.inherit()函数用于类继承。</p> 
+<p>Qmik.merge()函数用于合并数组或对象。</p> 
 <p>
-	Qmik.inherit(subClass, superClass);
+	Qmik.merge(object1, object2[,...]);
 </p>
 <table class="am-table am-table-bd am-table-striped"> 
   <thead> 
@@ -12,20 +12,19 @@
   </thead> 
   <tbody> 
    <tr> 
-    <td>subClass</td> 
-    <td>子类</td>
+    <td>object1</td> 
+    <td>对象1</td>
    </tr> 
    <tr> 
-    <td>superClass</td> 
-    <td>父类</td> 
+    <td>object2</td> 
+    <td>对象2</td> 
    </tr>
   </tbody> 
 </table> 
 <div class="doc-code demo-highlight"> 
   <pre class=""><code class="javascript">
-  	var array = Qmik.grep( [1,2,3], function(i, val){
-  		return val % 2 ==0;
-  	});
+  	var object = $.merge([1,6,3], [4,9], [2, 0]);//[1,6,3,4,9,2,0]
+    var object = $.merge({name:'leo'},{age:22});//{name: "leo", age: 22}
   </code></pre> 
 </div> 
 

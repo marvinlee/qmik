@@ -48,10 +48,8 @@
       //$.app().ctrl();//定义控制器
       user: function(scope){//控制器user,对应 q-ctrl="user"
           scope.time = 999;
-          console.log("33")
           $.cycle(function(){
-            console.log(scope.time)
-              scope.time = scope.time - 1;
+              scope.time--;
               scope.apply(["time"]);//更新time所在的节点值
           }, 1000);
 

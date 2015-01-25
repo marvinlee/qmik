@@ -1,9 +1,8 @@
 
+<p> Qmik.fn.text()函数用于设置或返回当前Query对象所匹配的DOM元素内的text内容</p> 
+
 <p>
-  Qmik.trim()函数用于去除字符串两端的空白字符。
-</p> 
-<p>
-	Qmik.trim(str);
+	Qmik.fn.text([text]) 
 </p>
 <table class="am-table am-table-bd am-table-striped"> 
   <thead> 
@@ -14,14 +13,15 @@
   </thead> 
   <tbody> 
    <tr> 
-    <td>str</td> 
-    <td>字符串</td>
-   </tr> 
+	    <td>text</td> 
+	    <td>选填,字符串, 如果有值,设置innerTEXT,否则返回</td>
+   </tr>
   </tbody> 
 </table> 
 <div class="doc-code demo-highlight"> 
   <pre class=""><code class="javascript">
-  	$.trim("asfasdf ");
+  	$("div").text();
+  	$("div").text('abc');
   </code></pre> 
 </div> 
 

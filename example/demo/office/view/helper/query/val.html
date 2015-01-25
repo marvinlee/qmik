@@ -1,9 +1,8 @@
 
+<p> Qmik.fn.val()函数用于设置或返回当前Query对象所匹配的DOM元素内的属性value内容</p> 
+
 <p>
-  Qmik.trim()函数用于去除字符串两端的空白字符。
-</p> 
-<p>
-	Qmik.trim(str);
+	Qmik.fn.val([val]) 
 </p>
 <table class="am-table am-table-bd am-table-striped"> 
   <thead> 
@@ -14,14 +13,15 @@
   </thead> 
   <tbody> 
    <tr> 
-    <td>str</td> 
-    <td>字符串</td>
-   </tr> 
+	    <td>val</td> 
+	    <td>选填,字符串, 如果有值,设置属性value,否则返回</td>
+   </tr>
   </tbody> 
 </table> 
 <div class="doc-code demo-highlight"> 
   <pre class=""><code class="javascript">
-  	$.trim("asfasdf ");
+  	$("div").val();
+  	$("div").val('abc');
   </code></pre> 
 </div> 
 

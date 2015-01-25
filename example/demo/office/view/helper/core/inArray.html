@@ -1,7 +1,9 @@
 
-<p> Qmik.each() 函数用于遍历指定的对象和数组</p> 
 <p>
-	Qmik.each(object, function);
+  Qmik.inArray()确定元素在数组中的位置(建议直接使用array.indexOf(value))
+</p> 
+<p>
+	Qmik.inArray(value, array);
 </p>
 <table class="am-table am-table-bd am-table-striped"> 
   <thead> 
@@ -12,20 +14,19 @@
   </thead> 
   <tbody> 
    <tr> 
-      <td>object</td> 
-      <td>对象或数组</td>
-   </tr>
+    <td>value</td> 
+    <td>值</td>
+   </tr> 
    <tr> 
-	    <td>function</td> 
-	    <td>执行方法,参数 (index, item)</td>
+    <td>array</td> 
+    <td>数组</td> 
    </tr>
   </tbody> 
 </table> 
 <div class="doc-code demo-highlight"> 
   <pre class=""><code class="javascript">
-  	$.each([1,2,3,4,9,7], function(i, item){
-      $.log(i, item)
-    });
+
+  	var index = Qmik.inArray(1, [1,2,3]);
   </code></pre> 
 </div> 
 

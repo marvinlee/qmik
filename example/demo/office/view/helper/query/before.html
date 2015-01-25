@@ -1,9 +1,8 @@
 
+<p> Qmik.fn.before()函数用于在每个匹配元素之前插入指定的内容。</p> 
+
 <p>
-  Qmik.trim()函数用于去除字符串两端的空白字符。
-</p> 
-<p>
-	Qmik.trim(str);
+	Qmik.fn.before(content) 
 </p>
 <table class="am-table am-table-bd am-table-striped"> 
   <thead> 
@@ -14,14 +13,14 @@
   </thead> 
   <tbody> 
    <tr> 
-    <td>str</td> 
-    <td>字符串</td>
-   </tr> 
+	    <td>content</td> 
+	    <td>内容,可以是字符串,dom节点,Query对象</td>
+   </tr>
   </tbody> 
 </table> 
 <div class="doc-code demo-highlight"> 
   <pre class=""><code class="javascript">
-  	$.trim("asfasdf ");
+  	$("div").bebore('<li>dadf</li>');
   </code></pre> 
 </div> 
 

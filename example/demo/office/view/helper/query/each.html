@@ -1,7 +1,8 @@
 
-<p> Qmik.each() 函数用于遍历指定的对象和数组</p> 
+<p> Qmik.fn.each()函数用于以当前Query对象匹配到的每个元素作为上下文来遍历执行指定的函数</p> 
+
 <p>
-	Qmik.each(object, function);
+	Qmik.fn.find(function) 
 </p>
 <table class="am-table am-table-bd am-table-striped"> 
   <thead> 
@@ -12,19 +13,15 @@
   </thead> 
   <tbody> 
    <tr> 
-      <td>object</td> 
-      <td>对象或数组</td>
-   </tr>
-   <tr> 
 	    <td>function</td> 
-	    <td>执行方法,参数 (index, item)</td>
+	    <td>function(i, dom)</td>
    </tr>
   </tbody> 
 </table> 
 <div class="doc-code demo-highlight"> 
   <pre class=""><code class="javascript">
-  	$.each([1,2,3,4,9,7], function(i, item){
-      $.log(i, item)
+  	$("div").each(function(i, dom){
+      console.log(dom);
     });
   </code></pre> 
 </div> 

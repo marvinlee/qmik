@@ -1,9 +1,8 @@
 
+<p> Qmik.fn.find()函数用于选取每个匹配元素的符合指定表达式的后代元素</p> 
+
 <p>
-  Qmik.trim()函数用于去除字符串两端的空白字符。
-</p> 
-<p>
-	Qmik.trim(str);
+	Qmik.fn.find(selecter) 
 </p>
 <table class="am-table am-table-bd am-table-striped"> 
   <thead> 
@@ -14,14 +13,14 @@
   </thead> 
   <tbody> 
    <tr> 
-    <td>str</td> 
-    <td>字符串</td>
-   </tr> 
+	    <td>selecter</td> 
+	    <td>选择器,可以是css选择器, dom,Qmik对象</td>
+   </tr>
   </tbody> 
 </table> 
 <div class="doc-code demo-highlight"> 
   <pre class=""><code class="javascript">
-  	$.trim("asfasdf ");
+  	 $("div").find("li");
   </code></pre> 
 </div> 
 

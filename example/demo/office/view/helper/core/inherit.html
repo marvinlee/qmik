@@ -23,9 +23,21 @@
 </table> 
 <div class="doc-code demo-highlight"> 
   <pre class=""><code class="javascript">
-  	var array = Qmik.grep( [1,2,3], function(i, val){
-  		return val % 2 ==0;
-  	});
+  	function Person(){
+
+    }
+    $.extend(Person.prototype, {
+      show: function(msg){
+        $.log("show ", msg);
+      }
+    });
+
+    function Boy(){};
+
+    $.inherit(Boy, Person);
+
+    var boy = new Boy();
+    boy.show("user");
   </code></pre> 
 </div> 
 

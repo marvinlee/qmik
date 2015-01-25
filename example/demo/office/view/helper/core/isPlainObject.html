@@ -1,7 +1,11 @@
 
-<p>Qmik.inherit()函数用于类继承。</p> 
+<p>Qmik.isPlainObject()函数用于判断指定参数是否是一个纯粹的对象。
+
+所谓"纯粹的对象"，就是该对象是通过"{}"或"new Object"创建的。
+
+该函数属于全局jQuery对象。</p> 
 <p>
-	Qmik.inherit(subClass, superClass);
+	Qmik.isPlainObject(obj);
 </p>
 <table class="am-table am-table-bd am-table-striped"> 
   <thead> 
@@ -12,20 +16,14 @@
   </thead> 
   <tbody> 
    <tr> 
-    <td>subClass</td> 
-    <td>子类</td>
+    <td>obj</td> 
+    <td>值</td>
    </tr> 
-   <tr> 
-    <td>superClass</td> 
-    <td>父类</td> 
-   </tr>
   </tbody> 
 </table> 
 <div class="doc-code demo-highlight"> 
   <pre class=""><code class="javascript">
-  	var array = Qmik.grep( [1,2,3], function(i, val){
-  		return val % 2 ==0;
-  	});
+  	 $.isPlainObject({});
   </code></pre> 
 </div> 
 
