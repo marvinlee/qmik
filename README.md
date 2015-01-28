@@ -295,7 +295,7 @@ mvc api:
 
 
 <!-- 声明控制器 --> 
-
+<pre>
 &lt;div q-ctrl="demoCtrl"&gt;
 &lt;p&gt 全局: ${gname} &lt;/p&gt;
 倒计时: &lt;input name="time" type="text"/&gt; ${time} 或 {{time}}
@@ -334,7 +334,7 @@ mvc api:
 
 
 &lt;/script&gt;
-
+</pre>
 
 
 ## 按需加载例子:
