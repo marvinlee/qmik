@@ -263,7 +263,6 @@ Qmik.fn api(即 $("#id").api)
         show : function()
         hide : function() 
         toggle : function()
-        toggleClass : function(className)
         map : function(callback)
         css : function(k, v) 
         attr : function(k, v) 
@@ -298,19 +297,36 @@ mvc api:
 <!-- 声明控制器 --> 
 
 &lt;div q-ctrl="demoCtrl"&gt;
+&lt;p&gt 全局: ${gname} &lt;/p&gt;
 倒计时: &lt;input name="time" type="text"/&gt; ${time} 或 {{time}}
 用户名: &lt;input name="name" type="text"/&gt; ${name}
 &lt;/div&gt;
 &lt;script&gt;
 
 
-    $.app().ctrl({
+    $.app(function(scope){//全局控制器的写法
+        scope.gname="lllleeeeoooo";
+    }).ctrl({
       demoCtrl: function(scope){//定义控制器  scope:会话,作用空间在q-ctrl里面,不能超出
-       scope.time = 999;
-       $.cycle(function(){
-        scope.time--;
-        scope.apply(["time"]);//更新到界面
-       }, 1000);
+        scope.once({//只触发一次,采用 $.fn.once 方法实现
+            viewport: function(){//当控制器所在的位置进入可显示的视口位置时,触发这个方法
+                ///$.ajax({});
+            }
+        });
+
+        scope.watch({//监听器
+            //监听name值的变化,发现变化,会触发此事件(通过change事件来触发)
+            //因此如果想要手动触发这个方法,需要通过scope.$("[name=name]").emit("change");来触发事件
+            "name": function(map){
+                $.log("watch:", map);
+            }
+        });
+
+        scope.time = 999;
+        $.cycle(function(){
+            scope.time--;
+            scope.apply(["time"]);//更新到界面
+        }, 1000);
       }
     });
 
