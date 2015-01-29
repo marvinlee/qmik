@@ -297,7 +297,7 @@ mvc api:
 <!-- 声明控制器 --> 
 <pre>
 &lt;div q-ctrl="demoCtrl"&gt;
-&lt;p&gt 全局: ${gname} &lt;/p&gt;
+&lt;p&gt; 全局: ${gname} &lt;/p&gt;
 倒计时: &lt;input name="time" type="text"/&gt; ${time} 或 {{time}}
 
 &lt;div&gt;
@@ -306,6 +306,12 @@ mvc api:
     &lt;p&gt;user.nick &lt;input name="user.nick" type="text"/&gt;&lt;/p&gt;
     &lt;p&gt;user.email &lt;input name="user.email" type="text"/&gt;&lt;/p&gt;
     &lt;p&gt;user.qq &lt;input name="user.qq" type="text"/&gt;&lt;/p&gt;
+
+    //显示列表,ul下面的内容是模板,qmik会根据模板来生成相应的页面
+    //q-onclick:是定义的单击事件,可以通过q-onxxx来定义事件,如:q-onclick,q-ontouchmove等
+    &lt;ul q-for="item in list" q-onclick="clickList"&gt;
+        &lt;li&gt;${item.title}&lt;/li&gt;
+    &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;script&gt;
@@ -335,6 +341,12 @@ mvc api:
 
             }
         });
+
+        scope.list= [{
+            title:'leo1'
+        },{
+            title:'leo2'
+        }];
 
         scope.time = 999;
         $.cycle(function(){
