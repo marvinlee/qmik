@@ -348,6 +348,12 @@ mvc api:
             title:'leo2'
         }];
 
+        scope.clickList = function(e){
+            var i = parseInt(Math.random() * 2);
+            var color = i%2==1 ? "red": "green"; 
+            $(this).css("backgroupd-color",color);
+        }
+
         scope.time = 999;
         $.cycle(function(){
             scope.time--;
