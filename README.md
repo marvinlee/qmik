@@ -6,7 +6,7 @@ Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库�
 
 入门简单,只要你使用过jquery(jquery的语法),是在无线端替换jquery,zepto,seajs,task任务处理等的理想框架,
 
-[模块开发内核](https://github.com/leochen36/qmik/wiki/sun-%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91)
+[模块开发内核](https://github.com/leochen36/qmik/wiki/sun-%E6%A8%A1%E5%9D%97%E5%BC%90%E5%8F%91)
 (支持模块压缩代码)
 
 [mvc开发模式,节约50%开发成本,减少50%维护成本,业务代码与页面dom结构80%解偶,面向数据接口编程](https://github.com/leochen36/qmik/wiki/mvc%E5%BC%80%E5%8F%91)
@@ -296,76 +296,78 @@ mvc api:
 
 <!-- 声明控制器 --> 
 <pre>
-&lt;div q-ctrl="demoCtrl"&gt;
-&lt;p&gt; 全局: ${gname} &lt;/p&gt;
-倒计时: &lt;input name="time" type="text"/&gt; ${time} 或 {{time}}
+&lt;div q-ctrl="demoCtrl" class="box" &gt;
+    &lt;p&gt; 全局: ${gname} &lt;/p&gt;
+    倒计时: &lt;input name="time" type="text"/&gt; ${time} 或 {{time}}
 
-&lt;div&gt;
-    &lt;h3&gt;用户信息  //qmik会自动把user.* 转换成 scope.user ={name:"",nick:"" ...} &lt;/h3&gt;
-    &lt;p&gt;user.name &lt;input name="user.name" type="text"/&gt;&lt;/p&gt;
-    &lt;p&gt;user.nick &lt;input name="user.nick" type="text"/&gt;&lt;/p&gt;
-    &lt;p&gt;user.email &lt;input name="user.email" type="text"/&gt;&lt;/p&gt;
-    &lt;p&gt;user.qq &lt;input name="user.qq" type="text"/&gt;&lt;/p&gt;
+    &lt;div&gt;
+        &lt;h3&gt;用户信息  //qmik会自动把user.* 转换成 scope.user ={name:"",nick:"" ...} &lt;/h3&gt;
+        &lt;p&gt;user.name &lt;input name="user.name" type="text"/&gt;  ${user.name}&lt;/p&gt;
+        &lt;p&gt;user.nick &lt;input name="user.nick" type="text"/&gt; ${user.nick}&lt;/p&gt;
+        &lt;p&gt;user.email &lt;input name="user.email" type="text"/&gt; ${user.email}&lt;/p&gt;
+        &lt;p&gt;user.qq &lt;input name="user.qq" type="text"/&gt; ${user.qq}&lt;/p&gt;
 
-    //显示列表,ul下面的内容是模板,qmik会根据模板来生成相应的页面
-    //q-onclick:是定义的单击事件,可以通过q-onxxx来定义事件,如:q-onclick,q-ontouchmove等
-    &lt;ul q-for="item in list" q-onclick="clickList"&gt;
-        &lt;li&gt;${item.title}&lt;/li&gt;
-    &lt;/ul&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;script&gt;
+        &lt;h3&gt;//显示列表,ul下面的内容是模板,qmik会根据模板来生成相应的页面&lt;/h3&gt;
+        &lt;h3&gt;
+            //q-onclick:是定义的单击事件,可以通过q-onxxx来定义事件,如:q-onclick,q-ontouchmove等
+        &lt;/h3&gt;
+        &lt;ul q-for="item in list" q-onclick="clickList" class="box"&gt;
+            &lt;li&gt;${item.title}&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;script&gt;
 
 
-    $.app(function(scope){//全局控制器的写法
-        scope.gname="lllleeeeoooo";
-    }).ctrl({
-      demoCtrl: function(scope){//定义控制器  scope:会话,作用空间在q-ctrl里面,不能超出
-        scope.once({//只触发一次,采用 $.fn.once 方法实现
-            viewport: function(){//当控制器所在的位置进入可显示的视口位置时,触发这个方法
-                ///$.ajax({});
-                scope.user.name="leo";
-                scope.user.nick="leo";
-                scope.user.email="cwq0312@163.om";
-                scope.user.qq="555";
+        $.app(function(scope){//全局控制器的写法
+            scope.gname="lllleeeeoooo";
+        }).ctrl({
+          demoCtrl: function(scope){//定义控制器  scope:会话,作用空间在q-ctrl里面,不能超出
+            scope.once({//只触发一次,采用 $.fn.once 方法实现
+                viewport: function(){//当控制器所在的位置进入可显示的视口位置时,触发这个方法
+                    ///$.ajax({});
+                    scope.user.name="leo";
+                    scope.user.nick="leo";
+                    scope.user.email="cwq0312@163.om";
+                    scope.user.qq="555";
+                    scope.apply("user");
+                }
+            });
+
+            scope.watch({//监听器
+                //监听name值的变化,发现变化,会触发此事件(通过change事件来触发)
+                //因此如果想要手动触发这个方法,需要通过scope.$("[name=name]").emit("change");来触发事件
+                "user.name": function(map){
+                    $.log("watch:", map);
+                },
+                "user": function(map){//监听所有user(.*)?的变化
+
+                }
+            });
+
+            scope.list= [{
+                title:'leo1'
+            },{
+                title:'leo2'
+            }];
+
+            scope.clickList = function(e){
+
+                var i = parseInt(Math.random() * 2);
+                var color = i%2==1 ? "red": "green"; 
+                $(e.target).css("backgroundColor",color);
             }
+
+            scope.time = 999;
+            $.cycle(function(){
+                scope.time--;
+                scope.apply(["time"]);//更新到界面
+            }, 1000);
+          }
         });
 
-        scope.watch({//监听器
-            //监听name值的变化,发现变化,会触发此事件(通过change事件来触发)
-            //因此如果想要手动触发这个方法,需要通过scope.$("[name=name]").emit("change");来触发事件
-            "user.name": function(map){
-                $.log("watch:", map);
-            },
-            "user": function(map){//监听所有user(.*)?的变化
-
-            }
-        });
-
-        scope.list= [{
-            title:'leo1'
-        },{
-            title:'leo2'
-        }];
-
-        scope.clickList = function(e){
-            var i = parseInt(Math.random() * 2);
-            var color = i%2==1 ? "red": "green"; 
-            $(this).css("backgroupd-color",color);
-        }
-
-        scope.time = 999;
-        $.cycle(function(){
-            scope.time--;
-            scope.apply(["time"]);//更新到界面
-        }, 1000);
-      }
-    });
-
-
-
-
-&lt;/script&gt;
+    &lt;/script&gt;
+&lt;/div&gt;
 </pre>
 
 
