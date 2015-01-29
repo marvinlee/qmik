@@ -51,7 +51,7 @@ Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库�
 1.增加mvc大模块功能
 2.修改sun模块define模块时,参数(require, exports, module)必须全传的bug
 3.小细节优化
-4.去掉render方法(实现很差)
+4.去掉render
 
 [增加1.3.80版本:](https://github.com/leochen36/qmik/tree/master/builds)
 1.3.80 版本, 
