@@ -47,6 +47,14 @@
     $.app().ctrl({
       //$.app().ctrl();//定义控制器
       user: function(scope){//控制器user,对应 q-ctrl="user"
+          //事件,当控制器处于可显示的视口时,触发viewport事件,这个将来要做数据的延迟加载,就很有益处
+          //scope.on,scope.off 方法是事件的,底层采用Qmik.fn.on,Qmik.fn.off来实现,绑定到控制器所在的节点
+          scope.once({
+            viewport: function(){
+              console.log("inviewport");
+            }
+          });
+
           scope.time = 999;
           $.cycle(function(){
               scope.time--;
