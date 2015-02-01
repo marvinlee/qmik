@@ -78,6 +78,11 @@
                     scope.time--;
                     scope.apply(["time"]);//更新到界面
                 }, 1000);
+
+                $("body").append('<div q-ctrl="dinative">xxx</div>');
+              },
+              dinative: function(scope){
+                console.log(scope)
               }
             });
 

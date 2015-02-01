@@ -77,6 +77,19 @@
 	}
 	/********* 当节点在显示视口时触发 end *******/
 
+	function change(e, scope, emit) {
+		var target = e.target,
+			name = emit ? e.name : target.name||"",
+			scope = getCtrlNode(target)[namespaceScope] || scope;
+		if (isInput(target) || emit) {
+			fieldValue(scope, name, emit ? e.value : getInputValue(target));
+			var value = getVarValue(scope, name);
+			each(getBatList(scope[fieldWatchs], name), function(i, watch) {
+				 execCatch(watch,[{name:name, value:value, source:scope[split(name)[0]], target:target}]);
+			});
+			compileVarName(name, scope);
+		}
+	}
 
 	/** 应用 */
 	function App(fun) {
@@ -93,22 +106,9 @@
 			me.scope = scope;
 			root[namespace] = getSpace(root);
 			fun && fun(scope);
-			compile(root, scope, true);//编译页面
-			Q("[q-ctrl]").css("visibility","visible");//置为可见
+			compile(root, scope, true);//编译页面		
 			trigger();
-			function change(e) {
-				var target = e.target,
-					name = target.name||"",
-					scope = getCtrlNode(target)[namespaceScope] || scope;
-				if (isInput(target)) {
-					fieldValue(scope, name, getInputValue(target));
-					var value = getVarValue(scope, name);
-					each(getBatList(scope[fieldWatchs], name), function(i, watch) {
-						 execCatch(watch,[{name:name, value:value, source:scope[split(name)[0]], target:target}]);
-					});
-					compileVarName(name, scope);
-				}
-			}
+			
 			function remove(e){
 				var target = e.target,
 					name = target.name,
@@ -131,9 +131,12 @@
 					}
 				}		
 			}
+			function _change(e){
+				change(e, scope);
+			}
 			Q("body").on({
-				change: change,
-				keyup: change
+				change: _change,
+				keyup: _change
 			});
 			Q(win).on({
 				//DOMSubtreeModified: function(e){},
@@ -226,9 +229,18 @@
 					if(names.length > 0){
 						var nodes = [];
 						each(names, function(i, name){
+							var input = me.$("input[name='"+name+"']")[0];
+							if(!input){
+								change({
+									target: me[nameContext],
+									name: name,
+									value: me[name]
+								}, me, true);
+							}
 							compileVarName(name, me)
 						});
 					}else{
+						me.$("input,select,textarea").emit("change");
 						compile(me[nameContext], me);
 					}
 					Q.isFun(callback) && callback();
@@ -307,6 +319,7 @@
 
 	/** 解析页面 */
 	function compile(node, scope, isAdd) {
+		Q("[q-ctrl]").css("visibility","visible");//置为可见
 		replaceNodeVar(node, scope, isAdd, compileChilds);
 	}
 	function compileChilds(node, scope, isAdd){

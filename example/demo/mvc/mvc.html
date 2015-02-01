@@ -7,7 +7,7 @@
   <meta content="IE=9" http-equiv="x-ua-compatible" /> 
   <title>测试sun模块开发</title> 
   <link rel="stylesheet" type="text/css" href="style.css">
-  <script type="text/javascript" src="../../Qmik.all.js"></script>
+  <script type="text/javascript" src="../../../assets/Qmik-debug.all.js"></script>
 
   <style type="text/css">
   	#result{
@@ -82,13 +82,15 @@
       <ul q-for=" item  in  list " style="background:green;">
           <li name="${name}">  ${item.name} -- age: ${ item.age } </li>
       </ul>
-      
+      <p>gggooo: ${gopark}</p>
   	</form>
   	${n12}
   	<form q-ctrl="subdent1" style="background:#abcfcf;">
        ctrl:subdent1: name=${name}
   	</form>
     ${n3} ${name}
+
+
 
   </div>
 
@@ -137,6 +139,17 @@
               scope.apply("checkboxs");
               scope.$(".ctest").append('<input name="name'+(idx++)+'" type="text" value="999" />');
             }, 3000);
+
+
+            scope.gopark ="lileo";
+            scope.watch("gopark", function(map){
+              console.log(map)
+            });
+            $.delay(function(){
+               scope.gopark = "lileo111";
+               scope.apply("gopark");
+               scope.emit("gopark");
+            }, 1000);
         },
         "subdent1": function(scope){
           scope.name="gogoxxoo";

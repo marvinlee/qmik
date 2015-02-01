@@ -14,7 +14,6 @@
     <div class="box">      
       <p class="ftitle" > 全局控制(用户信息) </p>
       <ul>
-        <input name="cmd" />
         <li class=" q-hide">
           <span class="lt">用户名: </span><input name="user.userName" type="text" value="leo"/>
           <span class="lt">动态绑定:</span>[<span class="bind">${user.userName}</span>]
@@ -30,7 +29,7 @@
       </ul>
     </div>
     <div class="box" q-ctrl="shopping">
-        <p class="ftitle"> 控制器: [shopping]购物信息 
+        <p class="ftitle"> 控制器: [shopping]购物信息   ${gohome}
           <a q-onclick="clickme" href="javascript:">&nbsp; <span>点我吧(事件)</span>
             <span style="color:red;">${msg}</span>
           </a>
@@ -142,6 +141,9 @@
           var v = map.value;
           scope.vUserName = v.replace(/xo/g,"*o");
           scope.apply();
+        });
+        scope.watch("gohome", function(map){
+          console.log("watch gohome:", map);
         });
         console.log(scope);
       },search: function(scope){//搜索

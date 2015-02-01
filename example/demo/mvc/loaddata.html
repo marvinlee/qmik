@@ -1,0 +1,76 @@
+<!DOCTYPE >
+<html>
+ <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta charset="utf8" /> 
+  <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport" /> 
+  <meta name="-webkit-tap-highlight" content="no" /> 
+  <meta content="IE=10" http-equiv="x-ua-compatible" /> 
+  <title>mvc例子</title> 
+  <script type="text/javascript" src="../../Qmik.all.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <style type="text/css">
+    .dis-none{display: none;}
+  </style>
+</head>
+<body>
+    <p> 数据分页加载 </p>
+    <div q-ctrl="page1" class="box" >
+        <p class="${show}">加载中... ${time}</p>
+        <ul q-for="item in list">
+            <li>${item.name}-${item.age}</li>
+        </ul>
+    </div>
+
+    <script>
+        var template = $("[q-ctrl=page1]")[0].outerHTML.replace(/[\r\n\t]*/g, "");//取模板
+        var page = 1;
+        var countPage = 5;
+        var mtime = 3;
+        
+        //分页控制器
+        function ctrlPage(scope){
+            var time = mtime;
+
+            //倒计时 start
+            scope.time = time;
+            $.cycle(function(){
+                scope.time--;
+                if(scope.time == 0){
+                    scope.show="dis-none";
+                }
+                scope.apply();
+            }, 1000, (time+1)*1000);
+
+            //加载数据
+            $.delay(function(){
+                scope.list= [];
+                for(var i=0;i<5;i++){
+                    scope.list.push({name:"leo", age:i+10});
+                }
+                scope.apply("list");
+            }, time*1000);
+
+            //新页面模板
+            var temp = template.replace(new RegExp(' q-ctrl="page1" '), ' q-ctrl="page'+(page+1)+'" ');
+            page++;
+
+
+            $.delay(function(){
+                if(page <5){
+                    $(scope.context).parent().append(temp);//添加模板到dom节点上,会自动触发节点解析
+                }
+            }, time*1000);        
+        }
+
+        $.app().ctrl({
+            page1:ctrlPage//首页控制器
+        });
+        for(var i=1;i<countPage-1;i++){//批量添加后面几首页的控制器
+            $.app().ctrl("page"+(i+1), ctrlPage);
+        }
+
+    </script>
+
+</body>
+</html>
