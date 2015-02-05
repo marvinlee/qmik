@@ -347,6 +347,16 @@
 		});
 		return Q(array)
 	}
+	/* */
+	//高度
+	function getHeight() {
+		return win.innerHeight || screen.availHeight;
+	}
+	function getMax() {
+		return win.pageYOffset + getHeight() + 120;
+	}	
+	/**/
+
 	Q.init = init;
 	var fn = Q.fn = Query.prototype;
 	fn.extend = function(o) {
@@ -472,6 +482,21 @@
 		hide: function() {
 			css(this, 'display', 'none');
 			return this
+		},
+		inViewport: function(){
+			var qdom = this,
+				offset = qdom.offset(),
+				bool = false;
+			if (offset) {
+				var elTop = offset.top,
+					elDown = elTop + qdom.height(),
+					min = win.pageYOffset,
+					max = getMax();
+				min = min < 0 ? 0 : min;
+				//return elTop >= 0 && elTop >= min && elTop <= max;
+				bool = elTop >= 0 && elTop <= max && elDown >= min
+			}
+			return bool;
 		},
 		animate: function(style, time, easing, callback){
 			var me = this;

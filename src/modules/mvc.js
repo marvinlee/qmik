@@ -41,7 +41,7 @@
 		each(map, function(key, map){
 			var node = map.scope.context,
 				qdom = Q(node);
-			if (Q.inViewport(qdom)) {
+			if (qdom.inViewport()) {
 				delete g_viewports[key];
 				map.callback && execCatch(map.callback);
 				qdom.emit("viewport");
