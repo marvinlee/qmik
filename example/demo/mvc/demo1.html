@@ -146,7 +146,7 @@
         scope.parent.watch("user.userName", function(map){
           var v = map.value;
           scope.vUserName = v.replace(/xo/g,"*o");
-          scope.apply();
+          scope.apply("vUserName");
         });
         scope.watch({
           "gohome": function(map){

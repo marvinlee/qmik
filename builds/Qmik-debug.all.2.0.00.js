@@ -7,14 +7,15 @@
 	var win = this,
 		doc = win.document || {},
 		nav = win.navigator || {}, //
-		UA = nav.userAgent,
+		con = win.console,
+		UA = nav.appVersion || nav.userAgent,
 		loc = win.location;
 	var encode = encodeURIComponent,
 		decode = decodeURIComponent,
 		slice = [].slice, //
-		baseURL = loc.protocol + "//" + loc.hostname + (loc.port ? ":" + loc.port : ""), //
+		baseURL = loc.protocol + "//" + loc.host, //
 		config = {
-			context: "/" //工程上下文目录
+			base: "" //工程上下文目录
 		};
 	//var readyRE = /complete|loaded|interactive/i;
 	// define qmik object
@@ -48,7 +49,9 @@
 		toLower: strtype.toLowerCase,
 		toUpper: strtype.toUpperCase
 	});
-
+	/*Array.prototype.each = function(callback){
+		callback && each(this, callback);
+	};*/
 	function grep(array, callback) {
 		var ret = [];
 		each(array, function(i, v) {
@@ -78,11 +81,10 @@
 	function isArray(v) {
 		return v instanceof Array
 	}
-
 	function likeArray(v) { // like Array
-		return !isString(v) && (isArray(v) || (Q.isQmik && Q.isQmik(v)) || (function() {
+		return !isString(v) && (isArray(v) || (Q.isQmik && Q.isQmik(v)) || (function() {		
 			v += "";
-			return v == "[object Arguments]" || v == "[object NodeList]" || v == "[object HTMLCollection]" || v == "[object StaticNodeList]"
+			return v == "[object Arguments]" || v == "[object NodeList]" || v == "[object HTMLCollection]" || v == "[object StaticNodeList]" || v == "[object NamedNodeMap]"
 		})())
 	}
 	// isFunction
@@ -142,25 +144,17 @@
 		var args = arguments,
 			array = args[0],
 			isA = isArray(array);
-		each(args,function(i, arg){
-			each(arg, function(k, v){
+		for(var i=1;i<args.length;i++){
+			each(args[i], function(k, v){
 				isA ? array.push(v) : array[k] = v
 			})
-		})
+		}
 		return array
 	}
 
 	/*	function isGrandfather(grandfather, child) {
 			return isDom(child) && (grandfather === child.parentNode ? !0 : isGrandfather(grandfather, child.parentNode))
 		}*/
-	// 合并url,参数个数不限
-	function concactUrl() {
-		return Q.map(arguments, function(i, url) {
-			return isArray(url) ? url.join("") : url
-		}).join("/").replace(/(^\w+:\/\/)|([\/]{2,})/g, function(v) {
-			return !/^\w+:\/\//.test(v) ? "/" : v
-		})
-	}
 
 	function loadResource(type, url, success, error) {
 		url = Q.url(url);
@@ -198,8 +192,8 @@
 	*/
 	function replaceVar(str, data){
 		data = data || {};
-		return isNull(str) ? null : (str+"").replace(/\$[!]?\{[\.\w_-]*\}/g, function(name) {
-			var keys = name.replace(/(^\$[!]?\{\s*)|(\s*\}$)/g, "");
+		return isNull(str) ? null : (str+"").replace(/(\$[!]?\{[\.\w_ -]*\})|(\{\{[\.\w_ -]*\}\})/g, function(name) {
+			var keys = name.replace(/(^\$?[!]?\{\{?)|(\}\}?$)/g, "").trim();
 			keys = keys.split(".");
 			var val = data[keys[0]];
 			for (var i = 1; i < keys.length; i++) {
@@ -213,12 +207,14 @@
 			return val || "";
 		})
 	}
-	/* 为每个渲染模块注入此方法 */
-	function addRenderChild(struct, item){
-		this.child = this.child || [];
-		this.child.push({
-			text:Q.render(struct, item)
-		});
+	function _delete(object, name){
+		try{delete object[name]}catch(e){object[name]=null}
+	}
+	function log(type, args){
+		var vs = slice.call(args);
+		if(con){
+			con[type].apply ? con[type].apply(con, vs) : con[type](type+":", vs);
+		}			
 	}
 	//////////Delay class, function 实现setTimeout的功能
 	function Delay(fun, time, params) {
@@ -236,11 +232,10 @@
 	///////////////////Cycle class
 	function Cycle(fun, cycleTime, ttl, params) {
 		var me = this,
-			start = Q.now(),
 			chisu = 1;
 
 		function _exec() {
-			if ((isNull(ttl) || (chisu * cycleTime - start) <= ttl)) {
+			if ((isNull(ttl) || (chisu * cycleTime) < ttl)) {
 				fun.apply(fun, params);
 				me._p = new Delay(_exec, cycleTime, params);
 			}
@@ -254,282 +249,274 @@
 		}
 	});
 	//////////////////////
-	Q
-		.extend({
-			encode: encode,
-			decode: decode,
-			isDom: isDom,
-			isBool: isBool,
-			isString: isString,
-			isFun: isFun,
-			isFunction: isFun,
-			isNum: isNum,
-			isNumber: isNum,
-			isArray: isArray,
-			isNull: isNull,
-			isError: isError,
-			each: each,
-			stringify: toString,
-			parseJSON: toJSON,
-			isEvent: isEvent,
-			likeArray: likeArray,
-			isDate: function(v) {
-				return v instanceof Date
-			},
-			isObject: isObject,
-			isPlainObject: function(v) { // isPlainObject
-				if (isNull(v) || v + '' != '[object Object]' || v.nodeType || v == win) return !1;
-				var k;
-				for (k in v) {}
-				return isNull(k) || Object.prototype.hasOwnProperty.call(v, k)
-			},
-			likeNull: likeNull,
-			/**
-			 * 继承类 子类subClass继承父类superClass的属性方法, 注:子类有父类的属性及方法时,不会被父类替换
-			 */
-			inherit: function(subClass, superClass) {
-				function F() {}
-				var subPrototype = subClass.prototype;
-				F.prototype = superClass.prototype;
-				subClass.prototype = new F();
-				subClass.prototype.constructor = subClass;
-				if (superClass.prototype.constructor == Object.prototype.constructor) {
-					superClass.prototype.constructor = superClass;
-				}
-				for (var name in subPrototype) {
-					subClass.prototype[name] = subPrototype[name];
-				}
-				for (var name in superClass) {
-					subClass[name] = superClass[name];
-				}
-			},
-			trim: function(v) {
-				return isNull(v) ? "" : isString(v) ? v.trim() : v.toString().trim()
-			},
-			toLower: function(v) {
-				return v ? v.toLower() : v
-			},
-			toUpper: function(v) {
-				return v ? v.toUpper() : v
-			},
-			// 合并数组或对象
-			merge: merge,
-			array: function(array) {
-				return merge([], array)
-			},
-			inArray: function(value, array) {
-				if (Q.likeArray(array))
-					for (var i = 0; i < array.length; i++)
-						if (array[i] === value) return i;
-				return -1
-			},
-			unique: function(array) {
-				var ret = [];
-				each(array, function(i, value) {
-					Q.inArray(value, ret) < 0 && ret.push(value)
-				});
-				return ret
-			},
-			//contains : isGrandfather,
-			/**
-			 * 对数组里的内容,做部做一次数据映射转换,
-			 * 例:
-			 * var array=[1,2,3];
-			 * array = Qmik.map(array,function(index,val){
-			 * 	return index*val
-			 * });
-			 * console.log(array);//>>0,2,6
-			 */
-			map: function(array, callback) {
-				var r = [],
-					i = 0;
-				for (; array && i < array.length; i++)
-					isNull(array[i]) || r.push(callback(i, array[i]));
-				/*each(array, function(i, val) {
-					isNull(val) || r.push(callback(i, val));
-				})*/
-				return r
-			},
-			/**
-			 * 取得脚本
-			 */
-			getScript: function(url, success, error) {
-				return loadResource("js", url, success, error)
-			},
-			/**
-			 * 取得css
-			 */
-			getCss: function(url, success, error) {
-				return loadResource("css", url, success, error)
-			},
-			grep: grep,
-			/**
-			 * 抽取数组里面每个元素的name和value属性,转换成一个url形式(a=b&name=g)的字符串
-			 */
-			param: function(array) {
-				var h = [];
-				each(array, function(i, v) {
-					isString(i) ? h.push(encode(i) + '=' + encode(execObject(v))) : v.name && h.push(encode(v.name) + '=' + encode(execObject(v.value)))
-				});
-				return h.join('&')
-			},
-			/**
-			 * 当前时间
-			 */
-			now: function(d) {
-				return (d || 0) + new Date().getTime()
-			},
-			// 延迟执行,==setTimeout
-			/**
-			 * target:apply,call的指向对象
-			 */
-			delay: function(fun, time) {
-				//var params = slice.call(arguments, 2);
-				return new Delay(fun, time, slice.call(arguments, 2))
-			},
-			// 周期执行
-			/**
-			 * fun:执行的方法
-			 * cycleTime:执行的周期时间
-			 * ttl:过期时间,执行时间>ttl时,停止执行,单位 ms(毫秒)
-			 * target:apply,call的指向对象
-			 */
-			cycle: function(fun, cycleTime, ttl) {
-				//var params = slice.call(arguments, 3);
-				return new Cycle(fun, cycleTime, ttl, slice.call(arguments, 3));
-			},
-			log: function() {
-				var args = arguments;
-				if (config.debug || isError(args[0])) {
-					try{console.log.apply(Q, args)}catch(e){Q.each(args,function(i,v){console.log(v)})};
-				}
-			},
-			isIphone: function() {
-				return /iPhone OS/.test(UA)
-			},
-			isAndroid: function() {
-				return /Android/.test(UA)
-			},
-			isWP: function() {
-				return /Windows Phone/.test(UA)
-			},
-			isIE: function() {
-				return /MSIE/.test(UA)
-			},
-			/**
-			 * is Firefox
-			 */
-			isFF: function() {
-				return /Firefox/.test(UA)
-			},
-			/**
-			 * is Webkit
-			 */
-			isWK: function() {
-				return /WebKit/.test(UA)
-			},
-			isOpera: function() {
-				return /Opera/.test(UA)
-			},
-			isRetinal: function() { //判断是否是视网膜高清屏,默认是高清屏
-				return (win.devicePixelRatio || 2) >= 1.5;
-			},
-			config: function(opts, _config) {
-				_config = arguments.length <= 1 ? config : (_config || {});
-				var ret = _config;
-				if (arguments.length < 1 || isNull(opts)) {} else if (!isObject(opts)) {
-					ret = _config[opts]
-				} else {
-					each(opts, function(key, val) {
-						isObject(val) && _config[key] ? Q.extend(_config[key], val) : (_config[key] = val)
-					})
-				}
-				return ret
-					//return (arguments.length < 1 || isNull(opts)) ? _config : isObject(opts) ? Q.extend(_config, opts) : _config[opts]
-			},
-			/**
-			 * 合并url,if 参数 _url为空,则
-			 */
-			url: function(_url) {
-				return arguments.length < 1 ? baseURL : !/^[a-zA-Z0-9]+:\/\//.test(_url) ? concactUrl(baseURL, (/^\//.test(_url) ? "" : config.context || "/") + "/" + _url) : _url
-			},
-			cssPrefix: function(style) {
-				var ret = {};
-				if (isString(style)) {
-					ret = (Q.isWK() ? "-webkit-" : Q.isIE() ? "-ms-" : Q.isFF() ? "-moz-" : Q.isOpera() ? "-o-" : "") + style;
-				} else {
-					each(Q.extend({}, style), function(key, val) {
-						ret[Q.cssPrefix(key)] = val
-					})
-				}
-				return ret
-			},
-			/** 局部页面渲染引擎 
-				struct:数据结构:{
-					tag:'div[id="${id}" name="${name}"  itemid="${itemid}"]',
-					text:'显示文本',
-					child:[//子节点
-						{
-							tag:'p[class="title"]',
-							text:'显示内容'
-						},
-						{
-							tag:'p[class="remark"]',
-							text:'显示内容'
-						}
-					]
-				},
-				item://数据
-				{
-					id:"",
-					name:"",
-					itemid:""
-				}
-			*/
-			render: function(struct, item) {
-				var h = [],
-					tag = (struct.tag || "").trim(),
-					text = struct.text;
-				text = replaceVar(text, item);
-				struct.add = addRenderChild;
-				if ( tag=="" && !isNull(text)) {
-					return text;
-				}
-				if(!/^\s*\w+\s*(\[.*\])?\s*$/.test(tag)){
-					console.log("tag is lllegal:",tag);
-					return "";
-				}
-				var tagName = (tag.match(/^[^\[]+/)||[""])[0];
-				var attr = (tag.match(/\[.*$/) || [""])[0].replace(/(^\s*\[)|(\s*\]\s*$)/g, "");
-				h.push('<' + tagName + " ");
-				attr = replaceVar(attr, item);
-				h.push(attr);
-				h.push('>');
-				isNull(text) || h.push(text);
-				struct.exec && Q.execCatch(function(){
-					struct.exec()
-				});
-				isArray(struct.child) && each(struct.child, function(i, ch) {
-					ch && h.push(Q.render(ch, item));
-				});				
-				h.push('</' + tagName + '>');
-				return h.join("");
-			},
-			/**
-				执行方法并捕获异常,不向外抛出异常,try{}catch(e){} 影响方法的美观性
-				fun:执行方法
-				args:数组,参数[]
-				error:抛出异常回调,无异常不回调
-			*/
-			execCatch: function (fun, args, error) {
-				try {
-					fun.apply(fun, args||[]);
-				} catch (e) {
-					Q.log(e, e.stack);
-					error && error(e);
-				} 
+	/* */
+	//高度
+	function getHeight() {
+		return win.innerHeight || screen.availHeight;
+	}
+	function getMax() {
+		return win.pageYOffset + getHeight() + 120;
+	}
+	//判断是否在视口里
+	function inViewport(dom) {
+		var qdom = Q(dom),
+			elTop = qdom.offset().top,
+			elDown = elTop + qdom.height(),
+			min = win.pageYOffset,
+			max = getMax();
+		min = min < 0 ? 0 : min;
+		//return elTop >= 0 && elTop >= min && elTop <= max;
+		return elTop >=0 && elTop <= max && elDown >= min	
+	}
+	/**/
+	Q.extend({
+		encode: encode,
+		decode: decode,
+		isDom: isDom,
+		isBool: isBool,
+		isString: isString,
+		isFun: isFun,
+		isFunction: isFun,
+		isNum: isNum,
+		isNumber: isNum,
+		isArray: isArray,
+		isNull: isNull,
+		isError: isError,
+		each: each,
+		stringify: toString,
+		parseJSON: toJSON,
+		isEvent: isEvent,
+		likeArray: likeArray,
+		isDate: function(v) {
+			return v instanceof Date
+		},
+		isObject: isObject,
+		isPlainObject: function(v) { // isPlainObject
+			if (isNull(v) || v + '' != '[object Object]' || v.nodeType || v == win) return !1;
+			var k;
+			for (k in v) {}
+			return isNull(k) || Object.prototype.hasOwnProperty.call(v, k)
+		},
+		likeNull: likeNull,
+		/**
+		 * 继承类 子类subClass继承父类superClass的属性方法, 注:子类有父类的属性及方法时,不会被父类替换
+		 */
+		inherit: function(subClass, superClass) {
+			function F() {}
+			var subPrototype = subClass.prototype;
+			F.prototype = superClass.prototype;
+			subClass.prototype = new F();
+			subClass.prototype.constructor = subClass;
+			if (superClass.prototype.constructor == Object.prototype.constructor) {
+				superClass.prototype.constructor = superClass;
 			}
-		});
+			for (var name in subPrototype) {
+				subClass.prototype[name] = subPrototype[name];
+			}
+			for (var name in superClass) {
+				subClass[name] = superClass[name];
+			}
+		},
+		inViewport: inViewport,
+		trim: function(v) {
+			return isNull(v) ? "" : isString(v) ? v.trim() : v.toString().trim()
+		},
+		toLower: function(v) {
+			return v ? v.toLower() : v
+		},
+		toUpper: function(v) {
+			return v ? v.toUpper() : v
+		},
+		// 合并数组或对象
+		merge: merge,
+		inArray: function(value, array) {
+			if (Q.likeArray(array))
+				for (var i = 0; i < array.length; i++)
+					if (array[i] === value) return i;
+			return -1
+		},
+		unique: function(array) {
+			var ret = [];
+			each(array, function(i, value) {
+				Q.inArray(value, ret) < 0 && ret.push(value)
+			});
+			return ret
+		},
+		//contains : isGrandfather,
+		/**
+		 * 对数组里的内容,做部做一次数据映射转换,
+		 * 例:
+		 * var array=[1,2,3];
+		 * array = Qmik.map(array,function(index,val){
+		 * 	return index*val
+		 * });
+		 * console.log(array);//>>0,2,6
+		 */
+		map: function(array, callback) {
+			var r = [],
+				i = 0;
+			for (; array && i < array.length; i++)
+				isNull(array[i]) || r.push(callback(i, array[i]));
+			/*each(array, function(i, val) {
+				isNull(val) || r.push(callback(i, val));
+			})*/
+			return r
+		},
+		/**
+		 * 取得脚本
+		 */
+		getScript: function(url, success, error) {
+			return loadResource("js", url, success, error)
+		},
+		/**
+		 * 取得css
+		 */
+		getCss: function(url, success, error) {
+			return loadResource("css", url, success, error)
+		},
+		grep: grep,
+		/**
+		 * 抽取数组里面每个元素的name和value属性,转换成一个url形式(a=b&name=g)的字符串
+		 */
+		param: function(array) {
+			var h = [];
+			each(array, function(i, v) {
+				isString(i) ? h.push(encode(i) + '=' + encode(execObject(v))) : v.name && h.push(encode(v.name) + '=' + encode(execObject(v.value)))
+			});
+			return h.join('&')
+		},
+		/** 是否是父或祖父节点 */
+		contains: function(parent, child){
+			return isDom(child) &&( parent == doc || (parent.contains(child)) )
+			/*function contains(grandfather, child) {
+				//return isDom(child) && (grandfather === child.parentNode ? !0 : contains(grandfather, child.parentNode))
+				return isDom(child) &&( grandfather===doc || (grandfather.contains(child)))
+			}*/
+		},
+		/**
+		 * 当前时间
+		 */
+		now: function(d) {
+			return (d || 0) + new Date().getTime()
+		},
+		// 延迟执行,==setTimeout
+		/**
+		 * target:apply,call的指向对象
+		 */
+		delay: function(fun, time) {
+			//var params = slice.call(arguments, 2);
+			return new Delay(fun, time, slice.call(arguments, 2))
+		},
+		// 周期执行
+		/**
+		 * fun:执行的方法
+		 * cycleTime:执行的周期时间
+		 * ttl:过期时间,执行时间>ttl时,停止执行,单位 ms(毫秒)
+		 * target:apply,call的指向对象
+		 */
+		cycle: function(fun, cycleTime, ttl) {
+			//var params = slice.call(arguments, 3);
+			return new Cycle(fun, cycleTime, ttl, slice.call(arguments, 3));
+		},
+		log: function() {
+			//con.log("log:", arguments)
+			log("log", arguments);
+		},
+		warn: function(){
+			//con.warn("warn:", arguments)
+			log("warn", arguments);
+		},
+		error: function(){
+			//con.error("error:", arguments)
+			log("error", arguments);
+		},
+		isIphone: function() {
+			return /iPhone OS/.test(UA)
+		},
+		isAndroid: function() {
+			return /Android/.test(UA)
+		},
+		isWP: function() {
+			return /Windows Phone/.test(UA)
+		},
+		isIE: function() {
+			return /MSIE/.test(UA)
+		},
+		/**
+		 * is Firefox
+		 */
+		isFF: function() {
+			return /Firefox/.test(UA)
+		},
+		/**
+		 * is Webkit
+		 */
+		isWK: function() {
+			return /WebKit/.test(UA)
+		},
+		isOpera: function() {
+			return /Opera/.test(UA)
+		},
+		isRetinal: function() { //判断是否是视网膜高清屏,默认是高清屏
+			return (win.devicePixelRatio || 2) >= 1.5;
+		},
+		config: function(opts, _config) {
+			_config = arguments.length <= 1 ? config : (_config || {});
+			var ret = _config;
+			if (arguments.length < 1 || isNull(opts)) {} else if (!isObject(opts)) {
+				ret = _config[opts]
+			} else {
+				each(opts, function(key, val) {
+					isObject(val) && _config[key] ? Q.extend(_config[key], val) : (_config[key] = val)
+				})
+			}
+			return ret
+				//return (arguments.length < 1 || isNull(opts)) ? _config : isObject(opts) ? Q.extend(_config, opts) : _config[opts]
+		},
+		/**
+		 * 合并url,if 参数 _url为空,则
+		 */
+		url: function(_url) {
+			_url = Q.trim(_url);
+			var regProtol = /^\s*[a-zA-Z0-9]+:\/\//, base = config.base;
+			if(!regProtol.test(_url)){
+				if(!regProtol.test(base)){
+					base = (base || loc.pathname.replace(/\/[^\/]*$/,""));
+				}
+				if(!/^\//.test(_url)){
+					_url = ("/"+_url).replace(/\/{2,}/g,"/");
+					_url =  base + _url.replace(/\/{2,}/g,"/");
+				}			
+			} 
+			return _url;
+		},
+		cssPrefix: function(style) {
+			var ret = {};
+			if (isString(style)) {
+				ret = (Q.isWK() ? "-webkit-" : Q.isIE() ? "-ms-" : Q.isFF() ? "-moz-" : Q.isOpera() ? "-o-" : "") + style;
+			} else {
+				each(Q.extend({}, style), function(key, val) {
+					ret[Q.cssPrefix(key)] = val;
+					ret[key] = val;
+				})
+			}
+			return ret
+		},
+		/**
+			执行方法并捕获异常,不向外抛出异常,try{}catch(e){} 影响方法的美观性
+			fun:执行方法
+			args:数组,参数[]
+			error:抛出异常回调,无异常不回调
+		*/
+		execCatch: function (fun, args, error) {
+			try {
+				fun.apply(fun, args||[]);
+			} catch (e) {
+				Q.log(e, e.stack, fun, args);
+				error && error(e);
+			} 
+		}
+	});
 	each([
 		Q.url, Q.now
 	], function(i, val) {
@@ -542,10 +529,11 @@
 		},
 		isSE: function() {
 			return !isNull(doc.addEventListener)
-		}
+		},
+		_delete: _delete
 	};
 	///////////////////////////////////////////////////////
-	Q.version = "1.3.60";
+	Q.version = "2.0.00";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
@@ -556,26 +544,36 @@
  * @version:1.00.100
  */
 (function(Q) {
-	var win = Q.global, doc = win.document, _in = Q._in;
-	var SE = _in.isSE, isNull = Q.isNull, isDom = Q.isDom, each = Q.each, //
-	likeArray = Q.likeArray, isArray = Q.isArray,likeNull = Q.likeNull, //
-	isString = Q.isString, isFun = Q.isFun, isPlainObject = Q.isPlainObject, trim = Q.trim, //
-	toLower = Q.toLower, toUpper = Q.toUpper, replace = function(value, str1, str2) {
-		return value.replace(str1, str2)
-	};
+	var win = Q.global,
+		doc = win.document,
+		_in = Q._in;
+	var SE = _in.isSE,
+		isNull = Q.isNull,
+		isDom = Q.isDom,
+		each = Q.each, //
+		likeArray = Q.likeArray,
+		isArray = Q.isArray,
+		likeNull = Q.likeNull, //
+		isString = Q.isString,
+		isFun = Q.isFun,
+		isPlainObject = Q.isPlainObject,
+		trim = Q.trim, //
+		toLower = Q.toLower,
+		toUpper = Q.toUpper,
+		replace = function(value, str1, str2) {
+			return value.replace(str1, str2)
+		};
 	/* 节点查询编译 */
-	var rNode = /^\s*(<.+>.*<\/.+>)+|(<.+\/\s*>)+\s*$//*, match = {
-		ID : /^#[\w-_\u00c0-\uFFFF]+/,
-		ATTR : /^([\w-_]+)?\[\s*[\w-_]+\s*!?=\s*('|")?(.*)('|")?\s*\]/,
-		CT : /^([\w-_]+)?\.[\w-_]+/,
-		TAG : /^[\w-_]+/
-	}*/, addUints = "height width top right bottom left".split(" ");
+	var rNode = /^\s*(<.+>.*<\/.+>)+|(<.+\/\s*>)+\s*$/,
+		addUints = "height width top right bottom left".split(" ");
 	/** Qmik查询 */
 	function Query(selector, context) {
-		var me = this, r;
+		var me = this,
+			r;
 		me.context = context = context || doc;
 		me.selector = selector = render(selector, context);
 		me.length = 0;
+		me.__lives = {};
 		if (isString(selector)) {
 			if (rNode.test(selector)) {
 				var t = doc.createElement('div');
@@ -592,83 +590,93 @@
 				selector
 			]
 		}
-		for(var i=0;i<r.length ;i++){
+		for (var i = 0; i < r.length; i++) {
 			me._push(r[i])
 		}
 		return me
 	}
 	Q.extend(Query.prototype, {
-		_push : function(v) {
-			v && ( this[this.length++] = v )
+		_push: function(v) {
+			v && (this[this.length++] = v)
 		}
 	});
 	// Q.inherit(Query, Array);
 	function init(selector, context) {
 		context = context || doc;
-		if (isFun(selector)) { return Q(doc).ready(selector) }
+		if (isFun(selector)) {
+			return Q(doc).ready(selector)
+		}
 		return isQmik(selector) ? selector : new Query(selector, context)
 	}
+
 	function isQmik(v) {
-		return v instanceof Query
-	}
-	//查找元素节点
+			return v instanceof Query
+		}
+		//查找元素节点
 	function find(selector, context) {
-		var result=[];
-		if(!likeNull(selector)){
+		var result = [];
+		if (!likeNull(selector)) {
 			context = isString(context) ? Q(context) : context;
-			if(isQmik(context)){
+			if (isQmik(context)) {
 				each(context, function(i, v) {
-					isDom(v) && (result = arrayConcat(result,v.querySelectorAll(selector)))
+					isDom(v) && (result = arrayConcat(result, v.querySelectorAll(selector)))
 				});
-			}else{
-				result=context.querySelectorAll(selector) || []
+			} else {
+				result = context.querySelectorAll(selector) || []
 			}
 		}
 		return result
 	}
 
+	function muchValue2Qmik(c) {
+		c = execObject(c);
+		return isString(c) && rNode.test(c) ? Q(c) : c
+	}
+
 	function execObject(v) {
 		return isFun(v) ? v() : render(v)
 	}
-	// As much as possible to Array
-	function arrayConcat(sarray,tarray) {
-		if(isArray(tarray)){
-			sarray =sarray.concat(tarray)
-		}else{
-			for(var i=0;i<tarray.length;i++){
+
+	function render(val, context) {
+			return (Q.isPlainObject(val) && (isString(val.tag) || isString(val.text))) ? Q.render(val, context || {}) : val
+		}
+		// As much as possible to Array
+	function arrayConcat(sarray, tarray) {
+		if (isArray(tarray)) {
+			sarray = sarray.concat(tarray)
+		} else {
+			for (var i = 0; i < tarray.length; i++) {
 				sarray.push(tarray[i])
 			}
 		}
 		return sarray
 	}
+
 	function at(target, name) {
 		return !SE() ? target[name] : target.getAttribute(name) || target[name]
 	}
-		
+
 	// /////////////////////////////////////////////////
 	function hasClass(dom, className) {
 		if (!isDom(dom)) return !1;
-		var cs = dom.className.split(" "), i = 0;
+		var cs = dom.className.split(" "),
+			i = 0;
 		className = trim(className);
 		for (; i < cs.length; i++)
 			if (cs[i] == className) return !0;
 		return !1
 	}
+
 	function formateClassName(v) {
 		return replace(v, /[A-Z]/g, function(v) {
 			return "-" + toLower(v)
 		})
 	}
-	function muchValue2Qmik(c) {
-		c = execObject(c);
-		return isString(c) && rNode.test(c) ? Q(c) : c
+
+	function createTextNode(val) {
+		return doc.createTextNode(val)
 	}
-	function render(val, context) {
-		return ( Q.isPlainObject(val) && (isString(val.tag) || isString(val.text)) ) ? Q.render(val, context||{}) : val
-	}
-	function createTextNode(val){
-		doc.createTextNode( render(val) )
-	}
+
 	function append(o, child) {
 		child = muchValue2Qmik(child);
 		if (likeArray(o)) {
@@ -681,6 +689,7 @@
 			}) : o.appendChild(isDom(child) ? child : createTextNode(child))
 		}
 	}
+
 	function before(o, child) {
 		child = muchValue2Qmik(child);
 		if (likeArray(o)) {
@@ -693,6 +702,7 @@
 			}) : o.parentNode.insertBefore(isDom(child) ? child : createTextNode(child), o)
 		}
 	}
+
 	function after(o, child) {
 		if (isDom(o)) {
 			var n = GN(o);
@@ -703,24 +713,28 @@
 			})
 		}
 	}
+
 	function setValue(obj, key, val) {
 		obj[key] = val;
 		return obj
 	}
+
 	function formateClassNameValue(name, value) {
-		for ( var i in addUints) {
+		for (var i in addUints) {
 			if (name.indexOf(addUints[i]) >= 0) {
-				if(!/[^\d\.-]/.test(value)){
-					value += "px"				
+				if (!/[^\d\.-]/.test(value)) {
+					value += "px"
 				}
 				break
 			}
 		}
 		return value
 	}
-	function getStyle(dom,name){
-		return dom.currentStyle ? dom.currentStyle[name] : doc.defaultView.getComputedStyle(dom,false)[name]
+
+	function getStyle(dom, name) {
+		return dom.currentStyle ? dom.currentStyle[name] : doc.defaultView.getComputedStyle(dom, false)[name]
 	}
+
 	function css(o, k, v) {
 		//k = isString(k) && !isNull(v) ? Q.parseJSON('{"' + k + '":"' + execObject(v) + '"}') : k;
 		k = isString(k) && !isNull(v) ? setValue({}, k, execObject(v)) : k;
@@ -731,7 +745,7 @@
 			})
 		} else if (isDom(o)) {
 			//if (isString(k)) return o.style[formateClassName(k)];
-			if (isString(k)) return getStyle(o,formateClassName(k));
+			if (isString(k)) return getStyle(o, formateClassName(k));
 			v = "";
 			each(k, function(i, j) {
 				v += formateClassName(i) + ':' + formateClassNameValue(i, j) + ';'
@@ -739,6 +753,7 @@
 			o.style.cssText += ';' + v
 		}
 	}
+
 	function attr(target, name, val, isSetValue) {
 		if (likeArray(target)) {
 			if (isString(name) && isNull(val)) return attr(target[0], name, val, isSetValue) || "";
@@ -759,13 +774,16 @@
 					Q(target).append(val)
 				} else {
 					var val = execObject(val);
-					(isSetValue || !SE()) ? target[name] = val : target.setAttribute(name, val);
+					(isSetValue || !SE()) ? target[name] = val: target.setAttribute(name, val);
 				}
 			}
 		}
 	}
+
 	function clone(o, isDeep) {
-		if (isDom(o)) { return Q(o.cloneNode(isDeep == !0)) }
+		if (isDom(o)) {
+			return Q(o.cloneNode(isDeep == !0))
+		}
 		var r = [];
 		each(o, function(k, v) {
 			isDom(v) && r.push(clone(v, isDeep))
@@ -773,6 +791,7 @@
 		return Q(r)
 	}
 	var dn = "Qmikdata:";
+
 	function data(o, k, v) {
 		if (likeArray(o)) {
 			if (isString(k) && isNull(v)) return data(o[0], k, v);
@@ -788,37 +807,36 @@
 			})
 		}
 	}
-	
-	/** 是否是父或祖父节点 */
-	function contains(grandfather, child) {
-		//return isDom(child) && (grandfather === child.parentNode ? !0 : contains(grandfather, child.parentNode))
-		return isDom(child) &&( grandfather===doc || (grandfather.contains(child)))
-	}
-	
+
 	function GN(dom, type) {
 		if (dom) {
 			dom = type == "prev" ? dom.previousSibling : dom.nextSibling;
 			return isDom(dom) ? dom : GN(dom, type)
 		}
 	}
+
 	function uponSelector(dom, selector, type, ret) {
-		var list = Q(dom.parentNode).children(selector), i, zdom;
+		var list = Q(dom.parentNode).children(selector),
+			i, zdom;
 		if (type == "prev") {
 			for (i = list.length - 1; i >= 0; i--) {
-				for (zdom = dom; (zdom = GN(zdom, type)) && zdom == list[i];) {
+				for (zdom = dom;
+					(zdom = GN(zdom, type)) && zdom == list[i];) {
 					ret.push(zdom);
 					break
 				}
 			}
 		} else {
 			for (i = 0; i < list.length; i++) {
-				for (zdom = dom; (zdom = GN(zdom, type)) && zdom == list[i];) {
+				for (zdom = dom;
+					(zdom = GN(zdom, type)) && zdom == list[i];) {
 					ret.push(zdom);
 					break
 				}
 			}
 		}
 	}
+
 	function upon(qmik, selector, type) {
 		var ret = [];
 		each(qmik, function(i, dom) {
@@ -826,42 +844,45 @@
 		});
 		return new Query(ret, qmik)
 	}
+
 	function matchesSelector(dom, selector) {
-		if(dom){
-			dom._matchesSelector = dom.matchesSelector || dom.msMatchesSelector || dom.mozMatchesSelector || dom.webkitMatchesSelector;
-			return dom._matchesSelector && dom._matchesSelector(selector)
+			if (dom) {
+				dom._matchesSelector = dom.matchesSelector || dom.msMatchesSelector || dom.mozMatchesSelector || dom.webkitMatchesSelector;
+				return dom._matchesSelector && dom._matchesSelector(selector)
+			}
 		}
-	}
-	/**
-	 * 	selector:选择器 
-	 	qmik:qmik查询对象 
-	 	isAllP:是否包含所有父及祖父节点 默认true
-	 * 	isOnlyParent:往上查找的层级是否只到直接父节点 默认false
-	 */
+		/**
+		 * 	selector:选择器 
+		 	qmik:qmik查询对象 
+		 	isAllP:是否包含所有父及祖父节点 默认true
+		 * 	isOnlyParent:往上查找的层级是否只到直接父节点 默认false
+		 */
 	function parents(selector, qmik, isAllP, isOnlyParent) {
-		selector = selector ? trim( selector ) : selector;
-		var array = [],isPush=0;
+		selector = selector ? trim(selector) : selector;
+		var array = [],
+			isPush = 0;
 		isAllP = isAllP != !1;
 		isOnlyParent = isOnlyParent == !0;
 		var isSelector = !isNull(selector);
-		each(qmik,function(i, dom){
-			var p = dom.parentNode,tp;
-			while(isDom(p) && p != doc.body){
+		each(qmik, function(i, dom) {
+			var p = dom.parentNode,
+				tp;
+			while (isDom(p)) {
 				isPush = 0;
-				if(isSelector){
+				if (isSelector) {
 					tp = p.parentNode;
-					if(tp && Q.inArray(p ,Q(tp).children(selector))>-1){
+					if (tp && Q.inArray(p, Q(tp).children(selector)) > -1) {
 						isPush = 1
 					}
-				}else{
+				} else {
 					isPush = 1
 				}
-				if(isPush){
+				if (isPush) {
 					array.push(p);
 					if (!isAllP) break
 				}
-				if (isOnlyParent) break;	
-				p && ( p = p.parentNode )
+				if (isOnlyParent) break;
+				p && (p = p.parentNode)
 			}
 		});
 		return Q(array)
@@ -874,84 +895,86 @@
 		})
 	}
 	fn.extend({
-		last : function() {
+		last: function() {
 			return Q(this[this.length - 1])
 		},
-		eq : function(i) {
+		eq: function(i) {
 			return Q(this[i])
 		},
-		first : function() {
+		first: function() {
 			return Q(this[0])
 		},
-		filter : function(f) {
+		filter: function(f) {
 			var r = new Query();
 			each(this, function(i, v) {
 				if (f(i, v)) r._push(v)
 			});
 			return r
 		},
-		even : function() {
+		even: function() {
 			return this.filter(function(i, v) {
 				return i % 2 == 0
 			})
 		},
-		odd : function() {
+		odd: function() {
 			return this.filter(function(i, v) {
 				return i % 2 != 0
 			})
 		},
-		gt : function(i) {// 大于
-			var r = new Query(), j = i + 1;
+		gt: function(i) { // 大于
+			var r = new Query(),
+				j = i + 1;
 			for (; j < this.length && j >= 0; j++) {
 				r._push(this[j])
 			}
 			return r
 		},
-		lt : function(i) {// 小于
-			var r = new Query(), j = 0;
+		lt: function(i) { // 小于
+			var r = new Query(),
+				j = 0;
 			for (; j < i && j < this.length; j++) {
 				r._push(this[j])
 			}
 			return r
 		},
-		find : function(s) {
+		find: function(s) {
 			return new Query(s, this)
 		},
-		each : function(f) {
+		each: function(f) {
 			each(this, f);
 			return this
 		},
-		append : function(c) {
+		append: function(c) {
 			append(this, c);
 			return this
 		},
-		appendTo: function(c){
+		appendTo: function(c) {
 			Q(c).append(this);
 			return this;
 		},
-		remove : function() {
+		remove: function() {
 			each(this, function(i, v) {
 				isDom(v.parentNode) && v.parentNode.removeChild(v)
 			});
 			return this
 		},
-		before : function(c) {
+		before: function(c) {
 			before(this, c);
 			return this
 		},
-		after : function(c) {
+		after: function(c) {
 			after(this, c);
 			return this
 		},
-		beforeTo: function(c){
+		beforeTo: function(c) {
 			before(c, this);
 			return this
 		},
-		afterTo: function(c){
+		afterTo: function(c) {
 			after(c, this);
 			return this
 		},
-		html : function(v) {
+		html: function(v) {
 			var me = this;
 			if (arguments.length < 1) return attr(me, "innerHTML");
 			else {
@@ -962,83 +985,103 @@
 			}
 			return this
 		},
-		empty : function() {
-			this.html("");
-			return this
+		empty: function() {
+			return this.html("")
 		},
-		text : function(v) {
+		text: function(v) {
 			var r = attr(this, "innerText", isQmik(v) ? v.text() : v, !0);
 			return isNull(v) ? r : this
 		},
-		addClass : function(n) {
+		addClass: function(n) {
 			each(this, function(i, v) {
 				if (isDom(v) && !hasClass(v, n)) v.className += ' ' + trim(execObject(n))
 			});
 			return this
 		},
-		rmClass : function(n) {
+		rmClass: function(n) {
 			var r = new RegExp(replace(execObject(n), /\s+/g, "|"), 'g');
 			each(this, function(i, v) {
 				v.className = replace(trim(replace(v.className, r, '')), /[\s]+/g, ' ')
 			});
 			return this
 		},
-		show : function() {
-			css(this, 'display', 'block');
+		show: function() {
+			css(this, 'display', Q.isIE() ? 'block' : 'initial');
 			return this
 		},
-		hide : function() {
+		hide: function() {
 			css(this, 'display', 'none');
 			return this
 		},
-		toggle : function() {
+		animate: function(style, time, easing, callback){
+			var me = this;
+			var initStyle = {transition: 0}, startStype = Q.extend({}, initStyle);
+			each(style, function(key, val){
+				startStype[key] = parseFloat(css(me, key))||0;
+			});
+			css(me, startStype);
+			Q.delay(function(){
+				style.transition = " ease-in-out " + (time || 1) + "ms";
+				css(me, Q.cssPrefix(style));
+				function transitionEnd(e) {
+					css(me, initStyle);
+					callback && callback(e);
+				}
+				me.once({
+					webkitTransitionEnd: transitionEnd,
+					msTransitionEnd: transitionEnd,
+					oTransitionEnd: transitionEnd,
+					transitionend: transitionEnd
+				});
+			}, 10);
+			return me;
+		},
+		toggle: function() {
 			each(this, function(i, v) {
 				css(v, 'display') == 'none' ? Q(v).show() : Q(v).hide()
 			});
 			return this
 		},
-		toggleClass : function(className) {
-			this.each(function(i, dom) {
-				hasClass(dom, className) ? Q(dom).rmClass(className) : Q(dom).addClass(className)
-			})
-		},
-		map : function(callback) {
+		map: function(callback) {
 			return Q.map(this, callback)
 		},
-		css : function(k, v) {
+		css: function(k, v) {
 			var r = css(this, k, v);
 			return isPlainObject(k) || (isString(k) && !isNull(v)) ? this : r
 		},
-		attr : function(k, v) {
+		attr: function(k, v) {
 			var r = attr(this, k, v);
 			return (arguments.length > 1 || isPlainObject(k)) ? this : r
 		},
-		rmAttr : function(k) {
+		rmAttr: function(k) {
 			each(this, function(i, v) {
 				isDom(v) && v.removeAttribute(k)
 			})
 		},
-		data : function(k, v) {
+		data: function(k, v) {
 			return data(this, k, v)
 		},
-		rmData : function(k) {
+		rmData: function(k) {
 			each(this, function(i, v) {
 				if (v.$Qmikdata) delete v.$Qmikdata[k]
 			})
 		},
-		val : function(v) {
-			if (isNull(v)) return this.attr("value") || "";
-			each(this, function(i, u) {
+		val: function(v) {
+			var me = this;
+			if (isNull(v)) return me.attr("value") || "";
+			each(me, function(i, u) {
 				u.value = execObject(v)
-			})
+			});
+			me.emit("change");
+			return me
 		},
-		next : function(s) {
+		next: function(s) {
 			return upon(this, s, "next")
 		},
-		prev : function(s) {
+		prev: function(s) {
 			return upon(this, s, "prev")
 		},
-		clone : function(t) {
+		clone: function(t) {
 			return clone(this, t)
 		},
 		/*hover : function(fin, fout) {
@@ -1047,11 +1090,12 @@
 				Q.delay(fout, 500)
 			})
 		},*/
-		hasClass : function(c) {
+		hasClass: function(c) {
 			return hasClass(this[0], c)
 		},
-		closest : function(selector) {// 查找最近的匹配的父(祖父)节点
-			var me = this, q = new Query();
+		closest: function(selector) { // 查找最近的匹配的父(祖父)节点
+			var me = this,
+				q = new Query();
 			me.each(function(i, dom) {
 				Q(selector, dom.parentNode).each(function(j, dom1) {
 					dom === dom1 && q._push(dom)
@@ -1065,37 +1109,36 @@
 			*/
 			return q.length > 0 ? q : parents(selector, me, !1)
 		},
-		parents : function(selector) {// 查找所有的匹配的父(祖父)节点
+		parents: function(selector) { // 查找所有的匹配的父(祖父)节点
 			return parents(selector, this, !0)
 		},
-		parent : function(selector) {// 查找匹配的父节点
+		parent: function(selector) { // 查找匹配的父节点
 			return parents(selector, this, !0, !0)
 		},
-		children : function(selector) {//查找直接子节点
+		children: function(selector) { //查找直接子节点
 			var r = new Query();
 			var me = this;
 			var isNullSelector = isNull(selector);
 			me.each(function(i, dom) {
 				//var childs = dom.childNodes;
-				var childs = dom.children;
-				var j = 0,
+				var childs = dom.children || dom.childNodes,
+					j = 0,
 					tdom;
 				while (j < childs.length) {
 					tdom = childs[j++];
 					isDom(tdom) && (isNullSelector || matchesSelector(tdom, selector)) && r._push(tdom)
 				}
-			});			
+			});
 			return r
 		}
 	});
 	fn.extend({
-		removeClass : fn.rmClass,
-		removeData : fn.rmData,
-		removeAttr : fn.rmAttr
+		removeClass: fn.rmClass,
+		removeData: fn.rmData,
+		removeAttr: fn.rmAttr
 	});
 	Q.isQmik = isQmik;
 })(Qmik);
-
 /**
  * @author:leo
  * @email:cwq0312@163.com
@@ -1112,11 +1155,14 @@
 		liveFuns = {};
 	var isNull = Q.isNull,
 		isFun = Q.isFun,
-		each = Q.each;
+		each = Q.each,
+		isPlainObject = Q.isPlainObject,
+		_delete = _in._delete;
 	/** 设置节点的加载成功方法 */
 	function setLoad(node, fun) {
 		node.onreadystatechange = node.onload = node.onDOMContentLoaded = fun
 	}
+	
 	Q.ready = fn.ready = function(fun, context) {
 		var node = context || this[0] || doc,
 			state;
@@ -1128,7 +1174,8 @@
 				each(node.$$handls, function(i, val) {
 					val(Q);
 				});
-				delete node.$$handls
+				_delete(node, "$$handls");
+				//delete node.$$handls
 			}
 		}
 		if (readyRE.test(node.readyState)) {
@@ -1161,7 +1208,8 @@
 					fun: dom['on' + name],
 					param: []
 				});
-				delete dom['on' + name];
+				_delete(dom, 'on'+name)
+				//delete dom['on' + name];
 			}
 			SE() ? dom.addEventListener(name, handle, !1) : dom["on" + name] = handle
 		}
@@ -1179,21 +1227,17 @@
 			for (; i >= 0; i--)
 				h[i].fun == fun && h.splice(i, 1)
 		} else {
-			SE() ? dom.removeEventListener(name, handle, !1) : delete dom["on" + name];
-			delete s[name]
+			//SE() ? dom.removeEventListener(name, handle, !1) : delete dom["on" + name];
+			//delete s[name]
+			SE() ? dom.removeEventListener(name, handle, !1) : _delete(dom, "on" + name);
+			_delete(s, name)
 		}
 	}
 
 	function Etrig(dom, name) {
 		var e;
 		if (SE()) {
-			switch (name) {
-				case "hashchange":
-					e = _in.createEvent("HashChangeEvent");
-					break
-				default:
-					e = _in.createEvent("MouseEvents");
-			}
+			e = _in.createEvent("MouseEvents");
 			e.initEvent(name, !0, !0);
 			dom.dispatchEvent(e)
 		} else dom.fireEvent('on' + name)
@@ -1234,79 +1278,84 @@
 		return e
 	}
 
-	function getLiveName(selector, type, callback) {
-		return selector + ":live:" + type + ":" + (callback || "").toString()
+	function getLiveName(type, callback) {
+		return type  + (callback || "").toString()
+	}
+
+	function mapEvent(name, fun, dealFun) {
+		var ents = {};
+		if(isPlainObject(name))
+			ents = name;
+		else
+			ents[name] = fun;
+		dealFun && each(ents, dealFun);
+		return ents;
+	}
+	/** 是否是父或祖父节点 */
+	function contains(grandfather, child) {
+		return Q.isDom(child) && (grandfather === child || grandfather === child.parentNode ? !0 : contains(grandfather, child.parentNode))
 	}
 	fn.extend({
 		on: function(name, callback) {
-			var p = [].slice.call(arguments, 2);
 			each(this, function(k, v) {
-				Q.isPlainObject(name) ? each(name, function(k, j) {
-					Eadd(v, k, j, callback)
-				}) : Eadd(v, name, callback, p)
+				mapEvent(name, callback, function(key, fun){
+					Eadd(v, key, fun)
+				})
 			});
 			return this
 		},
-		un: function(name, callback) {
+		off: function(name, callback) {
 			each(this, function(k, v) {
 				Erm(v, name, callback)
 			});
 			return this
 		},
 		once: function(name, callback) { // 只执行一次触发事件,执行后删除
-			var me = this;
-
-			function oneexec(e) {
-				callback(e);
-				me.un(name, oneexec)
-			}
-			me.on(name, oneexec)
+			var me = this, ents={};
+			mapEvent(name, callback, function(key, fun){
+				ents[key] = function(e){
+					me.off(key, ents[key]);
+					fun(e);
+				}
+			});
+			return me.on(ents);
 		},
-		emit: function(name) {
+		emit: function(name) {//手动触发事件
 			each(this, function(k, v) {
 				Etrig(v, name)
 			});
 			return this
 		},
 		live: function(name, callback) {
-			var select = this.selector;
-			var names = name;
-			if (!Q.isPlainObject(name)) {
-				names = {};
-				names[name] = callback
-			}
-			each(names, function(key, callback) {
-				var fun = liveFuns[getLiveName(select, key, callback)] = function(e) {
-					var me = e.target,
-						_me = Q(me);
-					if (Q.isString(select) ? _me.closest(select).length > 0 :
-						Q.isDom(select) ? Q.inArray(select, _me.parents()) >= 0 : 0) {
-						callback.apply(me, [
-							e
-						])
-					}
-				};
+			var me = this;
+			mapEvent(name, callback, function(key, callback) {
+				var fun = me.__lives[getLiveName(key, callback)] = function(e) {
+					var target = e.target,
+						qtar = Q(target),
+						sel = Q.isString(me.selector) ? Q(me.selector, me.context) : me;
+					each(sel, function(i, dom) {
+						contains(dom, target) && callback.call(target, e)
+					});
+				}
 				Q("body").on(key, fun)
 			});
-			return this
+			return me
 		},
 		die: function(name, callback) {
-			var fun = liveFuns[getLiveName(this.selector, name, callback)];
-			each(Q(document.body), function(k, dom) {
-				Erm(dom, name, fun)
-			});
-			return this
+			var me = this,
+				fun = me.__lives[getLiveName(name, callback)];
+			(arguments.length < 2 || fun) && Erm(doc.body, name, fun);
+			return me
 		}
 	});
 	fn.extend({
 		bind: fn.on,
-		unbind: fn.un,
-		off: fn.un,
+		unbind: fn.off,
 		trigger: fn.emit
 	});
 	/**
 	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
-	 * 90：逆时针转了 Android2.1尚未支持重力感应
+	 * 90：逆时针转了 Android2.1尚未支持重力感应 click blur focus scroll resize
 	 */
 	each("click blur focus scroll resize".split(" "), function(i, v) {
 		fn[v] = function(f) {
@@ -1321,6 +1370,7 @@
  */
 (function(Q) { /* ajax */
 	var win = Q.global, toObject = Q.parseJSON, isFun = Q.isFun, //
+	_delete = Q._in._delete,
 	regUrl = /[\w\d_$-]+\s*=\s*\?/, jsonp = 1, prefex = "qjsonp", //
 	ac = {
 		type : 'GET',
@@ -1337,24 +1387,24 @@
 		url = _config.url, gdata = Q.param(_config.data), //
 		callbackName = prefex + (jsonp++), //
 		cb = url.match(regUrl);
-		if (url.indexOf("?") < 0) url += "?";
+		/\?/.test(url) || (url+="?");
 		if (cb) {
 			cb = cb[0].split("=")[0];
 			url = url.replace(regUrl, cb + "=" + callbackName)
 		} else {
 			url += "&callback=" + callbackName
 		}
-		url += gdata;
+		url += "&"+gdata;
 		function err() {
 			if (isExe == 1) {
 				isExe = 0;
-				delete win[callbackName];
+				_delete(win, callbackName);
 				Q("script[jsonp='" + callbackName + "']").remove();
 				error && error()
 			}
 		}
 		win[callbackName] = function(data) {
-			delete win[callbackName];
+			_delete(win, callbackName);
 			Q("script[jsonp='" + callbackName + "']").remove();
 			thread && thread.stop();
 			isExe == 1 && success && success(data)
@@ -1587,7 +1637,9 @@
 ;
 (function(Q) {
 	var isFun = Q.isFun,
-		execCatch = Q.execCatch;
+		execCatch = Q.execCatch,
+		win = Q.global,
+		NULL = null;
 	var config = {
 		alias: {}, //别名系统
 		vars: {}, //路径变量系统
@@ -1618,7 +1670,7 @@
 		}).replace(/(\/\*.*\*\/)|(\/\*[\S\s]*\*\/)/g, "")*/
 		var list = [];
 		Q.each(word.replace(/(\/\/[^\n]*)|(\/\*[^\n]*\*\/)|(["'][^"'\n]*["'])/g, function(val) {
-			return /[\(\)\*]/.test(val) ? "" : val;//.replace(/\*/g,"");
+			return /[\(\)\*]/.test(val) ? "" : val; //.replace(/\*/g,"");
 		}).replace(/\/\*.*\*\//g, "").split(/\*\//), function(i, val) {
 			list.push(val.replace(/\/\*[\s\S]+/, ""))
 		});
@@ -1631,13 +1683,12 @@
 		var params = code.replace(/^\s*function\s*\w*\s*/, "").match(/^\([\w ,]*\)/)[0].replace("\(", "").replace("\)", "");
 		var match = [],
 			idx = params.indexOf(",");
-		if (idx >= 0) {
-			var require = params.substring(0, idx),
-				pattern = new RegExp(require + "\s*[(]\s*[\"']([^\"'\)]+)[\"']\s*[)]", "g");
-			match = Q.map(code.match(pattern), function(i, v) {
-				return v.replace(new RegExp("^" + require + "\s*[(]\s*[\"']"), "").replace(/\s*[\"']\s*[)]$/, "")
-			})
-		}
+		var require = params.substring(0, idx>0 ? idx : params.length),
+			pattern = new RegExp(require + "\s*[(]\s*[\"']([^\"'\)]+)[\"']\s*[)]", "g");
+		match = Q.map(code.match(pattern), function(i, v) {
+			return v.replace(new RegExp("^" + require + "\s*[(]\s*[\"']"), "").replace(/\s*[\"']\s*[)]$/, "")
+		});
+		
 		return match
 	}
 
@@ -1679,13 +1730,13 @@
 
 	var queue = new QueueSync(function(item, chain) {
 		var callback = item.callback;
-		batload(callback, item.ids, null, chain)
+		batload(callback, item.ids, NULL, chain)
 	});
 
 	// require module
 	function require(id) {
 		var module = requireModule(id);
-		return module ? module.exports : null
+		return module ? module.exports : NULL
 	}
 
 	function requireModule(id) {
@@ -1716,10 +1767,13 @@
 		var module = requireModule(id);
 		module ? useModule(module, require, callback, refer) : request(id, function() {
 			module = requireModule(id);
-			useModule(module, require, callback, refer)
+			module ? useModule(module, require, callback, refer) : loadModuleError(id, callback)
 		}, function() {
-			callback(null, new Error("load error:" + id))
+			loadModuleError(id, callback)
 		})
+	}
+	function loadModuleError(id,callback){
+		callback(NULL, new Error("load module is error " + id))
 	}
 	//取得url的域名+路径,去掉参数及hash(frament)
 	function getDemainPath(url) {
@@ -1785,36 +1839,40 @@
 			return isFun(tmp) ? tmp() : tmp;
 		});
 	}
-	function checkLegalId(id){
-		if(/[\)\(\*]/.test(id))throw new Error("define id:"+id+" is Illegal,not contain )(*");
+
+	function checkLegalId(id) {
+		if (/[\)\(\*]/.test(id)) throw new Error("define id:" + id + " is Illegal,not contain )(*");
 	}
 	// ////////////////id to url end ///////////////////////////////
 	function define(id, url, dependencies, factory) {
-		checkLegalId(id);checkLegalId(url);
+		checkLegalId(id);
+		checkLegalId(url);
 		return cacheModule[id] = cacheModule[url] = new Module(id, dependencies, factory);
 	}
 	Q.extend(sun, {
 		use: function(ids, callback) {
-			ids = Q.isArray(ids) ? ids : [
-				ids
-			];
-			if (!ispreload) {
-				queue.push({
-					ids: pres
+			Q.delay(function() {
+				ids = Q.isArray(ids) ? ids : [
+					ids
+				];
+				if (!ispreload) {
+					queue.push({
+						ids: pres
+					});
+					ispreload = !0
+				}
+				//下面检测使用的模块是否已被全部加载过
+				var ret = [];
+				Q.each(ids, function(i, val) {
+					var module = requireModule(val) || {};
+					module.state == 1 && ret.push(require(val));
 				});
-				ispreload = !0
-			}
-			//下面检测使用的模块是否已被全部加载过
-			var ret = [];
-			Q.each(ids, function(i, val) {
-				var module = requireModule(val) || {};
-				module.state == 1 && ret.push(require(val));
-			});
-			ret.length == ids.length ? callback.apply(callback, ret) : queue.push({
-				ids: ids,
-				callback: callback
-			});
-			queue.deal()
+				ret.length == ids.length ? callback.apply(callback, ret) : queue.push({
+					ids: ids,
+					callback: callback
+				});
+				queue.deal()
+			}, 1);
 		},
 		// factory:function(require, exports, module)
 		define: function(uid, dependencies, factory) {
@@ -1832,7 +1890,7 @@
 			dependencies = dependencies.concat(parseDepents(factory));
 			dependencies = Q.unique(dependencies);
 			define(uid, getDemainPath(url || uid), dependencies, factory);
-			currentScript = null;
+			currentScript = NULL;
 		},
 		config: function(opts) { //参数配置
 			return Q.config(opts, config)
@@ -1843,6 +1901,7 @@
 	});
 	Q.sun = sun;
 	Q.define = Q.sun.define;
+	win.define = win.define || Q.define;//如果外面没有引入其它cmd框架,设置全局变量define
 	Q.use = Q.sun.use;
 })(Qmik);
 /**
@@ -1894,4 +1953,519 @@
 			}
 		}
 	});
+})(Qmik);
+
+
+/**
+ * mvc模块
+ * @author leochen
+ */
+(function(Q) {
+	var win = Q.global,
+		isNull = Q.isNull,
+		isPlainObject = Q.isPlainObject,
+		extend = Q.extend,
+		each = Q.each,
+		delay = Q.delay,
+		execCatch = Q.execCatch;
+
+	var ctrls = {}, //控制器存储
+		scopes = {},
+		g_config = {
+			section: 24//q-for分隔大小
+		},
+		keywords = "scopes context parent get set on off once app";//关键词,用户不能定义到scope上的变量名
+	var nameParentScope ="parent",
+		namespace = "qmik-mvc-space",
+		namespaceScope = "qmik-mvc-space-scope",
+		fieldWatchs = "__watchs",
+		nameRoot = "html",
+		nameContext = "context",
+		nameInput = "__input",
+		nameMap = "__map",
+		execInterval = 30;//scroll触发间隔
+	/********* 当节点在显示视口时触发 start *******/
+	var g_viewports = {};
+	
+	var prevTime = Q.now();
+	function handle(e){
+		var curTime = Q.now(), timeout = 10;
+		if (curTime - prevTime < execInterval) {//触发频率
+			return;
+		}
+		prevTime = curTime;
+		var map = extend({}, g_viewports);
+		each(map, function(key, map){
+			var node = map.scope.context,
+				qdom = Q(node);
+			if (Q.inViewport(qdom)) {
+				delete g_viewports[key];
+				map.callback && execCatch(map.callback);
+				qdom.emit("viewport");
+			}
+		});
+	}
+	Q(win).on({
+		scroll: handle,
+		touchstart: handle,
+		touchmove: handle
+	});
+	function trigger(){
+		Q(win).emit("scroll");
+	}
+	/********* 当节点在显示视口时触发 end *******/
+	//监听器的触发实现
+	function watch(e, scope, emit) {
+		var target = e.target,
+			name = emit ? e.name : target.name||"",
+			scope = getCtrlNode(target)[namespaceScope] || scope;
+		if (name && (isInput(target) || emit) ) {
+			fieldValue(scope, name, emit ? e.value : getInputValue(target));
+			var value = getVarValue(scope, name);
+			each(getBatList(scope[fieldWatchs], name), function(i, watch) {
+				 execCatch(watch,[{name:name, value:value, source:scope[split(name)[0]], target:target}]);
+			});
+			compileVarName(name, scope);
+		}
+	}
+
+	/** 应用 */
+	function App(fun) {
+		var me = this;
+		Q(function(){
+			me.__init(fun);
+		})
+	}
+	extend(App.prototype, {
+		__init: function(fun) {
+			var me = this,
+				scope = new Scope(),
+				root = Q(nameRoot)[0];
+			me.scope = scope;
+			root[namespace] = getSpace(root);
+			fun && fun(scope);
+			compile(root, scope, true);//编译页面		
+			trigger();
+			
+			function remove(e){
+				var target = e.target,
+					name = target.name,
+					isInputDom = isInput(target),
+					space = getSpace(target);
+				if(space){
+					var scope = space.scope;
+					each(space.vars, function(i, _name) {
+						var newmaps = [];
+						if (isInputDom && name == _name) {
+							return;
+						}
+						each(scope[nameMap][_name], function(i, dom) {
+							dom != target && newmaps.push(dom);
+						});
+						scope[nameMap][_name] = newmaps;
+					});
+					if(isInputDom){
+						delete scope[nameInput][name];
+					}
+				}		
+			}
+			function _change(e){
+				watch(e, scope);
+			}
+			Q("body").on({
+				change: _change,
+				keyup: _change
+			});
+			Q(win).on({
+				//DOMSubtreeModified: function(e){},
+				DOMNodeInserted: function(e){//节点增加
+					var target = e.target,
+						space = getSpace(target);
+					if(space){
+						addScopeInput(target, space.scope);
+						compile(target, space.scope);
+					}
+				},
+				DOMNodeRemoved: remove //删除节点
+			});
+		},
+		config: function(map){
+			extend(g_config, map);
+			return this;
+		},
+		//控制器
+		ctrl: function(name, callback) {
+			if (isPlainObject(name)) {
+				extend(ctrls, name)
+			} else {
+				ctrls[name] = callback;
+			}
+			return this;
+		}
+	});
+/** 会话 */
+	function Scope(context, rootScope) {
+		var me = this;
+		me[fieldWatchs] = {}; //监听器集合
+		me[nameContext] = context = context || Q(nameRoot)[0]; //上文dom节点
+		me.scopes = scopes;
+		me.__name = Q(context).attr("q-ctrl") || "root"; //控制器名
+		me[nameMap] = {}; //变量映射节点集合
+		me.__cmd = {}; //预留
+		me[nameInput] = {}; //input映射节点
+		scopes[me.__name] = me;
+		context[namespaceScope] = me;
+		me[nameParentScope] = rootScope; //父scope
+		$("input,select,textarea", context).each(function(i, dom) {
+			addScopeInput(dom, me);
+		});
+	}
+	extend(Scope.prototype, {
+		// 监控器,监控变量
+		watch: function(name, callback) {
+			var me = this, map = {};
+			if (isPlainObject(name)) {
+				map = name;				
+			}else{
+				map[name] = callback;
+			}
+			each(map, function(name, value){
+				me[fieldWatchs][name] = me[fieldWatchs][name] || [];
+				me[fieldWatchs][name].push(value);
+			});			
+			return me;
+		},
+		/** 
+			查询节点,在控制器下的范围内查询
+		*/
+		'$': function(sclector) {
+			return Q(sclector, this[nameContext]);
+		},
+		on: function(name, handle){
+			Q(this[nameContext]).on(name, handle)
+		},
+		off: function(name, handle){
+			Q(this[nameContext]).off(name, handle)
+		},
+		once: function(name, handle){
+			Q(this[nameContext]).once(name, handle)
+		},
+		apply: function(names, callback) { //应用会话信息的变更,同时刷新局部页面
+			var me = this;
+			if(Q.isFun(names)){
+				callback = names;
+				names = [];
+			}else{
+				names = Q.isArray(names) ? names : Q.isString(names) ? [names] : [];
+			}
+			//合并之前的更新 名册
+			names = uniqueArray(names, (g_viewports[me.__name]||{}).names);
+			g_viewports[me.__name] = {
+				scope: me,
+				names: names,
+				callback: function(){
+					function emitChange(names, callback){
+						var isArray = Q.likeArray(names), name;
+						each(names, function(i, list){
+							name = isArray ? list : i;
+							//var input = me.$("input[name='"+name+"']")[0];
+							watch({
+								target: me[nameContext],
+								name: name,
+								value: me[name]
+							}, me, true);
+							callback && callback(name, me);
+						});
+					}
+					if(names.length > 0){
+						/*each(names, function(i, name){
+							var input = me.$("input[name='"+name+"']")[0];
+							input ||	change({
+								target: me[nameContext],
+								name: name,
+								value: me[name]
+							}, me, true);
+							compileVarName(name, me)
+						});*/
+						emitChange(names, compileVarName);
+					}else{
+						emitChange(me[fieldWatchs]);
+						compile(me[nameContext], me);
+					}
+					Q.isFun(callback) && callback();
+				}
+			};
+			delay(trigger, execInterval + 10);
+		}
+	});
+	function addScopeInput(dom, scope){
+		var name = dom.name, isSet=true;
+		if(isInput(dom) && name){
+			if(Scope.prototype[name] || /^__/.test(name) || new RegExp(name).test(keywords)){
+				return Q.error("set scope["+scope.__name+"] name["+name+"] is illegal");
+			}
+			if(scope.__name == "root" && Q(dom).parents("[q-ctrl]").length>0){
+				isSet = false;
+			}
+			if(isSet){
+				fieldValue(scope, name, getInputValue(dom));
+				scope[nameInput][name] = dom;
+			}
+		}
+	}
+	function uniqueArray(list1, list2){
+		if(list1.length<1)return [];
+		var list = list1.concat(list2 || []).sort(),
+			result = [];
+		for(var i=0,j;i<list.length;i++){
+			for(j=i+1;j<list.length;j++){
+				if(new RegExp("^"+list[i]).test(list[j])){
+					list.splice(j,1);
+					j--;
+				}
+			}
+			result[i] = list[i];
+		}
+		return result;
+	}
+	function getBatList(map, name){
+		if(name=="")return;
+		var retWatchs = [];
+		for(var i=0,end=split(name).length;i<end;i++){
+			var watch = map[name];
+			if(watch){
+				retWatchs = watch.concat(retWatchs);
+			}
+			name = name.replace(/\.?[^\.]*$/,"");
+		}
+ 		return retWatchs;
+	}
+	function isInput(dom){
+		var name = dom ? dom.tagName : "";
+		return name == "INPUT" || name == "SELECT" || name == "TEXTAREA"
+	}
+	/** 取界面上input输入标签的初始化值 */
+	function getInputValue(node) {
+		var name = node.name,
+			type = node.type,
+			vals = [];
+		if(type == "radio"){
+			vals[0] = node.checked ? node.value : ""
+		}else if(type == "checkbox"){
+			Q("input[name='"+node.name+"']", getCtrlNode(node)).each(function(i, dom){
+				dom.checked && vals.push(dom.value)
+			})
+		}else if(type == "select-multiple"){
+			each(node.options, function(i, option) {
+				option && option.selected && vals.push(option.value)
+			})
+		}else {
+			vals.push(node.value)
+		}
+		return vals.join("&")
+	}
+	var REG_VAR_NAME = /(\$\{\s*[\w\._-]*\s*\})|(\{\{\s*[\w\._-]*\s*\}\})/g;
+
+	/** 解析页面 */
+	function compile(node, scope, isAdd) {
+		Q("[q-ctrl]").css("visibility","visible");//置为可见
+		replaceNodeVar(node, scope, isAdd, compileChilds);
+	}
+	function compileChilds(node, scope, isAdd){
+		if(node && node != win){
+			each(node.childNodes, function(i, node) {
+				replaceNodeVar(node, scope, isAdd, compileChilds);
+			})
+		}
+	}
+	//取得变量名
+	function getVarName(name) {
+		return (name || "").replace(/\s*((^(\$|\{)\{)|(\}?\}$))\s*/g, "");
+	}
+	function split(name){
+		return name.split(".")
+	}
+	function fieldValue(object, names, val){
+		var ns = Q.isArray(names) ? names : split(names), 
+			field = ns[0];
+		if(ns.length < 2){
+			if(!isNull(val)){
+				object[field] = val;
+			}
+			return object[field];
+		}
+		object[field] = object[field] || {};
+		ns.shift();
+		return fieldValue(object[field], ns, val);
+	}
+	//取变量对应的值
+	function getVarValue(scope, name) {
+		var val = fieldValue(getUseSpaceScope(scope, name), name);
+		return isNull(val) ? "" : val;
+	}
+	function getUseSpaceScope(scope, name){
+		var field = split(name)[0];
+		return isNull(scope[field]) && scope[nameParentScope] && !isNull(scope[nameParentScope][field]) ? scope[nameParentScope] : scope
+	}
+	/** 取控制器节点 */
+	function getCtrlNode(node) {
+		return Q(node).closest("[q-ctrl],"+nameRoot)[0]
+	}
+
+	//添加变量映射节点
+	function addMapNode(scope, name, node) {
+		scope = getUseSpaceScope(scope, name);
+		if (scope) {
+			addMapPush(scope, name, node)
+		}
+	}
+	function addMapPush(scope, name, node){
+		var retWatchs = [];
+		for(var i=0,end=split(name).length;i<end;i++){
+			var list = scope[nameMap][name] = scope[nameMap][name] || [];
+			list.indexOf(node)<0 && list.push(node);
+			name = name.replace(/\.?[^\.]*$/,"");
+		}
+ 		return retWatchs;
+	}
+	function compileVarName(key, scope) {
+		each(scope[nameMap][key], function(i, dom) {
+			replaceNodeVar(dom, scope);
+		});
+	}
+	/** 取存放到节点上的对象空间 */
+	function getSpace(node){
+		var ctrl = getCtrlNode(node);
+		if(ctrl){
+			return node[namespace] || {
+				attr: {},
+				vars: [],
+				ctrl: ctrl,
+				event: {},
+				fors: {},
+				scope: ctrl[namespaceScope]
+			}
+		}
+	}
+	function replaceNodeVar(node, scope, isAdd, callback) {
+		var space = getSpace(node);
+		if(!space)return;
+		switch (node.nodeType) {
+			case 1://正常节点
+				each(node.attributes, function(i, attr){
+					var attrName = attr.name,//属性名
+						value = space.attr[attrName] = space.attr[attrName] || (attr.value || "").trim();
+					if ("q-ctrl" === attrName) {//控制器
+						if (value != "") {
+							if(Q(node).parents("[q-ctrl]").length > 0){
+								Q.warn("q-ctrl[",scope.__name,"] can't have child q-ctrl[", value,"]");
+								Q(node).rmAttr("q-ctrl");
+								return;
+							}
+							if(scopes[value]){
+								scope = scopes[value];
+							}else{
+								scope = new Scope(node, scope);
+								execCatch(function() {
+									Q.isFun(ctrls[value]) ? ctrls[value](scope) : Q.warn("q-ctrl:[" + value + "]is not define");
+								});
+							}
+						}
+					} else if ("q-for" === attrName) { //for
+						var vs = value.replace(/(\s){2,}/g, " ").split(" "),
+							template = space.html = space.html || node.innerHTML,
+							htmls = [],
+							list = getVarValue(scope, vs[2]) || [],
+							start = 0,
+							qIndex = 0,
+							section = parseInt(g_config.section) || 24;
+						if(vs.length == 3 && vs[1]=="in"){
+							Q(node).html("");
+							space.fors[node] && space.fors[node].stop();//停止之前的进度
+							space.fors[node] = Q.cycle(function(){
+								if(start>=list.length){
+									return space.fors[node].stop();
+								}
+								htmls = [];
+								each(list.slice(start, start+section), function(i, item) {
+									item.index = (qIndex++) + 1;
+									var html = template.replace(REG_VAR_NAME, function(varName) {
+										var reg = new RegExp("^" + vs[0] + "\."),
+											name = getVarName(varName).replace(reg, ""),
+											val = fieldValue(item, name);
+										return val || "";
+									});
+									html = html.replace(/<\s*script/g, "&lt;script");
+									htmls.push(html);
+								});
+								start+=section;
+								node.innerHTML += htmls.join("");
+
+								compileChilds(node, scope, isAdd);//编译
+							},50);
+							node[namespace] = space;
+							isAdd && addMapNode(scope, vs[2], node);	
+						}else{
+							Q.warn("q-for[",value,"] is error");
+						}
+					} else if(/^q-on/.test(attrName)){//事件绑定
+						var onName = attrName,
+							name = attrName.replace(/^q-on/,""),
+							funName = value.replace(/\(.*\)$/,"");
+						if(!space.event[name]){
+							space.event[name] = true;
+							var handle = function(e){
+								if(!Q.contains(scope[nameContext], node)){
+									return Q(scope[nameContext]).off(name, handle);
+								}
+								if( Q.contains(node, e.target) ){//判断是否是当前节点的子节点触发的事件
+									scope[funName] && scope[funName](e);
+								}			
+							}
+							Q(scope[nameContext]).on(name, handle);
+						}						
+					} else if (REG_VAR_NAME.test(value)) {//变量
+						attr.value = value.replace(REG_VAR_NAME, function(name) {
+							node[namespace] = space;
+							name = getVarName(name);
+							space.vars.push(name);
+							var val = getVarValue(scope, name);
+							isAdd && addMapNode(scope, name, node);							
+							return val;
+						});
+					}
+				});
+				break;
+			case 3://文本节点
+				var val = space.text;
+				val = isNull(val) ? node.textContent : val;
+				if (REG_VAR_NAME.test(val)) {
+					node[namespace] = space;
+					space.text = val;
+					node.textContent = val.replace(REG_VAR_NAME, function(name) {
+						name = getVarName(name);
+						space.vars.push(name);
+						var val = getVarValue(scope, name),
+							inputNode = scope[nameInput][name];
+						isAdd && addMapNode(scope, name, node);
+						if(inputNode && isInput(inputNode) && inputNode.value != val){
+							if(inputNode.type !="checkbox" && inputNode.type != "select-multiple"){
+								scope[nameInput][name].value = val;
+							}
+						}
+						
+						return val;
+					});
+				}
+				break;
+		}
+		space.scope = scope;
+		callback && callback(node, scope, isAdd);
+	}
+
+	var app;
+	Q.app = function(ctrls, rootCtrlFun){
+		return app = app || new App(rootCtrlFun);
+	};
+	//
 })(Qmik);
