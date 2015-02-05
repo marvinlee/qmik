@@ -249,26 +249,7 @@
 		}
 	});
 	//////////////////////
-	/* */
-	//高度
-	function getHeight() {
-		return win.innerHeight || screen.availHeight;
-	}
-	function getMax() {
-		return win.pageYOffset + getHeight() + 120;
-	}
-	//判断是否在视口里
-	function inViewport(dom) {
-		var qdom = Q(dom),
-			elTop = qdom.offset().top,
-			elDown = elTop + qdom.height(),
-			min = win.pageYOffset,
-			max = getMax();
-		min = min < 0 ? 0 : min;
-		//return elTop >= 0 && elTop >= min && elTop <= max;
-		return elTop >=0 && elTop <= max && elDown >= min	
-	}
-	/**/
+	
 	Q.extend({
 		encode: encode,
 		decode: decode,
@@ -317,7 +298,6 @@
 				subClass[name] = superClass[name];
 			}
 		},
-		inViewport: inViewport,
 		trim: function(v) {
 			return isNull(v) ? "" : isString(v) ? v.trim() : v.toString().trim()
 		},
@@ -510,10 +490,10 @@
 		*/
 		execCatch: function (fun, args, error) {
 			try {
-				fun.apply(fun, args||[]);
+				return fun.apply(fun, args||[]);
 			} catch (e) {
 				Q.log(e, e.stack, fun, args);
-				error && error(e);
+				return error && error(e);
 			} 
 		}
 	});
@@ -887,6 +867,16 @@
 		});
 		return Q(array)
 	}
+	/* */
+	//高度
+	function getHeight() {
+		return win.innerHeight || screen.availHeight;
+	}
+	function getMax() {
+		return win.pageYOffset + getHeight() + 120;
+	}	
+	/**/
+
 	Q.init = init;
 	var fn = Q.fn = Query.prototype;
 	fn.extend = function(o) {
@@ -1012,6 +1002,21 @@
 		hide: function() {
 			css(this, 'display', 'none');
 			return this
+		},
+		inViewport: function(){
+			var qdom = this,
+				offset = qdom.offset(),
+				bool = false;
+			if (offset) {
+				var elTop = offset.top,
+					elDown = elTop + qdom.height(),
+					min = win.pageYOffset,
+					max = getMax();
+				min = min < 0 ? 0 : min;
+				//return elTop >= 0 && elTop >= min && elTop <= max;
+				bool = elTop >= 0 && elTop <= max && elDown >= min
+			}
+			return bool;
 		},
 		animate: function(style, time, easing, callback){
 			var me = this;
