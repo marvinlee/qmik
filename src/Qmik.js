@@ -249,6 +249,26 @@
 		}
 	});
 	//////////////////////
+	/* */
+	//高度
+	function getHeight() {
+		return win.innerHeight || screen.availHeight;
+	}
+	function getMax() {
+		return win.pageYOffset + getHeight() + 120;
+	}
+	//判断是否在视口里
+	function inViewport(dom) {
+		var qdom = Q(dom),
+			elTop = qdom.offset().top,
+			elDown = elTop + qdom.height(),
+			min = win.pageYOffset,
+			max = getMax();
+		min = min < 0 ? 0 : min;
+		//return elTop >= 0 && elTop >= min && elTop <= max;
+		return elTop >=0 && elTop <= max && elDown >= min	
+	}
+	/**/
 	Q.extend({
 		encode: encode,
 		decode: decode,
@@ -297,6 +317,7 @@
 				subClass[name] = superClass[name];
 			}
 		},
+		inViewport: inViewport,
 		trim: function(v) {
 			return isNull(v) ? "" : isString(v) ? v.trim() : v.toString().trim()
 		},

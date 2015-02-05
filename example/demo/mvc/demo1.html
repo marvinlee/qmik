@@ -6,6 +6,9 @@
   <meta name="-webkit-tap-highlight" content="no" /> 
   <meta content="IE=10" http-equiv="x-ua-compatible" /> 
   <title>mvc例子</title> 
+  <!--[if lt IE 8]>
+    <script type="text/javascript" src="../../respond.js"></script>
+  <![endif]-->
   <script type="text/javascript" src="../../Qmik.all.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
@@ -15,7 +18,8 @@
       <p class="ftitle" > 全局控制(用户信息) </p>
       <ul>
         <li class=" q-hide">
-          <span class="lt">用户名: </span><input name="user.userName" type="text" value="leo"/>
+          <span class="lt">用户名: </span>
+            <input name="user.userName" type="text" value="leo"/>
           <span class="lt">动态绑定:</span>[<span class="bind">${user.userName}</span>]
         </li>
         <li>
@@ -113,6 +117,7 @@
   <script type="text/javascript">
     //$.app() 编译并生成应用,$.app().ctrl()定义控制器
     $.app(function(scope){ //全局控制器的写法
+      console.log(">>>")
         $.delay(function(){
           scope.user.userName="leochen";
           scope.apply();
@@ -129,6 +134,7 @@
         });
     }).ctrl({
       shopping: function(scope){//购物
+        console.log("1111")
         scope.vUserName = scope.parent.userName;//界面上用到的变量,没有输出相应的input标签,需要预定义
         scope.msg = "";
         window.scope = scope;
@@ -142,8 +148,13 @@
           scope.vUserName = v.replace(/xo/g,"*o");
           scope.apply();
         });
-        scope.watch("gohome", function(map){
+        scope.watch({
+          "gohome": function(map){
           console.log("watch gohome:", map);
+          },
+          "shop": function(map){
+            console.log("watch shop:", map);
+          }
         });
         console.log(scope);
       },search: function(scope){//搜索

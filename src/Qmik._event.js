@@ -96,13 +96,7 @@
 	function Etrig(dom, name) {
 		var e;
 		if (SE()) {
-			switch (name) {
-				case "hashchange":
-					e = _in.createEvent("HashChangeEvent");
-					break
-				default:
-					e = _in.createEvent("MouseEvents");
-			}
+			e = _in.createEvent("MouseEvents");
 			e.initEvent(name, !0, !0);
 			dom.dispatchEvent(e)
 		} else dom.fireEvent('on' + name)

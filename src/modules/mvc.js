@@ -29,23 +29,7 @@
 		execInterval = 30;//scroll触发间隔
 	/********* 当节点在显示视口时触发 start *******/
 	var g_viewports = {};
-	//高度
-	function getHeight() {
-		return win.innerHeight || screen.availHeight;
-	}
-	function getMax() {
-		return win.pageYOffset + getHeight() + 120;
-	}
-	//判断是否在视口里
-	function inViewport(qdom) {
-		var elTop = qdom.offset().top,
-			elDown = elTop + qdom.height(),
-			min = win.pageYOffset,
-			max = getMax();
-		min = min < 0 ? 0 : min;
-		//return elTop >= 0 && elTop >= min && elTop <= max;
-		return elTop >=0 && elTop <= max && elDown >= min	
-	}
+	
 	var prevTime = Q.now();
 	function handle(e){
 		var curTime = Q.now(), timeout = 10;
@@ -57,10 +41,7 @@
 		each(map, function(key, map){
 			var node = map.scope.context,
 				qdom = Q(node);
-			if (qdom.offset().top > getMax()) {
-				return;
-			}
-			if (inViewport(qdom)) {
+			if (Q.inViewport(qdom)) {
 				delete g_viewports[key];
 				map.callback && execCatch(map.callback);
 				qdom.emit("viewport");
@@ -76,12 +57,12 @@
 		Q(win).emit("scroll");
 	}
 	/********* 当节点在显示视口时触发 end *******/
-
-	function change(e, scope, emit) {
+	//监听器的触发实现
+	function watch(e, scope, emit) {
 		var target = e.target,
 			name = emit ? e.name : target.name||"",
 			scope = getCtrlNode(target)[namespaceScope] || scope;
-		if (isInput(target) || emit) {
+		if (name && (isInput(target) || emit) ) {
 			fieldValue(scope, name, emit ? e.value : getInputValue(target));
 			var value = getVarValue(scope, name);
 			each(getBatList(scope[fieldWatchs], name), function(i, watch) {
@@ -132,7 +113,7 @@
 				}		
 			}
 			function _change(e){
-				change(e, scope);
+				watch(e, scope);
 			}
 			Q("body").on({
 				change: _change,
@@ -226,21 +207,32 @@
 				scope: me,
 				names: names,
 				callback: function(){
-					if(names.length > 0){
-						var nodes = [];
-						each(names, function(i, name){
-							var input = me.$("input[name='"+name+"']")[0];
-							if(!input){
-								change({
-									target: me[nameContext],
-									name: name,
-									value: me[name]
-								}, me, true);
-							}
-							compileVarName(name, me)
+					function emitChange(names, callback){
+						var isArray = Q.likeArray(names), name;
+						each(names, function(i, list){
+							name = isArray ? list : i;
+							//var input = me.$("input[name='"+name+"']")[0];
+							watch({
+								target: me[nameContext],
+								name: name,
+								value: me[name]
+							}, me, true);
+							callback && callback(name, me);
 						});
+					}
+					if(names.length > 0){
+						/*each(names, function(i, name){
+							var input = me.$("input[name='"+name+"']")[0];
+							input ||	change({
+								target: me[nameContext],
+								name: name,
+								value: me[name]
+							}, me, true);
+							compileVarName(name, me)
+						});*/
+						emitChange(names, compileVarName);
 					}else{
-						me.$("input,select,textarea").emit("change");
+						emitChange(me[fieldWatchs]);
 						compile(me[nameContext], me);
 					}
 					Q.isFun(callback) && callback();
@@ -410,6 +402,7 @@
 						if (value != "") {
 							if(Q(node).parents("[q-ctrl]").length > 0){
 								Q.warn("q-ctrl[",scope.__name,"] can't have child q-ctrl[", value,"]");
+								Q(node).rmAttr("q-ctrl");
 								return;
 							}
 							if(scopes[value]){
@@ -445,6 +438,7 @@
 											val = fieldValue(item, name);
 										return val || "";
 									});
+									html = html.replace(/<\s*script/g, "&lt;script");
 									htmls.push(html);
 								});
 								start+=section;

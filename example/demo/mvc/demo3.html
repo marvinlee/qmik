@@ -67,7 +67,6 @@
                 }];
 
                 scope.clickList = function(e){
-
                     var i = parseInt(Math.random() * 2);
                     var color = i%2==1 ? "red": "green"; 
                     $(e.target).css("backgroundColor",color);
@@ -78,6 +77,10 @@
                     scope.time--;
                     scope.apply(["time"]);//更新到界面
                 }, 1000);
+                scope.watch("time", function(map){
+                   // console.log("time:", map);
+                });
+
 
                 $("body").append('<div q-ctrl="dinative">xxx</div>');
               },

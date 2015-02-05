@@ -45,7 +45,7 @@
             //加载数据
             $.delay(function(){
                 scope.list= [];
-                for(var i=0;i<5;i++){
+                for(var i=0;i<=countPage;i++){
                     scope.list.push({name:"leo", age:i+10});
                 }
                 scope.apply("list");
@@ -57,7 +57,7 @@
 
 
             $.delay(function(){
-                if(page <5){
+                if(page <=5){
                     $(scope.context).parent().append(temp);//添加模板到dom节点上,会自动触发节点解析
                 }
             }, time*1000);        
@@ -66,7 +66,7 @@
         $.app().ctrl({
             page1:ctrlPage//首页控制器
         });
-        for(var i=1;i<countPage-1;i++){//批量添加后面几首页的控制器
+        for(var i=1;i<=countPage;i++){//批量添加后面几首页的控制器
             $.app().ctrl("page"+(i+1), ctrlPage);
         }
 
