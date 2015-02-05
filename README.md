@@ -49,7 +49,7 @@ Qmik是一个快速和精简且功能强大的无线端JavaScript库,核心库�
 [增加2.0.00版本(重大功能mvc完善):](https://github.com/leochen36/qmik/tree/master/builds)
 2.0.00 版本, 
 1.增强完善mvc大模块功能
-4.增加Qmik.inViewport(dom)方法(节点是否在当前视口)
+4.增加Qmik.fn.inViewport()方法(节点是否在当前视口)
 
 
 [增加1.4.00版本(稳定后,升级为2.0版本,重大功能mvc加入):](https://github.com/leochen36/qmik/tree/master/builds)
@@ -147,7 +147,7 @@ $.sun.config({
         isRetinal() : 判断是否是高清屏,默认是高清屏
         likeArray(value) : 像数组,有length字段等一些属性,
         each(value,function(i,val){}) : 循环,
-        inViewport(node) : 判断节点是否在当前显示视口,
+       
         stringify(value) : json转字符串,
         parseJSON(value) : 字符串转json,
         likeArray(value) : 像数组
@@ -270,6 +270,7 @@ Qmik.fn api(即 $("#id").api)
         show : function()
         hide : function() 
         toggle : function()
+        inViewport: function()//判断节点是否在当前显示视口,
         map : function(callback)
         css : function(k, v) 
         attr : function(k, v) 
