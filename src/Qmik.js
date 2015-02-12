@@ -468,7 +468,7 @@
 					_url =  base + _url.replace(/\/{2,}/g,"/");
 				}			
 			} 
-			return _url;
+			return _url.replace(/^\/{2,}/g, "/");;
 		},
 		cssPrefix: function(style) {
 			var ret = {};
@@ -513,7 +513,7 @@
 		_delete: _delete
 	};
 	///////////////////////////////////////////////////////
-	Q.version = "2.0.00";
+	Q.version = "2.0.10";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;

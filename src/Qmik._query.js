@@ -31,7 +31,8 @@
 		var me = this,
 			r;
 		me.context = context = context || doc;
-		me.selector = selector = render(selector, context);
+		//me.selector = selector = render(selector, context);
+		me.selector = selector;
 		me.length = 0;
 		me.__lives = {};
 		if (isString(selector)) {
@@ -94,12 +95,13 @@
 	}
 
 	function execObject(v) {
-		return isFun(v) ? v() : render(v)
+		//return isFun(v) ? v() : render(v)
+		return isFun(v) ? v() : v
 	}
 
-	function render(val, context) {
-			return (Q.isPlainObject(val) && (isString(val.tag) || isString(val.text))) ? Q.render(val, context || {}) : val
-		}
+	/*function render(val, context) {
+		return (Q.isPlainObject(val) && (isString(val.tag) || isString(val.text))) ? Q.render(val, context || {}) : val
+	}*/
 		// As much as possible to Array
 	function arrayConcat(sarray, tarray) {
 		if (isArray(tarray)) {

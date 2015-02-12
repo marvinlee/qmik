@@ -308,6 +308,12 @@
 		return vals.join("&")
 	}
 	var REG_VAR_NAME = /(\$\{\s*[\w\._-]*\s*\})|(\{\{\s*[\w\._-]*\s*\}\})/g;
+	var REG_VAR_NAME_REP=/\s*((^(\$|\{)\{)|(\}?\}$))\s*/g;
+	var REG_SCRIPT = /<\s*script/g;
+
+	REG_VAR_NAME.compile(REG_VAR_NAME);
+	REG_VAR_NAME_REP.compile(REG_VAR_NAME_REP);
+	REG_SCRIPT.compile(REG_SCRIPT);
 
 	/** 解析页面 */
 	function compile(node, scope, isAdd) {
@@ -323,7 +329,7 @@
 	}
 	//取得变量名
 	function getVarName(name) {
-		return (name || "").replace(/\s*((^(\$|\{)\{)|(\}?\}$))\s*/g, "");
+		return (name || "").replace(REG_VAR_NAME_REP, "");
 	}
 	function split(name){
 		return name.split(".")
@@ -438,7 +444,7 @@
 											val = fieldValue(item, name);
 										return val || "";
 									});
-									html = html.replace(/<\s*script/g, "&lt;script");
+									html = html.replace(REG_SCRIPT, "&lt;script");
 									htmls.push(html);
 								});
 								start+=section;
@@ -507,7 +513,7 @@
 	}
 
 	var app;
-	Q.app = function(ctrls, rootCtrlFun){
+	Q.app = function(rootCtrlFun){
 		return app = app || new App(rootCtrlFun);
 	};
 	//

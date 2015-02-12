@@ -54,9 +54,10 @@
 			idx = params.indexOf(",");
 		var require = params.substring(0, idx>0 ? idx : params.length),
 			pattern = new RegExp(require + "\s*[(]\s*[\"']([^\"'\)]+)[\"']\s*[)]", "g");
-		match = Q.map(code.match(pattern), function(i, v) {
-			return v.replace(new RegExp("^" + require + "\s*[(]\s*[\"']"), "").replace(/\s*[\"']\s*[)]$/, "")
-		});
+		if(require)
+			match = Q.map(code.match(pattern), function(i, v) {
+				return v.replace(new RegExp("^" + require + "\s*[(]\s*[\"']"), "").replace(/\s*[\"']\s*[)]$/, "")
+			});
 		
 		return match
 	}
@@ -236,7 +237,7 @@
 					var module = requireModule(val) || {};
 					module.state == 1 && ret.push(require(val));
 				});
-				ret.length == ids.length ? callback.apply(callback, ret) : queue.push({
+				ret.length == ids.length ? callback && callback.apply(callback, ret) : queue.push({
 					ids: ids,
 					callback: callback
 				});
