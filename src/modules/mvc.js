@@ -29,7 +29,7 @@
 		execInterval = 30;//scroll触发间隔
 	/********* 当节点在显示视口时触发 start *******/
 	var g_viewports = {};
-	
+
 	var prevTime = Q.now();
 	function handle(e){
 		var curTime = Q.now(), timeout = 10;
@@ -87,9 +87,9 @@
 			me.scope = scope;
 			root[namespace] = getSpace(root);
 			fun && fun(scope);
-			compile(root, scope, true);//编译页面		
+			compile(root, scope, true);//编译页面
 			trigger();
-			
+
 			function remove(e){
 				var target = e.target,
 					name = target.name,
@@ -110,7 +110,7 @@
 					if(isInputDom){
 						delete scope[nameInput][name];
 					}
-				}		
+				}
 			}
 			function _change(e){
 				watch(e, scope);
@@ -138,6 +138,9 @@
 		},
 		//控制器
 		ctrl: function(name, callback) {
+            if(arguments.length < 1){
+                return ctrls;
+            }
 			if (isPlainObject(name)) {
 				extend(ctrls, name)
 			} else {
@@ -168,17 +171,17 @@
 		watch: function(name, callback) {
 			var me = this, map = {};
 			if (isPlainObject(name)) {
-				map = name;				
+				map = name;
 			}else{
 				map[name] = callback;
 			}
 			each(map, function(name, value){
 				me[fieldWatchs][name] = me[fieldWatchs][name] || [];
 				me[fieldWatchs][name].push(value);
-			});			
+			});
 			return me;
 		},
-		/** 
+		/**
 			查询节点,在控制器下的范围内查询
 		*/
 		'$': function(sclector) {
@@ -335,7 +338,7 @@
 		return name.split(".")
 	}
 	function fieldValue(object, names, val){
-		var ns = Q.isArray(names) ? names : split(names), 
+		var ns = Q.isArray(names) ? names : split(names),
 			field = ns[0];
 		if(ns.length < 2){
 			if(!isNull(val)){
@@ -453,7 +456,7 @@
 								compileChilds(node, scope, isAdd);//编译
 							},50);
 							node[namespace] = space;
-							isAdd && addMapNode(scope, vs[2], node);	
+							isAdd && addMapNode(scope, vs[2], node);
 						}else{
 							Q.warn("q-for[",value,"] is error");
 						}
@@ -469,17 +472,17 @@
 								}
 								if( Q.contains(node, e.target) ){//判断是否是当前节点的子节点触发的事件
 									scope[funName] && scope[funName](e);
-								}			
+								}
 							}
 							Q(scope[nameContext]).on(name, handle);
-						}						
+						}
 					} else if (REG_VAR_NAME.test(value)) {//变量
 						attr.value = value.replace(REG_VAR_NAME, function(name) {
 							node[namespace] = space;
 							name = getVarName(name);
 							space.vars.push(name);
 							var val = getVarValue(scope, name);
-							isAdd && addMapNode(scope, name, node);							
+							isAdd && addMapNode(scope, name, node);
 							return val;
 						});
 					}
@@ -502,7 +505,7 @@
 								scope[nameInput][name].value = val;
 							}
 						}
-						
+
 						return val;
 					});
 				}
@@ -514,6 +517,9 @@
 
 	var app;
 	Q.app = function(rootCtrlFun){
+        app && app.scope && rootCtrlFun && Q(function(){
+           execCatch(rootCtrlFun, [app.scope]);
+        });
 		return app = app || new App(rootCtrlFun);
 	};
 	//

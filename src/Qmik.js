@@ -97,7 +97,8 @@
 	}
 
 	function isObject(v) {
-		return v instanceof Object
+		//return v instanceof Object
+        return v+"" == "[object Object]"
 	}
 
 	function each(obj, callback) { // each fun(k,v)
@@ -513,7 +514,7 @@
 		_delete: _delete
 	};
 	///////////////////////////////////////////////////////
-	Q.version = "2.0.10";
+	Q.version = "2.1.00";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
