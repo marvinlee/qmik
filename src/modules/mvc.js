@@ -339,7 +339,7 @@
 			field = ns[0];
 		if(ns.length < 2){
 			if(!isNull(val)){
-				object[field] = val;
+				object[field] = val || object[field] || "";
 			}
 			return object[field];
 		}
