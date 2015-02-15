@@ -65,6 +65,10 @@
 		if (name && (isInput(target) || emit) ) {
 			fieldValue(scope, name, emit ? e.value : getInputValue(target));
 			var value = getVarValue(scope, name);
+
+            /* 如果是根scope,那么 把值赋值到 Scope.prototype 上面, 采用原型模式来读取内容 */
+            setScopePrototype(scope, name);
+
 			each(getBatList(scope[fieldWatchs], name), function(i, watch) {
 				 execCatch(watch,[{name:name, value:value, source:scope[split(name)[0]], target:target}]);
 			});
@@ -256,9 +260,19 @@
 			if(isSet){
 				fieldValue(scope, name, getInputValue(dom));
 				scope[nameInput][name] = dom;
+
+                /* 如果是根scope,那么 把值赋值到 Scope.prototype 上面, 采用原型模式来读取内容 */
+                setScopePrototype(scope, name);
 			}
 		}
 	}
+    /* 如果是根scope,那么 把值赋值到 Scope.prototype 上面, 采用原型模式来读取内容 */
+    function setScopePrototype(scope, name){
+        if(scope.__name == "root"){//如果是根scope
+            var field = split(name)[0];
+            Scope.prototype[field] = scope[field];
+        }
+    }
 	function uniqueArray(list1, list2){
 		if(list1.length<1)return [];
 		var list = list1.concat(list2 || []).sort(),
