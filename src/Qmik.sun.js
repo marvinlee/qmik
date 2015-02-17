@@ -16,7 +16,6 @@
 	};
 	var cacheModule = {}, //模块池
 		currentScript, //当前脚本
-		pres, //预加载的全路径url
 		ispreload = !1; //是否加载过预加载
 	var sun = {};
 
@@ -28,7 +27,7 @@
 			factory: factory,
 			// module is ready ,if no, request src from service
 			state: 3, // is ready ,default false, 1=ok,2=准备中,3=寻找模块
-			type: Q.inArray(url, pres) >= 0 ? 2 : 1, //2:预加载的类型,1:普通类型
+			type: Q.inArray(url, config.preload) >= 0 ? 2 : 1, //2:预加载的类型,1:普通类型
 			exports: {}
 		})
 	}
@@ -227,7 +226,7 @@
 				];
 				if (!ispreload) {
 					queue.push({
-						ids: pres
+						ids: config.preload
 					});
 					ispreload = !0
 				}
