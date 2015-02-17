@@ -17,7 +17,7 @@
 		g_config = {
 			section: 24//q-for分隔大小
 		},
-		keywords = "scopes context parent get set on off once app";//关键词,用户不能定义到scope上的变量名
+		keywords = "scopes context parent get set on off once app watch apply $";//关键词,用户不能定义到scope上的变量名
 	var nameParentScope ="parent",
 		namespace = "qmik-mvc-space",
 		namespaceScope = "qmik-mvc-space-scope",
@@ -251,7 +251,7 @@
 	function addScopeInput(dom, scope){
 		var name = dom.name, isSet=true;
 		if(isInput(dom) && name){
-			if(Scope.prototype[name] || /^__/.test(name) || new RegExp(name).test(keywords)){
+			if(/^__/.test(name) || new RegExp(name).test(keywords)){
 				return Q.error("set scope["+scope.__name+"] name["+name+"] is illegal");
 			}
 			if(scope.__name == "root" && Q(dom).parents("[q-ctrl]").length>0){

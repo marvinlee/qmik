@@ -354,7 +354,10 @@
 	function getHeight() {
 		return win.innerHeight || screen.availHeight;
 	}
-	function getMax() {
+    function getMaxX() {
+        return win.pageXOffset + win.innerWidth + 120;
+    }
+	function getMaxY() {
 		return win.pageYOffset + getHeight() + 120;
 	}	
 	/**/
@@ -478,7 +481,7 @@
 			return this
 		},
 		show: function() {
-			css(this, 'display', Q.isIE() ? 'block' : 'initial');
+			css(this, 'display', 'block');
 			return this
 		},
 		hide: function() {
@@ -491,12 +494,17 @@
 				bool = false;
 			if (offset) {
 				var elTop = offset.top,
+                    elLeft = offset.left,
 					elDown = elTop + qdom.height(),
-					min = win.pageYOffset,
-					max = getMax();
-				min = min < 0 ? 0 : min;
+                    elRight = elLeft + qdom.width(),
+                    minX = win.pageXOffset,
+                    maxX = getMaxX(),
+					minY = win.pageYOffset,
+					maxY = getMaxY();
+                minY = minY < 0 ? 0 : minY;
 				//return elTop >= 0 && elTop >= min && elTop <= max;
-				bool = elTop >= 0 && elTop <= max && elDown >= min
+				bool = elTop >= 0 && elTop <= maxY && elDown >= minY;
+                bool = bool && elLeft >= 0 && elLeft <= maxX && elRight >= minX
 			}
 			return bool;
 		},
