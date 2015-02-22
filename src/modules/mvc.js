@@ -43,8 +43,10 @@
 				qdom = Q(node);
 			if (qdom.inViewport()) {
 				delete g_viewports[key];
-                execCatch(map.callback);
-                qdom.emit("viewport");
+                Q.delay(function(){
+                    execCatch(map.callback);
+                    qdom.emit("viewport");
+                }, Math.random(100));
 			}
 		});
 	}
