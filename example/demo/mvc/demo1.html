@@ -129,9 +129,9 @@
     $.app(function(scope){ //全局控制器的写法
       console.log(">>>")
         $.delay(function(){
-          scope.user.userName="leochen";
-          scope.apply();
-          console.log(scope)
+          //scope.user.userName="leochen";
+          //scope.apply();
+          //console.log(scope)
         }, 3000);
         
         scope.watch("user", function(v){

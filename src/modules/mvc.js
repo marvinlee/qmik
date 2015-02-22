@@ -43,10 +43,8 @@
 				qdom = Q(node);
 			if (qdom.inViewport()) {
 				delete g_viewports[key];
-                map.callback && Q.delay(function(){
-                   execCatch(map.callback);
-                }, Math.random(100));
-				qdom.emit("viewport");
+                execCatch(map.callback);
+                qdom.emit("viewport");
 			}
 		});
 	}
@@ -169,7 +167,8 @@
 		context[namespaceScope] = me;
 		me[nameParentScope] = rootScope; //父scope
 		$("input,select,textarea", context).each(function(i, dom) {
-            Q(dom).closest("[q-ctrl]")[0]==context && addScopeInput(dom, me);
+            var pctrl = Q(dom).closest("[q-ctrl]")[0];
+            (isNull(pctrl)||pctrl==context) && addScopeInput(dom, me);
 		});
 	}
 	extend(Scope.prototype, {
@@ -358,7 +357,7 @@
 			field = ns[0];
 		if(ns.length < 2){
 			if(!isNull(val)){
-				object[field] = val || object[field] || "";
+				object[field] = !isNull(val) ? val:  !isNull(object[field]) ? object[field] : "";
 			}
 			return object[field];
 		}
