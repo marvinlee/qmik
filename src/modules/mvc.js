@@ -43,7 +43,9 @@
 				qdom = Q(node);
 			if (qdom.inViewport()) {
 				delete g_viewports[key];
-				map.callback && execCatch(map.callback);
+                map.callback && Q.delay(function(){
+                   execCatch(map.callback);
+                }, Math.random(100));
 				qdom.emit("viewport");
 			}
 		});
@@ -167,7 +169,7 @@
 		context[namespaceScope] = me;
 		me[nameParentScope] = rootScope; //父scope
 		$("input,select,textarea", context).each(function(i, dom) {
-			addScopeInput(dom, me);
+            Q(dom).closest("[q-ctrl]")[0]==context && addScopeInput(dom, me);
 		});
 	}
 	extend(Scope.prototype, {
@@ -422,12 +424,12 @@
 					var attrName = attr.name,//属性名
 						value = space.attr[attrName] = space.attr[attrName] || (attr.value || "").trim();
 					if ("q-ctrl" === attrName) {//控制器
-						if (value != "") {
+						if (value != "") {/*
 							if(Q(node).parents("[q-ctrl]").length > 0){
 								Q.warn("q-ctrl[",scope.__name,"] can't have child q-ctrl[", value,"]");
 								Q(node).rmAttr("q-ctrl");
 								return;
-							}
+							}*/
 							if(scopes[value]){
 								scope = scopes[value];
 							}else{

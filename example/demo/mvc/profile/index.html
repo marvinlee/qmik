@@ -1640,6 +1640,9 @@
           var catas = data.catas;
           $.each(catas[name], function(key, data){
             scope[key] = data;
+              if(name=="cata9"){
+                  console.log(name, data.length);
+              }
           });
           scope.apply();
       });

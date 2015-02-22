@@ -40,10 +40,26 @@
           <div q-ctrl="level2" class="box border1">
             <p class="ftitle"> 子ctrl level2  </p>
             <p>shopName:  ${shop.shopName}</p>
+              <div >
+                  <ul>
+                      <li>
+                          <span class="lt">性别: </span><input name="sex" type="text" value="男"/>
+                          <span class="lt">动态绑定:</span>[<span class="bind">${sex}</span>]
+                      </li>
+                  </ul>
+              </div>
             <br/>
             <div q-ctrl="level3" class="box border1">
               <p class="ftitle"> 子ctrl level3  </p>
               <p>shopName:  ${shop.shopName}</p>
+                <div >
+                    <ul>
+                        <li>
+                            <span class="lt">年龄: </span><input name="age" type="text" value="99"/>
+                            <span class="lt">动态绑定:</span>[<span class="bind">${age}</span>]
+                        </li>
+                    </ul>
+                </div>
               <p>数量:  ${number}</p>
             </div>
           </div>
@@ -54,6 +70,7 @@
     //$.app() 编译并生成应用,$.app().ctrl()定义控制器
     $.app().ctrl({
       shopping: function(scope){//购物
+          window.scope = scope;
         console.log("shopping:", scope);
       },
       level1: function(scope){

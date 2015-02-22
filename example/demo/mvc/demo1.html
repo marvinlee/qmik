@@ -17,6 +17,11 @@
     <div class="box">      
       <p class="ftitle" > 全局控制(用户信息) </p>
       <ul>
+          <li class=" q-hide">
+              <span class="lt">id(不是用户信息) </span>
+              <input name="id" type="text" value="id"/>
+              <span class="lt">动态绑定:</span>[<span class="bind">${id}</span>]
+          </li>
         <li class=" q-hide">
           <span class="lt">用户名: </span>
             <input name="user.userName" type="text" value="leo"/>
@@ -57,6 +62,11 @@
             <span class="lt">库存: </span><input name="shop.stock" type="text" value="11"/>
             <span class="lt">动态绑定:</span>[<span class="bind">{{shop.stock}}</span>]
           </li>
+            <li>
+                <span class="lt">备注: </span>
+                <textarea name="shop.remark">asdfasdf</textarea>
+                <span class="lt">动态绑定:</span>[<span class="bind">{{shop.remark}}</span>]
+            </li>
         </ul>
     </div>
 
