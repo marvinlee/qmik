@@ -40,11 +40,6 @@ Qmik是一个面向数据接口编程,模块化mvc开发框架,数据双向绑�
 其它公司朋友的使用
 
 
-## 官方插件
-1.[图片懒加载插件](https://github.com/leochen36/qmik-loadimg)
-2.[h5存储插件](https://github.com/leochen36/qmik-store)
-
-
 ## 版本记录
 [增加2.1.00版本(增强mvc功能,修复bug):](https://github.com/leochen36/qmik/tree/master/builds)
 2.1.00 版本,
