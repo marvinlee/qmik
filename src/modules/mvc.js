@@ -434,7 +434,7 @@
 							if(scopes[value]){
 								scope = scopes[value];
 							}else{
-								scope = new Scope(node, scope);
+								scope = new Scope(node, scope.parent || scope);
 								execCatch(function() {
 									Q.isFun(ctrls[value]) ? ctrls[value](scope) : Q.warn("q-ctrl:[" + value + "]is not define");
 								});
