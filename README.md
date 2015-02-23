@@ -1,4 +1,4 @@
-## 关于Qmik [下载压缩2.0.00](https://raw.githubusercontent.com/leochen36/qmik/master/builds/Qmik.all.2.0.00.js) 
+## 关于Qmik [下载压缩2.1.00](https://raw.githubusercontent.com/leochen36/qmik/master/builds/Qmik.all.2.1.00.js)
 
 ## [官网](http://www.qmik.org)
 
