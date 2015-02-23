@@ -84,7 +84,8 @@
 	function likeArray(v) { // like Array
 		return !isString(v) && (isArray(v) || (Q.isQmik && Q.isQmik(v)) || (function() {		
 			v += "";
-			return v == "[object Arguments]" || v == "[object NodeList]" || v == "[object HTMLCollection]" || v == "[object StaticNodeList]" || v == "[object NamedNodeMap]"
+			//return v == "[object Arguments]" || v == "[object NodeList]" || v == "[object HTMLCollection]" || v == "[object StaticNodeList]" || v == "[object NamedNodeMap]"
+                return v == "[object Arguments]" || /^\[object \w*((List)|(Collection)|(Map))\]$/.test(v)
 		})())
 	}
 	// isFunction

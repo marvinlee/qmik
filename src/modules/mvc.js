@@ -261,7 +261,11 @@
 				isSet = false;
 			}
 			if(isSet){
-				fieldValue(scope, name, getInputValue(dom));
+                var val = getInputValue(dom);
+                if( isMulInput(dom) ){
+                    val = val || fieldValue(scope, name);
+                }
+				fieldValue(scope, name, val);
 				scope[nameInput][name] = dom;
 
                 /* 如果是根scope,那么 把值赋值到 Scope.prototype 上面, 采用原型模式来读取内容 */
@@ -319,9 +323,9 @@
 				dom.checked && vals.push(dom.value)
 			})
 		}else if(type == "select-multiple"){
-			each(node.options, function(i, option) {
-				option && option.selected && vals.push(option.value)
-			})
+            Q(node).children("option").each(function(i, option) {
+                option && option.selected && vals.push(option.value)
+            });
 		}else {
 			vals.push(node.value)
 		}
@@ -469,7 +473,6 @@
 								});
 								start+=section;
 								node.innerHTML += htmls.join("");
-
 								compileChilds(node, scope, isAdd);//编译
 							},50);
 							node[namespace] = space;
@@ -518,7 +521,7 @@
 							inputNode = scope[nameInput][name];
 						isAdd && addMapNode(scope, name, node);
 						if(inputNode && isInput(inputNode) && inputNode.value != val){
-							if(inputNode.type !="checkbox" && inputNode.type != "select-multiple"){
+							if( !isMulInput(inputNode) ){
 								scope[nameInput][name].value = val;
 							}
 						}
@@ -532,6 +535,10 @@
 		callback && callback(node, scope, isAdd);
 	}
 
+    function isMulInput(dom){
+        var type = dom.type;
+        return type == "checkbox" || type =="radio" || type == "select-multiple"
+    }
 	var app;
 	Q.app = function(rootCtrlFun){
         app && app.scope && rootCtrlFun && Q(function(){

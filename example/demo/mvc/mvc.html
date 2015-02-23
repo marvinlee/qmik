@@ -1,167 +1,186 @@
- <html name="${name}">
- <head> 
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta charset="utf8" /> 
-  <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport" /> 
-  <meta name="-webkit-tap-highlight" content="no" /> 
-  <meta content="IE=9" http-equiv="x-ua-compatible" /> 
-  <title>测试sun模块开发</title> 
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <script type="text/javascript" src="../../../assets/Qmik-debug.all.js"></script>
+<html name="${name}">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf8"/>
+    <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport"/>
+    <meta name="-webkit-tap-highlight" content="no"/>
+    <meta content="IE=9" http-equiv="x-ua-compatible"/>
+    <title>测试sun模块开发</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript" src="../../Qmik.all.js"></script>
 
-  <style type="text/css">
-  	#result{
-  		position: fixed;
-  		right:0;
-  		top:0;
-  		width: 40%;
-  		height: 100%;
-  		background: #cfcfcf;
-  		padding:3px;
-  		overflow-y:scroll;
-  	}
-    input[type=text],select,textarea{
-      margin: 2px;
-      padding: 1px;
-      text-shadow: none;
-      box-shadow: 0px 0px 0px #fff;
-      border: 1px solid #cfcfcf;
-    }
-  </style>
+    <style type="text/css">
+        #result {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 40%;
+            height: 100%;
+            background: #cfcfcf;
+            padding: 3px;
+            overflow-y: scroll;
+        }
+
+        input[type=text], select, textarea {
+            margin: 2px;
+            padding: 1px;
+            text-shadow: none;
+            box-shadow: 0px 0px 0px #fff;
+            border: 1px solid #cfcfcf;
+        }
+    </style>
 </head>
 <body name="${name}" go="${n1}+${name}">
-  ${name} + ${n1} + {{degree}}
-  root name=<input type="text" name="name">
-  <div q-ctrl="ctrlAbc" style="background:;">
-     addr=[${addr}]<br/>
-     addr=<input name="addr" type="text"/><br/>
-     name=<input name="name" />
-  </div>
+${name} + ${n1} + {{degree}}
+root name=<input type="text" name="name">
 
-  <div>
-   degree=<input type="text" name="degree" required>
-  	<form q-ctrl="subdent"  q-submit="subccess()" style="background:;">
-  		<input name="name" value="aaa" type="text" />
-      <input id="n1" name="n1" value="n1" type="text" />
-      <input id="n2" name="n2" value="n2" type="hidden" />
-      <input name="n3" value="n3" type="hidden" />
-      <input name="n4" value="n4" type="hidden" />
-      <select name="select">
-        <option value="2" select>2</option>
-        <option value="1" >1</option>
-      </select>
-      <select name="mselect" multiple size="2">
-        <option value="2" select>2</option>
-        <option value="1" >1</option>
-        <option value="3" >3</option>
-        <option value="" >none</option>
-        <option value="3" >3</option>
-      </select>
-      <div class="ctest"></div>
-      <textarea name="textarea"></textarea>
-      <br/>
+<div q-ctrl="ctrlAbc" style="background:;">
+    addr=[${addr}]<br/>
+    addr=<input name="addr" type="text"/><br/>
+    name=<input name="name"/>
+</div>
 
-      <!-- q-for checkboxs -->
-      <h4>倒计时: ${checkboxTime}</h4>
-      <div q-for="item in checkboxs" class="box">
-        &nbsp; cbk${item.value}
-        <input type="checkbox" name="cbk" value="cbk${item.value}">&nbsp;
-      </div>
-      <br/>
-      <br/>
-      ra1 <input type="radio" name="ra" value="ra1">
-      ra2 <input type="radio" name="ra" value="ra2">
-      ra3 <input type="radio" name="ra" value="ra3">
-      <br/>
-  		<h4>showName:${showName} name:{{name}} n1:${n1} </h4>
-      <h4>select:${select} mselect:<${mselect}>       </h4>
-      <h4>textarea:${textarea} cbk:${cbk}  ra:${ra}   </h4>
-      <h4> degree: {{degree}} gg:{{gg}} </h4>
+<div>
+    degree=<input type="text" name="degree" required>
 
-      
-      <ul q-for=" item  in  list " style="background:green;">
-          <li name="${name}">  ${item.name} -- age: ${ item.age } </li>
-      </ul>
-      <p>gggooo: ${gopark}</p>
-  	</form>
-  	${n12}
-  	<form q-ctrl="subdent1" style="background:#abcfcf;">
-       ctrl:subdent1: name=${name}
-  	</form>
+    <form q-ctrl="subdent" q-submit="subccess()">
+        <input name="name" value="aaa" type="text"/>
+        <input id="n1" name="n1" value="n1" type="text"/>
+        <input id="n2" name="n2" value="n2" type="hidden"/>
+        <input name="n3" value="n3" type="hidden"/>
+        <input name="n4" value="n4" type="hidden"/>
+
+        <div class="box">
+            <select name="select">
+                <option value="2" select>2</option>
+                <option value="1">1</option>
+            </select>
+            > select:${select}
+        </div>
+
+        <div class="box">
+            <select name="mselect" multiple size="2">
+                <option value="2" selected>2</option>
+                <option value="1">1</option>
+                <option value="3">3</option>
+                <option value="none">none</option>
+                <option value="4">4</option>
+            </select>
+            > mselect:<${mselect}>
+        </div>
+
+        <div class="box">
+            <textarea name="textarea"></textarea>
+            > textarea:< ${textarea} >
+        </div>
+
+
+        <div class="box">
+            <h4>倒计时: ${checkboxTime}</h4>
+            <!-- q-for checkboxs -->
+            <div q-for="item in checkboxs">
+                &nbsp; cbk${item.value}
+                <input type="checkbox" name="cbk" value="cbk${item.value}">&nbsp;
+            </div>
+
+            > cbk: < ${cbk} >
+        </div>
+
+        <div class="box">
+            ra1 <input type="radio" name="ra" checked value="ra1">
+            ra2 <input type="radio" name="ra" value="ra2">
+            ra3 <input type="radio" name="ra" value="ra3">
+            > ra:< ${ra} >
+        </div>
+        <br/>
+        <h4>showName:${showName} name:{{name}} n1:${n1} </h4>
+
+
+        <h4> degree: {{degree}} gg:{{gg}} </h4>
+
+
+        <ul q-for=" item  in  list " style="background:green;">
+            <li name="${name}"> ${item.name} -- age: ${ item.age }</li>
+        </ul>
+        <p>gggooo: ${gopark}</p>
+    </form>
+    ${n12}
+    <form q-ctrl="subdent1" style="background:#abcfcf;">
+        ctrl:subdent1: name=${name}
+    </form>
     ${n3} ${name}
 
 
+</div>
 
-  </div>
+<div q-ctrl="list" q-for="item in list">
+    <li> ${item.title} </li>
+</div>
+${n4} ${name}
+<script type="text/javascript">
+    $(function () {
+        var app = $.app();
+        app.ctrl({
+            "subdent": function (scope) {
+                scope.showName = scope.name;
+                scope.watch("name", function (value) {
+                });
+                scope.checkboxs = [{
+                    value: "1"
+                }, {
+                    value: "2"
+                }, {
+                    value: "3"
+                }];
+                scope.list = [{
+                    name: "k1"
+                }, {
+                    name: "k2",
+                    age: 16
+                }, {
+                    name: "k2",
+                    age: 16
+                }];
+                window.scope = scope;
+                scope.apply();
 
-  <div q-ctrl="list" q-for="item in list">
-    <li> ${item.title}</li>
-  </div>
-  ${n4} ${name}
-  <script type="text/javascript">
-    $(function(){
-      var app = $.app();
-      app.ctrl({
-        "subdent": function(scope){     
-            scope.showName = scope.name;
-            scope.watch("name", function(value){
-            });
-            scope.checkboxs = [{
-              value:"1"
-            },{
-              value:"2"
-            },{
-              value:"3"
-            }];
-            scope.list= [{
-              name: "k1"
-            },{
-              name: "k2",
-              age: 16
-            },{
-              name: "k2",
-              age: 16
-            }];
-            window.scope = scope;
-            scope.apply();
+                scope.checkboxTime = 3;
+                $.cycle(function () {
+                    scope.checkboxTime--;
+                    scope.apply(["checkboxTime"]);//更新界面
+                }, 1000, 4000);
 
-            scope.checkboxTime = 3;
-            $.cycle(function(){
-                scope.checkboxTime--;
-                scope.apply(["checkboxTime"]);//更新界面
-            }, 1000, 4000);
-
-            var idx =0;
-            $.delay(function(){
-              scope.checkboxs.push({
-                value:"mon"
-              });
-              scope.apply("checkboxs");
-              scope.$(".ctest").append('<input name="name'+(idx++)+'" type="text" value="999" />');
-            }, 3000);
+                var idx = 0;
+                $.delay(function () {
+                    scope.checkboxs.push({
+                        value: "mon"
+                    });
+                    scope.apply("checkboxs");
+                    scope.$(".ctest").append('<input name="name' + (idx++) + '" type="text" value="999" />');
+                }, 3000);
 
 
-            scope.gopark ="lileo";
-            scope.watch("gopark", function(map){
-              console.log(map)
-            });
-            $.delay(function(){
-               scope.gopark = "lileo111";
-               scope.apply("gopark");
-            }, 1000);
-        },
-        "subdent1": function(scope){
-          scope.name="gogoxxoo";
-        },
-        list: function(scope){
-          scope.list = [{
-            title:"leo"
-          }, {
-            title: "小李"
-          }];
-        }
-      });
+                scope.gopark = "lileo";
+                scope.watch("gopark", function (map) {
+                    console.log(map)
+                });
+                $.delay(function () {
+                    scope.gopark = "lileo111";
+                    scope.apply("gopark");
+                }, 1000);
+            },
+            "subdent1": function (scope) {
+                scope.name = "gogoxxoo";
+            },
+            list: function (scope) {
+                scope.list = [{
+                    title: "leo"
+                }, {
+                    title: "小李"
+                }];
+            }
+        });
     })
-  </script>
- </body>
+</script>
+</body>
 </html>
