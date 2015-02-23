@@ -171,7 +171,7 @@
         scope.vq = "reqult="+scope.q;
         scope.watch("q", function(map){
             scope.vq = "reqult="+map.value;
-            scope.apply();
+            scope.apply(["vq"]);
         });
       },
       lazy: function(scope){//控制器 lazyLoad, 延迟加载数据(用于通过ajax从远程加载数据,在显示到页面上,通过 scope.apply()方法来显示)
