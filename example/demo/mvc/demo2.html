@@ -18,7 +18,7 @@
             <span class="loading"></span>
         </span>   
       </p>
-      <ul q-for="item in list">
+      <ul q-for="item in list" class="list">
           <li>
             <span class="lt">名字: </span>
             [<span class="bind">${item.name}  ${item.info.msg}</span>]
@@ -62,7 +62,7 @@
           $.delay(function(){
               scope.cssDisplay="none";
               scope.list.push({name:"小婷",age:25,hometown:'福鼎市',sex:'女'});
-              scope.apply();
+              scope.apply(["list"]);
           }, 5000);
         }
       });

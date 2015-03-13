@@ -41,6 +41,7 @@ Qmik是一个面向数据接口编程,模块化mvc开发框架,数据双向绑�
 
 
 ## 版本记录
+
 [增加2.1.00版本(增强mvc功能,修复bug):](https://github.com/leochen36/qmik/tree/master/builds)
 2.1.00 版本,
 1.增加mvc功能,允许q-ctrl下包含子q-ctrl,但是没有父子关系,所有的q-ctrl只有一个共同的父控制器

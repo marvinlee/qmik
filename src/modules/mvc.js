@@ -453,7 +453,7 @@
 							qIndex = 0,
 							section = parseInt(g_config.section) || 24;
 						if(vs.length == 3 && vs[1]=="in"){
-							Q(node).html("");
+							var isStart = 1;
 							space.fors[node] && space.fors[node].stop();//停止之前的进度
 							space.fors[node] = Q.cycle(function(){
 								if(start>=list.length){
@@ -472,7 +472,10 @@
 									htmls.push(html);
 								});
 								start+=section;
-								node.innerHTML += htmls.join("");
+                                htmls = htmls.join("");;
+								//node.innerHTML += htmls.join("");
+                                isStart ? Q(node).html(htmls) : Q(node).append(htmls);
+                                isStart = 0;
 								compileChilds(node, scope, isAdd);//编译
 							},50);
 							node[namespace] = space;
