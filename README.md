@@ -1,4 +1,4 @@
-## 关于Qmik [下载压缩2.1.00](https://raw.githubusercontent.com/leochen36/qmik/master/builds/Qmik.all.2.1.00.js)
+## 关于Qmik [下载压缩2.1.01](https://raw.githubusercontent.com/leochen36/qmik/master/builds/Qmik.all.2.1.01.js)
 
 ## [官网](http://www.qmik.org)
 
@@ -41,6 +41,10 @@ Qmik是一个面向数据接口编程,模块化mvc开发框架,数据双向绑�
 
 
 ## 版本记录
+[增加2.1.01版本:](https://github.com/leochen36/qmik/tree/master/builds)
+2.1.01 版本,
+1.优化性能
+1.修复q-for更新页面内容会闪的体验性问题
 
 [增加2.1.00版本(增强mvc功能,修复bug):](https://github.com/leochen36/qmik/tree/master/builds)
 2.1.00 版本,
