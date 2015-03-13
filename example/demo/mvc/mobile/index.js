@@ -120,7 +120,7 @@
 	}
 
 	//if (!($.isIphone() || $.isWP() || $.isAndroid())) { //不是移动,就放大页面
-		function scale() {
+		/*function scale() {
 			var scal = getScale();
 			$("#wrap").css($.cssPrefix({
 				"transform": "scale(" + scal + "," + scal + ") translate(0, 0px)"
@@ -133,7 +133,7 @@
 			resize: function(e) {
 				scale();
 			}
-		});
+		});*/
 	//}
 
 })(Qmik);
