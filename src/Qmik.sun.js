@@ -190,7 +190,8 @@
 	}
 
 	function normalize(url) {
-		return Q.url(!/\?/.test(url) && !/\.(css|js)$/.test(url) ? url + ".js" : url)
+		//return Q.url(!/\?/.test(url) && !/\.(css|js)$/.test(url) ? url + ".js" : url)
+        return !/\?/.test(url) && !/\.(css|js)\s*$/.test(url) ? url + ".js" : url;
 	}
 	/** 别名转url */
 	function alias2url(id) {
