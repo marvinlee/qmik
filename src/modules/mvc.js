@@ -1,6 +1,6 @@
 
 /**
- * mvc模块
+ * mvc 模块
  * @author leochen
  */
 (function(Q) {
