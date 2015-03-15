@@ -1,4 +1,4 @@
-## 关于Qmik [下载压缩2.1.01](https://raw.githubusercontent.com/leochen36/qmik/master/builds/Qmik.all.2.1.01.js)
+## 关于Qmik [下载压缩](https://raw.githubusercontent.com/leochen36/qmik/master/builds/Qmik.all.2.1.02.js)
 
 ## [官网](http://www.qmik.org)
 
@@ -41,10 +41,11 @@ Qmik是一个面向数据接口编程,代码模块化,mvc式的开发框架,数�
 
 
 ## 版本记录
-[增加2.1.01版本:](https://github.com/leochen36/qmik/tree/master/builds)
-2.1.01 版本,
+[增加2.1.02版本:](https://github.com/leochen36/qmik/tree/master/builds)
+2.1.02 版本,
 1.优化性能
-1.修复q-for更新页面内容会闪的体验性问题
+2.修复q-for更新页面内容会闪的体验性问题
+3.调整$.url的实现,跟正常的url访问具体相同的能力
 
 [增加2.1.00版本(增强mvc功能,修复bug):](https://github.com/leochen36/qmik/tree/master/builds)
 2.1.00 版本,
@@ -194,7 +195,7 @@ $.sun.config({
         isWK() : is Webkit
         isOpera() : isOpera
         config(opts, _config) : 
-        url(_url) : 合并url,if 参数 _url为空,则
+        url() : //返回当前访问地址的url
 
         ajax:function({
             dataType:'json'|'text'|'jsonp',

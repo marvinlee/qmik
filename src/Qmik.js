@@ -456,21 +456,11 @@
 				//return (arguments.length < 1 || isNull(opts)) ? _config : isObject(opts) ? Q.extend(_config, opts) : _config[opts]
 		},
 		/**
-		 * 合并url,if 参数 _url为空,则
+		 * 取当前url,if 参数 _url为空,则
 		 */
 		url: function(_url) {
 			_url = Q.trim(_url);
-			var regProtol = /^\s*[a-zA-Z0-9]+:\/\//, base = config.base;
-			if(!regProtol.test(_url)){
-				if(!regProtol.test(base)){
-					base = (base || loc.pathname.replace(/\/[^\/]*$/,""));
-				}
-				if(!/^\//.test(_url)){
-					_url = ("/"+_url).replace(/\/{2,}/g,"/");
-					_url =  base + _url.replace(/\/{2,}/g,"/");
-				}			
-			} 
-			return _url.replace(/^\/{2,}/g, "/");;
+            return _url ? _url : loc.pathname;
 		},
 		cssPrefix: function(style) {
 			var ret = {};
@@ -515,7 +505,7 @@
 		_delete: _delete
 	};
 	//////////////////////////////////////////////////////
-	Q.version = "2.1.01";
+	Q.version = "2.1.02";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;

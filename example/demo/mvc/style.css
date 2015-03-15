@@ -55,6 +55,7 @@ a {
 li {
     min-height: 30px;
     vertical-align: middle;
+    text-align: left;
 }
 
 [q-ctrl=foreach] li {

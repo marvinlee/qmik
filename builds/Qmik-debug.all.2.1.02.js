@@ -456,21 +456,11 @@
 				//return (arguments.length < 1 || isNull(opts)) ? _config : isObject(opts) ? Q.extend(_config, opts) : _config[opts]
 		},
 		/**
-		 * 合并url,if 参数 _url为空,则
+		 * 取当前url,if 参数 _url为空,则
 		 */
 		url: function(_url) {
 			_url = Q.trim(_url);
-			var regProtol = /^\s*[a-zA-Z0-9]+:\/\//, base = config.base;
-			if(!regProtol.test(_url)){
-				if(!regProtol.test(base)){
-					base = (base || loc.pathname.replace(/\/[^\/]*$/,""));
-				}
-				if(!/^\//.test(_url)){
-					_url = ("/"+_url).replace(/\/{2,}/g,"/");
-					_url =  base + _url.replace(/\/{2,}/g,"/");
-				}			
-			} 
-			return _url.replace(/^\/{2,}/g, "/");;
+            return _url ? _url : loc.pathname;
 		},
 		cssPrefix: function(style) {
 			var ret = {};
@@ -514,8 +504,8 @@
 		},
 		_delete: _delete
 	};
-	///////////////////////////////////////////////////////
-	Q.version = "2.1.00";
+	//////////////////////////////////////////////////////
+	Q.version = "2.1.02";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
@@ -2000,7 +1990,7 @@
 		nameContext = "context",
 		nameInput = "__input",
 		nameMap = "__map",
-		execInterval = 30;//scroll触发间隔
+		execInterval = 10;//scroll触发间隔
 	/********* 当节点在显示视口时触发 start *******/
 	var g_viewports = {};
 
@@ -2020,7 +2010,7 @@
                 Q.delay(function(){
                     execCatch(map.callback);
                     qdom.emit("viewport");
-                }, Math.random(100));
+                }, 11);
 			}
 		});
 	}
@@ -2222,7 +2212,7 @@
 					Q.isFun(callback) && callback();
 				}
 			};
-			delay(trigger, execInterval + 10);
+			delay(trigger, execInterval + 2);
 		}
 	});
 	function addScopeInput(dom, scope){
@@ -2315,7 +2305,6 @@
 
 	/** 解析页面 */
 	function compile(node, scope, isAdd) {
-		Q("[q-ctrl]").css("visibility","visible");//置为可见
 		replaceNodeVar(node, scope, isAdd, compileChilds);
 	}
 	function compileChilds(node, scope, isAdd){
@@ -2412,6 +2401,8 @@
 							if(scopes[value]){
 								scope = scopes[value];
 							}else{
+                                //Q("[q-ctrl]").css("visibility","visible");//置为可见
+                                show(node);
 								scope = new Scope(node, scope.parent || scope);
 								execCatch(function() {
 									Q.isFun(ctrls[value]) ? ctrls[value](scope) : Q.warn("q-ctrl:[" + value + "]is not define");
@@ -2427,10 +2418,10 @@
 							qIndex = 0,
 							section = parseInt(g_config.section) || 24;
 						if(vs.length == 3 && vs[1]=="in"){
-							Q(node).html("");
+							var isStart = 1;
 							space.fors[node] && space.fors[node].stop();//停止之前的进度
 							space.fors[node] = Q.cycle(function(){
-								if(start>=list.length){
+								if(start>list.length){
 									return space.fors[node].stop();
 								}
 								htmls = [];
@@ -2446,9 +2437,14 @@
 									htmls.push(html);
 								});
 								start+=section;
-								node.innerHTML += htmls.join("");
+                                htmls = htmls.join("");;
+								//node.innerHTML += htmls.join("");
+                                isStart ? Q(node).html(htmls) : Q(node).append(htmls);
+                                isStart = 0;
 								compileChilds(node, scope, isAdd);//编译
-							},50);
+                                show(node);
+                                Q(node).closest(".loading").rmClass("loading");
+							},10);
 							node[namespace] = space;
 							isAdd && addMapNode(scope, vs[2], node);
 						}else{
@@ -2499,16 +2495,18 @@
 								scope[nameInput][name].value = val;
 							}
 						}
-
 						return val;
 					});
+                    show(node.parentNode);
 				}
 				break;
 		}
 		space.scope = scope;
-		callback && callback(node, scope, isAdd);
+        callback && callback(node, scope, isAdd);
 	}
-
+    function show(node){
+        Q(node).css("visibility","visible");
+    }
     function isMulInput(dom){
         var type = dom.type;
         return type == "checkbox" || type =="radio" || type == "select-multiple"
