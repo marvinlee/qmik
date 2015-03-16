@@ -1,6 +1,6 @@
 ## 关于Qmik [下载压缩](https://raw.githubusercontent.com/leochen36/qmik/master/builds/Qmik.all.2.1.02.js)
 
-## [官网](http://www.qmik.org)
+## [官网](http://www.qmik.org)  [微博](http://weibo.com/u/5262932432)
 
 Qmik是一个面向数据接口编程,代码模块化,mvc式的开发框架,数据双向趋动,入门简单,jquery语法,快速和精简,功能强大的无线端JavaScript库,核心库大小22kb,gzip=8kb,
 
