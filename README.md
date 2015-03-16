@@ -3,7 +3,7 @@
 ## [官网](http://www.qmik.org)
 
 Qmik是一个面向数据接口编程,代码模块化,mvc式的开发框架,数据双向趋动,入门简单,jquery语法,快速和精简,功能强大的无线端JavaScript库,核心库大小22kb,gzip=8kb,
- 
+
 是在无线端替换jquery,zepto,seajs,angulars,task任务处理,mvc等的理想框架,
 
 [模块开发内核](https://github.com/leochen36/qmik/wiki/sun-%E6%A8%A1%E5%9D%97%E5%BC%90%E5%8F%91)
@@ -26,6 +26,8 @@ Qmik是一个面向数据接口编程,代码模块化,mvc式的开发框架,数�
 
 
 ## 应用场景
+
+微信第三方插件应用及webapp,hybrid app
 
 天猫双11(亿级pv)
 
