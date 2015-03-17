@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf8"/>
+    <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport"/>
+    <meta name="-webkit-tap-highlight" content="no"/>
+    <meta content="IE=10" http-equiv="x-ua-compatible"/>
+    <title>mvc+模块化开发例子</title>
+    <!--[if lt IE 8]>
+    <script type="text/javascript" src="../../respond.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../../Qmik.all.js"></script>
+    <script type="text/javascript" src="./js/config.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<div>
+    <div class="box" q-ctrl="user">
+        <p class="ftitle"> 控制器:[user](用户信息) </p>
+        <ul>
+            <li class=" q-hide">
+                <span class="lt">id(不是用户信息) </span>
+                <input name="user.id" type="text" value=""/>
+                <span class="lt">动态绑定:</span>[
+                <g class="bind">${user.id}</g>
+                ]
+            </li>
+            <li class=" q-hide">
+                <span class="lt">用户名: </span>
+                <input name="user.name" type="text" value="abc"/>
+                <span class="lt">动态绑定:</span>[
+                <g class="bind">${user.name}</g>
+                ]
+            </li>
+            <li>
+                <span class="lt">email: </span>
+                <input name="user.email" type="text" value=""/>
+                <span class="lt">动态绑定:</span>[
+                <g class="bind">${user.email}</g>
+                ]
+            </li>
+            <li>
+                <span class="lt">qq: </span>
+                <input name="user.qq" type="text" value=""/>
+                <span class="lt">动态绑定:</span>[
+                <g class="bind">{{user.qq}}</g>
+                ]
+            </li>
+        </ul>
+    </div>
+    <!-- shop操控器 -->
+    <div class="box" q-ctrl="shop">
+        <p class="ftitle"> 控制器: [shop]购物信息
+            <span class="load bind" style="font-weight:700;">
+                倒计时: <g>${time}</g>
+                <span class="loading"></span>
+            </span>
+
+            <a q-onclick="clickme" href="javascript:">&nbsp; <span>点我吧(事件)</span>
+                <g style="color:red;">${msg}</g>
+            </a>
+        </p>
+        <ul>
+            <li>
+                <span class="lt">购买人:</span>[
+                <g class="bind">${shop.userName}</g>
+                ]&nbsp;
+            </li>
+            <li>
+                <span class="lt">物品名: </span><input name="shop.name" type="text" value=""/>
+                <span class="lt">动态绑定:</span>[
+                <g class="bind">${shop.name}</g>
+                ]
+            </li>
+            <li>
+                <span class="lt">价格: </span><input name="shop.price" type="text" value="999"/>
+                <span class="lt">动态绑定:</span>[
+                <g class="bind">${shop.price}</g>
+                ]
+            </li>
+            <li>
+                <span class="lt">库存: </span><input name="shop.stock" type="text" value="11"/>
+                <span class="lt">动态绑定:</span>[
+                <g class="bind">{{shop.stock}}</g>
+                ]
+            </li>
+            <li>
+                <span class="lt">备注: </span>
+                <textarea name="shop.remark">asdfasdf</textarea>
+                <span class="lt">动态绑定:</span>[
+                <g class="bind">{{shop.remark}}</g>
+                ]
+            </li>
+        </ul>
+    </div>
+</div>
+<script async="async" src="./js/view/demo.js"></script>
+</body>

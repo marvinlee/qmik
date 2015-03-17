@@ -1,0 +1,106 @@
+body, p, img {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+ul, li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: #aaa000;
+}
+
+.ftitle {
+    color: #000;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.border1 {
+    border: 1px solid #00ccaa;
+}
+
+.bind {
+    color: #aa00ad;
+    word-break: break-word;
+    min-width: 120px;
+    display: inline-block;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hide{
+    display: none;
+}
+
+g{
+    visibility: hidden;
+}
+
+.loading {
+    background: url(loading.gif);
+    background-size: 100% 100%;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
+
+li {
+    min-height: 30px;
+    vertical-align: middle;
+    text-align: left;
+}
+
+[q-ctrl=foreach] li {
+    margin-top: 10px;
+    border-bottom: 1px solid #cfcfcf;
+}
+
+li x {
+    display: inline-block;
+    width: 48%;
+}
+
+li .lt {
+    width: 140px;
+    display: inline-block;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.bh {
+    min-height: 120px;
+}
+
+input[type=text], select, textarea {
+    margin: 2px;
+    padding: 1px;
+    text-shadow: none;
+    box-shadow: 0px 0px 0px #fff;
+    border: 1px solid #cfcfcf;
+}
+
+input[type=text] {
+    height: 22px;
+    padding: 1px 4px;
+    width: 100px;
+}
+
+.box {
+    border: 1px solid #cfcfcf;
+    padding: 4px 10px 0 10px;
+    margin: 10px;
+    min-height: 20px;
+    text-align: center;
+}
+
+.box:nth-child(even) {
+    border: 1px solid #E90F66;
+}
