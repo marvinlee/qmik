@@ -377,8 +377,18 @@
 	}
 	function getUseSpaceScope(scope, name){
 		var field = split(name)[0];
-		return isNull(scope[field]) && scope[nameParentScope] && !isNull(scope[nameParentScope][field]) ? scope[nameParentScope] : scope
-	}
+		//return isNull(scope[field]) && scope[nameParentScope] && !isNull(scope[nameParentScope][field]) ? scope[nameParentScope] : scope
+        var val1 = scope[field];
+        var val2 = Scope.prototype[field];
+        if( !isNull(val2) ){//全局不为空
+            if(Q.isObject(val1) || Q.isArray(val1)){
+                if(val1 == val2){
+                    return scope[nameParentScope] ? scope[nameParentScope] : scope;
+                }
+            }
+        }
+        return scope;
+    }
 	/** 取控制器节点 */
 	function getCtrlNode(node) {
 		return Q(node).closest("[q-ctrl],"+nameRoot)[0]

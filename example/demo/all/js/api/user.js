@@ -15,7 +15,7 @@
                     data: {
                         id: 1,
                         name: "leo@qmik.org",
-                        nick: "leo",
+                        nick: "leochen",
                         qq: "qq",
                         email: "leo@qmik.org"
                     }

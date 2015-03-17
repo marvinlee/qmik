@@ -15,9 +15,11 @@
 </head>
 <body>
 <div>
-    <div class="box" q-ctrl="user">
+
+    <div class="box">
         <p class="ftitle"> 控制器:[user](用户信息) </p>
         <ul>
+
             <li class=" q-hide">
                 <span class="lt">id(不是用户信息) </span>
                 <input name="user.id" type="text" value=""/>
@@ -27,7 +29,7 @@
             </li>
             <li class=" q-hide">
                 <span class="lt">用户名: </span>
-                <input name="user.name" type="text" value="abc"/>
+                <input name="user.name" type="text" value=""/>
                 <span class="lt">动态绑定:</span>[
                 <g class="bind">${user.name}</g>
                 ]
@@ -63,7 +65,7 @@
         <ul>
             <li>
                 <span class="lt">购买人:</span>[
-                <g class="bind">${shop.userName}</g>
+                <g class="bind">${user.name}</g>
                 ]&nbsp;
             </li>
             <li>

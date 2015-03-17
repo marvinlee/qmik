@@ -1,8 +1,19 @@
 Qmik(function ($) {
     //$.app() 编译并生成应用,$.app().ctrl()定义控制器
 
-    $.app().ctrl({
+    $.app(function(scope){
+        window.scope = scope;
+        $.use("api/user", function (User) {
+            User.get(function (result, user) {
+                //scope.constructor.prototype.user = user;
+                scope.user = user;
+                console.log(user);
+                scope.apply(["user"]);//更新
+            });
+        });
+    }).ctrl({
         user: function (scope) {
+            window.scope = scope;
             $.use("api/user", function (User) {
                 User.get(function (result, user) {
                     scope.user = user;
