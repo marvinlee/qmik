@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf8"/>
+    <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport"/>
+    <meta name="-webkit-tap-highlight" content="no"/>
+    <meta content="IE=10" http-equiv="x-ua-compatible"/>
+    <title>q-ctrl不支持子q-ctrl控制器</title>
+    <script type="text/javascript" src="../../Qmik.all.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<div>
+    <div class="box border1" q-ctrl="shop">
+        <p class="ftitle"> 控制器 shop
+        </p>
+        <ul>
+            <li>
+                <s class="lt">名: </s><input name="shop.shopName" type="text" value="qmik"/>
+                <s class="lt">动态绑定:</s>[
+                <g class="bind">${shop.shopName}</g>
+                ]
+            </li>
+            <li>
+                <s class="lt">价: </s><input name="price" type="text" value="999"/>
+                <s class="lt">动态绑定:</s>[
+                <g class="bind">${price}</g>
+                ]
+            </li>
+        </ul>
+        <div q-ctrl="level1" class="box border1" border1>
+            <div>
+                <p class="ftitle"> 控制器 level1 </p>
+                <ul>
+                    <li>
+                        <s class="lt">数量: </s><input name="number" type="text" value="999"/>
+                        <s class="lt">动态绑定:</s>[
+                        <g class="bind">${number}</g>
+                        ]
+                    </li>
+                </ul>
+            </div>
+            <br/>
+
+            <div q-ctrl="level2" class="box border1">
+                <p class="ftitle"> 控制器 level2 </p>
+
+                <div>
+                    <ul>
+                        <li>
+                            <s class="lt">性别: </s><input name="sex" type="text" value="男"/>
+                            <s class="lt">动态绑定:</s>[
+                            <g class="bind">${sex}</g>
+                            ]
+                        </li>
+                        <li>
+                            <s class="lt">性别: </s><input name="sex" type="text" value="男"/>
+                            <s class="lt">动态绑定:</s>[
+                            <g class="bind">${sex}</g>
+                            ]
+                        </li>
+                    </ul>
+                </div>
+                <br/>
+
+                <div q-ctrl="level3" class="box border1">
+                    <p class="ftitle"> 控制器 level3 </p>
+
+                    <p>shopName:
+                        <g>${shop.shopName}</g>
+                    </p>
+
+                    <div>
+                        <ul>
+                            <li>
+                                <s class="lt">年龄: </s><input name="age" type="text" value="99"/>
+                                <s class="lt">动态绑定:</s>[
+                                <g class="bind">${age}</g>
+                                ]
+                            </li>
+                        </ul>
+                    </div>
+                    <p>数量:
+                        <g>${number}</g>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        //$.app() 编译并生成应用,$.app().ctrl()定义控制器
+        $.app().ctrl({
+            shop: function (scope) {//购物
+                window.scope = scope;
+                console.log("shopping:", scope);
+            },
+            level1: function (scope) {
+                console.log('level1:', scope)
+            },
+            level2: function (scope) {
+                console.log('level2:', scope)
+            },
+            level3: function (scope) {
+                console.log('level3:', scope)
+            }
+        });
+    </script>
+</body>
+</html>

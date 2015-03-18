@@ -13,12 +13,14 @@
         .dis-none {
             display: none;
         }
-        ul{
+
+        ul {
             padding-top: 10px;
             border-bottom: 1px solid #cfcfcf;
             margin-bottom: 10px;
         }
-        .list{
+
+        .list {
             min-height: 100px;
         }
     </style>
@@ -30,7 +32,7 @@
 
 <div q-ctrl="page1" class="box">
     <p class="${show}">加载中... ${time}</p>
-    <ul q-for="item in list" class="z-template list">
+    <ul q-for="item in list" class="z-template list hide">
         <li>${item.name}-${item.age}</li>
     </ul>
 </div>
@@ -75,16 +77,16 @@
 
         }//首页控制器
     });
-    function loaddata(){
-        var key = "list"+(page);
+    function loaddata() {
+        var key = "list" + (page);
         var temp = template.replace(new RegExp(' q-for="item in list'), ' q-for="item in list' + (page) + '" ');
 
         if (page <= countPage) {
-            scope[key]=scope.list;
+            scope[key] = scope.list;
             $(scope.context).append(temp);
         }
         $(".loading", scope.context).remove();
-        if(page+2 <= countPage){
+        if (page + 2 <= countPage) {
             $(scope.context).append('<p class="loading"  style="text-align: center"></p>');
         }
         page++;

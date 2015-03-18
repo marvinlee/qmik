@@ -1,71 +1,71 @@
- <!DOCTYPE >
- <head> 
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta charset="utf8" /> 
-  <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport" /> 
-  <meta name="-webkit-tap-highlight" content="no" /> 
-  <meta content="IE=10" http-equiv="x-ua-compatible" /> 
-  <title>mvc例子</title> 
-  <script type="text/javascript" src="../../Qmik.all.js"></script>
-  <link rel="stylesheet" type="text/css" href="style.css">
+<!DOCTYPE >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf8"/>
+    <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport"/>
+    <meta name="-webkit-tap-highlight" content="no"/>
+    <meta content="IE=10" http-equiv="x-ua-compatible"/>
+    <title>mvc例子</title>
+    <script type="text/javascript" src="../../Qmik.all.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-  <div>
-    <div class="box" q-ctrl="foreach">      
-      <p class="ftitle"> q-for循环 
-        <span style="display:${cssDisplay}">
-            加载数据: ${time}
-            <span class="loading"></span>
-        </span>   
-      </p>
-      <ul q-for="item in list" class="list">
-          <li>
-            <span class="lt">名字: </span>
-            [<span class="bind">${item.name}  ${item.info.msg}</span>]
-          
-            <span class="lt">年龄: </span>
-            [<span class="bind">${item.age}</span>]
-          
-            <span class="lt">家乡: </span>
-            [<span class="bind">${item.hometown}</span>]
-          
-            <span class="lt">性别: </span>
-            [<span class="bind">${item.sex}</span>]
-          </li>
-      </ul>
+<div>
+    <div class="box" q-ctrl="foreach">
+        <p class="ftitle"> q-for循环
+        <s style="display:${cssDisplay}">
+            加载数据: <g>${time}</g>
+            <s class="loading"></s>
+        </s>
+        </p>
+        <ul q-for="item in list" class="list hide">
+            <li>
+                <s class="lt">名字: </s>
+                [<s class="bind">${item.name}  ${item.info.msg}</s>]
+
+                <s class="lt">年龄: </s>
+                [<s class="bind">${item.age}</s>]
+
+                <s class="lt">家乡: </s>
+                [<s class="bind">${item.hometown}</s>]
+
+                <s class="lt">性别: </s>
+                [<s class="bind">${item.sex}</s>]
+            </li>
+        </ul>
     </div>
-    
-  </div>
-  <script type="text/javascript">
-    $(function(){
-      $.app().ctrl({
-        foreach: function(scope){//购物
-          scope.cssDisplay="";//初始化的值需要事先声明
-          scope.list = [
-            {name:"leo",age:25,hometown:'福鼎市',sex:'男', info:{msg:'haha go back'}},
-            {name:"小明",age:25,hometown:'福鼎市',sex:'男'},
-            {name:"小李",age:25,hometown:'福鼎市',sex:'男'},
-            {name:"小丽",age:25,hometown:'福鼎市',sex:'女'}
-          ];//界面上用到的变量,没有输出相应的input标签,需要预定义
-          scope.apply();
-          
-          var ttl = 5000;
-          scope.time = parseInt(ttl/1000);
-          var startTime = $.now() + ttl;
-          $.cycle(function(){
-            var t = startTime - $.now();
-            scope.time = parseInt(t/1000);
-            scope.apply("time");//局部更新
-          }, 990, ttl);
+
+</div>
+<script type="text/javascript">
+    $(function () {
+        $.app().ctrl({
+            foreach: function (scope) {//购物
+                scope.cssDisplay = "";//初始化的值需要事先声明
+                scope.list = [
+                    {name: "leo", age: 25, hometown: '福鼎市', sex: '男', info: {msg: 'haha go back'}},
+                    {name: "小明", age: 25, hometown: '福鼎市', sex: '男'},
+                    {name: "小李", age: 25, hometown: '福鼎市', sex: '男'},
+                    {name: "小丽", age: 25, hometown: '福鼎市', sex: '女'}
+                ];//界面上用到的变量,没有输出相应的input标签,需要预定义
+                scope.apply();
+
+                var ttl = 5000;
+                scope.time = parseInt(ttl / 1000);
+                var startTime = $.now() + ttl;
+                $.cycle(function () {
+                    var t = startTime - $.now();
+                    scope.time = parseInt(t / 1000);
+                    scope.apply("time");//局部更新
+                }, 990, ttl);
 
 
-          $.delay(function(){
-              scope.cssDisplay="none";
-              scope.list.push({name:"小婷",age:25,hometown:'福鼎市',sex:'女'});
-              scope.apply(["list"]);
-          }, 5000);
-        }
-      });
+                $.delay(function () {
+                    scope.cssDisplay = "none";
+                    scope.list.push({name: "小婷", age: 25, hometown: '福鼎市', sex: '女'});
+                    scope.apply(["list"]);
+                }, 5000);
+            }
+        });
     })
-  </script>
- </body>
+</script>
+</body>

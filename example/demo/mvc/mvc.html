@@ -55,7 +55,8 @@ root name=<input type="text" name="name">
                 <option value="2" select>2</option>
                 <option value="1">1</option>
             </select>
-            > select:${select}
+            > select:
+            <g>${select}</g>
         </div>
 
         <div class="box">
@@ -66,20 +67,27 @@ root name=<input type="text" name="name">
                 <option value="none">none</option>
                 <option value="4">4</option>
             </select>
-            > mselect:<${mselect}>
+            > mselect:<
+            <g>${mselect}</g>
+            >
         </div>
 
         <div class="box">
             <textarea name="textarea"></textarea>
-            > textarea:< ${textarea} >
+            > textarea:<
+            <g>${textarea}</g>
+            >
         </div>
 
 
         <div class="box">
-            <h4>倒计时: ${checkboxTime}</h4>
+            <h4>倒计时:
+                <g>${checkboxTime}</g>
+            </h4>
             <!-- q-for checkboxs -->
             <div q-for="item in checkboxs">
-                &nbsp; cbk${item.value}
+                &nbsp; cbk
+                <g>${item.value}</g>
                 <input type="checkbox" name="cbk" value="cbk${item.value}">&nbsp;
             </div>
 
@@ -90,31 +98,47 @@ root name=<input type="text" name="name">
             ra1 <input type="radio" name="ra" checked value="ra1">
             ra2 <input type="radio" name="ra" value="ra2">
             ra3 <input type="radio" name="ra" value="ra3">
-            > ra:< ${ra} >
+            > ra:<
+            <g>${ra}</g>
+            >
         </div>
         <br/>
-        <h4>showName:${showName} name:{{name}} n1:${n1} </h4>
+        <h4>showName:
+            <g>${showName}</g>
+            name:
+            <g>{{name}}</g>
+            n1:
+            <g>${n1}</g>
+        </h4>
 
 
-        <h4> degree: {{degree}} gg:{{gg}} </h4>
+        <h4> degree:
+            <g>{{degree}}</g>
+            gg:
+            <g>{{gg}}</g>
+        </h4>
 
 
         <ul q-for=" item  in  list " style="background:green;">
             <li name="${name}"> ${item.name} -- age: ${ item.age }</li>
         </ul>
-        <p>gggooo: ${gopark}</p>
+        <p>gggooo:
+            <g>${gopark}</g>
+        </p>
     </form>
     ${n12}
     <form q-ctrl="subdent1" style="background:#abcfcf;">
-        ctrl:subdent1: name=${name}
+        ctrl:subdent1: name=
+        <g>${name}</g>
     </form>
-    ${n3} ${name}
+    <g>${n3}</g>
+    <g>${name}</g>
 
 
 </div>
 
 <div q-ctrl="list" q-for="item in list">
-    <li> ${item.title} </li>
+    <li> ${item.title}</li>
 </div>
 ${n4} ${name}
 <script type="text/javascript">

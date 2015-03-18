@@ -12,21 +12,32 @@
 </head>
 <body>
 <div q-ctrl="demoCtrl" class="box">
-    <p> 全局: ${gname} ${shop.name}-${shop.addr} </p>
-    倒计时: <input name="time" type="text"/> ${time} 或 {{time}}
+    <p> 全局:
+        <g>${gname} ${shop.name}-${shop.addr}</g>
+    </p>
+    倒计时: <input name="time" type="text"/>
+    <g>${time} 或 {{time}}</g>
     <input type="text" name="shop.name"/>
 
     <div>
         <h3>用户信息 //qmik会自动把user.* 转换成 scope.user ={name:"",nick:"" ...} </h3>
 
-        <p>user.name <input name="user.name" type="text"/> ${user.name}</p>
+        <p>user.name <input name="user.name" type="text"/>
+            <g>${user.name}</g>
+        </p>
 
-        <p>user.nick <input name="user.nick" type="text"/> ${user.nick}</p>
+        <p>user.nick <input name="user.nick" type="text"/>
+            <g>${user.nick}</g>
+        </p>
 
-        <p>user.email <input name="user.email" type="text"/> ${user.email}</p>
+        <p>user.email <input name="user.email" type="text"/>
+            <g>${user.email}</g>
+        </p>
 
-        <p>user.qq <input name="user.qq" type="text"/> ${user.qq}</p>
-        ${shop.name}-${shop.addr}
+        <p>user.qq <input name="user.qq" type="text"/>
+            <g>${user.qq}</g>
+        </p>
+        <g>${shop.name}-${shop.addr}</g>
         <h3>//显示列表,ul下面的内容是模板,qmik会根据模板来生成相应的页面</h3>
 
         <h3>
@@ -34,18 +45,18 @@
         </h3>
 
 
-        <ul q-for="item in list" q-onclick="clickList" class="box list">
+        <ul q-for="item in list" q-onclick="clickList" class="box list hide">
             <li>${item.title}</li>
         </ul>
 
 
-        ${shop.name}-${shop.add}
+        <g>${shop.name}-${shop.add}</g>
     </div>
 </div>
 <div q-ctrl="d1" class="box">
-    ${shop.name}-${shop.addr}
+    <g>${shop.name}-${shop.addr}</g>
 </div>
-${shop.name}-${shop.addr}
+<g>${shop.name}-${shop.addr}</g>
 <script>
 
 

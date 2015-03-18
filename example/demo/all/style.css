@@ -1,3 +1,9 @@
+
+/** 所有界面上有引用变量值的可见文档节点,用g标签来包含,这样就不会被用户看到 ${xxx} {{xxx}} 这种引用,对体验上很有帮助 */
+g,.hide,[q-for]{
+    visibility: hidden;
+}
+
 body, p, img {
     margin: 0;
     padding: 0;
@@ -38,10 +44,6 @@ a {
 
 .hide{
     display: none;
-}
-
-g{
-    visibility: hidden;
 }
 
 .loading {

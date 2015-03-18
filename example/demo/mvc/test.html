@@ -1,16 +1,16 @@
- <!DOCTYPE html >
- <head> 
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta charset="utf8" /> 
-  <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport"/>
-  <meta name="-webkit-tap-highlight" content="no" /> 
-  <meta content="IE=10" http-equiv="x-ua-compatible" /> 
-  <title>mvc例子</title> 
-  <script type="text/javascript" src="../../Qmik.all.js"></script>
-  <link rel="stylesheet" type="text/css" href="style.css">
+<!DOCTYPE html >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf8"/>
+    <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport"/>
+    <meta name="-webkit-tap-highlight" content="no"/>
+    <meta content="IE=10" http-equiv="x-ua-compatible"/>
+    <title>mvc例子</title>
+    <script type="text/javascript" src="../../Qmik.all.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-  <div>
+<div>
     <div q-ctrl="user">
         time: <input name="time" type="text"/>
 
@@ -19,80 +19,84 @@
         user.age<input name="user.age" type="text" value="22"/>
         user.email<input name="user.email" type="text" value="22"/><br/>
         str:<input name="str" type="text" value="22"/>
+
         <p>
-            倒计时:${time}
+            倒计时:
+            <g>${time}</g>
         </p>
+
         <p>
-          输出: ${user.name} - ${user.age}
+            输出:
+            <g>${user.name}</g>
+            -
+            <g>${user.age}</g>
         </p>
     </div>
-
 
 
     <div class="box border1 bh" q-ctrl="list">
         <ul q-for="item in list1">
-          <li> ${item.name} - ${item.age} </li>
+            <li> ${item.name} - ${item.age}</li>
         </ul>
         <ul q-for="item in list2">
-          <li> ${item.name} - ${item.age} </li>
+            <li> ${item.name} - ${item.age}</li>
         </ul>
     </div>
-  </div>
+</div>
 
 
-
-  <script type="text/javascript">
+<script type="text/javascript">
     //$.app() 编译页面页面,只会编译一次,后面再次调用,不会生成新值 
     //$.app() 编译并生成应用,$.app().ctrl()定义控制器
     $.app().ctrl({
-      //$.app().ctrl();//定义控制器
-      user: function(scope){//控制器user,对应 q-ctrl="user"
-          //事件,当控制器处于可显示的视口时,触发viewport事件,这个将来要做数据的延迟加载,就很有益处
-          //scope.on,scope.off 方法是事件的,底层采用Qmik.fn.on,Qmik.fn.off来实现,绑定到控制器所在的节点
-          scope.once({
-            viewport: function(){
-              console.log("inviewport");
-            }
-          });
+        //$.app().ctrl();//定义控制器
+        user: function (scope) {//控制器user,对应 q-ctrl="user"
+            //事件,当控制器处于可显示的视口时,触发viewport事件,这个将来要做数据的延迟加载,就很有益处
+            //scope.on,scope.off 方法是事件的,底层采用Qmik.fn.on,Qmik.fn.off来实现,绑定到控制器所在的节点
+            scope.once({
+                viewport: function () {
 
-          scope.time = 999;
-          $.cycle(function(){
-              scope.time--;
-              scope.apply(["time"]);//更新time所在的节点值
-          }, 1000);
+                }
+            });
 
-          $.delay(function(){
-              scope.user = {
-                name: 'leochen',
-                age: 99
-              };
-              scope.apply(["user"]);
-          }, 3000);
-      },
-      list: function(scope){//购物
-          var allList = getData();
-          var start = 0;
-          var length = 24;
-          scope.list1 = allList.slice(start, start + length);
-          start += length;
-          scope.apply();
-          $.delay(function(){
-              scope.list2 = allList.slice(start, start + length);
-              scope.apply(["list2"]);
-          }, 3000);
-      }
+            scope.time = 999;
+            $.cycle(function () {
+                scope.time--;
+                scope.apply(["time"]);//更新time所在的节点值
+            }, 1000);
+
+            $.delay(function () {
+                scope.user = {
+                    name: 'leochen',
+                    age: 99
+                };
+                scope.apply(["user"]);
+            }, 3000);
+        },
+        list: function (scope) {//购物
+            var allList = getData();
+            var start = 0;
+            var length = 24;
+            scope.list1 = allList.slice(start, start + length);
+            start += length;
+            scope.apply();
+            $.delay(function () {
+                scope.list2 = allList.slice(start, start + length);
+                scope.apply(["list2"]);
+            }, 3000);
+        }
     });
 
-    function getData(){
+    function getData() {
         var allList = [];
-        for(var i=0;i<200;i++){
-          allList.push({
-            name:"tit"+i,
-            age: i+1
-          });
+        for (var i = 0; i < 200; i++) {
+            allList.push({
+                name: "tit" + i,
+                age: i + 1
+            });
         }
         return allList;
     }
     //
-  </script>
- </body>
+</script>
+</body>

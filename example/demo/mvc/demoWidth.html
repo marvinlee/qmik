@@ -13,30 +13,30 @@
 <div style="min-width:2048px">
     <div class="box" q-ctrl="foreach">
         <p class="ftitle"> q-for循环
-        <span style="display:${cssDisplay}">
-            加载数据: ${time}
-            <span class="loading"></span>
-        </span>
+        <s>
+            加载数据: <g>${time}</g>
+            <s class="loading"></s>
+        </s>
         </p>
-        <ul q-for="item in list">
+        <ul q-for="item in list" class="hide">
             <li>
-                <span class="lt name">名字: </span>
-                [<span class="bind">${item.name}  ${item.info.msg}</span>]
+                <s class="lt name">名字: </s>
+                [<s class="bind">${item.name}  ${item.info.msg}</s>]
 
-                <span class="lt age">年龄: </span>
-                [<span class="bind">${item.age}</span>]
+                <s class="lt age">年龄: </s>
+                [<s class="bind">${item.age}</s>]
 
-                <span class="lt age">年龄: </span>
-                [<span class="bind">${item.age}</span>]
+                <s class="lt age">年龄: </s>
+                [<s class="bind">${item.age}</s>]
 
-                <span class="lt age">年龄: </span>
-                [<span class="bind">${item.age}</span>]
+                <s class="lt age">年龄: </s>
+                [<s class="bind">${item.age}</s>]
 
-                <span class="lt hometown">家乡: </span>
-                [<span class="bind">${item.hometown}</span>]
+                <s class="lt hometown">家乡: </s>
+                [<s class="bind">${item.hometown}</s>]
 
-                <span class="lt sex">性别: </span>
-                [<span class="bind">${item.sex}</span>]
+                <s class="lt sex">性别: </s>
+                [<s class="bind">${item.sex}</s>]
             </li>
         </ul>
     </div>
