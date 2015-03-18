@@ -36,7 +36,7 @@
     </style>
     <script type="text/javascript" src="../../../Qmik.all.js"></script>
 </head>
-<body style="" class="app" q-ctrl>
+<body style="" class="app">
 <div q-ctrl="nav" class="site-nav">
     <div class="site-nav-bd">
         <ul class="site-nav-bd-l">
@@ -2467,13 +2467,12 @@
         });
     }
     $.app(function (scope) {
-        console.log(1)
         scope.user = {};//全局界面需要预告定义,否则此变量的存储空间会变更为使用的所在控制器上
         $.use("data.js", function (data) {
             var user = data.user;
-            //scope.scopes.nav.user = user;
             scope.user = user;
-            scope.scopes.nav.apply();
+            window.scope = scope;
+            scope.apply("user");
         });
     }).ctrl({
         nav: function (scope) {

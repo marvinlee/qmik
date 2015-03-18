@@ -2042,7 +2042,7 @@
 			compileVarName(name, scope);
 		}
 	}
-
+    var globalScope;//全局scope
 	/** 应用 */
 	function App(fun) {
 		var me = this;
@@ -2055,9 +2055,10 @@
 			var me = this,
 				scope = new Scope(),
 				root = Q(nameRoot)[0];
-			me.scope = scope;
+            globalScope = me.scope = scope;
 			root[namespace] = getSpace(root);
 			fun && fun(scope);
+            scope.apply("");
 			compile(root, scope, true);//编译页面
 			trigger();
 
@@ -2120,6 +2121,7 @@
 			return this;
 		}
 	});
+
 /** 会话 */
 	function Scope(context, rootScope) {
 		var me = this;
@@ -2138,7 +2140,8 @@
             (isNull(pctrl)||pctrl==context) && addScopeInput(dom, me);
 		});
 	}
-	extend(Scope.prototype, {
+    var ScopePrototype = Scope.prototype;
+	extend(ScopePrototype, {
 		// 监控器,监控变量
 		watch: function(name, callback) {
 			var me = this, map = {};
@@ -2178,6 +2181,7 @@
 			}
 			//合并之前的更新 名册
 			names = uniqueArray(names, (g_viewports[me.__name]||{}).names);
+            updateGlobalScope(me);
 			g_viewports[me.__name] = {
 				scope: me,
 				names: names,
@@ -2216,13 +2220,27 @@
 			delay(trigger, execInterval + 2);
 		}
 	});
+    /** 更新全局 */
+    function updateGlobalScope(scope){
+        if(scope == globalScope){
+            for(var name in scope){
+                if( ScopePrototype[name] != scope[name] && !isIllegalName(name) ){
+                    ScopePrototype[name] = scope[name];
+                }
+            }
+        }
+    }
+    /** 是否是非法的变量名(往scope赋值) */
+    function isIllegalName(name){
+        return /^__/.test(name) || new RegExp(name).test(keywords)
+    }
 	function addScopeInput(dom, scope){
 		var name = dom.name, isSet=true;
 		if(isInput(dom) && name){
-			if(/^__/.test(name) || new RegExp(name).test(keywords)){
+			if(isIllegalName(name)){
 				return Q.error("set scope["+scope.__name+"] name["+name+"] is illegal");
 			}
-			if(scope.__name == "root" && Q(dom).parents("[q-ctrl]").length>0){
+			if(scope == globalScope && Q(dom).parents("[q-ctrl]").length>0){
 				isSet = false;
 			}
 			if(isSet){
@@ -2233,16 +2251,16 @@
 				fieldValue(scope, name, val);
 				scope[nameInput][name] = dom;
 
-                /* 如果是根scope,那么 把值赋值到 Scope.prototype 上面, 采用原型模式来读取内容 */
+                /* 如果是根scope,那么 把值赋值到 ScopePrototype 上面, 采用原型模式来读取内容 */
                 setScopePrototype(scope, name);
 			}
 		}
 	}
-    /* 如果是根scope,那么 把值赋值到 Scope.prototype 上面, 采用原型模式来读取内容 */
+    /* 如果是根scope,那么 把值赋值到 ScopePrototype 上面, 采用原型模式来读取内容 */
     function setScopePrototype(scope, name){
         if(scope.__name == "root"){//如果是根scope
             var field = split(name)[0];
-            Scope.prototype[field] = scope[field];
+            ScopePrototype[field] = scope[field];
         }
     }
 	function uniqueArray(list1, list2){
@@ -2344,7 +2362,7 @@
 		var field = split(name)[0];
 		//return isNull(scope[field]) && scope[nameParentScope] && !isNull(scope[nameParentScope][field]) ? scope[nameParentScope] : scope
         var val1 = scope[field];
-        var val2 = Scope.prototype[field];
+        var val2 = ScopePrototype[field];
         if( !isNull(val2) ){//全局不为空
             if(Q.isObject(val1) || Q.isArray(val1)){
                 if(val1 == val2){

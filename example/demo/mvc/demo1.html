@@ -17,8 +17,8 @@
         <ul>
             <li class=" q-hide">
                 <s class="lt">id(不是用户信息) </s>
-                <input name="id" type="text" value="id"/>
-                <s class="lt">动态绑定:</s>[<g class="bind">${id}</g>]
+                <input name="user.id" type="text" value="id"/>
+                <s class="lt">动态绑定:</s>[<g class="bind">${user.id}</g>]
             </li>
             <li class=" q-hide">
                 <s class="lt">用户名: </s>
@@ -32,6 +32,10 @@
             <li>
                 <s class="lt">密码: </s><input name="user.password" type="text"/>
                 <s class="lt">动态绑定:</s>[<g class="bind">{{user.password}}</g>]
+            </li>
+            <li>
+                <s class="lt">qq: </s><input name="user.qq" type="text"/>
+                <s class="lt">动态qq:</s>[<g class="bind">{{user.qq}}</g>]
             </li>
         </ul>
     </div>
@@ -67,7 +71,6 @@
             </li>
             <li class=" q-hide">
                 <s class="lt">全局-用户-qq </s>
-                <input name="user.qq" type="text" value="1111"/>
                 <s class="lt">动态绑定:</s>[<g class="bind">${user.qq}</g>]
             </li>
         </ul>
