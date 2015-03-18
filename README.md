@@ -309,6 +309,10 @@ mvc api:
         Qmik.app(callback);//每个页面当成一个应用来看待,编译页面并生成一个应用,全局唯一,多次调用只能生成一个
 
         Qmik.app().ctrl(ctrls); //定义控制器
+
+        scope 会话:
+        scope.watch({"name", function(e){}});监听器
+        scope.apply(["name1","name2"]);//应用刷新到界面
 ##mvc 例子:       
 
 
