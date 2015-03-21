@@ -13,13 +13,13 @@
 <div>
     <div class="box" q-ctrl="foreach">
         <p class="ftitle"> q-for循环
-        <s style="display:${cssDisplay}">
+        <s>
             加载数据: <g>${time}</g>
             <s class="loading"></s>
         </s>
         </p>
         <ul q-for="item in list" class="list hide">
-            <li>
+            <li q-onclick="clickname">
                 <s class="lt">名字: </s>
                 [<s class="bind">${item.name}  ${item.info.msg}</s>]
 
@@ -40,6 +40,7 @@
     $(function () {
         $.app().ctrl({
             foreach: function (scope) {//购物
+                console.log("init foreach");
                 scope.cssDisplay = "";//初始化的值需要事先声明
                 scope.list = [
                     {name: "leo", age: 25, hometown: '福鼎市', sex: '男', info: {msg: 'haha go back'}},
@@ -58,6 +59,10 @@
                     scope.apply("time");//局部更新
                 }, 990, ttl);
 
+
+                scope.clickname = function(e){
+                    console.log(e.target);
+                }
 
                 $.delay(function () {
                     scope.cssDisplay = "none";

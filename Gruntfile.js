@@ -59,6 +59,9 @@ module.exports = function(grunt) {
 				mangle : true
 			},
 			build : {
+                options: {
+                    mangle: true
+                },
 				files : {
 					'assets/Qmik.js' : [//core版本
 						'src/Qmik.js',

@@ -52,8 +52,8 @@
                 </x>
                 <x><s class="lt">过滤关键词: xo>*o</s>[<g class="bind">${vUserName}</g>]</x>
             </li>
-            <li>
-                <s class="lt">物品名: </s><input name="shop.shopName" type="text" value="qmik"/>
+            <li >
+                <s class="lt">物品名: </s><input name="shop.shopName" type="text" value="qmik"  q-onfocus="focusid"/>
                 <s class="lt">动态绑定:</s>[<g class="bind">${shop.shopName}</g>]
             </li>
             <li>
@@ -136,10 +136,11 @@
 
     }).ctrl({
         shopping: function (scope) {//购物
-            console.log("1111")
+
             scope.vUserName = scope.parent.user.userName;//界面上用到的变量,没有输出相应的input标签,需要预定义
             scope.msg = "";
             window.scope = scope;
+            scope.gohome= "mng";
             scope.clickme = function (e) {
                 scope.msg = "我变了 " + parseInt($.now() / 1000 + Math.random() * 100) + '';
                 scope.apply(["msg", "gohome"]); //这种写法,性能比较好,保更新 msg 对应的节点信息
@@ -158,7 +159,10 @@
                     console.log("watch shop:", map);
                 }
             });
-            console.log(scope);
+
+            scope.focusid = function(e){
+                console.log("focus id", this);
+            }
         }, search: function (scope) {//搜索
             scope.vq = "reqult=" + scope.q;
             scope.watch("q", function (map) {
@@ -193,7 +197,6 @@
                 scope.desc = "源自纯天然xxx";
                 scope.apply();//更新页面显示数据
             }, ttl);
-            console.log(scope);
         }
     });
 </script>

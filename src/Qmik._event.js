@@ -218,7 +218,17 @@
 	 */
 	each("click blur focus scroll resize".split(" "), function(i, v) {
 		fn[v] = function(f) {
-			return f ? this.on(v, f) : this.emit(v)
+            var me = this, dom;
+            if(f){
+                me.on(v, f)
+            }else{
+                if(["focus", "blur"].indexOf(v)>=0){
+                    dom = me.last()[0];
+                    dom && isFun(dom[v]) && dom[v]();
+                }
+                me.emit(v);
+            }
+			//return f ? this.on(v, f) : this.emit(v)
 		}
 	})
 })(Qmik);
