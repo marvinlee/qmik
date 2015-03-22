@@ -91,6 +91,7 @@
 
 	function muchValue2Qmik(c) {
 		c = execObject(c);
+        c = isString(c) ? c.replace(/\n+/g, "") : c;
 		return isString(c) && rNode.test(c) ? Q(c) : c
 	}
 
