@@ -41,6 +41,12 @@ Qmik是一个面向数据接口编程,代码模块化,mvc式的开发框架,数�
 
 
 ## 版本记录
+[增加2.1.11版本:](https://github.com/leochen36/qmik/tree/master/builds)
+2.1.11 版本,
+1.兼容query $("#id").focus(),及 blur,调用此方法会执行dom.focus();
+2.微调mvc(a.调整执行控制器方法的this,b.微调q-onxxx绑定事件)
+3.调整$.fn.append,html,init,使之可以编译scipt标签里脚本
+
 [增加2.1.10版本:](https://github.com/leochen36/qmik/tree/master/builds)
 2.1.10 版本,
 1.修复全局控制器的引用变量,更新数据时,不能更新到其它控制器上的bug
@@ -143,7 +149,7 @@ $.sun.config({
 
 ## API简介:
 
-
+        version:      :查看qmik的版本,是个字段
         encode(value) :等同于encodeURIComponent
         decode(value) :decodeURIComponent ,
         isBool(value) : 布尔判断,

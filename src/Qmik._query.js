@@ -36,10 +36,11 @@
 		me.length = 0;
 		me.__lives = {};
 		if (isString(selector)) {
-			if (rNode.test(selector)) {
+			if (rNode.test(selector.replace(/\n+/g, ""))) {
 				var t = doc.createElement('div');
 				t.innerHTML = selector;
 				r = t.children;
+                compileScript(t);
 			} else {
 				each(find(selector, context), function(j, dom) {
 					me._push(dom)
@@ -91,8 +92,7 @@
 
 	function muchValue2Qmik(c) {
 		c = execObject(c);
-        c = isString(c) ? c.replace(/\n+/g, "") : c;
-		return isString(c) && rNode.test(c) ? Q(c) : c
+		return isString(c) && rNode.test(c.replace(/\n+/g, "")) ? Q(c) : c
 	}
 
 	function execObject(v) {
@@ -350,6 +350,13 @@
 		});
 		return Q(array)
 	}
+
+    function compileScript(context){
+        Q("script", context).each(function(i, dom) {
+            likeNull(dom.text) || eval(dom.text);
+        });
+    }
+
 	/* */
 	//高度
 	function getHeight() {
@@ -455,9 +462,7 @@
 			if (arguments.length < 1) return attr(me, "innerHTML");
 			else {
 				attr(me, "innerHTML", isQmik(v) ? v.html() : v, !0);
-				Q("script", me).each(function(i, dom) {
-					likeNull(dom.text) || eval(dom.text)
-				})
+                compileScript(me);
 			}
 			return this
 		},
