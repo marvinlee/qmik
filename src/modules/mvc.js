@@ -64,10 +64,13 @@
 		var target = e.target,
 			name = emit ? e.name : target.name||"",
 			scope = getCtrlNode(target)[namespaceScope] || scope;
+        scope = getUseSpaceScope(scope, name);
 		if (name && (isInput(target) || emit) ) {
 			fieldValue(scope, name, emit ? e.value : getInputValue(target));
 			var value = getVarValue(scope, name);
-
+            //检测新老值的变化
+            if(target.__oldValue == value) return;
+            target.__oldValue = value;
             /* 如果是根scope,那么 把值赋值到 Scope.prototype 上面, 采用原型模式来读取内容 */
             setScopePrototype(scope, name);
 
@@ -133,7 +136,7 @@
 						space = getSpace(target);
 					if(space){
 						addScopeInput(target, space.scope);
-						compile(target, space.scope);
+						compile(target, space.scope, true);
 					}
 				},
 				DOMNodeRemoved: remove //删除节点
@@ -270,25 +273,22 @@
         return /^__/.test(name) || new RegExp(name).test(keywords)
     }
 	function addScopeInput(dom, scope){
-		var name = dom.name, isSet=true;
+		var name = dom.name;
 		if(isInput(dom) && name){
 			if(isIllegalName(name)){
 				return Q.error("set scope["+scope.__name+"] name["+name+"] is illegal");
 			}
-			if(scope == globalScope && Q(dom).parents("[q-ctrl]").length>0){
-				isSet = false;
-			}
-			if(isSet){
-                var val = getInputValue(dom);
-                if( isMulInput(dom) ){
-                    val = val || fieldValue(scope, name);
-                }
-				fieldValue(scope, name, val);
-				scope[nameInput][name] = dom;
+			scope = getUseSpaceScope(scope, name);
+            var val = getInputValue(dom);
+            if( isMulInput(dom) ){
+                val = val || fieldValue(scope, name);
+            }
+            fieldValue(scope, name, val);
+            scope[nameInput][name] = dom;
 
-                /* 如果是根scope,那么 把值赋值到 ScopePrototype 上面, 采用原型模式来读取内容 */
-                setScopePrototype(scope, name);
-			}
+            /* 如果是根scope,那么 把值赋值到 ScopePrototype 上面, 采用原型模式来读取内容 */
+            setScopePrototype(scope, name);
+
 		}
 	}
     /* 如果是根scope,那么 把值赋值到 ScopePrototype 上面, 采用原型模式来读取内容 */
@@ -429,9 +429,14 @@
  		return retWatchs;
 	}
 	function compileVarName(key, scope) {
+        var list = [];
 		each(scope[nameMap][key], function(i, dom) {
+            if(Q(dom).parents("html").length > 0 ){
+                list.push(dom);
+            }
 			replaceNodeVar(dom, scope);
 		});
+        scope[nameMap][key] = list;
 	}
 	/** 取存放到节点上的对象空间 */
 	function getSpace(node){
