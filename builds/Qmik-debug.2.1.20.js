@@ -505,7 +505,7 @@
 		_delete: _delete
 	};
 	//////////////////////////////////////////////////////
-	Q.version = "2.1.10";
+	Q.version = "2.1.20";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
@@ -548,10 +548,11 @@
 		me.length = 0;
 		me.__lives = {};
 		if (isString(selector)) {
-			if (rNode.test(selector)) {
+			if (rNode.test(selector.replace(/\n+/g, ""))) {
 				var t = doc.createElement('div');
 				t.innerHTML = selector;
 				r = t.children;
+                compileScript(t);
 			} else {
 				each(find(selector, context), function(j, dom) {
 					me._push(dom)
@@ -603,7 +604,7 @@
 
 	function muchValue2Qmik(c) {
 		c = execObject(c);
-		return isString(c) && rNode.test(c) ? Q(c) : c
+		return isString(c) && rNode.test(c.replace(/\n+/g, "")) ? Q(c) : c
 	}
 
 	function execObject(v) {
@@ -861,6 +862,13 @@
 		});
 		return Q(array)
 	}
+
+    function compileScript(context){
+        Q("script", context).each(function(i, dom) {
+            likeNull(dom.text) || eval(dom.text);
+        });
+    }
+
 	/* */
 	//高度
 	function getHeight() {
@@ -966,9 +974,7 @@
 			if (arguments.length < 1) return attr(me, "innerHTML");
 			else {
 				attr(me, "innerHTML", isQmik(v) ? v.html() : v, !0);
-				Q("script", me).each(function(i, dom) {
-					likeNull(dom.text) || eval(dom.text)
-				})
+                compileScript(me);
 			}
 			return this
 		},
@@ -1366,7 +1372,17 @@
 	 */
 	each("click blur focus scroll resize".split(" "), function(i, v) {
 		fn[v] = function(f) {
-			return f ? this.on(v, f) : this.emit(v)
+            var me = this, dom;
+            if(f){
+                me.on(v, f)
+            }else{
+                if(["focus", "blur"].indexOf(v)>=0){
+                    dom = me.last()[0];
+                    dom && isFun(dom[v]) && dom[v]();
+                }
+                me.emit(v);
+            }
+			//return f ? this.on(v, f) : this.emit(v)
 		}
 	})
 })(Qmik);
