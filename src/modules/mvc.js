@@ -197,8 +197,8 @@
 		/**
 			查询节点,在控制器下的范围内查询
 		*/
-		'$': function(sclector) {
-			return Q(sclector, this[nameContext]);
+		'$': function(selector) {
+			return isNull(selector) ? Q(this[nameContext]) : Q(selector, this[nameContext]);
 		},
 		on: function(name, handle){
 			Q(this[nameContext]).on(name, handle)
