@@ -126,9 +126,11 @@
 
     <script type="text/javascript">
         //$.app() 编译并生成应用,$.app().ctrl()定义控制器
+        console.log("xxxxx");
         $.app().ctrl({
             shopping: function (scope) {//购物
-                console.log("shopping:", scope);
+                console.log("shopping:", scope);//a
+                //console.log("33");
             },
             level1: function (scope) {
                 console.log('level1:', scope)

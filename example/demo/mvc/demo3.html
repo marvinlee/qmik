@@ -13,11 +13,10 @@
 <body>
 <div q-ctrl="demoCtrl" class="box">
     <p> 全局:
-        <g>${gname} ${shop.name}-${shop.addr}</g>
+        <g>${gname} ${shop.name}-${shop.addr} - ${shop.shopName}</g>
     </p>
     倒计时: <input name="time" type="text"/>
     <g>${time} 或 {{time}}</g>
-    <input type="text" name="shop.name"/>
 
     <div>
         <h3>用户信息 //qmik会自动把user.* 转换成 scope.user ={name:"",nick:"" ...} </h3>
@@ -68,7 +67,7 @@
         };
     }).ctrl({
         demoCtrl: function (scope) {//定义控制器  scope:会话,作用空间在q-ctrl里面,不能超出
-
+            window.scope = scope;
             $.delay(function () {
                 scope.user.name = "leo111";
                 scope.user.nick = "leo";
@@ -121,6 +120,16 @@
 
 
             $("body").append('<div q-ctrl="dinative">xxx</div>');
+
+            $.delay(function(){
+                $.ajax({
+                    url:"./demo.html",
+                    success: function(html){
+                        $("body").append(html);
+                    }
+                });
+            }, 1000);
+
         },
         dinative: function (scope) {
             console.log(scope)
