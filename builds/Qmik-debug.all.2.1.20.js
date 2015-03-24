@@ -1026,19 +1026,42 @@
 			}
 			return bool;
 		},
+        /**
+         *
+         * @param style
+         * @param time
+         * @param easing  可以的值,默认 ease-in-out
+                     linear	规定以相同速度开始至结束的过渡效果（等于 cubic-bezier(0,0,1,1)）。
+                     ease	规定慢速开始，然后变快，然后慢速结束的过渡效果（cubic-bezier(0.25,0.1,0.25,1)）。
+                     ease-in	规定以慢速开始的过渡效果（等于 cubic-bezier(0.42,0,1,1)）。
+                     ease-out	规定以慢速结束的过渡效果（等于 cubic-bezier(0,0,0.58,1)）。
+                     ease-in-out	规定以慢速开始和结束的过渡效果（等于 cubic-bezier(0.42,0,0.58,1)）。
+                     cubic-bezier(n,n,n,n)	在 cubic-bezier 函数中定义自己的值。可能的值是 0 至 1 之间的数值。
+
+         * @param callback
+         * @returns {*}
+         */
 		animate: function(style, time, easing, callback){
 			var me = this;
+            if(isFun(easing)){
+                callback = easing;
+                easing = " ";
+            }
 			var initStyle = {transition: 0}, startStype = Q.extend({}, initStyle);
 			each(style, function(key, val){
 				startStype[key] = parseFloat(css(me, key))||0;
 			});
 			css(me, startStype);
 			Q.delay(function(){
-				style.transition = " ease-in-out " + (time || 1) + "ms";
+                var isNotEnd = true;
+				style.transition = (easing||" ease-in-out ") +" " + (time || 1) + "ms";
 				css(me, Q.cssPrefix(style));
 				function transitionEnd(e) {
-					css(me, initStyle);
-					callback && callback(e);
+                    if(isNotEnd){
+                        css(me, initStyle);
+                        callback && callback(e);
+                        isNotEnd = false;
+                    }
 				}
 				me.once({
 					webkitTransitionEnd: transitionEnd,
@@ -2442,21 +2465,16 @@
 					var attrName = attr.name,//属性名
 						value = space.attr[attrName] = space.attr[attrName] || (attr.value || "").trim();
 					if ("q-ctrl" === attrName) {//控制器
-						if (value != "") {/*
-							if(Q(node).parents("[q-ctrl]").length > 0){
-								Q.warn("q-ctrl[",scope.__name,"] can't have child q-ctrl[", value,"]");
-								Q(node).rmAttr("q-ctrl");
-								return;
-							}*/
+						if (value != "") {
 							if(scopes[value]){
 								scope = scopes[value];
 							}else{
-                                //Q("[q-ctrl]").css("visibility","visible");//置为可见
                                 show(node);
 								scope = new Scope(node, scope.parent || scope);
 								execCatch(function() {
 									Q.isFun(ctrls[value]) ? ctrls[value].call(scope, scope) : Q.warn("q-ctrl:[" + value + "]is not define");
 								});
+                                scope.apply("");
 							}
 						}
 					} else if ("q-for" === attrName) { //for

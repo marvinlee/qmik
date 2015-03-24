@@ -48,6 +48,7 @@ Qmik是一个面向数据接口编程,代码模块化,mvc式的开发框架,数�
 3.调整$.fn.append,html,init,使之可以编译scipt标签里脚本, 解决html内容包含\n就变成纯文本添加,不解析的bug
 4.清理失效的文本节点
 5.调整scope.$()方法,如果scope.$()参数为空,就返回声明对应控制器的dom节点
+6.修复触发事件scope.once("viewport", function(e){}); 这个事件是当当前控制器在可视窗口时,才会触发,且只触发一次,对按需要处理非常有用
 
 [增加2.1.10版本:](https://github.com/leochen36/qmik/tree/master/builds)
 2.1.10 版本,

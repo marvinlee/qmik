@@ -9,6 +9,11 @@
     <![endif]-->
     <script type="text/javascript" src="../../Qmik.all.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+        .box{
+            min-height: 400px;
+        }
+    </style>
 </head>
 <body>
 <div>
@@ -169,12 +174,17 @@
                 scope.vq = "reqult=" + map.value;
                 scope.apply(["vq"]);
             });
+            scope.once("viewport", function(e){
+                console.log("search xxxx");
+            });
         },
         lazy: function (scope) {//控制器 lazyLoad, 延迟加载数据(用于通过ajax从远程加载数据,在显示到页面上,通过 scope.apply()方法来显示)
             var ttl = 5000;
             scope.vUserName = scope.parent.userName;//
             scope.cssDisplay = "xxx";//初始化的值需要事先声明
-
+            scope.once("viewport", function(e){
+                console.log("lazy viewport ", e);
+            });
             scope.time = parseInt(ttl / 1000);
             var startTime = $.now() + ttl;
             $.cycle(function () {

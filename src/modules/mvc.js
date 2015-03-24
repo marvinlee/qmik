@@ -461,21 +461,16 @@
 					var attrName = attr.name,//属性名
 						value = space.attr[attrName] = space.attr[attrName] || (attr.value || "").trim();
 					if ("q-ctrl" === attrName) {//控制器
-						if (value != "") {/*
-							if(Q(node).parents("[q-ctrl]").length > 0){
-								Q.warn("q-ctrl[",scope.__name,"] can't have child q-ctrl[", value,"]");
-								Q(node).rmAttr("q-ctrl");
-								return;
-							}*/
+						if (value != "") {
 							if(scopes[value]){
 								scope = scopes[value];
 							}else{
-                                //Q("[q-ctrl]").css("visibility","visible");//置为可见
                                 show(node);
 								scope = new Scope(node, scope.parent || scope);
 								execCatch(function() {
 									Q.isFun(ctrls[value]) ? ctrls[value].call(scope, scope) : Q.warn("q-ctrl:[" + value + "]is not define");
 								});
+                                scope.apply("");
 							}
 						}
 					} else if ("q-for" === attrName) { //for
