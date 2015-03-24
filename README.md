@@ -152,6 +152,7 @@ $.sun.config({
 ## API简介:
 
         version:      :查看qmik的版本,是个字段
+        [app(handle)   :把整个文档声明为一应用,应用mvc模式开发,需要执行此方法,会编译解析整个dom文档,返回App对象](#mvc)
         encode(value) :等同于encodeURIComponent
         decode(value) :decodeURIComponent ,
         isBool(value) : 布尔判断,
@@ -314,13 +315,32 @@ Qmik.fn api(即 $("#id").api)
 
 
 mvc api:
-        Qmik.app(callback);//每个页面当成一个应用来看待,编译页面并生成一个应用,全局唯一,多次调用只能生成一个
+    <pre id="mvc">
+        Qmik(function($){
+            //每个页面当成一个应用来看待,编译页面并生成一个应用,全局唯一,多次调用只能生成一个
+            var app = Qmik.app(function(scope){
+                //这个方法可以不定义,这个是定义全局控制器的变量用的
+            });
+            app.ctrl({//定义控制器
+                demo: function(scope){
 
-        Qmik.app().ctrl(ctrls); //定义控制器
+                }
+            });
 
-        scope 会话:
-        scope.watch({"name", function(e){}});监听器
-        scope.apply(["name1","name2"]);//应用刷新到界面
+            scope 会话api:
+            scope.watch({"name", function(e){}});监听器
+            scope.apply(["name1","name2"]);//应用刷新到界面
+            scope.$(selector)  ;//检测器,会在scope作用域下来按css规则来探索节点,如果没有传递参数,就返回 $(scope.context);即声明控制器节点
+            scope.once("viewport", function(){
+                //这个事件viewport的作用是,当这个控制器处在当前窗口的可视位置时,才会触发,而且只会触发一次,
+                //这对于页面数据及代码,做按需加载,非常有意义
+
+            });
+            scope.on(name, handle);//事件绑定,绑定到当前声明控制器的节点上,使用$.fn.on来实现,
+            scope.off  //删除事件绑定
+        });
+
+    </pre>
 ##mvc 例子:       
 
 
