@@ -42,6 +42,7 @@ Qmik是一个面向数据接口编程,代码模块化,mvc式的开发框架,数�
 
 ## 版本记录
 [增加2.1.20版本:](https://github.com/leochen36/qmik/tree/master/builds)
+<pre>
 2.1.20 版本,
 1.兼容query $("#id").focus(),及 blur,调用此方法会执行dom.focus();
 2.微调mvc(a.调整执行控制器方法的this,b.微调q-onxxx绑定事件,动态append,跟全局控制器变量名一样,不能更新到页面的bug)
@@ -49,6 +50,7 @@ Qmik是一个面向数据接口编程,代码模块化,mvc式的开发框架,数�
 4.清理失效的文本节点
 5.调整scope.$()方法,如果scope.$()参数为空,就返回声明对应控制器的dom节点
 6.修复触发事件scope.once("viewport", function(e){}); 这个事件是当当前控制器在可视窗口时,才会触发,且只触发一次,对按需要处理非常有用
+</pre>
 
 [增加2.1.10版本:](https://github.com/leochen36/qmik/tree/master/builds)
 2.1.10 版本,
