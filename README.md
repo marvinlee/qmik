@@ -425,11 +425,20 @@ mvc api:
 
 
 ## 按需加载例子:
+<pre>
+    //使用模块
+    $.use(["module1","module2"],function(module1,module2){
 
-$.sun.use(["module1","module2"],function(module1,module2){}); $.sun.define(function(require, exports, module){}); $.sun.config();
+    });
+    //定义模块
+    $.define(function(require, exports, module){
 
+    });
+    //环境配置
+    $.sun.config();
+</pre>
 a. Config.js 文件,写如下内容:
-
+<pre>
         (function($) {
 
             $.config({
@@ -453,11 +462,11 @@ a. Config.js 文件,写如下内容:
             });
         })(Qmik);
 
-
+</pre>
 b.在index.html页面引入js<br/><br/>
 
 
-
+<pre>
         <!-- 加载框架 -->
         <script type="text/javascript" src="/xxxx/Qmik.js"></script>
         <!-- 加载配置文件 -->
@@ -477,23 +486,23 @@ c.实现Home业务模块功能
                     });
         }
 
-            Q.sun.define(function(require, exports, module) {
+            $.define(function(require, exports, module) {
                 var nav = require("Nav");//依赖导航模块
                 exports=new Home(nav);
             });
         })(Qmik);
-
+</pre>
 
 
  d.使用模块,在index.html使用 Home模块功能.  在index.html的尾部加入如下代码:
 
 
-
+<pre>
         <script type="text/javascript">
             // 界面初始化 
             (function($) {
                 //依赖3个模块初始化
-                $.sun.use([
+                $.use([
                     "Nav", "Home"
                 ], function(nav, home) {
                         nav.doxxx();//显示头部导航
@@ -501,9 +510,9 @@ c.实现Home业务模块功能
                 });
             })(Qmik);
         </script>
-
+</pre>
 ## 下载源码,自定义构建(构建时,只能选择src目录下的文件合并成一个Qmik.js,不能包含plugins等其它目录)
-
+<pre>
     1.安装github客户端,需要使用到git-shell  (http://windows.github.com/)
     2.下载 nodejs ,安装 ,http://nodejs.org/
     3. 把nodejs的bin配置到path里,(已经自带了npm)
@@ -518,7 +527,7 @@ c.实现Home业务模块功能
                         npm install  grunt-contrib-clean  安装cssmin
 
          安装完成后,进入目录,执行  grunt命令,开始自动构建,构建代码后的代码放在 assets 目录下
-
+</pre>
 
 ## Copyright
 
