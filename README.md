@@ -155,7 +155,7 @@ $.sun.config({
 ## API简介:
 
         version:      :查看qmik的版本,是个字段
-        [app(handle)   :把整个文档声明为一应用,应用mvc模式开发,需要执行此方法,会编译解析整个dom文档,返回App对象](#mvc)
+        app(handle)   :把整个文档声明为一应用,应用mvc模式开发,需要执行此方法,会编译解析整个dom文档,返回App对象
         encode(value) :等同于encodeURIComponent
         decode(value) :decodeURIComponent ,
         isBool(value) : 布尔判断,
@@ -317,8 +317,9 @@ Qmik.fn api(即 $("#id").api)
         position:function() //return {top:xx,left:xx}获取匹配元素相对父元素的偏移
 
 
-mvc api:
-    <pre id="mvc">
+## mvc api:
+
+    <pre>
         Qmik(function($){
             //每个页面当成一个应用来看待,编译页面并生成一个应用,全局唯一,多次调用只能生成一个
             var app = Qmik.app(function(scope){
@@ -344,7 +345,9 @@ mvc api:
         });
 
     </pre>
-##mvc 例子:       
+
+
+## mvc 例子:
 
 
 <!-- 声明控制器 --> 
