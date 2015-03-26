@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>qmik移动版本mvc例子</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8"/>
+    <meta http-equiv="x-ua-compatible" content="IE=edge"/>
+    <meta name="keywords" content="qmik"/>
+    <meta http-equiv="Cache-Control" content="max-age=60"/>
+    <meta name="layoutmode" content="fitscreen/standard"/>
+    <meta name="nightmode" content="disable"/>
+    <meta name="imagemode" content="force"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <!--<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=2.0,user-scalable=no" /> -->
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1.0,user-scalable=no"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <link rel="stylesheet" type="text/css" href="index.css?11"/>
+    <script type="text/javascript" src="../../Qmik.all.js"></script>
+</head>
+<body>
+<div class="app" id="app">
+</div>
+</body>
+<script>
+    Qmik(function ($) {
+        //加载Web组件化,目录api使用上来还不够简洁,,,,后面会专门提供api来使用
+        $.get("miao/miao.html", function(html){
+            $("#app").append(html);
+        });
+    });
+</script>
+</html>

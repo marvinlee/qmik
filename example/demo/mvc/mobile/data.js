@@ -69,7 +69,7 @@
 				}, {
 					"brands": [{
 						"action": "https://github.com/leochen36/qmik",
-						"image": "http://img04.taobaocdn.com/bao/uploaded/TB1lRR9GXXXXXcDXpXXSutbFXXX.jpg"
+						"image": "http://img03.taobaocdn.com/bao/uploaded/T1PWSlFhpfXXb1upjX.jpg"
 					}, {
 						"action": "https://github.com/leochen36/qmik",
 						"image": "http://img03.taobaocdn.com/bao/uploaded/T1PWSlFhpfXXb1upjX.jpg"
