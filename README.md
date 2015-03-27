@@ -434,7 +434,17 @@ Qmik.fn api(即 $("#id").api)
 
     });
     //环境配置
-    $.sun.config();
+    $.sun.config({
+        alias: {//定义别名
+            "qmik/loadimg": "http://xxx.xxx.com/qmik/loading.js?${version}"
+        },
+        vars: { //定义变量
+            version: function(){
+                 return 1;
+            },
+            version1: 2
+        }
+    });
 </pre>
 a. Config.js 文件,写如下内容:
 <pre>
