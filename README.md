@@ -36,117 +36,6 @@ Qmik是一个面向数据接口编程,代码模块化,mvc式的开发框架,数�
 深圳宜搜科技等互联网公司
 
 
-## 版本记录
-[增加2.1.20版本:](https://github.com/leochen36/qmik/tree/master/builds)
-<pre>
-2.1.20 版本,
-1.兼容query $("#id").focus(),及 blur,调用此方法会执行dom.focus();
-2.微调mvc(a.调整执行控制器方法的this,b.微调q-onxxx绑定事件,动态append,跟全局控制器变量名一样,不能更新到页面的bug)
-3.调整$.fn.append,html,init,使之可以编译scipt标签里脚本, 解决html内容包含\n就变成纯文本添加,不解析的bug
-4.清理失效的文本节点
-5.调整scope.$()方法,如果scope.$()参数为空,就返回声明对应控制器的dom节点
-6.修复触发事件scope.once("viewport", function(e){}); 这个事件是当当前控制器在可视窗口时,才会触发,且只触发一次,对按需要处理非常有用
-</pre>
-
-[增加2.1.10版本:](https://github.com/leochen36/qmik/tree/master/builds)
-2.1.10 版本,
-1.修复全局控制器的引用变量,更新数据时,不能更新到其它控制器上的bug
-
-[增加2.1.02版本:](https://github.com/leochen36/qmik/tree/master/builds)
-2.1.02 版本,
-1.优化性能
-2.修复q-for更新页面内容会闪的体验性问题
-3.调整$.url的实现,跟正常的url访问具体相同的能力
-
-[增加2.1.00版本(增强mvc功能,修复bug):](https://github.com/leochen36/qmik/tree/master/builds)
-2.1.00 版本,
-1.增加mvc功能,允许q-ctrl下包含子q-ctrl,但是没有父子关系,所有的q-ctrl只有一个共同的父控制器
-2.修复sun模块没有执行预加载的bug
-
-[增加2.0.00版本(重大功能mvc完善):](https://github.com/leochen36/qmik/tree/master/builds)
-2.0.00 版本, 
-1.增强完善mvc大模块功能
-4.增加Qmik.fn.inViewport()方法(节点是否在当前视口)
-
-
-[增加1.4.00版本(稳定后,升级为2.0版本,重大功能mvc加入):](https://github.com/leochen36/qmik/tree/master/builds)
-1.4.00 版本, 
-1.增加mvc大模块功能
-2.修改sun模块define模块时,参数(require, exports, module)必须全传的bug
-3.小细节优化
-4.去掉render
-
-[增加1.3.80版本:](https://github.com/leochen36/qmik/tree/master/builds)
-1.3.80 版本, 
-1.修复$.merge 对数组合拼操作的bug
-
-
-[增加1.3.70版本:](https://github.com/leochen36/qmik/tree/master/builds)
-1.3.70 版本, 
-1.优化sun模块的异常调试日志,
-2.重构事件模块 
-
-[增加1.3.62版本:](https://github.com/leochen36/qmik/tree/master/builds)
-1.3.62 版本, 
-1.增强cycle的功能,增加循环结束时间的支持: $.cycle(function(){}, cycleTime, ttl);
-2.修复 jsonp 对一小部分传递对象的参数的拼接url连接参数的bug,$.ajax({url:"https://github.com/leochen36/qmik",data:{name:'leo',haha:20}}) 这种
-2.修复 append 对象不是节点型字符串的支持(非<p>xxx</p>这种)
-
-
-[增加1.3.60版本:](https://github.com/leochen36/qmik/tree/master/builds)
-1.3.60 版本,对1.3.50版本修改sun模块造成的严重bug进行修复(请直接跳过1.3.50版本), 调整ready方法,ready里的方法,导出参数Qmik本身 Qmik.ready(function($){}), 
-修复对ie9的log方法不支持情况
-
-
-增加1.3.50版本: 
-    修复sun模块加载远程模块代码可能出现的异常
-    添加fn.appendTo,fn.afterTo,fn.beforeTo;
-
-
-1.增加模块加载定义时对return的支持:如:
-```
-$.define("demo",function(require, exports, module){
-    module.exports = {name:"exports"};
-    return {name:"leo"};//等于 module.exports = {name:"leo"}
-});
-
-```
-
-增加1.3.10版本,,,此版本对sun模块的加载机制进行了调整,影响:新版本如果页面代码里已定义模块名:如 lib/qmik/Store,
-在新版本中,如果定义了别名
-$.sun.config({
-    alias: {
-        "lib/qmik/Store":"http://xxx.com/xxx/store.js"
-    }
-});
-那么新版本开始会认为 别名 "lib/qmik/Store" 就是模块名,会优先以模块名进行加载模块,如果加载不到,再去请求对应的js文件,
-老版本认为是不一样,在实际使用中及反馈中,应该把二者统一为一样
-
-
-增加1.3.01大版本, 
-    任务进度处理模块$.task,有$.series(串行执行), $.parallel(并行执行),
-    方法执行,不抛出异常:$.execCatch(fun,args,error);
-    废弃不推荐的方法$.fn.animate,$.fn.hover;
-
-增加1.2.36版本,可调试性
-
-增加1.2.35版本,增强sun模块可调试性
-
-增加1.2.33版本,增强稳定性,兼容性
-
-增加1.2.32版本:增强sun模块的稳定性,防止多重依赖时,一个模块异常,造成其它模块不能正常加载
-
-增加1.2.31版本:1优化了模块加载异常的日志信息打印,对节点的after,before调整为直接对本节点操作,不clone节点
-
-增加1.2.30版本:1.优化sun模板,修复并优化getScript的回调策略
-
-增加1.2.23版本:1.增加高清屏的判断 Qmik.isRetinal, 2.修复部分文本添加会造成的bug
-
-增加1.2.22版本, 1.优化并解决查询(closest)的bug
-
-增加1.2.20版本, 1.优化了查询,大幅提升了查询的性能, 2.减小了核心版本的体积,合并后减小到20.7k了,gzip在8k左右. 3.增强了了fn.live委托事件的功能,ie测试最低从ie9开始 4.增加了一个滚动插件Qmik.fn.scrollBar.js 5.增加了一个前进后退插件Qmik.nav.js,Qmik.nav插件依赖核心sun功能
-
-1.2.16版本 修复: 1.sun模块对部分浏览器加载的bug 2.getJSON 少传data参数造成的bug
 
 ## API简介:
 
@@ -520,6 +409,123 @@ c.实现Home业务模块功能
             })(Qmik);
         </script>
 </pre>
+
+
+
+## 版本记录
+[增加2.1.20版本:](https://github.com/leochen36/qmik/tree/master/builds)
+<pre>
+2.1.20 版本,
+1.兼容query $("#id").focus(),及 blur,调用此方法会执行dom.focus();
+2.微调mvc(a.调整执行控制器方法的this,b.微调q-onxxx绑定事件,动态append,跟全局控制器变量名一样,不能更新到页面的bug)
+3.调整$.fn.append,html,init,使之可以编译scipt标签里脚本, 解决html内容包含\n就变成纯文本添加,不解析的bug
+4.清理失效的文本节点
+5.调整scope.$()方法,如果scope.$()参数为空,就返回声明对应控制器的dom节点
+6.修复触发事件scope.once("viewport", function(e){}); 这个事件是当当前控制器在可视窗口时,才会触发,且只触发一次,对按需要处理非常有用
+</pre>
+
+[增加2.1.10版本:](https://github.com/leochen36/qmik/tree/master/builds)
+2.1.10 版本,
+1.修复全局控制器的引用变量,更新数据时,不能更新到其它控制器上的bug
+
+[增加2.1.02版本:](https://github.com/leochen36/qmik/tree/master/builds)
+2.1.02 版本,
+1.优化性能
+2.修复q-for更新页面内容会闪的体验性问题
+3.调整$.url的实现,跟正常的url访问具体相同的能力
+
+[增加2.1.00版本(增强mvc功能,修复bug):](https://github.com/leochen36/qmik/tree/master/builds)
+2.1.00 版本,
+1.增加mvc功能,允许q-ctrl下包含子q-ctrl,但是没有父子关系,所有的q-ctrl只有一个共同的父控制器
+2.修复sun模块没有执行预加载的bug
+
+[增加2.0.00版本(重大功能mvc完善):](https://github.com/leochen36/qmik/tree/master/builds)
+2.0.00 版本,
+1.增强完善mvc大模块功能
+4.增加Qmik.fn.inViewport()方法(节点是否在当前视口)
+
+
+[增加1.4.00版本(稳定后,升级为2.0版本,重大功能mvc加入):](https://github.com/leochen36/qmik/tree/master/builds)
+1.4.00 版本,
+1.增加mvc大模块功能
+2.修改sun模块define模块时,参数(require, exports, module)必须全传的bug
+3.小细节优化
+4.去掉render
+
+[增加1.3.80版本:](https://github.com/leochen36/qmik/tree/master/builds)
+1.3.80 版本,
+1.修复$.merge 对数组合拼操作的bug
+
+
+[增加1.3.70版本:](https://github.com/leochen36/qmik/tree/master/builds)
+1.3.70 版本,
+1.优化sun模块的异常调试日志,
+2.重构事件模块
+
+[增加1.3.62版本:](https://github.com/leochen36/qmik/tree/master/builds)
+1.3.62 版本,
+1.增强cycle的功能,增加循环结束时间的支持: $.cycle(function(){}, cycleTime, ttl);
+2.修复 jsonp 对一小部分传递对象的参数的拼接url连接参数的bug,$.ajax({url:"https://github.com/leochen36/qmik",data:{name:'leo',haha:20}}) 这种
+2.修复 append 对象不是节点型字符串的支持(非<p>xxx</p>这种)
+
+
+[增加1.3.60版本:](https://github.com/leochen36/qmik/tree/master/builds)
+1.3.60 版本,对1.3.50版本修改sun模块造成的严重bug进行修复(请直接跳过1.3.50版本), 调整ready方法,ready里的方法,导出参数Qmik本身 Qmik.ready(function($){}),
+修复对ie9的log方法不支持情况
+
+
+增加1.3.50版本:
+    修复sun模块加载远程模块代码可能出现的异常
+    添加fn.appendTo,fn.afterTo,fn.beforeTo;
+
+
+1.增加模块加载定义时对return的支持:如:
+```
+$.define("demo",function(require, exports, module){
+    module.exports = {name:"exports"};
+    return {name:"leo"};//等于 module.exports = {name:"leo"}
+});
+
+```
+
+增加1.3.10版本,,,此版本对sun模块的加载机制进行了调整,影响:新版本如果页面代码里已定义模块名:如 lib/qmik/Store,
+在新版本中,如果定义了别名
+$.sun.config({
+    alias: {
+        "lib/qmik/Store":"http://xxx.com/xxx/store.js"
+    }
+});
+那么新版本开始会认为 别名 "lib/qmik/Store" 就是模块名,会优先以模块名进行加载模块,如果加载不到,再去请求对应的js文件,
+老版本认为是不一样,在实际使用中及反馈中,应该把二者统一为一样
+
+
+增加1.3.01大版本,
+    任务进度处理模块$.task,有$.series(串行执行), $.parallel(并行执行),
+    方法执行,不抛出异常:$.execCatch(fun,args,error);
+    废弃不推荐的方法$.fn.animate,$.fn.hover;
+
+增加1.2.36版本,可调试性
+
+增加1.2.35版本,增强sun模块可调试性
+
+增加1.2.33版本,增强稳定性,兼容性
+
+增加1.2.32版本:增强sun模块的稳定性,防止多重依赖时,一个模块异常,造成其它模块不能正常加载
+
+增加1.2.31版本:1优化了模块加载异常的日志信息打印,对节点的after,before调整为直接对本节点操作,不clone节点
+
+增加1.2.30版本:1.优化sun模板,修复并优化getScript的回调策略
+
+增加1.2.23版本:1.增加高清屏的判断 Qmik.isRetinal, 2.修复部分文本添加会造成的bug
+
+增加1.2.22版本, 1.优化并解决查询(closest)的bug
+
+增加1.2.20版本, 1.优化了查询,大幅提升了查询的性能, 2.减小了核心版本的体积,合并后减小到20.7k了,gzip在8k左右. 3.增强了了fn.live委托事件的功能,ie测试最低从ie9开始 4.增加了一个滚动插件Qmik.fn.scrollBar.js 5.增加了一个前进后退插件Qmik.nav.js,Qmik.nav插件依赖核心sun功能
+
+1.2.16版本 修复: 1.sun模块对部分浏览器加载的bug 2.getJSON 少传data参数造成的bug
+
+
+
 ## 下载源码,自定义构建(构建时,只能选择src目录下的文件合并成一个Qmik.js,不能包含plugins等其它目录)
 <pre>
     1.安装github客户端,需要使用到git-shell  (http://windows.github.com/)
