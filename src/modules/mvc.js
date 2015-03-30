@@ -481,40 +481,24 @@
                         }
                     } else if ("q-for" == attrName) { //for
 						var vs = value.replace(/(\s){2,}/g, " ").split(" "),
-							template = space.html = space.html || node.innerHTML,
+							template = space.html = space.html || node.innerHTML.replace(REG_SCRIPT, "&lt;script"),
 							htmls = [],
-							list = getVarValue(scope, vs[2]) || [],
-							start = 0,
-							qIndex = 0,
-							section = parseInt(g_config.section) || 24;
+							list = getVarValue(scope, vs[2]) || [];
 						if(vs.length == 3 && vs[1]=="in"){
-							var isStart = 1;
-							space.fors[node] && space.fors[node].stop();//停止之前的进度
-							space.fors[node] = Q.cycle(function(){
-								if(start>list.length){
-									return space.fors[node].stop();
-								}
-								htmls = [];
-								each(list.slice(start, start+section), function(i, item) {
-									item.index = (qIndex++) + 1;
-									var html = template.replace(REG_VAR_NAME, function(varName) {
-										var reg = new RegExp("^" + vs[0] + "\."),
-											name = getVarName(varName).replace(reg, ""),
-											val = fieldValue(item, name);
-										return val || "";
-									});
-									html = html.replace(REG_SCRIPT, "&lt;script");
-									htmls.push(html);
-								});
-								start+=section;
-                                htmls = htmls.join("");;
-								//node.innerHTML += htmls.join("");
-                                isStart ? Q(node).html(htmls) : Q(node).append(htmls);
-                                isStart = 0;
-								compileChilds(node, scope, isAdd);//编译
-                                show(node);
-                                Q(node).closest(".loading").rmClass("loading");
-							},10);
+                            each(list, function(i, item) {
+                                var html = template.replace(REG_VAR_NAME, function(varName) {
+                                    var reg = new RegExp("^" + vs[0] + "\."),
+                                        name = getVarName(varName).replace(reg, ""),
+                                        val = fieldValue(item, name);
+                                    val = isNull(val) ? "" : val+"";
+                                    return val.replace(REG_SCRIPT, "&lt;script");
+                                });
+                                htmls.push(html);
+                            });
+                            Q(node).html(htmls.join(""));
+                            compileChilds(node, scope, isAdd);//编译
+                            show(node);
+                            Q(node).closest(".loading").rmClass("loading");
 							node[namespace] = space;
 							isAdd && addMapNode(scope, vs[2], node);
 						}else{
