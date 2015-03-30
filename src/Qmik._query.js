@@ -353,7 +353,7 @@
 
     function compileScript(context){
         Q("script", context).each(function(i, dom) {
-            likeNull(dom.text) || eval(dom.text);
+            Q.execCatch(function(){eval(dom.text||"")});
         });
     }
 

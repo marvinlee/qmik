@@ -13,7 +13,7 @@
 	var encode = encodeURIComponent,
 		decode = decodeURIComponent,
 		slice = [].slice, //
-		baseURL = loc.protocol + "//" + loc.host, //
+		//baseURL = loc.protocol + "//" + loc.host, //
 		config = {
 			base: "" //工程上下文目录
 		};
@@ -484,7 +484,7 @@
 			try {
 				return fun.apply(fun, args||[]);
 			} catch (e) {
-				Q.log(e, e.stack, fun, args);
+				console.error(e, e.stack, fun, args);
 				return error && error(e);
 			} 
 		}
@@ -505,7 +505,7 @@
 		_delete: _delete
 	};
 	//////////////////////////////////////////////////////
-	Q.version = "2.1.20";
+	Q.version = "2.2.00";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;

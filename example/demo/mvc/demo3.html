@@ -5,7 +5,7 @@
     <meta charset="utf8"/>
     <meta content="width=device-width,user-scalable=no,initial-scale=1.0" name="viewport"/>
     <meta name="-webkit-tap-highlight" content="no"/>
-    <meta content="IE=10" http-equiv="x-ua-compatible"/>
+    <meta content="IE=edge,chrome" http-equiv="x-ua-compatible"/>
     <title>mvc例子</title>
     <script type="text/javascript" src="../../Qmik.all.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
@@ -13,30 +13,12 @@
 <body>
 <div q-ctrl="demoCtrl" class="box">
     <p> 全局:
-        <g>${gname} ${shop.name}-${shop.addr} - ${shop.shopName}</g>
+        <g>${gname} - {{user.id}} - {{user.email}}</g>
     </p>
     倒计时: <input name="time" type="text"/>
     <g>${time} 或 {{time}}</g>
 
     <div>
-        <h3>用户信息 //qmik会自动把user.* 转换成 scope.user ={name:"",nick:"" ...} </h3>
-
-        <p>user.name <input name="user.name" type="text"/>
-            <g>${user.name}</g>
-        </p>
-
-        <p>user.nick <input name="user.nick" type="text"/>
-            <g>${user.nick}</g>
-        </p>
-
-        <p>user.email <input name="user.email" type="text"/>
-            <g>${user.email}</g>
-        </p>
-
-        <p>user.qq <input name="user.qq" type="text"/>
-            <g>${user.qq}</g>
-        </p>
-        <g>${shop.name}-${shop.addr}</g>
         <h3>//显示列表,ul下面的内容是模板,qmik会根据模板来生成相应的页面</h3>
 
         <h3>
@@ -48,53 +30,20 @@
             <li>${item.title}</li>
         </ul>
 
-
-        <g>${shop.name}-${shop.add}</g>
     </div>
 </div>
-<div q-ctrl="d1" class="box">
-    <g>${shop.name}-${shop.addr}</g>
-</div>
-<g>${shop.name}-${shop.addr}</g>
+
+
+<div q-include="./demo1.html"></div>
 <script>
 
 
     $.app(function (scope) {//全局控制器的写法
         scope.gname = "lllleeeeoooo";
-        scope.shop = {
-            name: "haha",
-            addr: "sdf"
-        };
+        scope.user = {};
     }).ctrl({
         demoCtrl: function (scope) {//定义控制器  scope:会话,作用空间在q-ctrl里面,不能超出
             window.scope = scope;
-            $.delay(function () {
-                scope.user.name = "leo111";
-                scope.user.nick = "leo";
-                scope.user.email = "aaa@163.com";
-                scope.user.qq = "555";
-
-
-                var user = {
-                    name: "aa"
-                };
-
-                $.each(user, function (key, val) {
-                    scope.user[key] = val;
-                });
-
-                scope.apply("user");
-            }, 3000);
-            scope.watch({//监听器
-                //监听name值的变化,发现变化,会触发此事件(通过change事件来触发)
-                //因此如果想要手动触发这个方法,需要通过scope.$("[name=name]").emit("change");来触发事件
-                "user.name": function (map) {
-                    $.log("watch:", map);
-                },
-                "user": function (map) {//监听所有user(.*)?的变化
-
-                }
-            });
 
             scope.list = [{
                 title: 'leo1'
@@ -121,14 +70,6 @@
 
             $("body").append('<div q-ctrl="dinative">xxx</div>');
 
-            $.delay(function(){
-                $.ajax({
-                    url:"./demo.html",
-                    success: function(html){
-                        $("body").append(html);
-                    }
-                });
-            }, 1000);
 
         },
         dinative: function (scope) {

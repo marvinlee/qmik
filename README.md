@@ -413,6 +413,15 @@ c.实现Home业务模块功能
 
 
 ## 版本记录
+[增加2.2.00版本:](https://github.com/leochen36/qmik/tree/master/builds)
+<pre>
+2.2.00 版本,
+1.增加mvc q-include 引入webcomponent功能, 如<div q-include="/test.html"></div>
+2.对sun功能加入define.cmd的标记,标记为cmd标准加载
+3.bug修复
+</pre>
+
+
 [增加2.1.20版本:](https://github.com/leochen36/qmik/tree/master/builds)
 <pre>
 2.1.20 版本,

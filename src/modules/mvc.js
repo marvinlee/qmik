@@ -32,14 +32,14 @@
 
 	var prevTime = Q.now();
 	function handle(e){
-		var curTime = Q.now(), timeout = 10;
+		var curTime = Q.now();
 		if (curTime - prevTime < execInterval) {//触发频率
 			return;
 		}
 		prevTime = curTime;
 		var map = extend({}, g_viewports);
 		each(map, function(key, map){
-			var node = map.scope.context,
+			var node = map.scope ? map.scope.context : map.context ,
 				qdom = Q(node);
 			if (qdom.inViewport()) {
 				delete g_viewports[key];
@@ -133,10 +133,11 @@
 				//DOMSubtreeModified: function(e){},
 				DOMNodeInserted: function(e){//节点增加
 					var target = e.target,
-						space = getSpace(target);
+						space = getSpace(target),
+                        scope = space.scope;
 					if(space){
-						addScopeInput(target, space.scope);
-						compile(target, space.scope, true);
+                        addScopeInputs(target, scope);
+                        delay(compile, 1, target, scope, true);//延迟1ms执行
 					}
 				},
 				DOMNodeRemoved: remove //删除节点
@@ -173,10 +174,7 @@
 		scopes[me.__name] = me;
 		context[namespaceScope] = me;
 		me[nameParentScope] = rootScope; //父scope
-		$("input,select,textarea", context).each(function(i, dom) {
-            var pctrl = Q(dom).closest("[q-ctrl]")[0];
-            (isNull(pctrl)||pctrl==context) && addScopeInput(dom, me);
-		});
+        addScopeInputs(me[nameContext], me);
 	}
     var ScopePrototype = Scope.prototype;
 	extend(ScopePrototype, {
@@ -237,21 +235,13 @@
 							callback && callback(name, me);
 						});
 					}
-					if(names.length > 0){
-						/*each(names, function(i, name){
-							var input = me.$("input[name='"+name+"']")[0];
-							input ||	change({
-								target: me[nameContext],
-								name: name,
-								value: me[name]
-							}, me, true);
-							compileVarName(name, me)
-						});*/
-						emitChange(names, compileVarName);
-					}else{
-						emitChange(me[fieldWatchs]);
-						compile(me[nameContext], me);
-					}
+                    if(names.length < 1){
+                        names = [];
+                        each(me[nameMap], function(key, value){
+                            names.push(key);
+                        });
+                    }
+                    emitChange(names, compileVarName);
 					Q.isFun(callback) && callback();
 				}
 			};
@@ -271,6 +261,12 @@
     /** 是否是非法的变量名(往scope赋值) */
     function isIllegalName(name){
         return /^__/.test(name) || new RegExp(name).test(keywords)
+    }
+    function addScopeInputs(context, scope){
+        context.nodeType==1 && $("input,select,textarea", context).each(function(i, dom) {
+            var pctrl = Q(dom).closest("[q-ctrl]")[0];
+            (isNull(pctrl)||pctrl==context) && addScopeInput(dom, scope);
+        });
     }
 	function addScopeInput(dom, scope){
 		var name = dom.name;
@@ -448,7 +444,7 @@
 				ctrl: ctrl,
 				event: {},
 				fors: {},
-				scope: ctrl[namespaceScope]
+				scope: ctrl[namespaceScope] || globalScope
 			}
 		}
 	}
@@ -457,10 +453,10 @@
 		if(!space)return;
 		switch (node.nodeType) {
 			case 1://正常节点
-				each(node.attributes, function(i, attr){
+				node.tagName !="SCRIPT" && each(node.attributes, function(i, attr){
 					var attrName = attr.name,//属性名
 						value = space.attr[attrName] = space.attr[attrName] || (attr.value || "").trim();
-					if ("q-ctrl" === attrName) {//控制器
+					if ("q-ctrl" == attrName) {//控制器
 						if (value != "") {
 							if(scopes[value]){
 								scope = scopes[value];
@@ -473,7 +469,17 @@
                                 scope.apply("");
 							}
 						}
-					} else if ("q-for" === attrName) { //for
+					} else if("q-include" == attrName){
+                        g_viewports["q-include-"+value] = {
+                            context: node,
+                            callback: function(){
+                                Q.get(value, function(html){
+                                    Q(node).html(html);
+                                    scope.scopes.root.apply();
+                                })
+                            }
+                        }
+                    } else if ("q-for" == attrName) { //for
 						var vs = value.replace(/(\s){2,}/g, " ").split(" "),
 							template = space.html = space.html || node.innerHTML,
 							htmls = [],

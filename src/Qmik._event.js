@@ -151,9 +151,9 @@
 		return ents;
 	}
 	/** 是否是父或祖父节点 */
-	function contains(grandfather, child) {
+	/*function contains(grandfather, child) {
 		return Q.isDom(child) && (grandfather === child || grandfather === child.parentNode ? !0 : contains(grandfather, child.parentNode))
-	}
+	}*/
 	fn.extend({
 		on: function(name, callback) {
 			each(this, function(k, v) {
@@ -193,7 +193,7 @@
 						qtar = Q(target),
 						sel = Q.isString(me.selector) ? Q(me.selector, me.context) : me;
 					each(sel, function(i, dom) {
-						contains(dom, target) && callback.call(target, e)
+                        Q.contains(dom, target) && callback.call(target, e)
 					});
 				}
 				Q("body").on(key, fun)

@@ -269,8 +269,9 @@
 			return Q.extend({}, cacheModule)
 		}
 	});
+    sun.define.cmd = {};
 	Q.sun = sun;
-	Q.define = Q.sun.define;
+	Q.define = sun.define;
 	win.define = win.define || Q.define;//如果外面没有引入其它cmd框架,设置全局变量define
-	Q.use = Q.sun.use;
+	Q.use = sun.use;
 })(Qmik);
