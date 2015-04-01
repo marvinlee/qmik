@@ -449,7 +449,7 @@
 		}
 	}
 	function replaceNodeVar(node, scope, isAdd, callback) {
-		var space = getSpace(node);
+		var space = getSpace(node), qnode = Q(node), qInclude="q-include";
 		if(!space)return;
 		switch (node.nodeType) {
 			case 1://正常节点
@@ -469,12 +469,13 @@
                                 scope.apply("");
 							}
 						}
-					} else if("q-include" == attrName){
-                        g_viewports["q-include-"+value] = {
+					} else if(qInclude == attrName){
+                        qnode.rmAttr(qInclude);
+                        g_viewports[qInclude+"-"+value] = {
                             context: node,
                             callback: function(){
                                 Q.get(value, function(html){
-                                    Q(node).html(html);
+                                    qnode.html(html);
                                     scope.scopes.root.apply();
                                 })
                             }
@@ -495,10 +496,10 @@
                                 });
                                 htmls.push(html);
                             });
-                            Q(node).html(htmls.join(""));
+                            qnode.html(htmls.join(""));
                             compileChilds(node, scope, isAdd);//编译
                             show(node);
-                            Q(node).closest(".loading").rmClass("loading");
+                            qnode.closest(".loading").rmClass("loading");
 							node[namespace] = space;
 							isAdd && addMapNode(scope, vs[2], node);
 						}else{
