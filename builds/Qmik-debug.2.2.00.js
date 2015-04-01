@@ -1208,7 +1208,10 @@
 			if (state != "loading" && !isNull(node.$$handls) && (readyRE.test(state) || (isNull(state) && "load" == e.type))) {
 				setLoad(node, null);
 				each(node.$$handls, function(i, val) {
-					val(Q);
+					//val(Q);
+                    Q.delay(function() {
+                        val.call(node, Q)
+                    }, 1);
 				});
 				_delete(node, "$$handls");
 				//delete node.$$handls
@@ -1217,7 +1220,7 @@
 		if (readyRE.test(node.readyState)) {
 			Q.delay(function() {
 				fun.call(node, Q)
-			}, 1);
+			}, 10);
 		} else {
 			var hs = node.$$handls = node.$$handls || [];
 			hs.push(fun);

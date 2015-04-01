@@ -449,7 +449,7 @@
 		}
 	}
 	function replaceNodeVar(node, scope, isAdd, callback) {
-		var space = getSpace(node), qnode = Q(node), qInclude="q-include";
+		var space = getSpace(node), qnode = Q(node);
 		if(!space)return;
 		switch (node.nodeType) {
 			case 1://正常节点
@@ -469,9 +469,8 @@
                                 scope.apply("");
 							}
 						}
-					} else if(qInclude == attrName){
-                        qnode.rmAttr(qInclude);
-                        g_viewports[qInclude+"-"+value] = {
+					} else if("q-include" == attrName){
+                        g_viewports["q-include-"+value] = {
                             context: node,
                             callback: function(){
                                 Q.get(value, function(html){
@@ -480,6 +479,7 @@
                                 })
                             }
                         }
+                        qnode.rmAttr("q-include");
                     } else if ("q-for" == attrName) { //for
 						var vs = value.replace(/(\s){2,}/g, " ").split(" "),
 							template = space.html = space.html || node.innerHTML.replace(REG_SCRIPT, "&lt;script"),
