@@ -13,7 +13,7 @@
 	var encode = encodeURIComponent,
 		decode = decodeURIComponent,
 		slice = [].slice, //
-		baseURL = loc.protocol + "//" + loc.host, //
+		//baseURL = loc.protocol + "//" + loc.host, //
 		config = {
 			base: "" //工程上下文目录
 		};
@@ -484,7 +484,7 @@
 			try {
 				return fun.apply(fun, args||[]);
 			} catch (e) {
-				Q.log(e, e.stack, fun, args);
+				console.error(e, e.stack, fun, args);
 				return error && error(e);
 			} 
 		}
@@ -505,7 +505,7 @@
 		_delete: _delete
 	};
 	//////////////////////////////////////////////////////
-	Q.version = "2.1.20";
+	Q.version = "2.2.00";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
@@ -865,7 +865,7 @@
 
     function compileScript(context){
         Q("script", context).each(function(i, dom) {
-            likeNull(dom.text) || eval(dom.text);
+            Q.execCatch(function(){eval(dom.text||"")});
         });
     }
 
@@ -1328,9 +1328,9 @@
 		return ents;
 	}
 	/** 是否是父或祖父节点 */
-	function contains(grandfather, child) {
+	/*function contains(grandfather, child) {
 		return Q.isDom(child) && (grandfather === child || grandfather === child.parentNode ? !0 : contains(grandfather, child.parentNode))
-	}
+	}*/
 	fn.extend({
 		on: function(name, callback) {
 			each(this, function(k, v) {
@@ -1370,7 +1370,7 @@
 						qtar = Q(target),
 						sel = Q.isString(me.selector) ? Q(me.selector, me.context) : me;
 					each(sel, function(i, dom) {
-						contains(dom, target) && callback.call(target, e)
+                        Q.contains(dom, target) && callback.call(target, e)
 					});
 				}
 				Q("body").on(key, fun)
@@ -1946,10 +1946,11 @@
 			return Q.extend({}, cacheModule)
 		}
 	});
+    sun.define.cmd = {};
 	Q.sun = sun;
-	Q.define = Q.sun.define;
+	Q.define = sun.define;
 	win.define = win.define || Q.define;//如果外面没有引入其它cmd框架,设置全局变量define
-	Q.use = Q.sun.use;
+	Q.use = sun.use;
 })(Qmik);
 /**
  * @author:le0
@@ -2036,14 +2037,14 @@
 
 	var prevTime = Q.now();
 	function handle(e){
-		var curTime = Q.now(), timeout = 10;
+		var curTime = Q.now();
 		if (curTime - prevTime < execInterval) {//触发频率
 			return;
 		}
 		prevTime = curTime;
 		var map = extend({}, g_viewports);
 		each(map, function(key, map){
-			var node = map.scope.context,
+			var node = map.scope ? map.scope.context : map.context ,
 				qdom = Q(node);
 			if (qdom.inViewport()) {
 				delete g_viewports[key];
@@ -2137,10 +2138,11 @@
 				//DOMSubtreeModified: function(e){},
 				DOMNodeInserted: function(e){//节点增加
 					var target = e.target,
-						space = getSpace(target);
+						space = getSpace(target),
+                        scope = space.scope;
 					if(space){
-						addScopeInput(target, space.scope);
-						compile(target, space.scope, true);
+                        addScopeInputs(target, scope);
+                        delay(compile, 1, target, scope, true);//延迟1ms执行
 					}
 				},
 				DOMNodeRemoved: remove //删除节点
@@ -2177,10 +2179,7 @@
 		scopes[me.__name] = me;
 		context[namespaceScope] = me;
 		me[nameParentScope] = rootScope; //父scope
-		$("input,select,textarea", context).each(function(i, dom) {
-            var pctrl = Q(dom).closest("[q-ctrl]")[0];
-            (isNull(pctrl)||pctrl==context) && addScopeInput(dom, me);
-		});
+        addScopeInputs(me[nameContext], me);
 	}
     var ScopePrototype = Scope.prototype;
 	extend(ScopePrototype, {
@@ -2241,21 +2240,13 @@
 							callback && callback(name, me);
 						});
 					}
-					if(names.length > 0){
-						/*each(names, function(i, name){
-							var input = me.$("input[name='"+name+"']")[0];
-							input ||	change({
-								target: me[nameContext],
-								name: name,
-								value: me[name]
-							}, me, true);
-							compileVarName(name, me)
-						});*/
-						emitChange(names, compileVarName);
-					}else{
-						emitChange(me[fieldWatchs]);
-						compile(me[nameContext], me);
-					}
+                    if(names.length < 1){
+                        names = [];
+                        each(me[nameMap], function(key, value){
+                            names.push(key);
+                        });
+                    }
+                    emitChange(names, compileVarName);
 					Q.isFun(callback) && callback();
 				}
 			};
@@ -2275,6 +2266,12 @@
     /** 是否是非法的变量名(往scope赋值) */
     function isIllegalName(name){
         return /^__/.test(name) || new RegExp(name).test(keywords)
+    }
+    function addScopeInputs(context, scope){
+        context.nodeType==1 && $("input,select,textarea", context).each(function(i, dom) {
+            var pctrl = Q(dom).closest("[q-ctrl]")[0];
+            (isNull(pctrl)||pctrl==context) && addScopeInput(dom, scope);
+        });
     }
 	function addScopeInput(dom, scope){
 		var name = dom.name;
@@ -2452,19 +2449,19 @@
 				ctrl: ctrl,
 				event: {},
 				fors: {},
-				scope: ctrl[namespaceScope]
+				scope: ctrl[namespaceScope] || globalScope
 			}
 		}
 	}
 	function replaceNodeVar(node, scope, isAdd, callback) {
-		var space = getSpace(node);
+		var space = getSpace(node), qnode = Q(node), qInclude="q-include";
 		if(!space)return;
 		switch (node.nodeType) {
 			case 1://正常节点
-				each(node.attributes, function(i, attr){
+				node.tagName !="SCRIPT" && each(node.attributes, function(i, attr){
 					var attrName = attr.name,//属性名
 						value = space.attr[attrName] = space.attr[attrName] || (attr.value || "").trim();
-					if ("q-ctrl" === attrName) {//控制器
+					if ("q-ctrl" == attrName) {//控制器
 						if (value != "") {
 							if(scopes[value]){
 								scope = scopes[value];
@@ -2477,42 +2474,37 @@
                                 scope.apply("");
 							}
 						}
-					} else if ("q-for" === attrName) { //for
+					} else if(qInclude == attrName){
+                        qnode.rmAttr(qInclude);
+                        g_viewports[qInclude+"-"+value] = {
+                            context: node,
+                            callback: function(){
+                                Q.get(value, function(html){
+                                    qnode.html(html);
+                                    scope.scopes.root.apply();
+                                })
+                            }
+                        }
+                    } else if ("q-for" == attrName) { //for
 						var vs = value.replace(/(\s){2,}/g, " ").split(" "),
-							template = space.html = space.html || node.innerHTML,
+							template = space.html = space.html || node.innerHTML.replace(REG_SCRIPT, "&lt;script"),
 							htmls = [],
-							list = getVarValue(scope, vs[2]) || [],
-							start = 0,
-							qIndex = 0,
-							section = parseInt(g_config.section) || 24;
+							list = getVarValue(scope, vs[2]) || [];
 						if(vs.length == 3 && vs[1]=="in"){
-							var isStart = 1;
-							space.fors[node] && space.fors[node].stop();//停止之前的进度
-							space.fors[node] = Q.cycle(function(){
-								if(start>list.length){
-									return space.fors[node].stop();
-								}
-								htmls = [];
-								each(list.slice(start, start+section), function(i, item) {
-									item.index = (qIndex++) + 1;
-									var html = template.replace(REG_VAR_NAME, function(varName) {
-										var reg = new RegExp("^" + vs[0] + "\."),
-											name = getVarName(varName).replace(reg, ""),
-											val = fieldValue(item, name);
-										return val || "";
-									});
-									html = html.replace(REG_SCRIPT, "&lt;script");
-									htmls.push(html);
-								});
-								start+=section;
-                                htmls = htmls.join("");;
-								//node.innerHTML += htmls.join("");
-                                isStart ? Q(node).html(htmls) : Q(node).append(htmls);
-                                isStart = 0;
-								compileChilds(node, scope, isAdd);//编译
-                                show(node);
-                                Q(node).closest(".loading").rmClass("loading");
-							},10);
+                            each(list, function(i, item) {
+                                var html = template.replace(REG_VAR_NAME, function(varName) {
+                                    var reg = new RegExp("^" + vs[0] + "\."),
+                                        name = getVarName(varName).replace(reg, ""),
+                                        val = fieldValue(item, name);
+                                    val = isNull(val) ? "" : val+"";
+                                    return val.replace(REG_SCRIPT, "&lt;script");
+                                });
+                                htmls.push(html);
+                            });
+                            qnode.html(htmls.join(""));
+                            compileChilds(node, scope, isAdd);//编译
+                            show(node);
+                            qnode.closest(".loading").rmClass("loading");
 							node[namespace] = space;
 							isAdd && addMapNode(scope, vs[2], node);
 						}else{

@@ -13,7 +13,7 @@
 	var encode = encodeURIComponent,
 		decode = decodeURIComponent,
 		slice = [].slice, //
-		baseURL = loc.protocol + "//" + loc.host, //
+		//baseURL = loc.protocol + "//" + loc.host, //
 		config = {
 			base: "" //工程上下文目录
 		};
@@ -484,7 +484,7 @@
 			try {
 				return fun.apply(fun, args||[]);
 			} catch (e) {
-				Q.log(e, e.stack, fun, args);
+				console.error(e, e.stack, fun, args);
 				return error && error(e);
 			} 
 		}
@@ -505,7 +505,7 @@
 		_delete: _delete
 	};
 	//////////////////////////////////////////////////////
-	Q.version = "2.1.20";
+	Q.version = "2.2.00";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
@@ -865,7 +865,7 @@
 
     function compileScript(context){
         Q("script", context).each(function(i, dom) {
-            likeNull(dom.text) || eval(dom.text);
+            Q.execCatch(function(){eval(dom.text||"")});
         });
     }
 
@@ -1328,9 +1328,9 @@
 		return ents;
 	}
 	/** 是否是父或祖父节点 */
-	function contains(grandfather, child) {
+	/*function contains(grandfather, child) {
 		return Q.isDom(child) && (grandfather === child || grandfather === child.parentNode ? !0 : contains(grandfather, child.parentNode))
-	}
+	}*/
 	fn.extend({
 		on: function(name, callback) {
 			each(this, function(k, v) {
@@ -1370,7 +1370,7 @@
 						qtar = Q(target),
 						sel = Q.isString(me.selector) ? Q(me.selector, me.context) : me;
 					each(sel, function(i, dom) {
-						contains(dom, target) && callback.call(target, e)
+                        Q.contains(dom, target) && callback.call(target, e)
 					});
 				}
 				Q("body").on(key, fun)
@@ -1946,10 +1946,11 @@
 			return Q.extend({}, cacheModule)
 		}
 	});
+    sun.define.cmd = {};
 	Q.sun = sun;
-	Q.define = Q.sun.define;
+	Q.define = sun.define;
 	win.define = win.define || Q.define;//如果外面没有引入其它cmd框架,设置全局变量define
-	Q.use = Q.sun.use;
+	Q.use = sun.use;
 })(Qmik);
 /**
  * @author:le0
