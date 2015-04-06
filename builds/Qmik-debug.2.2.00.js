@@ -1482,7 +1482,7 @@
 				}
 			}
 		};
-		
+		xhr.onprogress = conf.progress;
 		if (isGet) {
 			url += (/\?/.test(url) ? "&" : "?") + formData;
 		}

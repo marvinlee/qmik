@@ -419,6 +419,7 @@ c.实现Home业务模块功能
 1.增加mvc q-include 引入webcomponent功能, 如<div q-include="/test.html"></div>
 2.对sun功能加入define.cmd的标记,标记为cmd标准加载
 3.bug修复
+4.ajax增加progress进度事件,用于跟踪接口进度
 </pre>
 
 
