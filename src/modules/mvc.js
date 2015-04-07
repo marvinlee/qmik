@@ -470,7 +470,7 @@
 							}
 						}
 					} else if("q-include" == attrName){
-                        g_viewports["q-include-"+value] = {
+                        g_viewports["q-include-"+value+Math.random()] = {
                             context: node,
                             callback: function(){
                                 Q.get(value, function(html){
