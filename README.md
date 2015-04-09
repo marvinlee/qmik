@@ -201,6 +201,28 @@ Qmik.fn api(即 $("#id").api)
         offset:function() //return {top:xx,left:xx} 获取匹配元素在当前视口的相对偏移
         position:function() //return {top:xx,left:xx}获取匹配元素相对父元素的偏移
 
+## 事件使用:
+<pre>
+    $("#id").on({//绑定事件
+        click: function(e){
+            console.log(e);
+        }
+    });
+    $("#id").off("clcik");//取消事件,接收两个参数 $("#id").off(name, handle); name:事件名,handle绑定的方法,如果没有传,就取消全部的指定事件
+
+    $("#id").once({//绑定事件,只执行一次
+        click: function(e){
+            console.log(e);
+        }
+    });
+    $("#id").live({//委托事件
+        click: function(e){
+            console.log(e);
+        }
+    });
+    $("#id").die("click");//取消委托事件,$("#id").die(name, handle)
+</pre>
+
 
 ## mvc api:
 
