@@ -438,7 +438,7 @@ c.实现Home业务模块功能
 [增加2.2.00版本:](https://github.com/leochen36/qmik/tree/master/builds)
 <pre>
 2.2.00 版本,
-1.增加mvc q-include 引入webcomponent功能, 如<div q-include="/test.html"></div> 就会在这个div元素处于可见视口位置时,才去加载/test.html
+1.增加mvc q-include 引入webcomponent功能, 如&lt;div q-include="/test.html"&gt;&lt;/div&gt; 就会在这个div元素处于可见视口位置时,才去加载/test.html
 2.对sun功能加入define.cmd的标记,标记为cmd标准加载
 3.bug修复
 4.ajax增加progress进度事件,用于跟踪接口进度
