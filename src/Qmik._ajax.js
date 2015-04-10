@@ -10,7 +10,10 @@
 	ac = {
 		type : 'GET',
 		async : !0,
-		dataType : 'text'
+		dataType : 'text',
+        xhrFields: {
+            //withCredentials:false
+        }
 	};
 	function request() {
 		return win.XMLHttpRequest && (win.location.protocol !== 'file:' || !win.ActiveXObject)	? new win.XMLHttpRequest()
@@ -72,6 +75,7 @@
 		if (isGet) {
 			url += (/\?/.test(url) ? "&" : "?") + formData;
 		}
+        Q.extend(xhr, _config.xhrFields||{});
 		xhr.open(_config.type, url, _config.async);
 		xhr.setRequestHeader("Cache-Control", "no-cache");
 		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
