@@ -119,8 +119,9 @@
 		Q.each(deps, function(i, id) {
 			tasks.push(function(cb) {
 				load(id, function(exports, err) {
+                    err && console.error(err);
 					params.push(exports);
-					cb(err);
+					cb();
 				}, refer);
 			});
 		});

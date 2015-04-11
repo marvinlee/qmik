@@ -484,7 +484,7 @@
 			try {
 				return fun.apply(fun, args||[]);
 			} catch (e) {
-				console.error(e, e.stack, fun, args);
+				console.error(e.stack, e, '\r\n', fun, args );
 				return error && error(e);
 			} 
 		}
