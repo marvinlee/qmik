@@ -241,6 +241,12 @@
                             names.push(key);
                         });
                     }
+                    each(me[nameInput], function(name, dom){
+                        var readValue = getVarValue(me, name);
+                        if(getInputValue(dom) != readValue){
+                            dom.value = readValue;
+                        }
+                    });
                     emitChange(names, compileVarName);
 					Q.isFun(callback) && callback();
 				}

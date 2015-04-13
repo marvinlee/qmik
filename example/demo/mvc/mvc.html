@@ -86,8 +86,7 @@ root name=<input type="text" name="name">
             </h4>
             <!-- q-for checkboxs -->
             <div q-for="item in checkboxs">
-                &nbsp; cbk
-                <g>${item.value}</g>
+                &nbsp; cbk${item.value}
                 <input type="checkbox" name="cbk" value="cbk${item.value}">&nbsp;
             </div>
 
@@ -146,6 +145,7 @@ ${n4} ${name}
         var app = $.app();
         app.ctrl({
             "subdent": function (scope) {
+                window.scope = scope;
                 scope.showName = scope.name;
                 scope.watch("name", function (value) {
                 });
