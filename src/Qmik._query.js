@@ -509,8 +509,8 @@
 					maxY = getMaxY();
                 minY = minY < 0 ? 0 : minY;
 				//return elTop >= 0 && elTop >= min && elTop <= max;
-				bool = elTop >= 0 && elTop <= maxY && elDown >= minY;
-                bool = bool && elLeft >= 0 && elLeft <= maxX && elRight >= minX
+				bool = elTop <= maxY && elDown >= minY;
+                bool = bool && elLeft <= maxX && elRight >= minX
 			}
 			return bool;
 		},
