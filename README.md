@@ -135,11 +135,6 @@ Qmik是一个面向数据接口编程,代码模块化,mvc式的开发框架,数�
                 ],function(){
                     //全部执行完,回调
                 });
-            execCatch:function(fun, args, error)
-                //执行方法并捕获异常,不向外抛出异常,try{}catch(e){} 影响代码的美观性
-                fun:执行方法
-                args:数组,参数[]
-                error:抛出异常回调,无异常不回调
 
 查询api:支持下面的查询格式,api采用h5原生的方法querySelectorAll来检索,性能最高效,但是会存在不同浏览器支持的程度不太一样,下面的写法,所有浏览器都会支持
 
@@ -533,7 +528,6 @@ $.sun.config({
 
 增加1.3.01大版本,
     任务进度处理模块$.task,有$.series(串行执行), $.parallel(并行执行),
-    方法执行,不抛出异常:$.execCatch(fun,args,error);
     废弃不推荐的方法$.fn.animate,$.fn.hover;
 
 增加1.2.36版本,可调试性

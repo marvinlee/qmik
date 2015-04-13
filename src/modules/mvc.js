@@ -10,7 +10,7 @@
 		extend = Q.extend,
 		each = Q.each,
 		delay = Q.delay,
-		execCatch = Q.execCatch;
+		con = console;
 
 	var ctrls = {}, //控制器存储
 		scopes = {},
@@ -44,7 +44,12 @@
 			if (qdom.inViewport()) {
 				delete g_viewports[key];
                 Q.delay(function(){
-                    execCatch(map.callback);
+                    //execCatch(map.callback);
+                    try{
+                        map.callback();
+                    }catch(e){
+                        con.error(e);
+                    }
                     qdom.emit("viewport");
                 }, 11);
 			}
@@ -75,7 +80,12 @@
             setScopePrototype(scope, name);
 
 			each(getBatList(scope[fieldWatchs], name), function(i, watch) {
-				 execCatch(watch,[{name:name, value:value, source:scope[split(name)[0]], target:target}]);
+                try{
+                    watch({name:name, value:value, source:scope[split(name)[0]], target:target});
+                }catch(e){
+                    con.error(e);
+                }
+				// execCatch(watch,[{name:name, value:value, source:scope[split(name)[0]], target:target}]);
 			});
 			compileVarName(name, scope);
 		}
@@ -469,9 +479,14 @@
 							}else{
                                 show(node);
 								scope = new Scope(node, scope.parent || scope);
-								execCatch(function() {
+                                try{
+                                    Q.isFun(ctrls[value]) ? ctrls[value].call(scope, scope) : Q.warn("q-ctrl:[" + value + "]is not define");
+                                }catch(e){
+                                    con.error(e);
+                                }
+								/*execCatch(function() {
 									Q.isFun(ctrls[value]) ? ctrls[value].call(scope, scope) : Q.warn("q-ctrl:[" + value + "]is not define");
-								});
+								});*/
                                 scope.apply("");
 							}
 						}
@@ -579,7 +594,12 @@
 	var app;
 	Q.app = function(rootCtrlFun){
         app && app.scope && rootCtrlFun && Q(function(){
-           execCatch(rootCtrlFun, [app.scope]);
+            try{
+                rootCtrlFun(app.scope);
+            }catch(e){
+                con.error(e);
+            }
+           //execCatch(rootCtrlFun, [app.scope]);
         });
 		return app = app || new App(rootCtrlFun);
 	};

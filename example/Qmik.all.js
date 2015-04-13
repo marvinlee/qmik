@@ -422,7 +422,7 @@
 			return /Windows Phone/.test(UA)
 		},
 		isIE: function() {
-			return /MSIE/.test(UA)
+			return /MSIE/.test(UA) || /Trident/.test(UA)
 		},
 		/**
 		 * is Firefox
@@ -474,12 +474,7 @@
 			}
 			return ret
 		},
-		/**
-			执行方法并捕获异常,不向外抛出异常,try{}catch(e){} 影响方法的美观性
-			fun:执行方法
-			args:数组,参数[]
-			error:抛出异常回调,无异常不回调
-		*/
+        //不推荐方法 后续版本会去掉
 		execCatch: function (fun, args, error) {
 			try {
 				return fun.apply(fun, args||[]);
@@ -865,7 +860,12 @@
 
     function compileScript(context){
         Q("script", context).each(function(i, dom) {
-            Q.execCatch(function(){eval(dom.text||"")});
+            try{
+                eval(dom.text||"");
+            }catch(e){
+                console.log(e);
+            }
+            //Q.execCatch(function(){eval(dom.text||"")});
         });
     }
 
@@ -1021,8 +1021,8 @@
 					maxY = getMaxY();
                 minY = minY < 0 ? 0 : minY;
 				//return elTop >= 0 && elTop >= min && elTop <= max;
-				bool = elTop >= 0 && elTop <= maxY && elDown >= minY;
-                bool = bool && elLeft >= 0 && elLeft <= maxX && elRight >= minX
+				bool = elTop <= maxY && elDown >= minY;
+                bool = bool && elLeft <= maxX && elRight >= minX
 			}
 			return bool;
 		},
@@ -1198,7 +1198,7 @@
 	function setLoad(node, fun) {
 		node.onreadystatechange = node.onload = node.onDOMContentLoaded = fun
 	}
-	
+
 	Q.ready = fn.ready = function(fun, context) {
 		var node = context || this[0] || doc,
 			state;
@@ -1287,21 +1287,25 @@
 		var retVal, m = this,
 			fun, param, events = Q(m).data(ek) || {};
 		each(events[e.type], function(i, v) {
-			Q.execCatch(function() {
-				fun = v.fun;
-				param = v.param || [];
-				if (isFun(fun)) {
-					retVal = fun.apply(m, [
-						e
-					].concat(param));
-					//if (!isNull(retVal)) e.returnValue = retVal
-					//兼容ie处理
-					if (!isNull(retVal)) {
-						e.returnValue = retVal;
-						if (win.event) win.event.returnValue = retVal;
-					}
-				}
-			});
+            try{
+                fun = v.fun;
+                param = v.param || [];
+                if (isFun(fun)) {
+                    retVal = fun.apply(m, [
+                        e
+                    ].concat(param));
+                    //if (!isNull(retVal)) e.returnValue = retVal
+                    //兼容ie处理
+                    if (!isNull(retVal)) {
+                        e.returnValue = retVal;
+                        if (win.event) win.event.returnValue = retVal;
+                    }
+                }
+            }catch(e){
+                console.error(e);
+            }
+			/*Q.execCatch(function() {
+			});*/
 		})
 	}
 
@@ -1568,7 +1572,7 @@
 */
 ;
 (function(Q) {
-	var execCatch = Q.execCatch;
+	var con = console;
 	//串行执行任务列队,报错不继续执行,各任务间有依赖关系
 	function execSeriesTasksWithParam(tasks, callback) {
 		var length = tasks.length;
@@ -1626,11 +1630,23 @@
 
 
 	function execTask(task, callback, param) {
-		execCatch(task, [callback, param], callback);
+        try{
+            task(callback, param);
+        }catch(e){
+            con.error(e.stack, e);
+            callback && callback(e);
+        }
+		//execCatch(task, [callback, param], callback);
 	}
 
 	function execTaskNoArgs(task, callback) {
-		execCatch(task, [callback], callback);
+        try{
+            task(callback);
+        }catch(e){
+            con.error(e.stack, e);
+            callback && callback(e);
+        }
+		//execCatch(task, [callback], callback);
 	}
 	//function Task() {};
 	var Task = {};
@@ -1655,7 +1671,12 @@
 	Task.series = function(tasks, callback) {
 		execSeriesTasksWithParam(tasks, function(err, exports) {
 			err && Q.log(err, err.stack);
-			execCatch(callback, [err, exports]);
+            try{
+                callback(err, exports);
+            }catch(e){
+                con.error(e.stack, e);
+            }
+			//execCatch(callback, [err, exports]);
 		});
 	};
 
@@ -1675,7 +1696,12 @@
 	*/
 	Task.parallel = function(tasks, callback) {
 		execParallelTasks(tasks, function() {
-			execCatch(callback);
+            try{
+                callback()
+            }catch(e){
+                con.error(e.stack, e);
+            }
+			//execCatch(callback);
 		});
 	};
 	Q.task = Task;
@@ -1690,7 +1716,6 @@
 ;
 (function(Q) {
 	var isFun = Q.isFun,
-		execCatch = Q.execCatch,
 		win = Q.global,
 		NULL = null;
 	var config = {
@@ -1810,9 +1835,11 @@
 			});
 		});
 		Q.series(tasks, function(err) {
-			execCatch(function() {
-				err || (callback && callback.apply(callback, params))
-			});
+            try{
+                err || (callback && callback.apply(callback, params))
+            }catch(e){
+                console.error(e.stack, e);
+            }
 			chain && chain();
 		});
 	}
@@ -2023,7 +2050,7 @@
 		extend = Q.extend,
 		each = Q.each,
 		delay = Q.delay,
-		execCatch = Q.execCatch;
+		con = console;
 
 	var ctrls = {}, //控制器存储
 		scopes = {},
@@ -2057,7 +2084,12 @@
 			if (qdom.inViewport()) {
 				delete g_viewports[key];
                 Q.delay(function(){
-                    execCatch(map.callback);
+                    //execCatch(map.callback);
+                    try{
+                        map.callback();
+                    }catch(e){
+                        con.error(e);
+                    }
                     qdom.emit("viewport");
                 }, 11);
 			}
@@ -2088,7 +2120,12 @@
             setScopePrototype(scope, name);
 
 			each(getBatList(scope[fieldWatchs], name), function(i, watch) {
-				 execCatch(watch,[{name:name, value:value, source:scope[split(name)[0]], target:target}]);
+                try{
+                    watch({name:name, value:value, source:scope[split(name)[0]], target:target});
+                }catch(e){
+                    con.error(e);
+                }
+				// execCatch(watch,[{name:name, value:value, source:scope[split(name)[0]], target:target}]);
 			});
 			compileVarName(name, scope);
 		}
@@ -2482,9 +2519,14 @@
 							}else{
                                 show(node);
 								scope = new Scope(node, scope.parent || scope);
-								execCatch(function() {
+                                try{
+                                    Q.isFun(ctrls[value]) ? ctrls[value].call(scope, scope) : Q.warn("q-ctrl:[" + value + "]is not define");
+                                }catch(e){
+                                    con.error(e);
+                                }
+								/*execCatch(function() {
 									Q.isFun(ctrls[value]) ? ctrls[value].call(scope, scope) : Q.warn("q-ctrl:[" + value + "]is not define");
-								});
+								});*/
                                 scope.apply("");
 							}
 						}
@@ -2592,7 +2634,12 @@
 	var app;
 	Q.app = function(rootCtrlFun){
         app && app.scope && rootCtrlFun && Q(function(){
-           execCatch(rootCtrlFun, [app.scope]);
+            try{
+                rootCtrlFun(app.scope);
+            }catch(e){
+                con.error(e);
+            }
+           //execCatch(rootCtrlFun, [app.scope]);
         });
 		return app = app || new App(rootCtrlFun);
 	};

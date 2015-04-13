@@ -21,7 +21,7 @@
 	function setLoad(node, fun) {
 		node.onreadystatechange = node.onload = node.onDOMContentLoaded = fun
 	}
-	
+
 	Q.ready = fn.ready = function(fun, context) {
 		var node = context || this[0] || doc,
 			state;
@@ -110,21 +110,25 @@
 		var retVal, m = this,
 			fun, param, events = Q(m).data(ek) || {};
 		each(events[e.type], function(i, v) {
-			Q.execCatch(function() {
-				fun = v.fun;
-				param = v.param || [];
-				if (isFun(fun)) {
-					retVal = fun.apply(m, [
-						e
-					].concat(param));
-					//if (!isNull(retVal)) e.returnValue = retVal
-					//兼容ie处理
-					if (!isNull(retVal)) {
-						e.returnValue = retVal;
-						if (win.event) win.event.returnValue = retVal;
-					}
-				}
-			});
+            try{
+                fun = v.fun;
+                param = v.param || [];
+                if (isFun(fun)) {
+                    retVal = fun.apply(m, [
+                        e
+                    ].concat(param));
+                    //if (!isNull(retVal)) e.returnValue = retVal
+                    //兼容ie处理
+                    if (!isNull(retVal)) {
+                        e.returnValue = retVal;
+                        if (win.event) win.event.returnValue = retVal;
+                    }
+                }
+            }catch(e){
+                console.error(e);
+            }
+			/*Q.execCatch(function() {
+			});*/
 		})
 	}
 

@@ -6,7 +6,6 @@
 ;
 (function(Q) {
 	var isFun = Q.isFun,
-		execCatch = Q.execCatch,
 		win = Q.global,
 		NULL = null;
 	var config = {
@@ -126,9 +125,11 @@
 			});
 		});
 		Q.series(tasks, function(err) {
-			execCatch(function() {
-				err || (callback && callback.apply(callback, params))
-			});
+            try{
+                err || (callback && callback.apply(callback, params))
+            }catch(e){
+                console.error(e);
+            }
 			chain && chain();
 		});
 	}

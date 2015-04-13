@@ -422,7 +422,7 @@
 			return /Windows Phone/.test(UA)
 		},
 		isIE: function() {
-			return /MSIE/.test(UA)
+			return /MSIE/.test(UA) || /Trident/.test(UA)
 		},
 		/**
 		 * is Firefox
@@ -474,12 +474,7 @@
 			}
 			return ret
 		},
-		/**
-			执行方法并捕获异常,不向外抛出异常,try{}catch(e){} 影响方法的美观性
-			fun:执行方法
-			args:数组,参数[]
-			error:抛出异常回调,无异常不回调
-		*/
+        //不推荐方法 后续版本会去掉
 		execCatch: function (fun, args, error) {
 			try {
 				return fun.apply(fun, args||[]);
