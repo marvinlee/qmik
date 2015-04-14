@@ -474,7 +474,13 @@
 			}
 			return ret
 		},
-        //不推荐方法 后续版本会去掉
+        /**
+         * 执行方法并捕获异常,不向外抛出异常
+         * @param fun 执行方法
+         * @param args 数组,参数[]
+         * @param error 抛出异常回调,无异常不回调
+         * @returns {*}
+         */
 		execCatch: function (fun, args, error) {
 			try {
 				return fun.apply(fun, args||[]);
