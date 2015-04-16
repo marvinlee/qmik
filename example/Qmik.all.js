@@ -474,7 +474,13 @@
 			}
 			return ret
 		},
-        //不推荐方法 后续版本会去掉
+        /**
+         * 执行方法并捕获异常,不向外抛出异常
+         * @param fun 执行方法
+         * @param args 数组,参数[]
+         * @param error 抛出异常回调,无异常不回调
+         * @returns {*}
+         */
 		execCatch: function (fun, args, error) {
 			try {
 				return fun.apply(fun, args||[]);
@@ -863,7 +869,7 @@
             try{
                 eval(dom.text||"");
             }catch(e){
-                console.log(e);
+                console.error(e);
             }
             //Q.execCatch(function(){eval(dom.text||"")});
         });
@@ -1633,7 +1639,7 @@
         try{
             task(callback, param);
         }catch(e){
-            con.error(e.stack, e);
+            con.error(e);
             callback && callback(e);
         }
 		//execCatch(task, [callback, param], callback);
@@ -1643,7 +1649,7 @@
         try{
             task(callback);
         }catch(e){
-            con.error(e.stack, e);
+            con.error(e);
             callback && callback(e);
         }
 		//execCatch(task, [callback], callback);
@@ -1674,7 +1680,7 @@
             try{
                 callback(err, exports);
             }catch(e){
-                con.error(e.stack, e);
+                con.error(e);
             }
 			//execCatch(callback, [err, exports]);
 		});
@@ -1699,7 +1705,7 @@
             try{
                 callback()
             }catch(e){
-                con.error(e.stack, e);
+                con.error(e);
             }
 			//execCatch(callback);
 		});
@@ -1838,7 +1844,7 @@
             try{
                 err || (callback && callback.apply(callback, params))
             }catch(e){
-                console.error(e.stack, e);
+                console.error(e);
             }
 			chain && chain();
 		});
@@ -2113,9 +2119,13 @@
 		if (name && (isInput(target) || emit) ) {
 			fieldValue(scope, name, emit ? e.value : getInputValue(target));
 			var value = getVarValue(scope, name);
-            //检测新老值的变化
-            if(target.__oldValue == value) return;
-            target.__oldValue = value;
+
+            if(!isMulInput(target)){
+                //检测新老值的变化
+                if(target.__oldValue == value) return;
+                target.__oldValue = value;
+            }
+
             /* 如果是根scope,那么 把值赋值到 Scope.prototype 上面, 采用原型模式来读取内容 */
             setScopePrototype(scope, name);
 
@@ -2293,7 +2303,7 @@
                     }
                     each(me[nameInput], function(name, dom){
                         var readValue = getVarValue(me, name);
-                        if(getInputValue(dom) != readValue){
+                        if(!isMulInput(dom) && getInputValue(dom) != readValue){
                             dom.value = readValue;
                         }
                     });
@@ -2381,6 +2391,11 @@
 		var name = dom ? dom.tagName : "";
 		return name == "INPUT" || name == "SELECT" || name == "TEXTAREA"
 	}
+
+    function isMulInput(dom){
+        var type = dom.type;
+        return type == "checkbox" || type =="radio" || type == "select-multiple"
+    }
 	/** 取界面上input输入标签的初始化值 */
 	function getInputValue(node) {
 		var name = node.name,
@@ -2626,10 +2641,6 @@
 	}
     function show(node){
         Q(node).css("visibility","visible");
-    }
-    function isMulInput(dom){
-        var type = dom.type;
-        return type == "checkbox" || type =="radio" || type == "select-multiple"
     }
 	var app;
 	Q.app = function(rootCtrlFun){

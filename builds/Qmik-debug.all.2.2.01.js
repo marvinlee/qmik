@@ -2119,9 +2119,13 @@
 		if (name && (isInput(target) || emit) ) {
 			fieldValue(scope, name, emit ? e.value : getInputValue(target));
 			var value = getVarValue(scope, name);
-            //检测新老值的变化
-            if(target.__oldValue == value) return;
-            target.__oldValue = value;
+
+            if(!isMulInput(target)){
+                //检测新老值的变化
+                if(target.__oldValue == value) return;
+                target.__oldValue = value;
+            }
+
             /* 如果是根scope,那么 把值赋值到 Scope.prototype 上面, 采用原型模式来读取内容 */
             setScopePrototype(scope, name);
 
@@ -2299,7 +2303,7 @@
                     }
                     each(me[nameInput], function(name, dom){
                         var readValue = getVarValue(me, name);
-                        if(getInputValue(dom) != readValue){
+                        if(!isMulInput(dom) && getInputValue(dom) != readValue){
                             dom.value = readValue;
                         }
                     });
@@ -2387,6 +2391,11 @@
 		var name = dom ? dom.tagName : "";
 		return name == "INPUT" || name == "SELECT" || name == "TEXTAREA"
 	}
+
+    function isMulInput(dom){
+        var type = dom.type;
+        return type == "checkbox" || type =="radio" || type == "select-multiple"
+    }
 	/** 取界面上input输入标签的初始化值 */
 	function getInputValue(node) {
 		var name = node.name,
@@ -2632,10 +2641,6 @@
 	}
     function show(node){
         Q(node).css("visibility","visible");
-    }
-    function isMulInput(dom){
-        var type = dom.type;
-        return type == "checkbox" || type =="radio" || type == "select-multiple"
     }
 	var app;
 	Q.app = function(rootCtrlFun){
