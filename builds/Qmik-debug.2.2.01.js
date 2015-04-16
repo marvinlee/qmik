@@ -422,7 +422,7 @@
 			return /Windows Phone/.test(UA)
 		},
 		isIE: function() {
-			return /MSIE/.test(UA)
+			return /MSIE/.test(UA) || /Trident/.test(UA)
 		},
 		/**
 		 * is Firefox
@@ -474,17 +474,18 @@
 			}
 			return ret
 		},
-		/**
-			执行方法并捕获异常,不向外抛出异常,try{}catch(e){} 影响方法的美观性
-			fun:执行方法
-			args:数组,参数[]
-			error:抛出异常回调,无异常不回调
-		*/
+        /**
+         * 执行方法并捕获异常,不向外抛出异常
+         * @param fun 执行方法
+         * @param args 数组,参数[]
+         * @param error 抛出异常回调,无异常不回调
+         * @returns {*}
+         */
 		execCatch: function (fun, args, error) {
 			try {
 				return fun.apply(fun, args||[]);
 			} catch (e) {
-				console.error(e, e.stack, fun, args);
+				console.error(e.stack, e, '\r\n', fun, args );
 				return error && error(e);
 			} 
 		}
@@ -505,7 +506,7 @@
 		_delete: _delete
 	};
 	//////////////////////////////////////////////////////
-	Q.version = "2.2.00";
+	Q.version = "2.2.01";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
@@ -865,7 +866,12 @@
 
     function compileScript(context){
         Q("script", context).each(function(i, dom) {
-            Q.execCatch(function(){eval(dom.text||"")});
+            try{
+                eval(dom.text||"");
+            }catch(e){
+                console.error(e);
+            }
+            //Q.execCatch(function(){eval(dom.text||"")});
         });
     }
 
@@ -1021,8 +1027,8 @@
 					maxY = getMaxY();
                 minY = minY < 0 ? 0 : minY;
 				//return elTop >= 0 && elTop >= min && elTop <= max;
-				bool = elTop >= 0 && elTop <= maxY && elDown >= minY;
-                bool = bool && elLeft >= 0 && elLeft <= maxX && elRight >= minX
+				bool = elTop <= maxY && elDown >= minY;
+                bool = bool && elLeft <= maxX && elRight >= minX
 			}
 			return bool;
 		},
@@ -1198,7 +1204,7 @@
 	function setLoad(node, fun) {
 		node.onreadystatechange = node.onload = node.onDOMContentLoaded = fun
 	}
-	
+
 	Q.ready = fn.ready = function(fun, context) {
 		var node = context || this[0] || doc,
 			state;
@@ -1287,21 +1293,25 @@
 		var retVal, m = this,
 			fun, param, events = Q(m).data(ek) || {};
 		each(events[e.type], function(i, v) {
-			Q.execCatch(function() {
-				fun = v.fun;
-				param = v.param || [];
-				if (isFun(fun)) {
-					retVal = fun.apply(m, [
-						e
-					].concat(param));
-					//if (!isNull(retVal)) e.returnValue = retVal
-					//兼容ie处理
-					if (!isNull(retVal)) {
-						e.returnValue = retVal;
-						if (win.event) win.event.returnValue = retVal;
-					}
-				}
-			});
+            try{
+                fun = v.fun;
+                param = v.param || [];
+                if (isFun(fun)) {
+                    retVal = fun.apply(m, [
+                        e
+                    ].concat(param));
+                    //if (!isNull(retVal)) e.returnValue = retVal
+                    //兼容ie处理
+                    if (!isNull(retVal)) {
+                        e.returnValue = retVal;
+                        if (win.event) win.event.returnValue = retVal;
+                    }
+                }
+            }catch(e){
+                console.error(e);
+            }
+			/*Q.execCatch(function() {
+			});*/
 		})
 	}
 
@@ -1424,7 +1434,10 @@
 	ac = {
 		type : 'GET',
 		async : !0,
-		dataType : 'text'
+		dataType : 'text',
+        xhrFields: {
+            //withCredentials:false
+        }
 	};
 	function request() {
 		return win.XMLHttpRequest && (win.location.protocol !== 'file:' || !win.ActiveXObject)	? new win.XMLHttpRequest()
@@ -1486,6 +1499,7 @@
 		if (isGet) {
 			url += (/\?/.test(url) ? "&" : "?") + formData;
 		}
+        Q.extend(xhr, _config.xhrFields||{});
 		xhr.open(_config.type, url, _config.async);
 		xhr.setRequestHeader("Cache-Control", "no-cache");
 		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -1564,7 +1578,7 @@
 */
 ;
 (function(Q) {
-	var execCatch = Q.execCatch;
+	var con = console;
 	//串行执行任务列队,报错不继续执行,各任务间有依赖关系
 	function execSeriesTasksWithParam(tasks, callback) {
 		var length = tasks.length;
@@ -1622,11 +1636,23 @@
 
 
 	function execTask(task, callback, param) {
-		execCatch(task, [callback, param], callback);
+        try{
+            task(callback, param);
+        }catch(e){
+            con.error(e);
+            callback && callback(e);
+        }
+		//execCatch(task, [callback, param], callback);
 	}
 
 	function execTaskNoArgs(task, callback) {
-		execCatch(task, [callback], callback);
+        try{
+            task(callback);
+        }catch(e){
+            con.error(e);
+            callback && callback(e);
+        }
+		//execCatch(task, [callback], callback);
 	}
 	//function Task() {};
 	var Task = {};
@@ -1651,7 +1677,12 @@
 	Task.series = function(tasks, callback) {
 		execSeriesTasksWithParam(tasks, function(err, exports) {
 			err && Q.log(err, err.stack);
-			execCatch(callback, [err, exports]);
+            try{
+                callback(err, exports);
+            }catch(e){
+                con.error(e);
+            }
+			//execCatch(callback, [err, exports]);
 		});
 	};
 
@@ -1671,7 +1702,12 @@
 	*/
 	Task.parallel = function(tasks, callback) {
 		execParallelTasks(tasks, function() {
-			execCatch(callback);
+            try{
+                callback()
+            }catch(e){
+                con.error(e);
+            }
+			//execCatch(callback);
 		});
 	};
 	Q.task = Task;
@@ -1686,7 +1722,6 @@
 ;
 (function(Q) {
 	var isFun = Q.isFun,
-		execCatch = Q.execCatch,
 		win = Q.global,
 		NULL = null;
 	var config = {
@@ -1799,15 +1834,18 @@
 		Q.each(deps, function(i, id) {
 			tasks.push(function(cb) {
 				load(id, function(exports, err) {
+                    err && console.error(err);
 					params.push(exports);
-					cb(err);
+					cb();
 				}, refer);
 			});
 		});
 		Q.series(tasks, function(err) {
-			execCatch(function() {
-				err || (callback && callback.apply(callback, params))
-			});
+            try{
+                err || (callback && callback.apply(callback, params))
+            }catch(e){
+                console.error(e);
+            }
 			chain && chain();
 		});
 	}
