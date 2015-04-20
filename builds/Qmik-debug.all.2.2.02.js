@@ -192,7 +192,7 @@
 	/**
 		字符串变量${name}替换
 	*/
-	function replaceVar(str, data){
+	/*function replaceVar(str, data){
 		data = data || {};
 		return isNull(str) ? null : (str+"").replace(/(\$[!]?\{[\.\w_ -]*\})|(\{\{[\.\w_ -]*\}\})/g, function(name) {
 			var keys = name.replace(/(^\$?[!]?\{\{?)|(\}\}?$)/g, "").trim();
@@ -208,7 +208,7 @@
 			}
 			return val || "";
 		})
-	}
+	}*/
 	function _delete(object, name){
 		try{delete object[name]}catch(e){object[name]=null}
 	}
@@ -483,9 +483,9 @@
          */
 		execCatch: function (fun, args, error) {
 			try {
-				return fun.apply(fun, args||[]);
+				return isFun(fun) && fun.apply(fun, args||[]);
 			} catch (e) {
-				console.error(e.stack, e, '\r\n', fun, args );
+				console.error(e.stack||e, '\r\n', fun, args );
 				return error && error(e);
 			} 
 		}
@@ -506,7 +506,7 @@
 		_delete: _delete
 	};
 	//////////////////////////////////////////////////////
-	Q.version = "2.2.01";
+	Q.version = "2.2.02";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
@@ -866,12 +866,7 @@
 
     function compileScript(context){
         Q("script", context).each(function(i, dom) {
-            try{
-                eval(dom.text||"");
-            }catch(e){
-                console.error(e);
-            }
-            //Q.execCatch(function(){eval(dom.text||"")});
+            Q.execCatch(function(){eval(dom.text||"")});
         });
     }
 
@@ -1288,30 +1283,26 @@
 		} else dom.fireEvent('on' + name)
 	}
 
-	function handle(e) {
-		e = fixEvent(e || win.event);
+	function handle(_event) {
+		_event = fixEvent(_event || win.event);
 		var retVal, m = this,
 			fun, param, events = Q(m).data(ek) || {};
-		each(events[e.type], function(i, v) {
-            try{
+		each(events[_event.type], function(i, v) {
+			Q.execCatch(function() {
                 fun = v.fun;
                 param = v.param || [];
                 if (isFun(fun)) {
                     retVal = fun.apply(m, [
-                        e
+                        _event
                     ].concat(param));
                     //if (!isNull(retVal)) e.returnValue = retVal
                     //兼容ie处理
                     if (!isNull(retVal)) {
-                        e.returnValue = retVal;
+                        _event.returnValue = retVal;
                         if (win.event) win.event.returnValue = retVal;
                     }
                 }
-            }catch(e){
-                console.error(e);
-            }
-			/*Q.execCatch(function() {
-			});*/
+			});
 		})
 	}
 
@@ -1406,17 +1397,17 @@
 	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
 	 * 90：逆时针转了 Android2.1尚未支持重力感应 click blur focus scroll resize
 	 */
-	each("click blur focus scroll resize".split(" "), function(i, v) {
-		fn[v] = function(f) {
+	each("click blur focus scroll resize".split(" "), function(i, value) {
+		fn[value] = function(f) {
             var me = this, dom;
             if(f){
-                me.on(v, f)
+                me.on(value, f)
             }else{
-                if(["focus", "blur"].indexOf(v)>=0){
+                if(["focus", "blur"].indexOf(value)>=0){
                     dom = me.last()[0];
-                    dom && isFun(dom[v]) && dom[v]();
+                    dom && isFun(dom[value]) && dom[value]();
                 }
-                me.emit(v);
+                me.emit(value);
             }
 			//return f ? this.on(v, f) : this.emit(v)
 		}
@@ -1470,7 +1461,7 @@
 			Q("script[jsonp='" + callbackName + "']").remove();
 			thread && thread.stop();
 			isExe == 1 && success && success(data)
-		}
+		};
 		Q(Q.getScript(url, null, err)).attr("jsonp", callbackName);
 		if (ttl > 0) thread = Q.delay(err, ttl)
 	}
@@ -1578,7 +1569,7 @@
 */
 ;
 (function(Q) {
-	var con = console;
+	var execCatch = Q.execCatch;
 	//串行执行任务列队,报错不继续执行,各任务间有依赖关系
 	function execSeriesTasksWithParam(tasks, callback) {
 		var length = tasks.length;
@@ -1636,23 +1627,11 @@
 
 
 	function execTask(task, callback, param) {
-        try{
-            task(callback, param);
-        }catch(e){
-            con.error(e);
-            callback && callback(e);
-        }
-		//execCatch(task, [callback, param], callback);
+		execCatch(task, [callback, param], callback);
 	}
 
 	function execTaskNoArgs(task, callback) {
-        try{
-            task(callback);
-        }catch(e){
-            con.error(e);
-            callback && callback(e);
-        }
-		//execCatch(task, [callback], callback);
+		execCatch(task, [callback], callback);
 	}
 	//function Task() {};
 	var Task = {};
@@ -1677,12 +1656,7 @@
 	Task.series = function(tasks, callback) {
 		execSeriesTasksWithParam(tasks, function(err, exports) {
 			err && Q.log(err, err.stack);
-            try{
-                callback(err, exports);
-            }catch(e){
-                con.error(e);
-            }
-			//execCatch(callback, [err, exports]);
+            execCatch(callback, [err, exports]);
 		});
 	};
 
@@ -1702,12 +1676,7 @@
 	*/
 	Task.parallel = function(tasks, callback) {
 		execParallelTasks(tasks, function() {
-            try{
-                callback()
-            }catch(e){
-                con.error(e);
-            }
-			//execCatch(callback);
+			execCatch(callback);
 		});
 	};
 	Q.task = Task;
@@ -1844,7 +1813,7 @@
             try{
                 err || (callback && callback.apply(callback, params))
             }catch(e){
-                console.error(e);
+                console.error(e.stack||e);
             }
 			chain && chain();
 		});
@@ -2053,6 +2022,7 @@
 	var win = Q.global,
 		isNull = Q.isNull,
 		isPlainObject = Q.isPlainObject,
+        execCatch = Q.execCatch,
 		extend = Q.extend,
 		each = Q.each,
 		delay = Q.delay,
@@ -2090,12 +2060,7 @@
 			if (qdom.inViewport()) {
 				delete g_viewports[key];
                 Q.delay(function(){
-                    //execCatch(map.callback);
-                    try{
-                        map.callback();
-                    }catch(e){
-                        con.error(e);
-                    }
+                    execCatch(map.callback);
                     qdom.emit("viewport");
                 }, 11);
 			}
@@ -2130,12 +2095,7 @@
             setScopePrototype(scope, name);
 
 			each(getBatList(scope[fieldWatchs], name), function(i, watch) {
-                try{
-                    watch({name:name, value:value, source:scope[split(name)[0]], target:target});
-                }catch(e){
-                    con.error(e);
-                }
-				// execCatch(watch,[{name:name, value:value, source:scope[split(name)[0]], target:target}]);
+				execCatch(watch,[{name:name, value:value, source:scope[split(name)[0]], target:target}]);
 			});
 			compileVarName(name, scope);
 		}
@@ -2534,14 +2494,9 @@
 							}else{
                                 show(node);
 								scope = new Scope(node, scope.parent || scope);
-                                try{
-                                    Q.isFun(ctrls[value]) ? ctrls[value].call(scope, scope) : Q.warn("q-ctrl:[" + value + "]is not define");
-                                }catch(e){
-                                    con.error(e);
-                                }
-								/*execCatch(function() {
+								execCatch(function() {
 									Q.isFun(ctrls[value]) ? ctrls[value].call(scope, scope) : Q.warn("q-ctrl:[" + value + "]is not define");
-								});*/
+								});
                                 scope.apply("");
 							}
 						}
@@ -2645,12 +2600,7 @@
 	var app;
 	Q.app = function(rootCtrlFun){
         app && app.scope && rootCtrlFun && Q(function(){
-            try{
-                rootCtrlFun(app.scope);
-            }catch(e){
-                con.error(e);
-            }
-           //execCatch(rootCtrlFun, [app.scope]);
+           execCatch(rootCtrlFun, [app.scope]);
         });
 		return app = app || new App(rootCtrlFun);
 	};
