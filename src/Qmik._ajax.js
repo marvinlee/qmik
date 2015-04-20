@@ -46,7 +46,7 @@
 			Q("script[jsonp='" + callbackName + "']").remove();
 			thread && thread.stop();
 			isExe == 1 && success && success(data)
-		}
+		};
 		Q(Q.getScript(url, null, err)).attr("jsonp", callbackName);
 		if (ttl > 0) thread = Q.delay(err, ttl)
 	}

@@ -430,12 +430,13 @@ c.实现Home业务模块功能
 
 
 ## 版本记录
-[增加2.2.01版本:](https://github.com/leochen36/qmik/tree/master/builds)
+[增加2.2.02版本:](https://github.com/leochen36/qmik/tree/master/builds)
 <pre>
-2.2.01 版本,
+2.2.02 版本,
 1.修正$.fn.inViewport()方法,当ofsset.top或offset.left<0是,判断为false的bug
 2.修复scope值没有更新到value的bug,场景:当input的值为空,从异步接口取出值后,设置到scope上,执行apply方法,没有更新到对就input的
 3.调整sun,对加载模块错误时,修正为会正常回调方法,但是回调时,传递的导出模块变量为空
+4.修复 2.2.01版本的压缩包,因grunt-uglify压缩问题造成的bug
 </pre>
 
 [增加2.2.00版本:](https://github.com/leochen36/qmik/tree/master/builds)

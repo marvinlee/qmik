@@ -31,7 +31,7 @@
 */
 ;
 (function(Q) {
-	var con = console;
+	var execCatch = Q.execCatch;
 	//串行执行任务列队,报错不继续执行,各任务间有依赖关系
 	function execSeriesTasksWithParam(tasks, callback) {
 		var length = tasks.length;
@@ -89,23 +89,11 @@
 
 
 	function execTask(task, callback, param) {
-        try{
-            task(callback, param);
-        }catch(e){
-            con.error(e);
-            callback && callback(e);
-        }
-		//execCatch(task, [callback, param], callback);
+		execCatch(task, [callback, param], callback);
 	}
 
 	function execTaskNoArgs(task, callback) {
-        try{
-            task(callback);
-        }catch(e){
-            con.error(e);
-            callback && callback(e);
-        }
-		//execCatch(task, [callback], callback);
+		execCatch(task, [callback], callback);
 	}
 	//function Task() {};
 	var Task = {};
@@ -130,12 +118,7 @@
 	Task.series = function(tasks, callback) {
 		execSeriesTasksWithParam(tasks, function(err, exports) {
 			err && Q.log(err, err.stack);
-            try{
-                callback(err, exports);
-            }catch(e){
-                con.error(e);
-            }
-			//execCatch(callback, [err, exports]);
+            execCatch(callback, [err, exports]);
 		});
 	};
 
@@ -155,12 +138,7 @@
 	*/
 	Task.parallel = function(tasks, callback) {
 		execParallelTasks(tasks, function() {
-            try{
-                callback()
-            }catch(e){
-                con.error(e);
-            }
-			//execCatch(callback);
+			execCatch(callback);
 		});
 	};
 	Q.task = Task;

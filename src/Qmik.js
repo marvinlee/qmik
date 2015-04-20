@@ -192,7 +192,7 @@
 	/**
 		字符串变量${name}替换
 	*/
-	function replaceVar(str, data){
+	/*function replaceVar(str, data){
 		data = data || {};
 		return isNull(str) ? null : (str+"").replace(/(\$[!]?\{[\.\w_ -]*\})|(\{\{[\.\w_ -]*\}\})/g, function(name) {
 			var keys = name.replace(/(^\$?[!]?\{\{?)|(\}\}?$)/g, "").trim();
@@ -208,7 +208,7 @@
 			}
 			return val || "";
 		})
-	}
+	}*/
 	function _delete(object, name){
 		try{delete object[name]}catch(e){object[name]=null}
 	}
@@ -483,9 +483,9 @@
          */
 		execCatch: function (fun, args, error) {
 			try {
-				return fun.apply(fun, args||[]);
+				return isFun(fun) && fun.apply(fun, args||[]);
 			} catch (e) {
-				console.error(e.stack, e, '\r\n', fun, args );
+				console.error(e.stack||e, '\r\n', fun, args );
 				return error && error(e);
 			} 
 		}
@@ -506,7 +506,7 @@
 		_delete: _delete
 	};
 	//////////////////////////////////////////////////////
-	Q.version = "2.2.01";
+	Q.version = "2.2.02";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;

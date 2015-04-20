@@ -105,30 +105,26 @@
 		} else dom.fireEvent('on' + name)
 	}
 
-	function handle(e) {
-		e = fixEvent(e || win.event);
+	function handle(_event) {
+		_event = fixEvent(_event || win.event);
 		var retVal, m = this,
 			fun, param, events = Q(m).data(ek) || {};
-		each(events[e.type], function(i, v) {
-            try{
+		each(events[_event.type], function(i, v) {
+			Q.execCatch(function() {
                 fun = v.fun;
                 param = v.param || [];
                 if (isFun(fun)) {
                     retVal = fun.apply(m, [
-                        e
+                        _event
                     ].concat(param));
                     //if (!isNull(retVal)) e.returnValue = retVal
                     //兼容ie处理
                     if (!isNull(retVal)) {
-                        e.returnValue = retVal;
+                        _event.returnValue = retVal;
                         if (win.event) win.event.returnValue = retVal;
                     }
                 }
-            }catch(e){
-                console.error(e);
-            }
-			/*Q.execCatch(function() {
-			});*/
+			});
 		})
 	}
 
@@ -223,17 +219,17 @@
 	 * event orientationchange:重力感应,0：与页面首次加载时的方向一致 -90：相对原始方向顺时针转了90° 180：转了180°
 	 * 90：逆时针转了 Android2.1尚未支持重力感应 click blur focus scroll resize
 	 */
-	each("click blur focus scroll resize".split(" "), function(i, v) {
-		fn[v] = function(f) {
+	each("click blur focus scroll resize".split(" "), function(i, value) {
+		fn[value] = function(f) {
             var me = this, dom;
             if(f){
-                me.on(v, f)
+                me.on(value, f)
             }else{
-                if(["focus", "blur"].indexOf(v)>=0){
+                if(["focus", "blur"].indexOf(value)>=0){
                     dom = me.last()[0];
-                    dom && isFun(dom[v]) && dom[v]();
+                    dom && isFun(dom[value]) && dom[value]();
                 }
-                me.emit(v);
+                me.emit(value);
             }
 			//return f ? this.on(v, f) : this.emit(v)
 		}

@@ -128,7 +128,7 @@
             try{
                 err || (callback && callback.apply(callback, params))
             }catch(e){
-                console.error(e);
+                console.error(e.stack||e);
             }
 			chain && chain();
 		});
