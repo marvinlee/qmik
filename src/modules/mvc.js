@@ -32,9 +32,10 @@
 	var g_viewports = {};
 
 	var prevTime = Q.now();
-	function handle(e){
+	function handle(){
 		var curTime = Q.now();
 		if (curTime - prevTime < execInterval) {//触发频率
+            delay(handle, execInterval);
 			return;
 		}
 		prevTime = curTime;
@@ -123,7 +124,9 @@
 						scope[nameMap][_name] = newmaps;
 					});
 					if(isInputDom){
-						delete scope[nameInput][name];
+						//delete scope[nameInput][name];
+                        //updateInputDomValue(scope, name);
+                        delay(updateInputDomValue,10, scope,name)
 					}
 				}
 			}
@@ -141,6 +144,7 @@
 						space = getSpace(target),
                         scope = space.scope;
 					if(space){
+                        addScopeInput(target, scope);
                         addScopeInputs(target, scope);
                         delay(compile, 1, target, scope, true);//延迟1ms执行
 					}
@@ -231,7 +235,7 @@
 						var isArray = Q.likeArray(names), name;
 						each(names, function(i, list){
 							name = isArray ? list : i;
-							//var input = me.$("input[name='"+name+"']")[0];
+                            updateInputDomValue(me, name);
 							watch({
 								target: me[nameContext],
 								name: name,
@@ -246,12 +250,7 @@
                             names.push(key);
                         });
                     }
-                    each(me[nameInput], function(name, dom){
-                        var readValue = getVarValue(me, name);
-                        if(!isMulInput(dom) && getInputValue(dom) != readValue){
-                            dom.value = readValue;
-                        }
-                    });
+
                     emitChange(names, compileVarName);
 					Q.isFun(callback) && callback();
 				}
@@ -291,7 +290,9 @@
                 val = val || fieldValue(scope, name);
             }
             fieldValue(scope, name, val);
-            scope[nameInput][name] = dom;
+            //scope[nameInput][name] = dom;
+            scope[nameInput][name] = scope[nameInput][name] || [];
+            scope[nameInput][name].push(dom);
 
             /* 如果是根scope,那么 把值赋值到 ScopePrototype 上面, 采用原型模式来读取内容 */
             setScopePrototype(scope, name);
@@ -464,6 +465,38 @@
 			}
 		}
 	}
+    function updateInputDomValue(scope, name){
+        var newValue = getVarValue(scope, name);
+        var list = scope[nameInput][name];
+        scope[nameInput][name] = [];
+        each(list, function(i, dom){
+            if(Q.contains(scope.context, dom)){
+                var type = dom.type;
+                if(type=='radio'){
+                    dom.checked = dom.value == newValue;
+                }else if(type=='checkbox'){
+                    dom.checked = false;
+                    newValue.replace(/[^&]+/g, function (val) {
+                        if (dom.value == val) {
+                            dom.checked = true;
+                        }
+                    });
+                }else if(type=='select-multiple'){
+                    each(dom.options, function(j, ele){
+                        ele.selected = false;
+                        newValue.replace(/[^&]+/g, function (val) {
+                            if(ele.value == val){
+                                ele.selected = true;
+                            }
+                        });
+                    });
+                }else{
+                    dom.value = newValue;
+                }
+                scope[nameInput][name].push(dom);
+            }
+        });
+    }
 	function replaceNodeVar(node, scope, isAdd, callback) {
 		var space = getSpace(node), qnode = Q(node);
 		if(!space)return;
@@ -554,22 +587,17 @@
 				});
 				break;
 			case 3://文本节点
-				var val = space.text;
-				val = isNull(val) ? node.textContent : val;
-				if (REG_VAR_NAME.test(val)) {
+				var textValue = space.text;
+				textValue = isNull(textValue) ? node.textContent : textValue;
+				if (REG_VAR_NAME.test(textValue)) {
 					node[namespace] = space;
-					space.text = val;
-					node.textContent = val.replace(REG_VAR_NAME, function(name) {
+					space.text = textValue;
+					node.textContent = textValue.replace(REG_VAR_NAME, function(name) {
 						name = getVarName(name);
 						space.vars.push(name);
-						var val = getVarValue(scope, name),
-							inputNode = scope[nameInput][name];
+						var val = getVarValue(scope, name);
 						isAdd && addMapNode(scope, name, node);
-						if(inputNode && isInput(inputNode) && inputNode.value != val){
-							if( !isMulInput(inputNode) ){
-								scope[nameInput][name].value = val;
-							}
-						}
+                        updateInputDomValue(scope,name);
 						return val;
 					});
                     show(node.parentNode);
