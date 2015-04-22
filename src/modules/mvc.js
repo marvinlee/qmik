@@ -144,9 +144,7 @@
 						space = getSpace(target),
                         scope = space.scope;
 					if(space){
-                        addScopeInput(target, scope);
-                        addScopeInputs(target, scope);
-                        delay(compile, 1, target, scope, true);//延迟1ms执行
+                        delay(compile, 10, target, scope, true);
 					}
 				},
 				DOMNodeRemoved: remove //删除节点
@@ -474,7 +472,7 @@
         });
     }
     function updateInputDomValue(scope, name){
-        var newValue = getVarValue(scope, name);
+        var newValue = getVarValue(scope, name)+"";
         var list = scope[nameInput][name];
         scope[nameInput][name] = [];
         each(list, function(i, dom){
@@ -518,7 +516,6 @@
 							if(scopes[value]){
 								scope = scopes[value];
 							}else{
-                                show(node);
 								scope = new Scope(node, scope.parent || scope);
 								execCatch(function() {
 									Q.isFun(ctrls[value]) ? ctrls[value].call(scope, scope) : Q.warn("q-ctrl:[" + value + "]is not define");
@@ -532,12 +529,16 @@
                             callback: function(){
                                 if(Q(node).css('display')!='none'){
                                     Q.get(value, function(html){
-                                        qnode.html(html);
+                                        qnode.html('<div>'+html+'</div>');
+                                        qnode.rmClass('loading');
                                         scope.scopes.root.apply();
                                     })
                                 }else{
                                     g_viewports[vpkey] = vphandle;
-                                    Q('body').once('click', function(){handle()})
+                                    Q('body').once({
+                                        click:handle,
+                                        touchstart: handle
+                                    })
                                 }
                             }
                         };
@@ -625,7 +626,13 @@
     function show(node){
         var qnode = Q(node);
         qnode.css("visibility","visible");
-        qnode.css('display')=='none' && qnode.css('display','initial');
+        if(qnode.css('display')=='none'){
+            if(Q.isIE()){
+                qnode.css('display', qnode.attr('q-for')?'inline-block':'inline');
+            }else{
+                qnode.css('display','initial');
+            }
+        }
     }
 	var app;
 	Q.app = function(rootCtrlFun){
