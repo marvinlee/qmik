@@ -533,9 +533,7 @@
                             callback: function(){
                                 if(Q(node).css('display')!='none'){
                                     Q.get(value, function(html){
-                                        qnode.html('<div>'+html+'</div>');
-                                        qnode.rmClass('loading');
-                                        scope.scopes.root.apply();
+                                        qnode.rmClass('loading').html('<div>'+html+'</div>');
                                     })
                                 }else{
                                     g_viewports[vpkey] = vphandle;
