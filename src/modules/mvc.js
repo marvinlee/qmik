@@ -144,7 +144,11 @@
 						space = getSpace(target),
                         scope = space.scope;
 					if(space){
-                        delay(compile, 10, target, scope, true);
+                        //delay(compile, 10, target, scope, true);
+                        delay(function(){
+                            compile(target, scope, true);
+                            addScopeInputs(Q('html')[0], globalScope);
+                        }, 10)
 					}
 				},
 				DOMNodeRemoved: remove //删除节点
