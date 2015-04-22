@@ -35,7 +35,7 @@
 	function handle(){
 		var curTime = Q.now();
 		if (curTime - prevTime < execInterval) {//触发频率
-            delay(handle, execInterval);
+            delay(handle, execInterval+2);
 			return;
 		}
 		prevTime = curTime;
@@ -126,7 +126,7 @@
 					if(isInputDom){
 						//delete scope[nameInput][name];
                         //updateInputDomValue(scope, name);
-                        delay(updateInputDomValue,10, scope,name)
+                        delay(updateInputDomsLevelValue,10, scope,name)
 					}
 				}
 			}
@@ -235,7 +235,7 @@
 						var isArray = Q.likeArray(names), name;
 						each(names, function(i, list){
 							name = isArray ? list : i;
-                            updateInputDomValue(me, name);
+                            updateInputDomsLevelValue(me, name);
 							watch({
 								target: me[nameContext],
 								name: name,
@@ -255,7 +255,7 @@
 					Q.isFun(callback) && callback();
 				}
 			};
-			delay(trigger, execInterval + 2);
+			delay(handle, execInterval + 2);
 		}
 	});
     /** 更新全局 */
@@ -465,6 +465,14 @@
 			}
 		}
 	}
+    /** 更新级联的输入节点 ,依赖于updateInputDomValue */
+    function updateInputDomsLevelValue(scope, name){
+        each(scope[nameInput], function(key){
+            if(key == name || key.indexOf(name+".")==0){
+                updateInputDomValue(scope, key);
+            }
+        });
+    }
     function updateInputDomValue(scope, name){
         var newValue = getVarValue(scope, name);
         var list = scope[nameInput][name];
@@ -519,15 +527,21 @@
 							}
 						}
 					} else if("q-include" == attrName){
-                        g_viewports["q-include-"+value+Math.random()] = {
+                        var vpkey = "q-include-"+value+Math.random(), vphandle={
                             context: node,
                             callback: function(){
-                                Q.get(value, function(html){
-                                    qnode.html(html);
-                                    scope.scopes.root.apply();
-                                })
+                                if(Q(node).css('display')!='none'){
+                                    Q.get(value, function(html){
+                                        qnode.html(html);
+                                        scope.scopes.root.apply();
+                                    })
+                                }else{
+                                    g_viewports[vpkey] = vphandle;
+                                    Q('body').once('click', function(){handle()})
+                                }
                             }
-                        }
+                        };
+                        g_viewports[vpkey] = vphandle;
                         qnode.rmAttr("q-include");
                     } else if ("q-for" == attrName) { //for
 						var vs = value.replace(/(\s){2,}/g, " ").split(" "),
@@ -559,20 +573,21 @@
 							funName = value.replace(/\(.*\)$/,""),
                             context = scope[nameContext];
 						if(!space.event[name]){
+                            node[namespace] = space;
                             if( ["focus", "blur"].indexOf(name) >= 0 ){
                                 context = node;
                             }else{
                                 space.event[name] = true;
                             }
-							var handle = function(e){
+							var innerhandle = function(e){
 								if(!Q.contains(context, node)){
-									return Q(context).off(name, handle);
+									return Q(context).off(name, innerhandle);
 								}
 								if( Q.contains(node, e.target) ){//判断是否是当前节点的子节点触发的事件
 									scope[funName] && scope[funName].call(node, e);
 								}
 							};
-							Q(context).on(name, handle);
+							Q(context).on(name, innerhandle);
 						}
 					} else if (REG_VAR_NAME.test(value)) {//变量
 						attr.value = value.replace(REG_VAR_NAME, function(name) {
@@ -597,7 +612,7 @@
 						space.vars.push(name);
 						var val = getVarValue(scope, name);
 						isAdd && addMapNode(scope, name, node);
-                        updateInputDomValue(scope,name);
+                        //updateInputDomValue(scope,name);
 						return val;
 					});
                     show(node.parentNode);
@@ -608,7 +623,9 @@
         callback && callback(node, scope, isAdd);
 	}
     function show(node){
-        Q(node).css("visibility","visible");
+        var qnode = Q(node);
+        qnode.css("visibility","visible");
+        qnode.css('display')=='none' && qnode.css('display','initial');
     }
 	var app;
 	Q.app = function(rootCtrlFun){

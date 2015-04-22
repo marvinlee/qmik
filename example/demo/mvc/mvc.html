@@ -35,7 +35,9 @@
 root name=<input type="text" name="name">
 
 <div q-ctrl="ctrlAbc" style="background:;">
-    addr=[<g>${addr}</g>]<br/>
+    addr=[
+    <g>${addr}</g>
+    ]<br/>
     addr=<input name="addr" type="text"/><br/>
     name=<input name="name"/>
 </div>
@@ -92,7 +94,15 @@ root name=<input type="text" name="name">
 
             > cbk: < ${cbk} >
         </div>
+        <div class="box">
+            <p>dbname: <input name="db.name" value="db" type="text">${db.name}</p>
 
+            <p>dburl: <input name="db.url" value="url" type="text"> ${db.url}</p>
+
+            <p>dbhome: <input name="db.home" value="/home" type="text">${db.home}</p>
+            <p>dbhome: <input name="db.home" value="/home" type="text">${db.home}</p>
+
+        </div>
         <div class="box">
             ra1 <input type="radio" name="ra" checked value="ra1">
             ra2 <input type="radio" name="ra" value="ra2">

@@ -580,7 +580,8 @@
 		rmAttr: function(k) {
 			each(this, function(i, v) {
 				isDom(v) && v.removeAttribute(k)
-			})
+			});
+            return this;
 		},
 		data: function(k, v) {
 			return data(this, k, v)
@@ -588,7 +589,8 @@
 		rmData: function(k) {
 			each(this, function(i, v) {
 				if (v.$Qmikdata) delete v.$Qmikdata[k]
-			})
+			});
+            return this;
 		},
 		val: function(v) {
 			var me = this;
