@@ -146,8 +146,8 @@
 					if(space){
                         //delay(compile, 10, target, scope, true);
                         delay(function(){
-                            compile(target, scope, true);
                             addScopeInputs(Q('html')[0], globalScope);
+                            compile(target, scope, true);
                         }, 10)
 					}
 				},
@@ -565,7 +565,7 @@
                             qnode.html(htmls.join(""));
                             compileChilds(node, scope, isAdd);//编译
                             show(node);
-                            qnode.closest(".loading").rmClass("loading");
+                            qnode.rmClass("loading");
 							node[namespace] = space;
 							isAdd && addMapNode(scope, vs[2], node);
 						}else{

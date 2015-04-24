@@ -34,7 +34,7 @@
 					//val(Q);
                     Q.delay(function() {
                         val.call(node, Q)
-                    }, 1);
+                    }, 5);
 				});
 				_delete(node, "$$handls");
 				//delete node.$$handls
@@ -43,7 +43,7 @@
 		if (readyRE.test(node.readyState)) {
 			Q.delay(function() {
 				fun.call(node, Q)
-			}, 10);
+			}, 15);
 		} else {
 			var hs = node.$$handls = node.$$handls || [];
 			hs.push(fun);
