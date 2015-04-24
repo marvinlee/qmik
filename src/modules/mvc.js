@@ -102,9 +102,6 @@
             globalScope = me.scope = scope;
 			root[namespace] = getSpace(root);
 			fun && fun.call(scope, scope);
-            scope.apply("");
-			compile(root, scope, true);//编译页面
-			trigger();
 
 			function remove(e){
 				var target = e.target,
@@ -144,15 +141,28 @@
 						space = getSpace(target),
                         scope = space.scope;
 					if(space){
-                        //delay(compile, 10, target, scope, true);
                         delay(function(){
-                            addScopeInputs(Q('html')[0], globalScope);
+                            var ctrl = Q(target).closest('[q-ctrl]')[0];
+                            addScopeInput(target, ctrl ? scope : globalScope);
+                            queryInputs(target, function(dom){
+                                if(isInput(dom)){
+                                    if(Q.contains(target, Q(dom).closest('[q-ctrl]'))){
+                                        return;
+                                    }
+                                    addScopeInput(dom, ctrl ? scope : globalScope);
+                                    ctrl || globalScope.apply(dom.name);
+                                }
+                            });
                             compile(target, scope, true);
-                        }, 10)
+                        }, 30)
 					}
 				},
 				DOMNodeRemoved: remove //删除节点
 			});
+
+            scope.apply("");
+            compile(root, scope, true);//编译页面
+            trigger();
 		},
 		config: function(map){
 			extend(g_config, map);
@@ -274,11 +284,20 @@
     function isIllegalName(name){
         return /^__/.test(name) || new RegExp(name).test(keywords)
     }
+    function queryInputs(context, callback){
+        context.nodeType==1 && $('input,select,textarea',context).each(function(i, dom){
+            callback && callback(dom);
+        });
+    }
     function addScopeInputs(context, scope){
-        context.nodeType==1 && $("input,select,textarea", context).each(function(i, dom) {
+        /*context.nodeType==1 && $("input,select,textarea", context).each(function(i, dom) {
             var pctrl = Q(dom).closest("[q-ctrl]")[0];
             (isNull(pctrl)||pctrl==context) && addScopeInput(dom, scope);
-        });
+        });*/
+        queryInputs(context, function(dom){
+            var pctrl = Q(dom).closest("[q-ctrl]")[0];
+            (isNull(pctrl)||pctrl==context) && addScopeInput(dom, scope);
+        })
     }
 	function addScopeInput(dom, scope){
 		var name = dom.name;

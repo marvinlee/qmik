@@ -45,7 +45,7 @@ root name=<input type="text" name="name">
 <div>
     degree=<input type="text" name="degree" required>
 
-    <form q-ctrl="subdent" q-submit="subccess()">
+    <form q-ctrl="subdentXP" q-submit="subccess()">
         <input name="name" value="aaa" type="text"/>
         <input id="n1" name="n1" value="n1" type="text"/>
         <input id="n2" name="n2" value="n2" type="hidden"/>
@@ -89,7 +89,7 @@ root name=<input type="text" name="name">
             <!-- q-for checkboxs -->
             <div q-for="item in checkboxs">
                 &nbsp; cbk${item.value}
-                <input type="checkbox" name="cbk" value="cbk${item.value}">&nbsp;
+               <div> <input type="checkbox" name="cbk" value="cbk${item.value}">&nbsp;</div>
             </div>
 
             > cbk: < ${cbk} >
@@ -154,7 +154,8 @@ ${n4} ${name}
     $(function () {
         var app = $.app();
         app.ctrl({
-            "subdent": function (scope) {
+            "subdentXP": function (scope) {
+                console.log("...",scope.__name);
                 window.scope = scope;
                 scope.showName = scope.name;
                 scope.watch("name", function (value) {
@@ -191,7 +192,7 @@ ${n4} ${name}
                     });
                     scope.apply("checkboxs");
                     scope.$(".ctest").append('<input name="name' + (idx++) + '" type="text" value="999" />');
-                }, 3000);
+                }, 5000);
 
 
                 scope.gopark = "lileo";

@@ -1214,7 +1214,7 @@
 					//val(Q);
                     Q.delay(function() {
                         val.call(node, Q)
-                    }, 1);
+                    }, 5);
 				});
 				_delete(node, "$$handls");
 				//delete node.$$handls
@@ -1223,7 +1223,7 @@
 		if (readyRE.test(node.readyState)) {
 			Q.delay(function() {
 				fun.call(node, Q)
-			}, 10);
+			}, 15);
 		} else {
 			var hs = node.$$handls = node.$$handls || [];
 			hs.push(fun);
@@ -2119,9 +2119,6 @@
             globalScope = me.scope = scope;
 			root[namespace] = getSpace(root);
 			fun && fun.call(scope, scope);
-            scope.apply("");
-			compile(root, scope, true);//编译页面
-			trigger();
 
 			function remove(e){
 				var target = e.target,
@@ -2161,15 +2158,28 @@
 						space = getSpace(target),
                         scope = space.scope;
 					if(space){
-                        //delay(compile, 10, target, scope, true);
                         delay(function(){
+                            var ctrl = Q(target).closest('[q-ctrl]')[0];
+                            addScopeInput(target, ctrl ? scope : globalScope);
+                            queryInputs(target, function(dom){
+                                if(isInput(dom)){
+                                    if(Q.contains(target, Q(dom).closest('[q-ctrl]'))){
+                                        return;
+                                    }
+                                    addScopeInput(dom, ctrl ? scope : globalScope);
+                                    ctrl || globalScope.apply(dom.name);
+                                }
+                            });
                             compile(target, scope, true);
-                            addScopeInputs(Q('html')[0], globalScope);
-                        }, 10)
+                        }, 30)
 					}
 				},
 				DOMNodeRemoved: remove //删除节点
 			});
+
+            scope.apply("");
+            compile(root, scope, true);//编译页面
+            trigger();
 		},
 		config: function(map){
 			extend(g_config, map);
@@ -2291,11 +2301,20 @@
     function isIllegalName(name){
         return /^__/.test(name) || new RegExp(name).test(keywords)
     }
+    function queryInputs(context, callback){
+        context.nodeType==1 && $('input,select,textarea',context).each(function(i, dom){
+            callback && callback(dom);
+        });
+    }
     function addScopeInputs(context, scope){
-        context.nodeType==1 && $("input,select,textarea", context).each(function(i, dom) {
+        /*context.nodeType==1 && $("input,select,textarea", context).each(function(i, dom) {
             var pctrl = Q(dom).closest("[q-ctrl]")[0];
             (isNull(pctrl)||pctrl==context) && addScopeInput(dom, scope);
-        });
+        });*/
+        queryInputs(context, function(dom){
+            var pctrl = Q(dom).closest("[q-ctrl]")[0];
+            (isNull(pctrl)||pctrl==context) && addScopeInput(dom, scope);
+        })
     }
 	function addScopeInput(dom, scope){
 		var name = dom.name;
@@ -2550,9 +2569,7 @@
                             callback: function(){
                                 if(Q(node).css('display')!='none'){
                                     Q.get(value, function(html){
-                                        qnode.html('<div>'+html+'</div>');
-                                        qnode.rmClass('loading');
-                                        scope.scopes.root.apply();
+                                        qnode.rmClass('loading').html('<div>'+html+'</div>');
                                     })
                                 }else{
                                     g_viewports[vpkey] = vphandle;
@@ -2584,7 +2601,7 @@
                             qnode.html(htmls.join(""));
                             compileChilds(node, scope, isAdd);//编译
                             show(node);
-                            qnode.closest(".loading").rmClass("loading");
+                            qnode.rmClass("loading");
 							node[namespace] = space;
 							isAdd && addMapNode(scope, vs[2], node);
 						}else{
