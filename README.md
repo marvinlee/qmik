@@ -430,6 +430,12 @@ c.实现Home业务模块功能
 
 
 ## 版本记录
+[增加2.2.10版本:](https://github.com/leochen36/qmik/tree/master/builds)
+<pre>
+2.2.10 版本,
+1.修复scope变量值不能正常更新到部 input,select显示上
+</pre>
+
 [增加2.2.02版本:](https://github.com/leochen36/qmik/tree/master/builds)
 <pre>
 2.2.02 版本,
