@@ -146,9 +146,6 @@
                             addScopeInput(target, ctrl ? scope : globalScope);
                             queryInputs(target, function(dom){
                                 if(isInput(dom)){
-                                    if(Q.contains(target, Q(dom).closest('[q-ctrl]'))){
-                                        return;
-                                    }
                                     addScopeInput(dom, ctrl ? scope : globalScope);
                                     ctrl || globalScope.apply(dom.name);
                                 }

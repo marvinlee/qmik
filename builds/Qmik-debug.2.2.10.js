@@ -506,7 +506,7 @@
 		_delete: _delete
 	};
 	//////////////////////////////////////////////////////
-	Q.version = "2.2.02";
+	Q.version = "2.2.10";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
@@ -1093,7 +1093,8 @@
 		rmAttr: function(k) {
 			each(this, function(i, v) {
 				isDom(v) && v.removeAttribute(k)
-			})
+			});
+            return this;
 		},
 		data: function(k, v) {
 			return data(this, k, v)
@@ -1101,7 +1102,8 @@
 		rmData: function(k) {
 			each(this, function(i, v) {
 				if (v.$Qmikdata) delete v.$Qmikdata[k]
-			})
+			});
+            return this;
 		},
 		val: function(v) {
 			var me = this;
@@ -1212,7 +1214,7 @@
 					//val(Q);
                     Q.delay(function() {
                         val.call(node, Q)
-                    }, 1);
+                    }, 5);
 				});
 				_delete(node, "$$handls");
 				//delete node.$$handls
@@ -1221,7 +1223,7 @@
 		if (readyRE.test(node.readyState)) {
 			Q.delay(function() {
 				fun.call(node, Q)
-			}, 10);
+			}, 15);
 		} else {
 			var hs = node.$$handls = node.$$handls || [];
 			hs.push(fun);

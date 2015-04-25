@@ -506,7 +506,7 @@
 		_delete: _delete
 	};
 	//////////////////////////////////////////////////////
-	Q.version = "2.2.02";
+	Q.version = "2.2.10";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
@@ -1093,7 +1093,8 @@
 		rmAttr: function(k) {
 			each(this, function(i, v) {
 				isDom(v) && v.removeAttribute(k)
-			})
+			});
+            return this;
 		},
 		data: function(k, v) {
 			return data(this, k, v)
@@ -1101,7 +1102,8 @@
 		rmData: function(k) {
 			each(this, function(i, v) {
 				if (v.$Qmikdata) delete v.$Qmikdata[k]
-			})
+			});
+            return this;
 		},
 		val: function(v) {
 			var me = this;
@@ -1212,7 +1214,7 @@
 					//val(Q);
                     Q.delay(function() {
                         val.call(node, Q)
-                    }, 1);
+                    }, 5);
 				});
 				_delete(node, "$$handls");
 				//delete node.$$handls
@@ -1221,7 +1223,7 @@
 		if (readyRE.test(node.readyState)) {
 			Q.delay(function() {
 				fun.call(node, Q)
-			}, 10);
+			}, 15);
 		} else {
 			var hs = node.$$handls = node.$$handls || [];
 			hs.push(fun);
@@ -2047,9 +2049,10 @@
 	var g_viewports = {};
 
 	var prevTime = Q.now();
-	function handle(e){
+	function handle(){
 		var curTime = Q.now();
 		if (curTime - prevTime < execInterval) {//触发频率
+            delay(handle, execInterval+2);
 			return;
 		}
 		prevTime = curTime;
@@ -2116,9 +2119,6 @@
             globalScope = me.scope = scope;
 			root[namespace] = getSpace(root);
 			fun && fun.call(scope, scope);
-            scope.apply("");
-			compile(root, scope, true);//编译页面
-			trigger();
 
 			function remove(e){
 				var target = e.target,
@@ -2138,7 +2138,9 @@
 						scope[nameMap][_name] = newmaps;
 					});
 					if(isInputDom){
-						delete scope[nameInput][name];
+						//delete scope[nameInput][name];
+                        //updateInputDomValue(scope, name);
+                        delay(updateInputDomsLevelValue,10, scope,name)
 					}
 				}
 			}
@@ -2156,12 +2158,25 @@
 						space = getSpace(target),
                         scope = space.scope;
 					if(space){
-                        addScopeInputs(target, scope);
-                        delay(compile, 1, target, scope, true);//延迟1ms执行
+                        delay(function(){
+                            var ctrl = Q(target).closest('[q-ctrl]')[0];
+                            addScopeInput(target, ctrl ? scope : globalScope);
+                            queryInputs(target, function(dom){
+                                if(isInput(dom)){
+                                    addScopeInput(dom, ctrl ? scope : globalScope);
+                                    ctrl || globalScope.apply(dom.name);
+                                }
+                            });
+                            compile(target, scope, true);
+                        }, 30)
 					}
 				},
 				DOMNodeRemoved: remove //删除节点
 			});
+
+            scope.apply("");
+            compile(root, scope, true);//编译页面
+            trigger();
 		},
 		config: function(map){
 			extend(g_config, map);
@@ -2246,7 +2261,7 @@
 						var isArray = Q.likeArray(names), name;
 						each(names, function(i, list){
 							name = isArray ? list : i;
-							//var input = me.$("input[name='"+name+"']")[0];
+                            updateInputDomsLevelValue(me, name);
 							watch({
 								target: me[nameContext],
 								name: name,
@@ -2261,17 +2276,12 @@
                             names.push(key);
                         });
                     }
-                    each(me[nameInput], function(name, dom){
-                        var readValue = getVarValue(me, name);
-                        if(!isMulInput(dom) && getInputValue(dom) != readValue){
-                            dom.value = readValue;
-                        }
-                    });
+
                     emitChange(names, compileVarName);
 					Q.isFun(callback) && callback();
 				}
 			};
-			delay(trigger, execInterval + 2);
+			delay(handle, execInterval + 2);
 		}
 	});
     /** 更新全局 */
@@ -2288,11 +2298,20 @@
     function isIllegalName(name){
         return /^__/.test(name) || new RegExp(name).test(keywords)
     }
+    function queryInputs(context, callback){
+        context.nodeType==1 && $('input,select,textarea',context).each(function(i, dom){
+            callback && callback(dom);
+        });
+    }
     function addScopeInputs(context, scope){
-        context.nodeType==1 && $("input,select,textarea", context).each(function(i, dom) {
+        /*context.nodeType==1 && $("input,select,textarea", context).each(function(i, dom) {
             var pctrl = Q(dom).closest("[q-ctrl]")[0];
             (isNull(pctrl)||pctrl==context) && addScopeInput(dom, scope);
-        });
+        });*/
+        queryInputs(context, function(dom){
+            var pctrl = Q(dom).closest("[q-ctrl]")[0];
+            (isNull(pctrl)||pctrl==context) && addScopeInput(dom, scope);
+        })
     }
 	function addScopeInput(dom, scope){
 		var name = dom.name;
@@ -2306,7 +2325,9 @@
                 val = val || fieldValue(scope, name);
             }
             fieldValue(scope, name, val);
-            scope[nameInput][name] = dom;
+            //scope[nameInput][name] = dom;
+            scope[nameInput][name] = scope[nameInput][name] || [];
+            scope[nameInput][name].push(dom);
 
             /* 如果是根scope,那么 把值赋值到 ScopePrototype 上面, 采用原型模式来读取内容 */
             setScopePrototype(scope, name);
@@ -2479,6 +2500,46 @@
 			}
 		}
 	}
+    /** 更新级联的输入节点 ,依赖于updateInputDomValue */
+    function updateInputDomsLevelValue(scope, name){
+        each(scope[nameInput], function(key){
+            if(key == name || key.indexOf(name+".")==0){
+                updateInputDomValue(scope, key);
+            }
+        });
+    }
+    function updateInputDomValue(scope, name){
+        var newValue = getVarValue(scope, name)+"";
+        var list = scope[nameInput][name];
+        scope[nameInput][name] = [];
+        each(list, function(i, dom){
+            if(Q.contains(scope.context, dom)){
+                var type = dom.type;
+                if(type=='radio'){
+                    dom.checked = dom.value == newValue;
+                }else if(type=='checkbox'){
+                    dom.checked = false;
+                    newValue.replace(/[^&]+/g, function (val) {
+                        if (dom.value == val) {
+                            dom.checked = true;
+                        }
+                    });
+                }else if(type=='select-multiple'){
+                    each(dom.options, function(j, ele){
+                        ele.selected = false;
+                        newValue.replace(/[^&]+/g, function (val) {
+                            if(ele.value == val){
+                                ele.selected = true;
+                            }
+                        });
+                    });
+                }else{
+                    dom.value = newValue;
+                }
+                scope[nameInput][name].push(dom);
+            }
+        });
+    }
 	function replaceNodeVar(node, scope, isAdd, callback) {
 		var space = getSpace(node), qnode = Q(node);
 		if(!space)return;
@@ -2492,7 +2553,6 @@
 							if(scopes[value]){
 								scope = scopes[value];
 							}else{
-                                show(node);
 								scope = new Scope(node, scope.parent || scope);
 								execCatch(function() {
 									Q.isFun(ctrls[value]) ? ctrls[value].call(scope, scope) : Q.warn("q-ctrl:[" + value + "]is not define");
@@ -2501,15 +2561,23 @@
 							}
 						}
 					} else if("q-include" == attrName){
-                        g_viewports["q-include-"+value+Math.random()] = {
+                        var vpkey = "q-include-"+value+Math.random(), vphandle={
                             context: node,
                             callback: function(){
-                                Q.get(value, function(html){
-                                    qnode.html(html);
-                                    scope.scopes.root.apply();
-                                })
+                                if(Q(node).css('display')!='none'){
+                                    Q.get(value, function(html){
+                                        qnode.rmClass('loading').html('<div>'+html+'</div>');
+                                    })
+                                }else{
+                                    g_viewports[vpkey] = vphandle;
+                                    Q('body').once({
+                                        click:handle,
+                                        touchstart: handle
+                                    })
+                                }
                             }
-                        }
+                        };
+                        g_viewports[vpkey] = vphandle;
                         qnode.rmAttr("q-include");
                     } else if ("q-for" == attrName) { //for
 						var vs = value.replace(/(\s){2,}/g, " ").split(" "),
@@ -2530,7 +2598,7 @@
                             qnode.html(htmls.join(""));
                             compileChilds(node, scope, isAdd);//编译
                             show(node);
-                            qnode.closest(".loading").rmClass("loading");
+                            qnode.rmClass("loading");
 							node[namespace] = space;
 							isAdd && addMapNode(scope, vs[2], node);
 						}else{
@@ -2541,20 +2609,21 @@
 							funName = value.replace(/\(.*\)$/,""),
                             context = scope[nameContext];
 						if(!space.event[name]){
+                            node[namespace] = space;
                             if( ["focus", "blur"].indexOf(name) >= 0 ){
                                 context = node;
                             }else{
                                 space.event[name] = true;
                             }
-							var handle = function(e){
+							var innerhandle = function(e){
 								if(!Q.contains(context, node)){
-									return Q(context).off(name, handle);
+									return Q(context).off(name, innerhandle);
 								}
 								if( Q.contains(node, e.target) ){//判断是否是当前节点的子节点触发的事件
 									scope[funName] && scope[funName].call(node, e);
 								}
 							};
-							Q(context).on(name, handle);
+							Q(context).on(name, innerhandle);
 						}
 					} else if (REG_VAR_NAME.test(value)) {//变量
 						attr.value = value.replace(REG_VAR_NAME, function(name) {
@@ -2569,22 +2638,17 @@
 				});
 				break;
 			case 3://文本节点
-				var val = space.text;
-				val = isNull(val) ? node.textContent : val;
-				if (REG_VAR_NAME.test(val)) {
+				var textValue = space.text;
+				textValue = isNull(textValue) ? node.textContent : textValue;
+				if (REG_VAR_NAME.test(textValue)) {
 					node[namespace] = space;
-					space.text = val;
-					node.textContent = val.replace(REG_VAR_NAME, function(name) {
+					space.text = textValue;
+					node.textContent = textValue.replace(REG_VAR_NAME, function(name) {
 						name = getVarName(name);
 						space.vars.push(name);
-						var val = getVarValue(scope, name),
-							inputNode = scope[nameInput][name];
+						var val = getVarValue(scope, name);
 						isAdd && addMapNode(scope, name, node);
-						if(inputNode && isInput(inputNode) && inputNode.value != val){
-							if( !isMulInput(inputNode) ){
-								scope[nameInput][name].value = val;
-							}
-						}
+                        //updateInputDomValue(scope,name);
 						return val;
 					});
                     show(node.parentNode);
@@ -2595,7 +2659,15 @@
         callback && callback(node, scope, isAdd);
 	}
     function show(node){
-        Q(node).css("visibility","visible");
+        var qnode = Q(node);
+        qnode.css("visibility","visible");
+        if(qnode.css('display')=='none'){
+            if(Q.isIE()){
+                qnode.css('display', qnode.attr('q-for')?'inline-block':'inline');
+            }else{
+                qnode.css('display','initial');
+            }
+        }
     }
 	var app;
 	Q.app = function(rootCtrlFun){
