@@ -1,7 +1,10 @@
 {
-  "family": "Qmik",
-  "name": "Qmik",
-  "version": "0.90.001",
+  "family": "qmik",
+  "name": "qn
+
+
+  mik",
+  "version": "2.2.10",
   "description": "a js frame",
   "homepage": "http://www.qmik.org/",
   "keywords": [
@@ -10,7 +13,7 @@
     "module",
     "loader"
   ],
-  "author": "leo chen<cwq0312@163.com>",
+  "author": "leo chen <cwq0312@163.com>",
   "engines": {
     "node": ">= 0.6.0"
   },
@@ -35,5 +38,16 @@
       "type": "MIT",
       "url": "http://www.qmik.org/LICENSE.md"
     }
-  ]
+  ],
+  "bugs": {
+    "url": "https://github.com/leochen36/qmik/issues"
+  },
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "BSD"
 }
