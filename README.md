@@ -430,6 +430,12 @@ c.实现Home业务模块功能
 
 
 ## 版本记录
+[增加2.2.11版本:](https://github.com/leochen36/qmik/tree/master/builds)
+<pre>
+2.2.11 版本,
+1.无代码修复,调整生成的builds命名,新文件的命名不在带有版本号
+</pre>
+
 [增加2.2.10版本:](https://github.com/leochen36/qmik/tree/master/builds)
 <pre>
 2.2.10 版本,
