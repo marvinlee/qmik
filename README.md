@@ -36,9 +36,10 @@ Qmik是一个面向数据接口编程,代码模块化,mvc式的开发框架,数�
 深圳宜搜科技等互联网公司
 
 ## 安装
+<pre>
 npm安装: npm install qmik
 bower安装: bower install qmik
-
+</pre>
 
 ## API简介:
 
