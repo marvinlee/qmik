@@ -201,7 +201,12 @@
                 scope.addr = "福建福鼎";
                 scope.price = 98.8;
                 scope.desc = "源自纯天然xxx";
-                scope.apply();//更新页面显示数据
+                scope.apply([], function(){
+                    console.log("ox1")
+                });//更新页面显示数据
+                scope.apply([], function(){
+                    console.log("ox2")
+                });//更新页面显示数据
             }, ttl);
         }
     });
