@@ -588,7 +588,6 @@
                             qnode.html(htmls.join(""));
                             compileChilds(node, scope, isAdd);//编译
                             show(node);
-                            qnode.rmClass("loading");
 							node[namespace] = space;
 							isAdd && addMapNode(scope, vs[2], node);
 						}else{
