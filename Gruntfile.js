@@ -60,7 +60,8 @@ module.exports = function(grunt) {
 			},
 			build : {
                 options: {
-                    mangle: true
+                    mangle: true,
+                    banner : '/* welcome use qmik; http://www.qmik.org */\r\n'
                 },
 				files : {
 					'assets/Qmik.js' : [//core版本
