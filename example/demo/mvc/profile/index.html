@@ -289,7 +289,7 @@
                         </div>
                         <div id="J_SearchFt" class="search-ft">
                             <div class="J_TbSearchContent J_HotWord">
-                                <div q-for="item in search.hots" class="search-hots">
+                                <div q-for="item in search.hots" class="search-hots loading">
                                     <a href="${item.href}" class="hd">${item.title}</a>
 
                                 </div>
@@ -363,7 +363,7 @@
                                     <a href="javascript:;" class="J_Prev prev"> <i class="s-prev"></i> </a>
                                     <a href="javascript:;" class="J_Next next"> <i class="s-next"></i> </a>
                                 </div>
-                                <ul q-for="item in promos" class="promo-nav">
+                                <ul q-for="item in promos" class="promo-nav  loading">
                                     <li class=""><a href="javascript:void(0);" class="hd">${item.index}</a></li>
                                 </ul>
                             </div>
@@ -389,7 +389,7 @@
                                         font: 12px/1.5 tahoma, 'Hiragino Sans GB', 'microsoft yahei', sans-serif;
                                     }
                                 </style>
-                                <div q-for="item in tmalls" style="position: absolute; overflow: hidden;left: 0px;">
+                                <div q-for="item in tmalls" class=" loading" style="position: absolute; overflow: hidden;left: 0px;">
                                     <div class="mod column-2 J_TanxWrapper tanx-wrapper"
                                          style="float: left; overflow: hidden; width: 520px; display: block;">
                                         <ins>
@@ -420,7 +420,7 @@
                                     <a href="javascript:;" class="J_Prev prev"> <i class="s-prev"></i> </a>
                                     <a href="javascript:;" class="J_Next next"> <i class="s-next"></i> </a>
                                 </div>
-                                <ul q-for="item in tmalls" class="tmall-nav">
+                                <ul q-for="item in tmalls" class="tmall-nav  loading">
                                     <li class=""><a href="javascript:void(0);" class="hd">${item.index}</a></li>
                                 </ul>
                             </div>
@@ -523,7 +523,7 @@
                             </div>
                             <div class="conve-bd">
                                 <div class="conve-bd-wrap">
-                                    <div q-for="item in bianMins" class="conve-bd-inner conve-pc hd">
+                                    <div q-for="item in bianMins" class="conve-bd-inner conve-pc hd  loading">
                                         <a href="${item.href}" class="mod J_mod" data-name="phone"> <i
                                                 class="tb-fp-iconfont">${item.icon}</i>
 
@@ -551,27 +551,27 @@
                         <s class="fpicon s-service-theme"></s>主题市场
                     </dt>
 
-                    <dd class="themes loading">
-                        <div q-for="item in themes" class="hd">
+                    <dd class="themes">
+                        <div q-for="item in themes" class="hd  loading">
                             <a href="${item.href}" class="${item.class}">${item.title}</a>
                         </div>
                     </dd>
                     <dt>
                         <s class="fpicon s-service-special"></s>特色购物
                     </dt>
-                    <dd q-for="item in teshes" class="hd">
+                    <dd q-for="item in teshes" class="hd  loading">
                         <a href="${item.href}" class="${item.class}">${item.title}</a>
                     </dd>
                     <dt>
                         <s class="fpicon s-service-favourable"></s>优惠促销
                     </dt>
-                    <dd q-for="item in youhuis" class="hd">
+                    <dd q-for="item in youhuis" class="hd  loading">
                         <a href="${item.href}" class="${item.class}">${item.title}</a>
                     </dd>
                     <dt>
                         <s class="fpicon s-service-tool"></s>工具
                     </dt>
-                    <dd q-for="item in tools" class="last-dd hd">
+                    <dd q-for="item in tools" class="last-dd hd  loading">
                         <a href="${item.href}" class="${item.class}">${item.title}</a>
                     </dd>
                 </dl>
@@ -662,10 +662,10 @@
                 </div>
                 <div class="cat-bd ">
                     <div class="cat-list">
-                        <div q-for="item in type1" class="list-item  list-item-first">
+                        <div q-for="item in type1" class="list-item  list-item-first loading">
                             <li class="${item.class}"><a href="${item.href}">${item.title}</a></li>
                         </div>
-                        <div q-for="item in type2" class="list-item list-item-sec">
+                        <div q-for="item in type2" class="list-item list-item-sec loading">
                             <li class="${item.class}"><a href="${item.href}">${item.title}</a></li>
                         </div>
                         <ul class="hot-world-list">

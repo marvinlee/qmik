@@ -506,7 +506,7 @@
 		_delete: _delete
 	};
 	//////////////////////////////////////////////////////
-	Q.version = "2.2.11";
+	Q.version = "2.2.12";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
@@ -2253,9 +2253,15 @@
 			//合并之前的更新 名册
 			names = uniqueArray(names, (g_viewports[me.__name]||{}).names);
             updateGlobalScope(me);
+            var tasks = (g_viewports[me.__name]||{}).tasks ||[];
+            tasks.push(function(cb){
+                Q.execCatch(callback);
+                cb && cb();
+            });
 			g_viewports[me.__name] = {
 				scope: me,
 				names: names,
+                tasks: tasks,
 				callback: function(){
 					function emitChange(names, callback){
 						var isArray = Q.likeArray(names), name;
@@ -2278,7 +2284,8 @@
                     }
 
                     emitChange(names, compileVarName);
-					Q.isFun(callback) && callback();
+					//Q.isFun(callback) && callback();
+                    Q.series(tasks);
 				}
 			};
 			delay(handle, execInterval + 2);
@@ -2598,7 +2605,6 @@
                             qnode.html(htmls.join(""));
                             compileChilds(node, scope, isAdd);//编译
                             show(node);
-                            qnode.rmClass("loading");
 							node[namespace] = space;
 							isAdd && addMapNode(scope, vs[2], node);
 						}else{

@@ -269,7 +269,7 @@ Qmik.fn api(即 $("#id").api)
         &lt;p&gt;user.email &lt;input name="user.email" type="text"/&gt; ${user.email}&lt;/p&gt;
         &lt;p&gt;user.qq &lt;input name="user.qq" type="text"/&gt; ${user.qq}&lt;/p&gt;
 
-        &lt;h3&gt;//显示列表,ul下面的内容是模板,qmik会根据模板来生成相应的页面&lt;/h3&gt;
+        &lt;h3&gt;//显示列表,ul下面的内容是模板,qmik会根据模板来生成相应的页面, Qmik 循环 &lt;/h3&gt;
         &lt;h3&gt;
             //q-onclick:是定义的单击事件,可以通过q-onxxx来定义事件,如:q-onclick,q-ontouchmove等
         &lt;/h3&gt;
@@ -434,6 +434,12 @@ c.实现Home业务模块功能
 
 
 ## 版本记录
+[增加2.2.12版本:](https://github.com/leochen36/qmik/tree/master/builds)
+<pre>
+2.2.12 版本,
+1.修复scope.apply回调存在不被执行的情况,(更新完数据,立即回调);// scope.apply('name', function(){ console.log('apply ok') })
+</pre>
+
 [增加2.2.11版本:](https://github.com/leochen36/qmik/tree/master/builds)
 <pre>
 2.2.11 版本,
