@@ -436,7 +436,7 @@ c.实现Home业务模块功能
 ## 版本记录
 [增加2.2.12版本:](https://github.com/leochen36/qmik/tree/master/builds)
 <pre>
-2.2.12 版本,
+2.2.12版本,
 1.修复scope.apply回调存在不被执行的情况,(更新完数据,立即回调);// scope.apply('name', function(){ console.log('apply ok') })
 </pre>
 
