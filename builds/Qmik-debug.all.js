@@ -1,7 +1,7 @@
 /**
  * @author:leo
  * @email:cwq0312@163.com
- * @version:1.2.33
+ * @version:2.2.12
  */
 (function() {
 	var win = this,
