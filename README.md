@@ -434,6 +434,12 @@ c.实现Home业务模块功能
 
 
 ## 版本记录
+[增加2.2.13版本:](https://github.com/leochen36/qmik/tree/master/builds)
+<pre>
+2.2.13版本,
+1.修复报控制器不存在的bug
+</pre>
+
 [增加2.2.12版本:](https://github.com/leochen36/qmik/tree/master/builds)
 <pre>
 2.2.12版本,

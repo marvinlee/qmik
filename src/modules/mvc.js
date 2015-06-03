@@ -91,7 +91,9 @@
 	function App(fun) {
 		var me = this;
 		Q(function(){
-			me.__init(fun);
+            Q.delay(function(){
+                me.__init(fun);
+            }, 50);
 		})
 	}
 	extend(App.prototype, {
