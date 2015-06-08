@@ -90,7 +90,7 @@
 	}
 	// isFunction
 	function isFun(v) {
-		return v instanceof Function
+		return typeof(v) == 'function';
 	}
 
 	function isError(v) {
@@ -506,7 +506,7 @@
 		_delete: _delete
 	};
 	//////////////////////////////////////////////////////
-	Q.version = "2.2.13";
+	Q.version = "2.2.20";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
