@@ -88,12 +88,13 @@
 	}
     var globalScope;//全局scope
 	/** 应用 */
-	function App(fun) {
+	function App(fun, delay) {
 		var me = this;
 		Q(function(){
+			   delay = Q.isNum(fun) ? fun : delay;
             Q.delay(function(){
                 me.__init(fun);
-            }, 50);
+            }, delay || 360);
 		})
 	}
 	extend(App.prototype, {
@@ -103,7 +104,7 @@
 				root = Q(nameRoot)[0];
             globalScope = me.scope = scope;
 			root[namespace] = getSpace(root);
-			fun && fun.call(scope, scope);
+			Q.isFun(fun) && fun.call(scope, scope);
 
 			function remove(e){
 				var target = e.target,
@@ -661,11 +662,11 @@
         }
     }
 	var app;
-	Q.app = function(rootCtrlFun){
+	Q.app = function(rootCtrlFun, delay){
         app && app.scope && rootCtrlFun && Q(function(){
-           execCatch(rootCtrlFun, [app.scope]);
+	        Q.isFun(rootCtrlFun) && execCatch(rootCtrlFun, [app.scope]);
         });
-		return app = app || new App(rootCtrlFun);
+		return app = app || new App(rootCtrlFun, delay);
 	};
 	//
 })(Qmik);
