@@ -88,14 +88,8 @@
 	}
     var globalScope;//全局scope
 	/** 应用 */
-	function App(fun, delay) {
-		var me = this;
-		Q(function(){
-			   delay = Q.isNum(fun) ? fun : delay;
-            Q.delay(function(){
-                me.__init(fun);
-            }, delay || 360);
-		})
+	function App(config) {
+		this.config(config);
 	}
 	extend(App.prototype, {
 		__init: function(fun) {
@@ -166,7 +160,7 @@
 		},
 		config: function(map){
 			extend(g_config, map);
-			return this;
+			return g_config;
 		},
 		//控制器
 		ctrl: function(name, callback) {
@@ -662,11 +656,20 @@
         }
     }
 	var app;
-	Q.app = function(rootCtrlFun, delay){
-        app && app.scope && rootCtrlFun && Q(function(){
-	        Q.isFun(rootCtrlFun) && execCatch(rootCtrlFun, [app.scope]);
-        });
-		return app = app || new App(rootCtrlFun, delay);
+	Q.app = function(rootCtrlFun, config){
+		config = Q.isFun(rootCtrlFun) ? config : rootCtrlFun;
+		config = Q.isObject(config) ? config : {};
+
+		app = app || new App(config);
+		if(config.compile != false && !app.compile){
+			app.compile = true;
+			Q(function(){
+				Q.delay(function(){
+					app.__init(rootCtrlFun);
+				}, 10);
+			})
+		}
+		return app;
 	};
 	//
 })(Qmik);

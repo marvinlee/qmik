@@ -135,7 +135,7 @@
     //$.app() 编译并生成应用,$.app().ctrl()定义控制器
     $.app(function (scope) { //全局控制器的写法
 
-    }).ctrl({
+    }, {compile: false}).ctrl({
         shopping: function (scope) {//购物
 
             scope.vUserName = scope.parent.user.userName;//界面上用到的变量,没有输出相应的input标签,需要预定义
@@ -210,5 +210,9 @@
             }, ttl);
         }
     });
+    $.delay(function(){
+        $.app();
+    }, 200);
+    console.log("...");
 </script>
 </body>
