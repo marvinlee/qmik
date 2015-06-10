@@ -90,6 +90,7 @@
 	/** 应用 */
 	function App(config) {
 		this.config(config);
+		this._rootCtrls = [];
 	}
 	extend(App.prototype, {
 		__init: function(fun) {
@@ -98,6 +99,10 @@
 				root = Q(nameRoot)[0];
             globalScope = me.scope = scope;
 			root[namespace] = getSpace(root);
+			Q.each(me._rootCtrls, function(i, fuun){
+				fuun.call(scope, scope);
+			});
+			me._rootCtrls = [];
 			Q.isFun(fun) && fun.call(scope, scope);
 
 			function remove(e){
@@ -668,6 +673,12 @@
 					app.__init(rootCtrlFun);
 				}, 10);
 			})
+		}else if(Q.isFun(rootCtrlFun)){
+			if(app.scope){
+				execCatch(rootCtrlFun, [app.scope]);
+			}else{
+				app._rootCtrls.push(rootCtrlFun);
+			}
 		}
 		return app;
 	};
