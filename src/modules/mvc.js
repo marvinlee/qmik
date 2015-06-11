@@ -669,9 +669,7 @@
 		if(config.compile != false && !app.compile){
 			app.compile = true;
 			Q(function(){
-				Q.delay(function(){
-					app.__init(rootCtrlFun);
-				}, 10);
+				app.__init(rootCtrlFun);
 			})
 		}else if(Q.isFun(rootCtrlFun)){
 			if(app.scope){

@@ -43,7 +43,7 @@
 		if (readyRE.test(node.readyState)) {
 			Q.delay(function() {
 				fun.call(node, Q)
-			}, 15);
+			}, 10);
 		} else {
 			var hs = node.$$handls = node.$$handls || [];
 			hs.push(fun);
