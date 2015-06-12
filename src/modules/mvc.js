@@ -123,9 +123,8 @@
 						scope[nameMap][_name] = newmaps;
 					});
 					if(isInputDom){
-						//delete scope[nameInput][name];
-                        //updateInputDomValue(scope, name);
-                        delay(updateInputDomsLevelValue,10, scope,name)
+						/^\s*$/.test(target.value||'') || updateInputDomValue(scope, name);
+						//delay(updateInputDomsLevelValue,10, scope,name)
 					}
 				}
 			}
@@ -143,17 +142,20 @@
 						space = getSpace(target),
                         scope = space.scope;
 					if(space){
-                        delay(function(){
-                            var ctrl = Q(target).closest('[q-ctrl]')[0];
-                            addScopeInput(target, ctrl ? scope : globalScope);
-                            queryInputs(target, function(dom){
-                                if(isInput(dom)){
-                                    addScopeInput(dom, ctrl ? scope : globalScope);
-                                    ctrl || globalScope.apply(dom.name);
-                                }
-                            });
-                            compile(target, scope, true);
-                        }, 30)
+						if(isInput(target) && /^\s*$/.test(target.value||'')){
+							return;
+						}
+						delay(function(){
+						    var ctrl = Q(target).closest('[q-ctrl]')[0];
+						    addScopeInput(target, ctrl ? scope : globalScope);
+						    queryInputs(target, function(dom){
+						        if(isInput(dom)){
+						            addScopeInput(dom, ctrl ? scope : globalScope);
+						            ctrl || globalScope.apply(dom.name);
+						        }
+						    });
+						    compile(target, scope, true);
+						}, 30)
 					}
 				},
 				DOMNodeRemoved: remove //删除节点

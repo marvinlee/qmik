@@ -506,7 +506,7 @@
 		_delete: _delete
 	};
 	//////////////////////////////////////////////////////
-	Q.version = "2.2.20";
+	Q.version = "2.2.21";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
@@ -1223,7 +1223,7 @@
 		if (readyRE.test(node.readyState)) {
 			Q.delay(function() {
 				fun.call(node, Q)
-			}, 15);
+			}, 10);
 		} else {
 			var hs = node.$$handls = node.$$handls || [];
 			hs.push(fun);
@@ -2105,14 +2105,9 @@
 	}
     var globalScope;//全局scope
 	/** 应用 */
-	function App(fun, delay) {
-		var me = this;
-		Q(function(){
-			   delay = Q.isNum(fun) ? fun : delay;
-            Q.delay(function(){
-                me.__init(fun);
-            }, delay || 360);
-		})
+	function App(config) {
+		this.config(config);
+		this._rootCtrls = [];
 	}
 	extend(App.prototype, {
 		__init: function(fun) {
@@ -2121,6 +2116,10 @@
 				root = Q(nameRoot)[0];
             globalScope = me.scope = scope;
 			root[namespace] = getSpace(root);
+			Q.each(me._rootCtrls, function(i, fuun){
+				fuun.call(scope, scope);
+			});
+			me._rootCtrls = [];
 			Q.isFun(fun) && fun.call(scope, scope);
 
 			function remove(e){
@@ -2141,9 +2140,8 @@
 						scope[nameMap][_name] = newmaps;
 					});
 					if(isInputDom){
-						//delete scope[nameInput][name];
-                        //updateInputDomValue(scope, name);
-                        delay(updateInputDomsLevelValue,10, scope,name)
+						/^\s*$/.test(target.value||'') || updateInputDomValue(scope, name);
+						//delay(updateInputDomsLevelValue,10, scope,name)
 					}
 				}
 			}
@@ -2161,17 +2159,20 @@
 						space = getSpace(target),
                         scope = space.scope;
 					if(space){
-                        delay(function(){
-                            var ctrl = Q(target).closest('[q-ctrl]')[0];
-                            addScopeInput(target, ctrl ? scope : globalScope);
-                            queryInputs(target, function(dom){
-                                if(isInput(dom)){
-                                    addScopeInput(dom, ctrl ? scope : globalScope);
-                                    ctrl || globalScope.apply(dom.name);
-                                }
-                            });
-                            compile(target, scope, true);
-                        }, 30)
+						if(isInput(target) && /^\s*$/.test(target.value||'')){
+							return;
+						}
+						delay(function(){
+						    var ctrl = Q(target).closest('[q-ctrl]')[0];
+						    addScopeInput(target, ctrl ? scope : globalScope);
+						    queryInputs(target, function(dom){
+						        if(isInput(dom)){
+						            addScopeInput(dom, ctrl ? scope : globalScope);
+						            ctrl || globalScope.apply(dom.name);
+						        }
+						    });
+						    compile(target, scope, true);
+						}, 30)
 					}
 				},
 				DOMNodeRemoved: remove //删除节点
@@ -2183,7 +2184,7 @@
 		},
 		config: function(map){
 			extend(g_config, map);
-			return this;
+			return g_config;
 		},
 		//控制器
 		ctrl: function(name, callback) {
@@ -2679,11 +2680,24 @@
         }
     }
 	var app;
-	Q.app = function(rootCtrlFun, delay){
-        app && app.scope && rootCtrlFun && Q(function(){
-	        Q.isFun(rootCtrlFun) && execCatch(rootCtrlFun, [app.scope]);
-        });
-		return app = app || new App(rootCtrlFun, delay);
+	Q.app = function(rootCtrlFun, config){
+		config = Q.isFun(rootCtrlFun) ? config : rootCtrlFun;
+		config = Q.isObject(config) ? config : {};
+
+		app = app || new App(config);
+		if(config.compile != false && !app.compile){
+			app.compile = true;
+			Q(function(){
+				app.__init(rootCtrlFun);
+			})
+		}else if(Q.isFun(rootCtrlFun)){
+			if(app.scope){
+				execCatch(rootCtrlFun, [app.scope]);
+			}else{
+				app._rootCtrls.push(rootCtrlFun);
+			}
+		}
+		return app;
 	};
 	//
 })(Qmik);

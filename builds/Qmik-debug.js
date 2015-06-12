@@ -506,7 +506,7 @@
 		_delete: _delete
 	};
 	//////////////////////////////////////////////////////
-	Q.version = "2.2.20";
+	Q.version = "2.2.21";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
@@ -1223,7 +1223,7 @@
 		if (readyRE.test(node.readyState)) {
 			Q.delay(function() {
 				fun.call(node, Q)
-			}, 15);
+			}, 10);
 		} else {
 			var hs = node.$$handls = node.$$handls || [];
 			hs.push(fun);
