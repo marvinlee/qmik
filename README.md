@@ -439,6 +439,7 @@ c.实现Home业务模块功能
 2.2.21版本,
 1. 修复不2.2.20版本的bug(不能执行全局控制器)
 2. 解决内容为空时,不能复制的bug
+3. 通过 $.app(function(){  }, {compile: false}); //可以不会编译页面,留在后面调用$.app()时编译
 </pre>
 
 [增加2.2.13版本:](https://github.com/leochen36/qmik/tree/master/builds)
