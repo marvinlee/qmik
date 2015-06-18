@@ -83,7 +83,7 @@
 		xhr.send(isGet ? null : formData);
 		if (ttl > 0) thread = Q.delay(function() {
 			xhr.abort();
-			error && error(xhr.xhr, xhr.type)
+			error && error(xhr.status||xhr.responseText)
 		}, ttl)
 	}
 	function get(url, data, success, dataType, method) {

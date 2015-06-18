@@ -229,6 +229,24 @@
 		once: function(name, handle){
 			Q(this[nameContext]).once(name, handle)
 		},
+		set: function(name, value, callback){
+			var nameList = [];
+			var me = this;
+			if(Q.isPlainObject(name)){
+				callback = value;
+				Q.each(name, function(key, val){
+					nameList.push(key);
+					fieldValue(me, key, val);
+				})
+			}else{
+				nameList = [name];
+				fieldValue(me, name, value);
+			}
+			me.apply(nameList, callback);
+		},
+		get: function(name){
+			return fieldValue(this, name)
+		},
 		apply: function(names, callback) { //应用会话信息的变更,同时刷新局部页面
 			var me = this;
 			if(Q.isFun(names)){
