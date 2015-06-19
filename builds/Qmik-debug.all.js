@@ -506,7 +506,7 @@
 		_delete: _delete
 	};
 	//////////////////////////////////////////////////////
-	Q.version = "2.2.21";
+	Q.version = "2.2.22";
 	Q.global = win;
 	win.Qmik = Q;
 	win.$ = win.$ || Q;
@@ -1500,8 +1500,9 @@
 		xhr.send(isGet ? null : formData);
 		if (ttl > 0) thread = Q.delay(function() {
 			xhr.abort();
-			error && error(xhr.xhr, xhr.type)
-		}, ttl)
+			error && error(xhr.status||xhr.responseText)
+		}, ttl);
+		return xhr;
 	}
 	function get(url, data, success, dataType, method) {
 		if (isFun(data)) {
@@ -1509,13 +1510,13 @@
 			success = data;
 			data = null
 		}
-		ajax({
+		return ajax({
 			url : url,
 			data : data,
 			success : success,
 			dataType : dataType,
 			type : method
-		})
+		});
 	}
 	Q.extend({
 		ajax : ajax,
@@ -2245,6 +2246,25 @@
 		},
 		once: function(name, handle){
 			Q(this[nameContext]).once(name, handle)
+		},
+		set: function(name, value, callback){
+			var nameList = [];
+			var me = this;
+			if(Q.isPlainObject(name)){
+				callback = value;
+				Q.each(name, function(key, val){
+					nameList.push(key);
+					fieldValue(me, key, val);
+				})
+			}else{
+				nameList = [name];
+				fieldValue(me, name, value);
+			}
+			me.apply(nameList, callback);
+			return me;
+		},
+		get: function(name){
+			return fieldValue(this, name)
 		},
 		apply: function(names, callback) { //应用会话信息的变更,同时刷新局部页面
 			var me = this;

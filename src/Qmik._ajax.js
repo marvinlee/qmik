@@ -84,7 +84,8 @@
 		if (ttl > 0) thread = Q.delay(function() {
 			xhr.abort();
 			error && error(xhr.status||xhr.responseText)
-		}, ttl)
+		}, ttl);
+		return xhr;
 	}
 	function get(url, data, success, dataType, method) {
 		if (isFun(data)) {
@@ -92,13 +93,13 @@
 			success = data;
 			data = null
 		}
-		ajax({
+		return ajax({
 			url : url,
 			data : data,
 			success : success,
 			dataType : dataType,
 			type : method
-		})
+		});
 	}
 	Q.extend({
 		ajax : ajax,

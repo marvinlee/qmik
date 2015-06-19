@@ -243,6 +243,7 @@
 				fieldValue(me, name, value);
 			}
 			me.apply(nameList, callback);
+			return me;
 		},
 		get: function(name){
 			return fieldValue(this, name)

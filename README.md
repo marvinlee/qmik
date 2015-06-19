@@ -434,6 +434,12 @@ c.实现Home业务模块功能
 
 
 ## 版本记录
+[增加2.2.22版本:](https://github.com/leochen36/qmik/tree/master/builds)
+<pre>
+2.2.22版本,
+1. scope增加 set方法,自带了scope.apply更新字段,减小写代码量, scope.set(field, value, callback) 或 scope.set(object, callback);
+</pre>
+
 [增加2.2.21版本:](https://github.com/leochen36/qmik/tree/master/builds)
 <pre>
 2.2.21版本,
